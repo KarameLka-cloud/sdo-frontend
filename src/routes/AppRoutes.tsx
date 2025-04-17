@@ -13,7 +13,7 @@ import Knowledge from "../pages/Home/Knowledge/Knowledge.tsx";
 import Education from "../pages/Home/Education/Education.tsx";
 import Edo from "../pages/Home/Edo/Edo.tsx";
 
-const router = createBrowserRouter([
+const AppRoutes = createBrowserRouter([
   {
     path: "/",
     element: <Navigate to="home" />,
@@ -64,4 +64,4 @@ const router = createBrowserRouter([
   },
 ]);
 
-export default router;
+export default AppRoutes;

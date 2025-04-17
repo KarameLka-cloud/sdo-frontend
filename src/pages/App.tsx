@@ -1,9 +1,9 @@
 import { JSX } from "react";
 import { RouterProvider } from "react-router-dom";
-import router from "../services/router.tsx";
+import AppRoutes from "../routes/AppRoutes.tsx";
 
 function App(): JSX.Element {
-  return <RouterProvider router={router} />;
+  return <RouterProvider router={AppRoutes} />;
 }
 
 export default App;
