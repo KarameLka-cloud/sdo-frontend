@@ -9,7 +9,7 @@
 - **Роутинг**: [React Router](https://reactrouter.com/)
 - **State-менеджмент**: [Redux Toolkit](https://redux-toolkit.js.org/)
 - **Сборка**: [Vite](https://vitejs.dev/)
-- **Стилизация**: [Tailwindcss](https://tailwindcss.com/)
+- **Стилизация**: [Modules]
 - **API-клиент**: [Axios / Fetch / React Query]
 - **Линтеры и форматирование**: [ESLint]
 - **Тестирование**: []
@@ -19,14 +19,13 @@
 
 ```
 /src
-|-- /assets        # Статические файлы (шрифты, картинки)
+|-- /assets        # Статические файлы
 |-- /components    # Компоненты
+|-- /features      # Фичи, модули Redux
 |-- /hooks         # Кастомные хуки
-|-- /pages         # Страницы (если используется React Router)
-|-- /styles        # Глобальные стили
-|-- /types         # Типы TypeScript
-|-- /utils         # Вспомогательные функции
-|-- App.tsx        # Корневой компонент
+|-- /layouts       # Слои
+|-- /pages         # Страницы
+|-- /routes        # Роутинг
 |-- main.tsx       # Точка входа
 ```
 
