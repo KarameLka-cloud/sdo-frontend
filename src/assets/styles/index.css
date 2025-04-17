@@ -1,4 +1,4 @@
-@import "tailwindcss";
+/* @import "tailwindcss"; */
 :root {
   --mfc-background-color: #d2ae8eff;
   --mfc-background-header: #f0f0f0;
@@ -15,8 +15,12 @@
 }
 
 body {
-  /* margin: 0; */
+  margin: 0;
   background-color: var(--mfc-background-color);
+}
+
+a {
+  text-decoration: none;
 }
 
 /*:root {*/

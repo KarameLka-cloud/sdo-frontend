@@ -10,7 +10,7 @@ const navLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "home",
       icon: (
         <svg
-          className="h-8 mr-2"
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -47,7 +47,7 @@ const navLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "career",
       icon: (
         <svg
-          className="h-8 mr-2"
+        className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -75,7 +75,7 @@ const navLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "achievements",
       icon: (
         <svg
-          className="h-8 mr-2"
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -140,7 +140,7 @@ const navLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "interns",
       icon: (
         <svg
-          className="h-8 mr-2"
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -188,7 +188,7 @@ const sdoLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "knowledge",
       icon: (
         <svg
-          className="h-8 mr-2"
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -260,7 +260,7 @@ const sdoLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "education",
       icon: (
         <svg
-          className="h-8 mr-2"
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >
@@ -289,7 +289,7 @@ const sdoLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "edo",
       icon: (
         <svg
-          className="h-8 mr-2"
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >

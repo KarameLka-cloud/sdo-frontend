@@ -30,14 +30,20 @@
 }
 
 .hr {
-  margin-bottom: 0.625rem;
+  margin: 0.625rem 0;
+  border: none;
   border-top: 2px dashed #6a7282;
 }
 
 .header {
-  margin-bottom: 0.625rem;
+  margin: 0 0 0.625rem 0;
   color: #6a7282;
   font-size: 1.25rem;
   font-weight: 600;
   text-align: center;
+}
+
+.icon {
+  height: 2rem;
+  margin-right: 0.75rem;
 }
