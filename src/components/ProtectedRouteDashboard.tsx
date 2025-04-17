@@ -7,8 +7,9 @@ function ProtectedRouteDashboard({
 }: {
   element: JSX.Element;
 }): JSX.Element {
-  const isAuth: boolean = Cookie.get("auth_token") == null;
-  return isAuth ? <Navigate to="login" replace /> : element;
+  // const isAuth: boolean = Cookie.get("auth_token") == null;
+  // return isAuth ? <Navigate to="login" replace /> : element;
+  return element;
 }
 
 export default ProtectedRouteDashboard;

@@ -1,5 +1,6 @@
 import { JSX, ReactNode } from "react";
 import { NavLink, NavLinkRenderProps } from "react-router-dom";
+import style from "./Nav.module.css";
 
 const navLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
   [
@@ -342,19 +343,14 @@ const sdoLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
 
 function Nav({ className = "" }: { className?: string }): JSX.Element {
   return (
-    <nav
-      className={"flex flex-col w-xs pt-20 px-6 pb-6" + className}
-      style={{ backgroundColor: "#E6D2C0FF" }}
-    >
+    <nav className={`${style.component} + ${className}`}>
       {navLinks.map(
         ({ id, name, path, icon }): JSX.Element => (
           <NavLink
             key={id}
             to={path}
             className={({ isActive }: NavLinkRenderProps): string =>
-              isActive
-                ? "inline-flex items-center px-1 pt-1 font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out"
-                : "inline-flex items-center px-1 pt-1 font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+              isActive ? style.link_active : style.link_inactive
             }
           >
             {icon} {name}
@@ -362,11 +358,9 @@ function Nav({ className = "" }: { className?: string }): JSX.Element {
         )
       )}
 
-      <hr className="my-2.5 border-t-2 border-dashed border-gray-500" />
+      <hr className={style.hr} />
 
-      <p className="mb-2.5 text-xl font-bold text-center text-gray-500">
-        Корпоративный университет
-      </p>
+      <p className={style.header}>Корпоративный университет</p>
 
       {sdoLinks.map(
         ({ id, name, path, icon }): JSX.Element => (
@@ -374,9 +368,7 @@ function Nav({ className = "" }: { className?: string }): JSX.Element {
             key={id}
             to={path}
             className={({ isActive }: NavLinkRenderProps): string =>
-              isActive
-                ? "inline-flex items-center px-1 pt-1 font-medium leading-5 text-gray-900 focus:outline-none focus:border-indigo-700 transition duration-150 ease-in-out"
-                : "inline-flex items-center px-1 pt-1 font-medium leading-5 text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out"
+              isActive ? style.link_active : style.link_inactive
             }
           >
             {icon} {name}

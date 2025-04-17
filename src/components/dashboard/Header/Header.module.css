@@ -1,0 +1,34 @@
+.component {
+  width: 100%;
+  height: 3.25rem;
+  padding: 0.5rem;
+  background-color: #f0f0f0;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 1280px;
+  height: 100%;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.logo {
+  height: 100%;
+}
+
+.right_content {
+  display: flex;
+  align-items: center;
+}
+
+.name {
+  margin-right: 1.25rem;
+  font-size: 1rem;
+}
+
+.logout {
+  height: 1.25rem;
+}

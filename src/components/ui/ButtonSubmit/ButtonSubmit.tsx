@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import style from "./ButtonSubmit.module.css";
 
 function ButtonSubmit({
   children,
@@ -8,13 +9,7 @@ function ButtonSubmit({
   className?: string;
 }): JSX.Element {
   return (
-    <button
-      type="submit"
-      className={
-        "rounded-lg text-xs text-white font-medium text-center uppercase bg-gray-700 hover:bg-gray-800 cursor-pointer " +
-        className
-      }
-    >
+    <button type="submit" className={`${style.component} + ${className}`}>
       {children}
     </button>
   );

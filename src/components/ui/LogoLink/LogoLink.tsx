@@ -1,5 +1,6 @@
 import { JSX } from "react";
 import { Link } from "react-router-dom";
+import style from "./LogoLink.module.css";
 
 function LogoLink({
   href = "",
@@ -9,11 +10,11 @@ function LogoLink({
   className?: string;
 }): JSX.Element {
   return (
-    <Link to={href} className={className}>
+    <Link to={href} className={`${className}`}>
       <img
         src="/src/assets/images/logo_mfc.svg"
         alt="LogoLink"
-        className="h-full"
+        className={style.img}
       />
     </Link>
   );

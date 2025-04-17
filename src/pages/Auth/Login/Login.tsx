@@ -1,5 +1,6 @@
 import { JSX, SetStateAction, useState } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import style from "./Login.module.css";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
 import InputError from "../../../components/ui/InputError/InputError.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
@@ -45,11 +46,8 @@ function Login(): JSX.Element {
   };
 
   return (
-    <div className="h-screen flex justify-center items-center">
-      <form
-        onSubmit={handleLogin}
-        className="flex flex-col items-center w-lg p-4 border border-gray-200 rounded-md shadow-md bg-gray-100"
-      >
+    <div className={style.container}>
+      <form onSubmit={handleLogin} className={style.form}>
         <InputText
           type="text"
           name="login"
@@ -57,9 +55,9 @@ function Login(): JSX.Element {
           onChange={handleChange}
           placeholder="Логин"
           required
-          className="w-full p-2.5 mb-2 shadow-sm"
+          className={style.input}
         />
-        <InputError className="w-full mb-2">{error}</InputError>
+        <InputError className={style.error}>{error}</InputError>
         <InputText
           type="password"
           name="password"
@@ -67,9 +65,9 @@ function Login(): JSX.Element {
           onChange={handleChange}
           placeholder="Пароль"
           required
-          className="w-full p-2.5 mb-4 shadow-sm"
+          className={style.input}
         />
-        <ButtonSubmit className="w-fit px-5 py-2.5">Войти</ButtonSubmit>
+        <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
       </form>
     </div>
   );

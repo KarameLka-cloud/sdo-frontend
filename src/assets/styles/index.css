@@ -1,12 +1,21 @@
 @import "tailwindcss";
 :root {
   --mfc-background-color: #d2ae8eff;
+  --mfc-background-header: #f0f0f0;
+  --mfc-background-nav: #e6d2c0;
   --mfc-light-color: #f2e0b6ff;
   --mfc-middle-color: #d2ae8eff;
   --mfc-dark-color: #4b3c2eff;
+
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 body {
+  /* margin: 0; */
   background-color: var(--mfc-background-color);
 }
 

@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import style from "./Main.module.css";
 
 function Main({
   children,
@@ -8,7 +9,7 @@ function Main({
   className?: string;
 }): JSX.Element {
   return (
-    <main className={"w-full bg-gray-50 p-6 " + className}>{children}</main>
+    <main className={`${style.component} + ${className}`}>{children}</main>
   );
 }
 

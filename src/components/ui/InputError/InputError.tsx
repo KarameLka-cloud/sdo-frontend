@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import style from "./InputError.module.css";
 
 function InputError({
   children,
@@ -7,7 +8,7 @@ function InputError({
   children: string;
   className?: string;
 }): JSX.Element {
-  return <p className={"text-sm text-red-600 " + className}>{children}</p>;
+  return <p className={`${style.component} + ${className}`}>{children}</p>;
 }
 
 export default InputError;

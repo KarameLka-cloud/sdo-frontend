@@ -1,5 +1,6 @@
 import { JSX } from "react";
 import { NavigateFunction, useNavigate } from "react-router-dom";
+import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
 import { logout } from "../../../features/auth/logout.ts";
@@ -24,12 +25,12 @@ function Header({ className = "" }: { className?: string }): JSX.Element {
   };
 
   return (
-    <div className={"w-full h-13 py-2 bg-gray-50 " + className}>
-      <div className="flex items-center justify-between w-7xl h-full mx-auto px-4">
-        <LogoLink href="/" className="h-full" />
-        <div className="flex items-center">
-          <div className="mr-5 text-sm text-gray-700">Иванов Иван Иванович</div>
-          <LogoutButton className="h-5" onClick={handleLogout} />
+    <div className={`${style.component} + ${className}`}>
+      <div className={style.content}>
+        <LogoLink href="/" className={style.logo} />
+        <div className={style.right_content}>
+          <div className={style.name}>Иванов Иван Иванович</div>
+          <LogoutButton className={style.logout} onClick={handleLogout} />
         </div>
       </div>
     </div>

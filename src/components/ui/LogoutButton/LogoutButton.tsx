@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import style from "./LogoutButton.module.css";
 
 function LogoutButton({
   className = "",
@@ -8,9 +9,9 @@ function LogoutButton({
   [x: string]: unknown;
 }): JSX.Element {
   return (
-    <div className={className} {...props}>
+    <div className={`${style.component} + ${className}`} {...props}>
       <svg
-        className={"text-gray-700 cursor-pointer " + className}
+        className={style.img}
         xmlns="http://www.w3.org/2000/svg"
         viewBox="0 0 512 512"
       >

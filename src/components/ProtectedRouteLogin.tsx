@@ -7,8 +7,9 @@ function ProtectedRouteLogin({
 }: {
   element: JSX.Element;
 }): JSX.Element {
-  const isAuth: boolean = Cookie.get("auth_token") == null;
-  return isAuth ? element : <Navigate to="/" replace />;
+  // const isAuth: boolean = Cookie.get("auth_token") == null;
+  // return isAuth ? element : <Navigate to="/" replace />;
+  return element;
 }
 
 export default ProtectedRouteLogin;

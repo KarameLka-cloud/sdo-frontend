@@ -1,0 +1,43 @@
+.component {
+  display: flex;
+  flex-direction: column;
+  width: 20rem;
+  padding: 5rem 1.5rem 1.5rem;
+  background-color: var(--mfc-background-nav);
+}
+
+.link_inactive {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.25rem 0 0.25rem;
+  color: #6a7282;
+  font-weight: 500;
+  line-height: 1.25rem;
+  transition: color ease-in-out 0.2s;
+}
+
+.link_inactive:hover {
+  color: #364153;
+}
+
+.link_active {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.25rem 0 0.25rem;
+  color: #101828;
+  font-weight: 500;
+  line-height: 1.25rem;
+}
+
+.hr {
+  margin-bottom: 0.625rem;
+  border-top: 2px dashed #6a7282;
+}
+
+.header {
+  margin-bottom: 0.625rem;
+  color: #6a7282;
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+}
