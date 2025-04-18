@@ -47,7 +47,7 @@ const navLinks: { id: number; name: string; path: string; icon?: ReactNode }[] =
       path: "career",
       icon: (
         <svg
-        className={style.icon}
+          className={style.icon}
           xmlns="http://www.w3.org/2000/svg"
           viewBox="0 0 512 512"
         >

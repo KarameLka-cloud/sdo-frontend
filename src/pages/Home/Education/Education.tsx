@@ -1,7 +1,12 @@
 import { JSX } from "react";
+import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 
 function Education(): JSX.Element {
-  return <div>Education</div>;
+  return (
+    <>
+      <HeaderPage>Мое обучение</HeaderPage>
+    </>
+  );
 }
 
 export default Education;

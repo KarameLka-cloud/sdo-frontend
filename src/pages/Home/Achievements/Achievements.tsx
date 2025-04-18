@@ -1,7 +1,12 @@
 import { JSX } from "react";
+import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 
 function Achievements(): JSX.Element {
-  return <div>Achievements</div>;
+  return (
+    <>
+      <HeaderPage>Мои достижения</HeaderPage>
+    </>
+  );
 }
 
 export default Achievements;

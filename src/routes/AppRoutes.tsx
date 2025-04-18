@@ -12,6 +12,7 @@ import Interns from "../pages/Home/Interns/Interns.tsx";
 import Knowledge from "../pages/Home/Knowledge/Knowledge.tsx";
 import Education from "../pages/Home/Education/Education.tsx";
 import Edo from "../pages/Home/Edo/Edo.tsx";
+import TopServices from "../pages/Home/Knowledge/TopServices/TopServices.tsx";
 
 const AppRoutes = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "knowledge",
         element: <PageTitle title={"База знаний"} element={<Knowledge />} />,
+      },
+      {
+        path: "knowledge/top",
+        element: <PageTitle title={"База знаний"} element={<TopServices />} />,
       },
       {
         path: "education",
