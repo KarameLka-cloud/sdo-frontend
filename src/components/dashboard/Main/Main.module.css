@@ -1,6 +1,6 @@
 .component {
   width: 100%;
   padding: 1.5rem;
-  background-color: var(--mfc-background-main);
+  background-color: #ffffff;
   overflow: auto;
 }

@@ -1,7 +1,12 @@
 import { JSX } from "react";
+import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 
 function Edo(): JSX.Element {
-  return <div>Edo</div>;
+  return (
+    <>
+      <HeaderPage>ЕДО</HeaderPage>
+    </>
+  );
 }
 
 export default Edo;

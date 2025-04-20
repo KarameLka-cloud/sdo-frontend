@@ -3,7 +3,7 @@ import { NavigateFunction, useNavigate } from "react-router-dom";
 import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
-import { logout } from "../../../features/auth/logout.ts";
+import { logout } from "../../../services/auth/logout.ts";
 
 function Header({ className = "" }: { className?: string }): JSX.Element {
   const navigate: NavigateFunction = useNavigate();

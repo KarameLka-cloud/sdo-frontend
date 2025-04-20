@@ -4,7 +4,7 @@ import style from "./Login.module.css";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
 import InputError from "../../../components/ui/InputError/InputError.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import { login } from "../../../features/auth/login.ts";
+import { login } from "../../../services/auth/login.ts";
 
 function Login(): JSX.Element {
   const navigate: NavigateFunction = useNavigate();

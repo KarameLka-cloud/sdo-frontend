@@ -41,9 +41,7 @@ const AppRoutes = createBrowserRouter([
       },
       {
         path: "achievements",
-        element: (
-          <PageTitle title={"Мои достижения"} element={<Achievements />} />
-        ),
+        element: <PageTitle title={"Мои достижения"} element={<Achievements />} />,
       },
       {
         path: "interns",
