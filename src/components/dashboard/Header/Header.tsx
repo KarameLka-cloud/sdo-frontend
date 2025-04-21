@@ -4,8 +4,11 @@ import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
 import { logout } from "../../../services/auth/logout.ts";
+import { useGetUserByDataQuery } from "../../../features/user/user.ts";
 
 function Header({ className = "" }: { className?: string }): JSX.Element {
+  const { data } = useGetUserByDataQuery("me");
+
   const navigate: NavigateFunction = useNavigate();
 
   const handleLogout: (e: {
@@ -29,7 +32,11 @@ function Header({ className = "" }: { className?: string }): JSX.Element {
       <div className={style.content}>
         <LogoLink href="/" className={style.logo} />
         <div className={style.right_content}>
-          <div className={style.name}>Иванов Иван Иванович</div>
+          {data ? (
+            <div className={style.name}>
+              {`${data.name.split(" ")[1]} ${data.name.split(" ")[0][0]}.`}
+            </div>
+          ) : null}
           <LogoutButton className={style.logout} onClick={handleLogout} />
         </div>
       </div>

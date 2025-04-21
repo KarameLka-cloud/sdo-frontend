@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 
 export const login = async (loginFormData: object) => {
   try {
-    const response = await api.post("/api/auth/login", loginFormData);
+    const response = await api.post("auth/login", loginFormData);
     Cookie.set("auth_token", response.data.auth_token);
     return {
       success: true,
