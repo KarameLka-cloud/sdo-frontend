@@ -1,34 +1,37 @@
 import { JSX } from "react";
 import style from "./Home.module.css";
-import Info from "../../../components/home/Info/Info.tsx";
-import { useGetUserByDataQuery } from "../../../features/user/user.ts";
+import { useGetUserByDataQuery } from "../../../services/store/features/user.ts";
 
 function Home(): JSX.Element {
-  const { data, error, isLoading } = useGetUserByDataQuery("me");
+  const { data, error, isLoading } = useGetUserByDataQuery("");
 
-  function getName(user: string): string {
-    return user.split(" ")[1];
+  function getName(userName: string): string {
+    return userName.split(" ")[1];
   }
 
   return (
     <>
-      <div>
-        {error ? (
-          <>Ошибка получения данных</>
-        ) : isLoading ? (
-          <>Загрузка...</>
-        ) : data ? (
-          <>
-            <Info
-              className={style.info}
-              date="Date"
-              name={getName(data.name)}
-              department={data.department}
-              description={data.description}
+      {error ? (
+        <>Ошибка получения данных</>
+      ) : isLoading ? (
+        <>Загрузка...</>
+      ) : data ? (
+        <>
+          <div className={style.info_component}>
+            <div className={style.info_date}>Date</div>
+            <div className={style.info_name}>{`Привет, ${getName(
+              data.name
+            )}`}</div>
+            <div className={style.info_department}>{data.department}</div>
+            <div className={style.info_description}>{data.description}</div>
+            <img
+              className={style.info_img}
+              src="/src/assets/images/my_info.png"
+              alt="Девушка"
             />
-          </>
-        ) : null}
-      </div>
+          </div>
+        </>
+      ) : null}
     </>
   );
 }

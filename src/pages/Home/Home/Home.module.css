@@ -1,3 +1,33 @@
-.info {
+.info_component {
+  position: relative;
   margin-top: 3.5rem;
+  padding: 1.25rem 2.5rem;
+  border: 2px solid var(--mfc-middle-color);
+  border-radius: 2rem;
+}
+
+.info_date {
+  font-size: 1.125rem;
+}
+
+.info_name {
+  padding-top: 1.25rem;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.info_department {
+  padding-top: 1.75rem;
+  font-size: 1.125rem;
+}
+
+.info_description {
+  font-size: 1.25rem;
+}
+
+.info_img {
+  position: absolute;
+  right: 2.5rem;
+  bottom: 0;
+  height: 16rem;
 }

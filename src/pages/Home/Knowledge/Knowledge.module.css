@@ -1,14 +1,14 @@
-.component {
+.top_component {
   padding: 20px 40px;
   border-radius: 30px;
   background-color: #d2ae8eff;
 }
 
-.title {
+.top_title {
   font-weight: 600;
 }
 
-.link {
+.top_link {
   display: inline-block;
   margin: 10px 0;
   font-size: 24px;

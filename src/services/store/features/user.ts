@@ -6,7 +6,7 @@ import Cookie from "js-cookie";
 export const userApi = createApi({
   reducerPath: "userApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${import.meta.env.VITE_BACKEND_LOCATION}`,
+    baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
     prepareHeaders: (headers) => {
       const token = Cookie.get("auth_token");
       if (token) {
@@ -17,7 +17,7 @@ export const userApi = createApi({
   }),
   endpoints: (builder) => ({
     getUserByData: builder.query({
-      query: (name) => `auth/${name}`,
+      query: () => "auth/me",
     }),
   }),
 });
