@@ -17,7 +17,7 @@ export const userApi = createApi({
   }),
   endpoints: (builder) => ({
     getUserByData: builder.query({
-      query: () => "auth/me",
+      query: (name) => `auth/${name}`,
     }),
   }),
 });

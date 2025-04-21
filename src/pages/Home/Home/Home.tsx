@@ -3,7 +3,7 @@ import style from "./Home.module.css";
 import { useGetUserByDataQuery } from "../../../services/store/features/user.ts";
 
 function Home(): JSX.Element {
-  const { data, error, isLoading } = useGetUserByDataQuery("");
+  const { data, error, isLoading } = useGetUserByDataQuery("me");
 
   function getName(userName: string): string {
     return userName.split(" ")[1];
@@ -32,6 +32,21 @@ function Home(): JSX.Element {
           </div>
         </>
       ) : null}
+
+      <div className={style.progress_info_component}>
+        <div className={style.progress_block}>
+          <div className={style.progress_counter}>0/0</div>
+          <div className={style.progress_name}>Пройденные тесты</div>
+        </div>
+        <div className={style.progress_block}>
+          <div className={style.progress_counter}>0/0</div>
+          <div className={style.progress_name}>Пройденные курсы</div>
+        </div>
+        <div className={style.progress_block}>
+          <div className={style.progress_counter}>0/0</div>
+          <div className={style.progress_name}>Мероприятия</div>
+        </div>
+      </div>
     </>
   );
 }

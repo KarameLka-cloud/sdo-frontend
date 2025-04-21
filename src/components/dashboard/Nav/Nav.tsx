@@ -375,6 +375,18 @@ function Nav({ className = "" }: { className?: string }): JSX.Element {
           </NavLink>
         )
       )}
+
+      <a
+        href="http://mfc.corp/"
+        target="_blank"
+        className={style.main_corp_link}
+      >
+        <img
+          src="/src/assets/images/mfc_corp.png"
+          className={style.main_corp_image}
+        />
+        Корпоративный портал
+      </a>
     </nav>
   );
 }

@@ -33,7 +33,7 @@
 .hr {
   margin: 0.625rem 0;
   border: none;
-  border-top: 2px dashed #6a7282;
+  border-top: 0.2rem dashed #6a7282;
 }
 
 .header {
@@ -47,4 +47,18 @@
 .icon {
   height: 2rem;
   margin-right: 0.75rem;
+}
+
+.main_corp_link {
+  display: flex;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #896b5f;
+  margin-top: auto;
+}
+
+.main_corp_image {
+  height: 3rem;
 }

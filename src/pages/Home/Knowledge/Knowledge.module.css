@@ -1,19 +1,47 @@
-.top_component {
-  padding: 20px 40px;
-  border-radius: 30px;
-  background-color: #d2ae8eff;
+.top_service_component {
+  padding: 1.2rem 2rem;
+  border-radius: 2rem;
+  background-color: #d2ae8e;
 }
 
-.top_title {
+.top_service_title {
   font-weight: 600;
 }
 
-.top_link {
+.top_service_link {
   display: inline-block;
-  margin: 10px 0;
-  font-size: 24px;
+  margin: 0.5rem 0;
+  font-size: 1.7rem;
   color: #5d5db8;
   font-weight: 600;
   text-decoration: underline;
-  cursor: pointer;
+}
+
+.theoretical_courses_component {
+  padding: 2.3rem 2rem;
+  border-radius: 2rem;
+  background-color: #e6d2c0;
+}
+
+.theoretical_courses_title {
+  color: #101828;
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.general_courses_component {
+  padding: 2.3rem 2rem;
+  border-radius: 2rem;
+  background-color: #f5eee7;
+}
+
+.general_courses_title {
+  color: #101828;
+  font-size: 1.7rem;
+  font-weight: 600;
+}
+
+.theoretical_courses_component,
+.general_courses_component {
+  margin-top: 2rem;
 }
