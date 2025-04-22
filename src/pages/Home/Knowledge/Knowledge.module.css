@@ -1,7 +1,7 @@
 .top_service_component {
   padding: 1.2rem 2rem;
   border-radius: 2rem;
-  background-color: #d2ae8e;
+  background-color: var(--mfc-dark-color);
 }
 
 .top_service_title {
@@ -20,7 +20,7 @@
 .theoretical_courses_component {
   padding: 2.3rem 2rem;
   border-radius: 2rem;
-  background-color: #e6d2c0;
+  background-color: var(--mfc-middle-color);
 }
 
 .theoretical_courses_title {
@@ -32,7 +32,7 @@
 .general_courses_component {
   padding: 2.3rem 2rem;
   border-radius: 2rem;
-  background-color: #f5eee7;
+  background-color: var(--mfc-light-color);
 }
 
 .general_courses_title {

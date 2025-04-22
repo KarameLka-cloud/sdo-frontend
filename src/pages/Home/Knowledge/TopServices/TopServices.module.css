@@ -22,7 +22,7 @@ ul {
 .services {
   display: flex;
   justify-content: space-between;
-  padding: 0.8rem 2.6rem;
+  padding: 1rem;
   border-radius: 2rem;
 }
 
@@ -87,38 +87,26 @@ ul {
   font-weight: 600;
 }
 
+.short_services,
 .short_services_test {
-  background-color: #d2ae8e;
+  background-color: var(--mfc-dark-color);
 }
 
+.middle_service,
 .middle_services_test {
-  background-color: #e6d2c0;
+  background-color: var(--mfc-middle-color);
 }
 
+.long_service,
 .long_services_test {
-  background-color: #f5eee7;
+  background-color: var(--mfc-light-color);
 }
 
-.short_services {
-  background-color: #d2ae8e;
-}
-
-.short_services .service_link {
-  background-color: #f5eee7;
-}
-
-.middle_service {
-  background-color: #e6d2c0;
-}
-
+.short_services .service_link,
 .middle_service .service_link {
-  background-color: #f5eee7;
-}
-
-.long_service {
-  background-color: #f5eee7;
+  background-color: var(--mfc-light-color);
 }
 
 .long_service .service_link {
-  background-color: #e6d2c0;
+  background-color: var(--mfc-middle-color);
 }

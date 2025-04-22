@@ -1,11 +1,8 @@
 :root {
-  --mfc-background-color: #d2ae8e;
-  --mfc-background-header: #f0f0f0;
-  --mfc-background-nav: #e6d2c0;
-  --mfc-background-main: #f0f0f0;
-  --mfc-light-color: #f2e0b6;
-  --mfc-middle-color: #d2ae8e;
-  --mfc-dark-color: #4b3c2e;
+  --mfc-white-color: #ffffff;
+  --mfc-light-color: #f5eee7;
+  --mfc-middle-color: #e6d2c0;
+  --mfc-dark-color: #d2ae8e;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -20,7 +17,7 @@
 
 body {
   margin: 0;
-  background-color: var(--mfc-background-color);
+  background-color: var(--mfc-dark-color);
 }
 
 a {
