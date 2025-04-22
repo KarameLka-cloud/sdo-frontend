@@ -1,5 +1,6 @@
 import { JSX } from "react";
 import style from "./Home.module.css";
+import dateNow from "../../../services/dateNow.ts";
 import { useGetUserByDataQuery } from "../../../services/store/features/user.ts";
 
 function Home(): JSX.Element {
@@ -18,7 +19,7 @@ function Home(): JSX.Element {
       ) : data ? (
         <>
           <div className={style.info_component}>
-            <div className={style.info_date}>Date</div>
+            <div className={style.info_date}>{dateNow}</div>
             <div className={style.info_name}>{`Привет, ${getName(
               data.name
             )}`}</div>
@@ -30,23 +31,23 @@ function Home(): JSX.Element {
               alt="Девушка"
             />
           </div>
+
+          <div className={style.progress_info_component}>
+            <div className={style.progress_block}>
+              <div className={style.progress_counter}>0/0</div>
+              <div className={style.progress_name}>Пройденные тесты</div>
+            </div>
+            <div className={style.progress_block}>
+              <div className={style.progress_counter}>0/0</div>
+              <div className={style.progress_name}>Пройденные курсы</div>
+            </div>
+            <div className={style.progress_block}>
+              <div className={style.progress_counter}>0/0</div>
+              <div className={style.progress_name}>Мероприятия</div>
+            </div>
+          </div>
         </>
       ) : null}
-
-      <div className={style.progress_info_component}>
-        <div className={style.progress_block}>
-          <div className={style.progress_counter}>0/0</div>
-          <div className={style.progress_name}>Пройденные тесты</div>
-        </div>
-        <div className={style.progress_block}>
-          <div className={style.progress_counter}>0/0</div>
-          <div className={style.progress_name}>Пройденные курсы</div>
-        </div>
-        <div className={style.progress_block}>
-          <div className={style.progress_counter}>0/0</div>
-          <div className={style.progress_name}>Мероприятия</div>
-        </div>
-      </div>
     </>
   );
 }

@@ -1,6 +1,7 @@
 .component {
   font-size: 1.625rem;
   font-weight: 600;
+  margin-top: 0;
   margin-bottom: 1.725rem;
   text-align: center;
 }

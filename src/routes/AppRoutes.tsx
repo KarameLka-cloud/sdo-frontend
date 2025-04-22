@@ -53,7 +53,7 @@ const AppRoutes = createBrowserRouter([
       },
       {
         path: "knowledge/top",
-        element: <PageTitle title={"База знаний"} element={<TopServices />} />,
+        element: <PageTitle title={"ТОП 25"} element={<TopServices />} />,
       },
       {
         path: "education",
