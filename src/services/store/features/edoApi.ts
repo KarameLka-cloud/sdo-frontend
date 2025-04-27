@@ -1,10 +1,8 @@
-// Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
 
-// Define a service using a base URL and expected endpoints
-export const userApi = createApi({
-  reducerPath: "userApi",
+export const edoApi = createApi({
+  reducerPath: "edoApi",
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
     prepareHeaders: (headers) => {
@@ -16,10 +14,17 @@ export const userApi = createApi({
     },
   }),
   endpoints: (builder) => ({
-    getUserByData: builder.query({
-      query: (name) => `auth/${name}`,
+    getEventEdoByData: builder.query({
+      query: () => `api/edo/events`,
+    }),
+    createEventEdo: builder.mutation({
+      query: (newEvent) => ({
+        url: "api/edo/events",
+        method: "POST",
+        body: newEvent,
+      }),
     }),
   }),
 });
 
-export const { useGetUserByDataQuery } = userApi;
+export const { useGetEventEdoByDataQuery, useCreateEventEdoMutation } = edoApi;

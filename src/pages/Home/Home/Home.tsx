@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import style from "./Home.module.css";
 import dateNow from "../../../services/dateNow.ts";
-import { useGetUserByDataQuery } from "../../../services/store/features/user.ts";
+import { useGetUserByDataQuery } from "../../../services/store/features/userApi.ts";
 
 function Home(): JSX.Element {
   const { data, error, isLoading } = useGetUserByDataQuery("me");

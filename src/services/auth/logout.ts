@@ -4,7 +4,7 @@ import { AxiosError } from "axios";
 
 export const logout = async () => {
   try {
-    await api.post("auth/logout");
+    await api.post("api/auth/logout");
     Cookie.remove("auth_token");
     return { success: true };
   } catch (error: unknown) {

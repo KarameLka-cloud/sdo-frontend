@@ -13,6 +13,7 @@ import Knowledge from "../pages/Home/Knowledge/Knowledge.tsx";
 import Education from "../pages/Home/Education/Education.tsx";
 import Edo from "../pages/Home/Edo/Edo.tsx";
 import TopServices from "../pages/Home/Knowledge/TopServices/TopServices.tsx";
+import Events from "../pages/Home/Edo/Events/Events.tsx";
 
 const AppRoutes = createBrowserRouter([
   {
@@ -41,7 +42,9 @@ const AppRoutes = createBrowserRouter([
       },
       {
         path: "achievements",
-        element: <PageTitle title={"Мои достижения"} element={<Achievements />} />,
+        element: (
+          <PageTitle title={"Мои достижения"} element={<Achievements />} />
+        ),
       },
       {
         path: "interns",
@@ -62,6 +65,10 @@ const AppRoutes = createBrowserRouter([
       {
         path: "edo",
         element: <PageTitle title={"ЕДО"} element={<Edo />} />,
+      },
+      {
+        path: "edo/events",
+        element: <PageTitle title={"Мероприятия"} element={<Events />} />,
       },
     ],
   },
