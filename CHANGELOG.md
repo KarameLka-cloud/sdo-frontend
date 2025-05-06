@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.15](///compare/v0.0.14...v0.0.15) (2025-05-06)
+
+
+### Bug Fixes
+
+* Рефакторинг кода 59e9c4b
+
 ### [0.0.14](///compare/v0.0.13...v0.0.14) (2025-04-27)
 
 
