@@ -1,18 +1,13 @@
-import { JSX } from "react";
+import {JSX} from "react";
 import style from "./ButtonSubmit.module.css";
 
-function ButtonSubmit({
-  children,
-  className = "",
-}: {
-  children: string;
-  className?: string;
-}): JSX.Element {
-  return (
-    <button type="submit" className={`${style.component} + ${className}`}>
-      {children}
-    </button>
-  );
+type ButtonSubmitProps = {
+    children: string;
+    className?: string;
+}
+
+function ButtonSubmit({children, className = ""}: ButtonSubmitProps): JSX.Element {
+    return <button type="submit" className={`${style.component} + ${className}`}>{children}</button>;
 }
 
 export default ButtonSubmit;

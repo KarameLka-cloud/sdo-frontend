@@ -1,64 +1,70 @@
 .component {
-  display: flex;
-  flex-direction: column;
-  width: 20rem;
-  padding: 5rem 1.5rem 1.5rem;
-  background-color: var(--mfc-middle-color);
-  overflow: auto;
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    padding: 5rem 1.5rem 1.5rem;
+    background-color: var(--mfc-middle-color);
+    overflow: auto;
 }
 
 .link_inactive {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.25rem 0 0.25rem;
-  color: #6a7282;
-  font-weight: 500;
-  line-height: 1.25rem;
-  transition: color ease-in-out 0.2s;
+    display: inline-flex;
+    align-items: center;
+    color: #6a7282;
+    font-weight: 500;
+    line-height: 1.25rem;
+    transition: color ease-in-out 0.2s;
 }
 
 .link_inactive:hover {
-  color: #364153;
+    color: #364153;
 }
 
 .link_active {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.25rem 0.25rem 0 0.25rem;
-  color: #101828;
-  font-weight: 500;
-  line-height: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    color: #101828;
+    font-weight: 500;
+    line-height: 1.25rem;
+}
+
+.link_admin {
+    width: 100%;
+    margin-top: 0.25rem;
+    padding: 0.3rem;
+    background-color: #b3998f;
+    justify-content: center;
 }
 
 .hr {
-  margin: 0.625rem 0;
-  border: none;
-  border-top: 0.2rem dashed #6a7282;
+    margin: 0.625rem 0;
+    border: none;
+    border-top: 0.2rem dashed #6a7282;
 }
 
 .header {
-  margin: 0 0 0.625rem 0;
-  color: #6a7282;
-  font-size: 1.25rem;
-  font-weight: 600;
-  text-align: center;
+    margin: 0 0 0.625rem 0;
+    color: #6a7282;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
 }
 
 .icon {
-  height: 2rem;
-  margin-right: 0.75rem;
+    height: 2rem;
+    margin-right: 0.75rem;
 }
 
 .main_corp_link {
-  display: flex;
-  align-items: center;
-  font-size: 1rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #896b5f;
-  margin-top: auto;
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #896b5f;
+    margin-top: auto;
 }
 
 .main_corp_image {
-  height: 3rem;
+    height: 3rem;
 }

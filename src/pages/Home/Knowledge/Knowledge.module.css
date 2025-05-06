@@ -1,47 +1,47 @@
 .top_service_component {
-  padding: 1.2rem 2rem;
-  border-radius: 2rem;
-  background-color: var(--mfc-dark-color);
+    padding: 1.2rem 2rem;
+    border-radius: 2rem;
+    background-color: var(--mfc-dark-color);
 }
 
 .top_service_title {
-  font-weight: 600;
+    font-weight: 600;
 }
 
 .top_service_link {
-  display: inline-block;
-  margin: 0.5rem 0;
-  font-size: 1.7rem;
-  color: #5d5db8;
-  font-weight: 600;
-  text-decoration: underline;
+    display: inline-block;
+    margin: 0.5rem 0;
+    font-size: 1.7rem;
+    color: #5d5db8;
+    font-weight: 600;
+    text-decoration: underline;
 }
 
 .theoretical_courses_component {
-  padding: 2.3rem 2rem;
-  border-radius: 2rem;
-  background-color: var(--mfc-middle-color);
+    padding: 2.3rem 2rem;
+    border-radius: 2rem;
+    background-color: var(--mfc-middle-color);
 }
 
 .theoretical_courses_title {
-  color: #101828;
-  font-size: 1.7rem;
-  font-weight: 600;
+    color: #101828;
+    font-size: 1.7rem;
+    font-weight: 600;
 }
 
 .general_courses_component {
-  padding: 2.3rem 2rem;
-  border-radius: 2rem;
-  background-color: var(--mfc-light-color);
+    padding: 2.3rem 2rem;
+    border-radius: 2rem;
+    background-color: var(--mfc-light-color);
 }
 
 .general_courses_title {
-  color: #101828;
-  font-size: 1.7rem;
-  font-weight: 600;
+    color: #101828;
+    font-size: 1.7rem;
+    font-weight: 600;
 }
 
 .theoretical_courses_component,
 .general_courses_component {
-  margin-top: 2rem;
+    margin-top: 2rem;
 }

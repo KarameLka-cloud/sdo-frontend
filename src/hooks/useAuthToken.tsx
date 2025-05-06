@@ -1,3 +1,4 @@
-function useAuthToken() {}
+function useAuthToken() {
+}
 
 export default useAuthToken;

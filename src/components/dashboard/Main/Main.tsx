@@ -1,16 +1,15 @@
-import { JSX } from "react";
+import {JSX} from "react";
 import style from "./Main.module.css";
 
-function Main({
-  children,
-  className = "",
-}: {
-  children?: JSX.Element;
-  className?: string;
-}): JSX.Element {
-  return (
-    <main className={`${style.component} + ${className}`}>{children}</main>
-  );
+type MainProps = {
+    children?: JSX.Element;
+    className?: string;
+};
+
+function Main({children, className = ""}: MainProps): JSX.Element {
+    return (
+        <main className={`${style.component} + ${className}`}>{children}</main>
+    );
 }
 
 export default Main;

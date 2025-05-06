@@ -10,7 +10,7 @@
 - **State-менеджмент**: [Redux Toolkit](https://redux-toolkit.js.org/)
 - **Сборка**: [Vite](https://vitejs.dev/)
 - **Стилизация**: [Modules]
-- **API-клиент**: [Axios / Fetch / React Query]
+- **API-клиент**: [RTK Query]
 - **Линтеры и форматирование**: [ESLint]
 - **Тестирование**: []
 - **Деплой**: []

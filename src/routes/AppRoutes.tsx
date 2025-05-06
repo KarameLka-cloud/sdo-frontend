@@ -1,4 +1,4 @@
-import { createBrowserRouter, Navigate } from "react-router-dom";
+import {createBrowserRouter, Navigate} from "react-router-dom";
 import ProtectedRouteLogin from "../components/protected/ProtectedRouteLogin.tsx";
 import ProtectedRouteDashboard from "../components/protected/ProtectedRouteDashboard.tsx";
 import PageTitle from "../components/PageTitle.tsx";
@@ -14,64 +14,67 @@ import Education from "../pages/Home/Education/Education.tsx";
 import Edo from "../pages/Home/Edo/Edo.tsx";
 import TopServices from "../pages/Home/Knowledge/TopServices/TopServices.tsx";
 import Events from "../pages/Home/Edo/Events/Events.tsx";
+import Admin from "../pages/Home/Admin/Admin.tsx";
 
 const AppRoutes = createBrowserRouter([
-  {
-    path: "/",
-    element: <Navigate to="home" />,
-  },
-  {
-    element: <ProtectedRouteLogin element={<AuthLayout />} />,
-    children: [
-      {
-        path: "login",
-        element: <PageTitle title={"Авторизация"} element={<Login />} />,
-      },
-    ],
-  },
-  {
-    element: <ProtectedRouteDashboard element={<DashboardLayout />} />,
-    children: [
-      {
-        path: "home",
-        element: <PageTitle title={"Главная"} element={<Home />} />,
-      },
-      {
-        path: "career",
-        element: <PageTitle title={"Карьера"} element={<Career />} />,
-      },
-      {
-        path: "achievements",
-        element: (
-          <PageTitle title={"Мои достижения"} element={<Achievements />} />
-        ),
-      },
-      {
-        path: "interns",
-        element: <PageTitle title={"Мои стажеры"} element={<Interns />} />,
-      },
-      {
-        path: "knowledge",
-        element: <PageTitle title={"База знаний"} element={<Knowledge />} />,
-      },
-      {
-        path: "knowledge/top",
-        element: <PageTitle title={"ТОП 25"} element={<TopServices />} />,
-      },
-      {
-        path: "education",
-        element: <PageTitle title={"Мое обучение"} element={<Education />} />,
-      },
-      {
-        path: "edo",
-        element: <PageTitle title={"ЕДО"} element={<Edo />} />,
-      },
-      {
-        path: "edo/events",
-        element: <PageTitle title={"Мероприятия"} element={<Events />} />,
-      },
-    ],
-  },
+    {
+        path: "/",
+        element: <Navigate to="home"/>,
+    },
+    {
+        element: <ProtectedRouteLogin element={<AuthLayout/>}/>,
+        children: [
+            {
+                path: "login",
+                element: <PageTitle title={"Авторизация"} element={<Login/>}/>,
+            },
+        ],
+    },
+    {
+        element: <ProtectedRouteDashboard element={<DashboardLayout/>}/>,
+        children: [
+            {
+                path: "home",
+                element: <PageTitle title={"Главная"} element={<Home/>}/>,
+            },
+            {
+                path: "career",
+                element: <PageTitle title={"Карьера"} element={<Career/>}/>,
+            },
+            {
+                path: "achievements",
+                element: <PageTitle title={"Мои достижения"} element={<Achievements/>}/>,
+            },
+            {
+                path: "interns",
+                element: <PageTitle title={"Мои стажеры"} element={<Interns/>}/>,
+            },
+            {
+                path: "knowledge",
+                element: <PageTitle title={"База знаний"} element={<Knowledge/>}/>,
+            },
+            {
+                path: "knowledge/top",
+                element: <PageTitle title={"ТОП 25"} element={<TopServices/>}/>,
+            },
+            {
+                path: "education",
+                element: <PageTitle title={"Мое обучение"} element={<Education/>}/>,
+            },
+            {
+                path: "edo",
+                element: <PageTitle title={"ЕДО"} element={<Edo/>}/>,
+            },
+            {
+                path: "edo/events",
+                element: <PageTitle title={"Мероприятия"} element={<Events/>}/>,
+            },
+            {
+                path: "admin",
+                element: <PageTitle title={"Администрирование"} element={<Admin/>}/>,
+            },
+        ],
+    },
 ]);
 
 export default AppRoutes;

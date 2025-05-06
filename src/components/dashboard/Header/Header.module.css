@@ -1,33 +1,33 @@
 .component {
-  width: 100%;
-  height: 3.25rem;
-  padding: 0.5rem 0;
-  background-color: var(--mfc-white-color);
+    width: 100%;
+    height: 3.25rem;
+    background-color: var(--mfc-white-color);
 }
 
 .content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 1280px;
-  height: 100%;
-  margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 1280px;
+    height: 100%;
+    margin: 0 auto;
+    padding: 0.5rem;
 }
 
 .logo {
-  height: 100%;
+    height: 100%;
 }
 
 .right_content {
-  display: flex;
-  align-items: center;
+    display: flex;
+    align-items: center;
 }
 
 .name {
-  margin-right: 1.25rem;
-  font-size: 1rem;
+    margin-right: 1.25rem;
+    font-size: 1rem;
 }
 
 .logout {
-  height: 1.25rem;
+    height: 1.25rem;
 }

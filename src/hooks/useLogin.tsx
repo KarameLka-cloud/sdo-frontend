@@ -1,3 +1,4 @@
-function useLogin() {}
+function useLogin() {
+}
 
 export default useLogin;

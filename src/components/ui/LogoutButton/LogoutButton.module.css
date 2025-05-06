@@ -1,8 +1,7 @@
 .component {
-  color: #364153;
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .img {
-  height: 100%;
+    height: 100%;
 }

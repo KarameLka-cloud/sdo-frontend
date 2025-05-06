@@ -1,3 +1,4 @@
-function useLogout() {}
+function useLogout() {
+}
 
 export default useLogout;

@@ -1,14 +1,13 @@
-import { JSX } from "react";
+import {JSX} from "react";
 
-function PageTitle({
-  title,
-  element,
-}: {
-  title: string;
-  element: JSX.Element;
-}): JSX.Element {
-  document.title = title + " - " + "СДО";
-  return element;
+type PageTitleProps = {
+    title: string;
+    element: JSX.Element;
+}
+
+function PageTitle({title, element}: PageTitleProps): JSX.Element {
+    document.title = title + " - " + "СДО";
+    return element;
 }
 
 export default PageTitle;
