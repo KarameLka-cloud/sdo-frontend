@@ -47,28 +47,33 @@ function Login(): JSX.Element {
 
     return (
         <div className={style.container}>
-            <form onSubmit={handleLogin} className={style.form}>
-                <InputText
-                    type="text"
-                    name="login"
-                    value={formData.login}
-                    onChange={handleChange}
-                    placeholder="Логин"
-                    required
-                    className={style.input}
-                />
-                <InputError className={style.error}>{error}</InputError>
-                <InputText
-                    type="password"
-                    name="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    placeholder="Пароль"
-                    required
-                    className={style.input}
-                />
-                <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
-            </form>
+            <div className={style.container}>
+                <form onSubmit={handleLogin} className={style.form}>
+                    <InputText
+                        type="text"
+                        name="login"
+                        value={formData.login}
+                        onChange={handleChange}
+                        placeholder="Логин"
+                        required
+                        className={style.input}
+                    />
+                    <InputError className={style.error}>{error}</InputError>
+                    <InputText
+                        type="password"
+                        name="password"
+                        value={formData.password}
+                        onChange={handleChange}
+                        placeholder="Пароль"
+                        required
+                        className={style.input}
+                    />
+                    <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
+                </form>
+            </div>
+
+            <img src="/src/assets/images/login_background.svg" alt="" className={style.image}/>
+
         </div>
     );
 }

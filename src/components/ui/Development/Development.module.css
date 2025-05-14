@@ -1,0 +1,9 @@
+.development {
+    height: 70%;
+}
+
+.image {
+    display: block;
+    height: 100%;
+    margin: 0 auto;
+}

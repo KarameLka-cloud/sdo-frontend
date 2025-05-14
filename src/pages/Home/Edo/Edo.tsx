@@ -2,8 +2,20 @@ import {JSX} from "react";
 import style from "./Edo.module.css";
 import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
+import Event from "../../../components/ui/Event/Event.tsx";
+import {useGetEventEdoByDataQuery} from "../../../services/store/features/edoApi.ts";
 
 function Edo(): JSX.Element {
+    const {data, error, isLoading} = useGetEventEdoByDataQuery("");
+
+    type EventItem = {
+        id: number;
+        title: string;
+        description: string;
+        department: string;
+        time: string;
+    };
+
     return (
         <>
             <HeaderPage>Единый день обучения</HeaderPage>
@@ -11,31 +23,22 @@ function Edo(): JSX.Element {
             <div className={style.events_container}>
                 <h3 className={style.header_services}>Мероприятия</h3>
                 <div className={style.events_list}>
-                    <div className={style.event}>
-                        <div className={style.event_content}>
-                            <span className={style.event_title}>Встреча с представителем Сбербанка</span>
-                            <span className={style.event_description}>ВКС</span>
-                            <span className={style.event_departments}>Иркутские отделения</span>
-                        </div>
-                        <div className={style.event_time}>10 : 30</div>
-                    </div>
-                    <div className={style.event}>
-                        <div className={style.event_content}>
-                            <span className={style.event_title}>Встреча с представителем Сбербанка</span>
-                            <span className={style.event_description}>ВКС</span>
-                            <span className={style.event_departments}>Иркутские отделения</span>
-                        </div>
-                        <div className={style.event_time}>10 : 30</div>
-                    </div>
-                    <div className={style.event}>
-                        <div className={style.event_content}>
-                            <span className={style.event_title}>Встреча с представителем Сбербанка</span>
-                            <span className={style.event_description}>ВКС</span>
-                            <span className={style.event_departments}>Иркутские отделения</span>
-                        </div>
-                        <div className={style.event_time}>10 : 30</div>
-                    </div>
-                    <Link to="events" className={style.events_link}>Смотреть все</Link>
+                    {error ? (
+                        <>Ошибка</>
+                    ) : isLoading ? (
+                        <>Загрузка...</>
+                    ) : data && data.length > 0 ? (
+                        <>
+                            {data.slice(0, 3).map((item: EventItem): JSX.Element => {
+                                return (
+                                    <Event event={item}/>
+                                )
+                            })}
+                            <Link to="events" className={style.events_link}>Смотреть все</Link>
+                        </>
+                    ) : (
+                        <div>Мероприятий нет</div>
+                    )}
                 </div>
             </div>
         </>

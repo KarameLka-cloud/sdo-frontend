@@ -1,6 +1,7 @@
 import {JSX} from "react";
-import style from "./Events.module.css";
+// import style from "./Events.module.css";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
+import Event from "../../../../components/ui/Event/Event.tsx";
 import {useGetEventEdoByDataQuery} from "../../../../services/store/features/edoApi";
 
 function Events(): JSX.Element {
@@ -17,6 +18,7 @@ function Events(): JSX.Element {
     return (
         <>
             <HeaderPage>Мероприятия</HeaderPage>
+
             {error ? (
                 <>Ошибка</>
             ) : isLoading ? (
@@ -24,23 +26,11 @@ function Events(): JSX.Element {
             ) : data != data.length ? (
                 data.map((item: EventItem) => {
                     return (
-                        <div className={style.event} key={item.id}>
-                            <div className={style.event_content}>
-                                <span className={style.event_header}>{item.title}</span>
-                                <span className={style.event_description}>{item.description}</span>
-                                <span className={style.event_departments}>{item.department}</span>
-                            </div>
-                            <div className={style.event_time}>
-                                <div style={{textAlign: "center"}}>{item.time}</div>
-                                <div style={{textAlign: "center"}}>01.01.2025</div>
-                            </div>
-                        </div>
-                    );
+                        <Event event={item}/>
+                    )
                 })
             ) : (
-                <>
-                    <div>Мероприятий нет</div>
-                </>
+                <div>Мероприятий нет</div>
             )}
         </>
     );

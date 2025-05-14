@@ -32,20 +32,20 @@ function Home(): JSX.Element {
                         />
                     </div>
 
-                    <div className={style.progress_info_component}>
-                        <div className={style.progress_block}>
-                            <div className={style.progress_counter}>0/0</div>
-                            <div className={style.progress_name}>Пройденные тесты</div>
-                        </div>
-                        <div className={style.progress_block}>
-                            <div className={style.progress_counter}>0/0</div>
-                            <div className={style.progress_name}>Пройденные курсы</div>
-                        </div>
-                        <div className={style.progress_block}>
-                            <div className={style.progress_counter}>0/0</div>
-                            <div className={style.progress_name}>Мероприятия</div>
-                        </div>
-                    </div>
+                    {/*<div className={style.progress_info_component}>*/}
+                    {/*    <div className={style.progress_block}>*/}
+                    {/*        <div className={style.progress_counter}>0/0</div>*/}
+                    {/*        <div className={style.progress_name}>Пройденные тесты</div>*/}
+                    {/*    </div>*/}
+                    {/*    <div className={style.progress_block}>*/}
+                    {/*        <div className={style.progress_counter}>0/0</div>*/}
+                    {/*        <div className={style.progress_name}>Пройденные курсы</div>*/}
+                    {/*    </div>*/}
+                    {/*    <div className={style.progress_block}>*/}
+                    {/*        <div className={style.progress_counter}>0/0</div>*/}
+                    {/*        <div className={style.progress_name}>Мероприятия</div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </>
             ) : null}
         </>
