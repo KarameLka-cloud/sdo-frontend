@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.17](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.16...v0.0.17) (2025-05-18)
+
+
+### Bug Fixes
+
+* Изменены роуты на страницы для отображения активных страниц ([2e60673](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/2e60673e5d3d5e952b41c6b3742033a10842cad3))
+
 ### [0.0.16](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.15...v0.0.16) (2025-05-18)
 
 
