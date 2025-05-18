@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.16](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.15...v0.0.16) (2025-05-18)
+
+
+### Bug Fixes
+
+* Добавлен компонент Development и рефакторинг кода ([b4f27bc](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/b4f27bc1a2608dbc7b5dd9d049f6677733b95499))
+* Добавлена страница для администратора ([a43f1f7](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/a43f1f7ffef07e34f7fe1243c0db54fc7b0242a5))
+
 ### [0.0.15](///compare/v0.0.14...v0.0.15) (2025-05-06)
 
 
