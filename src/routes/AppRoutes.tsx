@@ -16,11 +16,18 @@ import Education from "../pages/Home/Education/Education.tsx";
 import Edo from "../pages/Home/Edo/Edo.tsx";
 import TopServices from "../pages/Home/Knowledge/TopServices/TopServices.tsx";
 import Events from "../pages/Home/Edo/Events/Events.tsx";
-import Users from "../pages/Admin/Users/Users.tsx";
+import UsersAdmin from "../pages/Admin/Users/Users.tsx";
+import KnowledgeAdmin from "../pages/Admin/Knowledge/Knowledge.tsx";
+import EducationAdmin from "../pages/Admin/Education/Education.tsx";
+import EdoAdmin from "../pages/Admin/Edo/Edo.tsx";
 
 const AppRoutes = createBrowserRouter([
     {
         path: "/",
+        element: <Navigate to="user/home"/>,
+    },
+    {
+        path: "user",
         element: <Navigate to="home"/>,
     },
     {
@@ -43,51 +50,62 @@ const AppRoutes = createBrowserRouter([
                 element: <HomeLayout/>,
                 children: [
                     {
-                        path: "home",
+                        path: "user/home",
                         element: <PageTitle title={"Главная"} element={<Home/>}/>,
                     },
                     {
-                        path: "career",
+                        path: "user/career",
                         element: <PageTitle title={"Карьера"} element={<Career/>}/>,
                     },
                     {
-                        path: "achievements",
+                        path: "user/achievements",
                         element: <PageTitle title={"Мои достижения"} element={<Achievements/>}/>,
                     },
                     {
-                        path: "interns",
+                        path: "user/interns",
                         element: <PageTitle title={"Мои стажеры"} element={<Interns/>}/>,
                     },
                     {
-                        path: "knowledge",
+                        path: "user/knowledge",
                         element: <PageTitle title={"База знаний"} element={<Knowledge/>}/>,
                     },
                     {
-                        path: "knowledge/top",
+                        path: "user/knowledge/top",
                         element: <PageTitle title={"ТОП 25"} element={<TopServices/>}/>,
                     },
                     {
-                        path: "education",
+                        path: "user/education",
                         element: <PageTitle title={"Мое обучение"} element={<Education/>}/>,
                     },
                     {
-                        path: "edo",
+                        path: "user/edo",
                         element: <PageTitle title={"ЕДО"} element={<Edo/>}/>,
                     },
                     {
-                        path: "edo/events",
+                        path: "user/edo/events",
                         element: <PageTitle title={"Мероприятия"} element={<Events/>}/>,
                     },
                 ]
             },
             {
-                path: "admin",
                 element: <AdminLayout/>,
                 children: [
                     {
-                        path: "users",
-                        element: <PageTitle title={"Пользователи"} element={<Users/>}/>
-                    }
+                        path: "admin/users",
+                        element: <PageTitle title={"Пользователи"} element={<UsersAdmin/>}/>
+                    },
+                    {
+                        path: "admin/knowledge",
+                        element: <PageTitle title={"База знаний"} element={<KnowledgeAdmin/>}/>
+                    },
+                    {
+                        path: "admin/education",
+                        element: <PageTitle title={"Обучение"} element={<EducationAdmin/>}/>
+                    },
+                    {
+                        path: "admin/edo",
+                        element: <PageTitle title={"ЕДО"} element={<EdoAdmin/>}/>
+                    },
                 ]
             },
         ],

@@ -15,31 +15,25 @@ const links: NavLink[] =
         {
             id: 1,
             name: "Пользователи",
-            path: "users",
+            path: "admin/users",
             icon: "/src/assets/images/icons/people.svg"
         },
         {
             id: 2,
-            name: "Мои стажеры",
-            path: "interns",
-            icon: "/src/assets/images/icons/people.svg"
-        },
-        {
-            id: 3,
             name: "База знаний",
-            path: "/",
+            path: "admin/knowledge",
             icon: "/src/assets/images/icons/library.svg"
         },
         {
-            id: 4,
-            name: "Мое обучение",
-            path: "/",
+            id: 3,
+            name: "Обучение",
+            path: "admin/education",
             icon: "/src/assets/images/icons/book.svg"
         },
         {
-            id: 5,
-            name: "ЕДО",
-            path: "/",
+            id: 4,
+            name: "Едо",
+            path: "admin/edo",
             icon: "/src/assets/images/icons/calendar.svg"
         },
     ];

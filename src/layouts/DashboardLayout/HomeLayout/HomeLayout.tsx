@@ -15,37 +15,37 @@ const links: NavLink[] =
         {
             id: 1,
             name: "Главная",
-            path: "home",
+            path: "user/home",
             icon: "/src/assets/images/icons/home.svg",
         },
         {
             id: 2,
             name: "Моя карьера",
-            path: "career",
+            path: "user/career",
             icon: "/src/assets/images/icons/person.svg"
         },
         {
             id: 3,
             name: "Мои достижения",
-            path: "achievements",
+            path: "user/achievements",
             icon: "/src/assets/images/icons/medal.svg"
         },
         {
             id: 4,
             name: "База знаний",
-            path: "knowledge",
+            path: "user/knowledge",
             icon: "/src/assets/images/icons/library.svg"
         },
         {
             id: 5,
-            name: "Мое обучение",
-            path: "education",
+            name: "Обучение",
+            path: "user/education",
             icon: "/src/assets/images/icons/book.svg"
         },
         {
             id: 6,
-            name: "ЕДО",
-            path: "edo",
+            name: "Едо",
+            path: "user/edo",
             icon: "/src/assets/images/icons/calendar.svg"
         },
     ];
