@@ -28,20 +28,6 @@
     line-height: 1.25rem;
 }
 
-.link_admin {
-    width: 100%;
-    margin-top: 0.25rem;
-    padding: 0.3rem;
-    background-color: #b3998f;
-    justify-content: center;
-}
-
-.hr {
-    margin: 0.625rem 0;
-    border: none;
-    border-top: 0.2rem dashed #6a7282;
-}
-
 .header {
     margin: 0 0 0.625rem 0;
     color: #6a7282;

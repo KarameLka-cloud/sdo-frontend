@@ -7,7 +7,7 @@
 .content {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    /*justify-content: space-between;*/
     width: 1280px;
     height: 100%;
     margin: 0 auto;
@@ -16,6 +16,19 @@
 
 .logo {
     height: 100%;
+}
+
+.links {
+    margin-left: 8.3rem;
+    margin-right: auto;
+}
+
+.link {
+    color: #101828;
+}
+
+.link:not(:last-child) {
+    margin-right: 1rem;
 }
 
 .right_content {

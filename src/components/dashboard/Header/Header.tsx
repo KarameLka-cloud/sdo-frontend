@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import {NavigateFunction, useNavigate} from "react-router-dom";
+import {NavigateFunction, NavLink, useNavigate} from "react-router-dom";
 import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
@@ -35,6 +35,10 @@ function Header({className = ""}: HeaderProps): JSX.Element {
         <div className={`${style.component} + ${className}`}>
             <div className={style.content}>
                 <LogoLink href="/" className={style.logo}/>
+                <div className={style.links}>
+                    <NavLink to="home" className={style.link}>Главная</NavLink>
+                    <NavLink to="admin" className={style.link}>Админка</NavLink>
+                </div>
                 <div className={style.right_content}>
                     {data ? (
                         <div className={style.name}>
