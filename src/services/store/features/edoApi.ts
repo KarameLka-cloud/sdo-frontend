@@ -14,7 +14,7 @@ export const edoApi = createApi({
         },
     }),
     endpoints: (builder) => ({
-        getEventEdoByData: builder.query({
+        getEventsEdo: builder.query({
             query: () => `api/edo/events`,
         }),
         createEventEdo: builder.mutation({
@@ -27,4 +27,4 @@ export const edoApi = createApi({
     }),
 });
 
-export const {useGetEventEdoByDataQuery, useCreateEventEdoMutation} = edoApi;
+export const {useGetEventsEdoQuery, useCreateEventEdoMutation} = edoApi;

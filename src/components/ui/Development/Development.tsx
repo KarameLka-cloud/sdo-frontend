@@ -7,9 +7,7 @@ type DevelopmentProps = {
 
 function Development({className = ""}: DevelopmentProps): JSX.Element {
     return (
-        <div className={style.development}>
-            <img src="/src/assets/images/development.svg" alt="" className={`${style.image} + ${className}`}/>
-        </div>
+        <img src="/src/assets/images/development.svg" alt="" className={`${style.image} + ${className}`}/>
     )
 }
 

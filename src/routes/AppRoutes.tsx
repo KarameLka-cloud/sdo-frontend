@@ -59,11 +59,11 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: "user/achievements",
-                        element: <PageTitle title={"Мои достижения"} element={<Achievements/>}/>,
+                        element: <PageTitle title={"Достижения"} element={<Achievements/>}/>,
                     },
                     {
                         path: "user/interns",
-                        element: <PageTitle title={"Мои стажеры"} element={<Interns/>}/>,
+                        element: <PageTitle title={"Стажеры"} element={<Interns/>}/>,
                     },
                     {
                         path: "user/knowledge",
@@ -75,7 +75,7 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: "user/education",
-                        element: <PageTitle title={"Мое обучение"} element={<Education/>}/>,
+                        element: <PageTitle title={"Обучение"} element={<Education/>}/>,
                     },
                     {
                         path: "user/edo",

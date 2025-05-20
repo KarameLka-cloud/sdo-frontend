@@ -1,9 +1,5 @@
-.development {
-    width: 100%;
-}
-
 .image {
     display: block;
-    height: 100%;
+    width: 60%;
     margin: 0 auto;
 }

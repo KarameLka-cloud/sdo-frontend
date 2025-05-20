@@ -2,10 +2,10 @@ import {JSX} from "react";
 // import style from "./Events.module.css";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import Event from "../../../../components/ui/Event/Event.tsx";
-import {useGetEventEdoByDataQuery} from "../../../../services/store/features/edoApi";
+import {useGetEventsEdoQuery} from "../../../../services/store/features/edoApi";
 
 function Events(): JSX.Element {
-    const {data, error, isLoading} = useGetEventEdoByDataQuery("");
+    const {data, error, isLoading} = useGetEventsEdoQuery("");
 
     type EventItem = {
         id: number;

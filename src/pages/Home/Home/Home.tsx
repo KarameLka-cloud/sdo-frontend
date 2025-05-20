@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import style from "./Home.module.css";
-import dateNow from "../../../services/dateNow.ts";
+import dateNow from "../../../utils/dateNow.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/userApi.ts";
 
 function Home(): JSX.Element {

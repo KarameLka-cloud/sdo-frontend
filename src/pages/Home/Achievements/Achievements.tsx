@@ -5,7 +5,7 @@ import Development from "../../../components/ui/Development/Development.tsx";
 function Achievements(): JSX.Element {
     return (
         <>
-            <HeaderPage>Мои достижения</HeaderPage>
+            <HeaderPage>Достижения</HeaderPage>
 
             <Development/>
         </>

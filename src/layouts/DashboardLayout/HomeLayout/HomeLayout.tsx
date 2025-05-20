@@ -20,13 +20,13 @@ const links: NavLink[] =
         },
         {
             id: 2,
-            name: "Моя карьера",
+            name: "Карьера",
             path: "user/career",
             icon: "/src/assets/images/icons/person.svg"
         },
         {
             id: 3,
-            name: "Мои достижения",
+            name: "Достижения",
             path: "user/achievements",
             icon: "/src/assets/images/icons/medal.svg"
         },

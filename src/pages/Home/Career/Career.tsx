@@ -5,7 +5,7 @@ import Development from "../../../components/ui/Development/Development.tsx";
 function Career(): JSX.Element {
     return (
         <>
-            <HeaderPage>Моя карьера</HeaderPage>
+            <HeaderPage>Карьера</HeaderPage>
 
             <Development/>
         </>
