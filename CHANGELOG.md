@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.18](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.17...v0.0.18) (2025-05-20)
+
+
+### Bug Fixes
+
+* Добавлена логика вывода пользователей ([59e43e3](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/59e43e3254b261d3e57c3bc5056652d5f12a873d))
+* Создана папка для добавления внешних типов данных ([304f0d0](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/304f0d0a53dd087ac59dbb04dd001fa5266726de))
+
 ### [0.0.17](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.16...v0.0.17) (2025-05-18)
 
 
