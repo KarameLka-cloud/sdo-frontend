@@ -2,7 +2,7 @@ import {JSX} from "react";
 import style from "./Edo.module.css";
 import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import Event from "../../../components/ui/Event/Event.tsx";
+import EventItem from "../../../components/ui/EventItem/EventItem.tsx";
 import {useGetEventsEdoQuery} from "../../../services/store/features/edoApi.ts";
 
 function Edo(): JSX.Element {
@@ -14,6 +14,7 @@ function Edo(): JSX.Element {
         description: string;
         department: string;
         time: string;
+        date: string;
     };
 
     return (
@@ -30,7 +31,7 @@ function Edo(): JSX.Element {
                     <>
                         {data.slice(0, 3).map((item: EventItem): JSX.Element => {
                             return (
-                                <Event event={item}/>
+                                <EventItem event={item}/>
                             )
                         })}
                         <Link to="events" className={style.events_link}>Смотреть все</Link>
