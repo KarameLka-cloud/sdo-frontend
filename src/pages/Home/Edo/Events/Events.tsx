@@ -18,7 +18,7 @@ function Events(): JSX.Element {
             ) : data != data.length ? (
                 data.map((item: Event) => {
                     return (
-                        <EventItem event={item}/>
+                        <EventItem key={item.id} event={item}/>
                     )
                 })
             ) : (

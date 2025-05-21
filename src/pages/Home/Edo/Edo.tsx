@@ -31,7 +31,7 @@ function Edo(): JSX.Element {
                     <>
                         {data.slice(0, 3).map((item: EventItem): JSX.Element => {
                             return (
-                                <EventItem event={item}/>
+                                <EventItem key={item.id} event={item}/>
                             )
                         })}
                         <Link to="events" className={style.events_link}>Смотреть все</Link>

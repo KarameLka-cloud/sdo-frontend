@@ -16,7 +16,7 @@ type EventProps = {
 
 function EventItem({event}: EventProps): JSX.Element {
     return (
-        <div className={style.event} key={event.id}>
+        <div className={style.event}>
             <div className={style.event_content}>
                 <span className={style.event_title}>{event.title}</span>
                 <span className={style.event_description}>{event.description}</span>
