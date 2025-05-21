@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.20](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.19...v0.0.20) (2025-05-21)
+
+
+### Bug Fixes
+
+* В edo event указаны key ([d14caf3](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/d14caf30c56cf261c2e3ad5af33899f0d69efd5c))
+
 ### [0.0.19](///compare/v0.0.18...v0.0.19) (2025-05-21)
 
 
