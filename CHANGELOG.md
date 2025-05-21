@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.19](///compare/v0.0.18...v0.0.19) (2025-05-21)
+
+
+### Bug Fixes
+
+* Вынос типов в отдельные файлы 2a0e3c7
+
 ### [0.0.18](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.17...v0.0.18) (2025-05-20)
 
 
