@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.21](///compare/v0.0.20...v0.0.21) (2025-05-22)
+
+
+### Bug Fixes
+
+* Добавлена возможность создавать Edo Event 5203539
+
 ### [0.0.20](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.19...v0.0.20) (2025-05-21)
 
 
