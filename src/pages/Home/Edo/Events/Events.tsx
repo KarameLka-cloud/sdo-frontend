@@ -2,10 +2,10 @@ import {JSX} from "react";
 import {Event} from "../../../../types";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../../components/ui/EventItem/EventItem.tsx";
-import {useGetEventsEdoQuery} from "../../../../services/store/features/edoApi";
+import {useGetEdoEventsQuery} from "../../../../services/store/features/edoApi";
 
 function Events(): JSX.Element {
-    const {data, error, isLoading} = useGetEventsEdoQuery("");
+    const {data, error, isLoading} = useGetEdoEventsQuery("");
 
     return (
         <>
