@@ -7,7 +7,7 @@ type InputErrorProps = {
 }
 
 function InputError({children, className = ""}: InputErrorProps): JSX.Element {
-    return <p className={`${style.component} + ${className}`}>{children}</p>;
+    return <span className={`${style.component} + ${className}`}>{children}</span>;
 }
 
 export default InputError;

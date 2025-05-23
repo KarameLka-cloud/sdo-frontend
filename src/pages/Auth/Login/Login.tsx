@@ -23,7 +23,7 @@ function Login(): JSX.Element {
         });
     };
 
-    const [error, setError] = useState("");
+    const [error, setError] = useState(""); //\u200B
 
     function handleError(error: SetStateAction<string>): void {
         setError(error);
@@ -47,30 +47,31 @@ function Login(): JSX.Element {
 
     return (
         <div className={style.container}>
-            <div className={style.container}>
-                <form onSubmit={handleLogin} className={style.form}>
-                    <InputText
-                        type="text"
-                        name="login"
-                        value={formData.login}
-                        onChange={handleChange}
-                        placeholder="Логин"
-                        required
-                        className={style.input}
-                    />
-                    <InputError className={style.error}>{error}</InputError>
-                    <InputText
-                        type="password"
-                        name="password"
-                        value={formData.password}
-                        onChange={handleChange}
-                        placeholder="Пароль"
-                        required
-                        className={style.input}
-                    />
-                    <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
-                </form>
-            </div>
+            <form onSubmit={handleLogin} className={style.form}>
+                {error ? <InputError className={style.error}>{error}</InputError> :
+                    <div className={style.header}>Добро пожаловать!</div>}
+                <InputText
+                    type="text"
+                    name="login"
+                    value={formData.login}
+                    onChange={handleChange}
+                    placeholder="Логин"
+                    required
+                    className={style.input}
+                />
+                <InputText
+                    type="password"
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    placeholder="Пароль"
+                    required
+                    className={style.input}
+                />
+                <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
+                <img src="/src/assets/images/document_image.svg" alt="" className={style.document_image_1}/>
+                <img src="/src/assets/images/document_image.svg" alt="" className={style.document_image_2}/>
+            </form>
 
             <img src="/src/assets/images/login_background.svg" alt="" className={style.image}/>
 
