@@ -17,7 +17,7 @@ function Users(): JSX.Element {
         <>
             <HeaderPage>Пользователи</HeaderPage>
 
-            <InputText className={style.input}/>
+            <InputText placeholder={'Поиск'} className={style.input}/>
 
             {error ? (<>Error</>) : isLoading ? (<>Loading</>) : data ? (
                 data.map((item: UserItem): JSX.Element => {

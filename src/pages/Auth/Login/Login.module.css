@@ -17,7 +17,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 22rem;
+    width: 28rem;
     height: fit-content;
     padding: 0 2.5rem 2rem 2.5rem;
     border: 0.1rem solid #e5e7eb;
@@ -67,12 +67,13 @@
     top: 10rem;
     left: -2rem;
     transform: rotate(-30deg);
+    transform-origin: top center;
     animation: rotateAnimation 3s infinite ease-in-out;
 }
 
 @keyframes rotateAnimation {
     0%, 100% {
-        transform: rotate(-30deg);
+        transform: rotate(-20deg);
     }
     50% {
         transform: rotate(10deg);
