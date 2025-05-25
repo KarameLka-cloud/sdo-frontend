@@ -22,11 +22,11 @@ function Users(): JSX.Element {
             {error ? (<>Error</>) : isLoading ? (<>Loading</>) : data ? (
                 data.map((item: UserItem): JSX.Element => {
                     return (
-                        <>
+                        <div>
                             <div key={item.id}>{item.name}</div>
                             <div key={item.id}>{item.department}</div>
                             <hr/>
-                        </>
+                        </div>
                     )
                 })
             ) : null}

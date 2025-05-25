@@ -19,7 +19,14 @@ import Events from "../pages/Home/Edo/Events/Events.tsx";
 import UsersAdmin from "../pages/Admin/Users/Users.tsx";
 import KnowledgeAdmin from "../pages/Admin/Knowledge/Knowledge.tsx";
 import EducationAdmin from "../pages/Admin/Education/Education.tsx";
+import EducationCoursesAdmin from "../pages/Admin/Education/Courses/Courses.tsx";
+import EducationEventsAdmin from "../pages/Admin/Education/Events/Events.tsx";
+import EducationWebinarsAdmin from "../pages/Admin/Education/Webinars/Webinars.tsx";
+import EducationTestsAdmin from "../pages/Admin/Education/Tests/Tests.tsx";
 import EdoAdmin from "../pages/Admin/Edo/Edo.tsx";
+import EdoCoursesAdmin from "../pages/Admin/Edo/Courses/Courses.tsx";
+import EdoEventsAdmin from "../pages/Admin/Edo/Events/Events.tsx";
+import EdoTestsAdmin from "../pages/Admin/Edo/Tests/Tests.tsx";
 
 const AppRoutes = createBrowserRouter([
     {
@@ -32,7 +39,7 @@ const AppRoutes = createBrowserRouter([
     },
     {
         path: "admin",
-        element: <Navigate to="users"/>
+        element: <Navigate to="users"/>,
     },
     {
         element: <ProtectedRouteLogin element={<AuthLayout/>}/>,
@@ -92,19 +99,47 @@ const AppRoutes = createBrowserRouter([
                 children: [
                     {
                         path: "admin/users",
-                        element: <PageTitle title={"Пользователи"} element={<UsersAdmin/>}/>
+                        element: <PageTitle title={"Пользователи"} element={<UsersAdmin/>}/>,
                     },
                     {
                         path: "admin/knowledge",
-                        element: <PageTitle title={"База знаний"} element={<KnowledgeAdmin/>}/>
+                        element: <PageTitle title={"База знаний"} element={<KnowledgeAdmin/>}/>,
                     },
                     {
                         path: "admin/education",
-                        element: <PageTitle title={"Обучение"} element={<EducationAdmin/>}/>
+                        element: <PageTitle title={"Обучение"} element={<EducationAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/education/courses",
+                        element: <PageTitle title={""} element={<EducationCoursesAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/education/events",
+                        element: <PageTitle title={""} element={<EducationEventsAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/education/webinars",
+                        element: <PageTitle title={""} element={<EducationWebinarsAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/education/tests",
+                        element: <PageTitle title={""} element={<EducationTestsAdmin/>}/>,
                     },
                     {
                         path: "admin/edo",
-                        element: <PageTitle title={"ЕДО"} element={<EdoAdmin/>}/>
+                        element: <PageTitle title={"ЕДО"} element={<EdoAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/edo/courses",
+                        element: <PageTitle title={""} element={<EdoCoursesAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/edo/events",
+                        element: <PageTitle title={""} element={<EdoEventsAdmin/>}/>,
+                    },
+                    {
+                        path: "admin/edo/tests",
+                        element: <PageTitle title={""} element={<EdoTestsAdmin/>}/>,
                     },
                 ]
             },

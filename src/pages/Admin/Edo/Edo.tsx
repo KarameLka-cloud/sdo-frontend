@@ -1,4 +1,5 @@
 import {JSX, useState} from "react";
+import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
 import {useAddEdoEventMutation} from "../../../services/store/features/edoApi.ts";
 
@@ -36,6 +37,15 @@ function Edo(): JSX.Element {
     return (
         <>
             <HeaderPage>Единый день обучения</HeaderPage>
+            <div>
+                <Link to="courses">courses</Link>
+                <br/>
+                <Link to="events">events</Link>
+                <br/>
+                <Link to="tests">tests</Link>
+                <br/>
+            </div>
+
             {isError ? (<>Error</>) : isLoading ? (<>Loading...</>) : null}
             <input type="text" name="title" placeholder="Название" value={formData.title} onChange={handleChange}/>
             <br/>
