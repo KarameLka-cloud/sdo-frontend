@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.25](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.24...v0.0.25) (2025-05-25)
+
+
+### Bug Fixes
+
+* Созданы страницы для добавления и удаления контента ([59c1b66](https://gitlab.com/KarameLka_xd/sdo_frontend/commit/59c1b66c5676c0554fea41fb2b2adab76778d858))
+
 ### [0.0.24](///compare/v0.0.23...v0.0.24) (2025-05-23)
 
 
