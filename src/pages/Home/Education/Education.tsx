@@ -2,11 +2,11 @@ import {JSX} from "react";
 import style from "../Edo/Edo.module.css";
 import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import EventItem from "../../../components/ui/EventItem/EventItem.tsx";
-import {useGetEdoEventsQuery} from "../../../services/store/features/edoApi.ts";
+import EventItem from "../../../components/ui/Event/Event.tsx";
+import {useGetEducationEventsQuery} from "../../../services/store/features/educationApi.ts";
 
 function Education(): JSX.Element {
-    const {data, error, isLoading} = useGetEdoEventsQuery("");
+    const {data, error, isLoading} = useGetEducationEventsQuery("");
 
     type EventItem = {
         id: number;

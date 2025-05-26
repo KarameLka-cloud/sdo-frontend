@@ -2,7 +2,7 @@ import {JSX, SetStateAction, useState} from "react";
 import {NavigateFunction, useNavigate} from "react-router-dom";
 import style from "./Login.module.css";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
-import InputError from "../../../components/ui/InputError/InputError.tsx";
+import Error from "../../../components/ui/Error/Error.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import {login} from "../../../services/auth/login.ts";
 
@@ -48,7 +48,7 @@ function Login(): JSX.Element {
     return (
         <div className={style.container}>
             <form onSubmit={handleLogin} className={style.form}>
-                {error ? <InputError className={style.error}>{error}</InputError> :
+                {error ? <Error className={style.error}>{error}</Error> :
                     <div className={style.header}>Добро пожаловать!</div>}
                 <InputText
                     type="text"

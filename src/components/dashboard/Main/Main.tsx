@@ -8,7 +8,7 @@ type MainProps = {
 
 function Main({children, className = ""}: MainProps): JSX.Element {
     return (
-        <main className={`${style.component} + ${className}`}>{children}</main>
+        <main className={`${style.main} + ${className}`}>{children}</main>
     );
 }
 

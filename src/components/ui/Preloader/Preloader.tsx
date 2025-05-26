@@ -1,16 +1,13 @@
 import {JSX} from "react";
 import style from "./Preloader.module.css";
+import {PreloaderType} from "../../../types/components/PreloaderType.ts";
 
-type PreloaderProps = {
-    className: string;
-}
-
-function Preloader({className = ""}: PreloaderProps): JSX.Element {
+function Preloader({className = ""}: PreloaderType): JSX.Element {
     return (
-        <div className={`${style.component} + ${className}`}>
+        <div className={`${style.preloader} + ${className}`}>
             <img src="" alt=""/>
         </div>
-    )
+    );
 }
 
 export default Preloader;

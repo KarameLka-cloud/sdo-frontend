@@ -5,12 +5,9 @@ import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
 import {logout} from "../../../services/auth/logout.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/userApi.ts";
+import {HeaderType} from "../../../types/components/HeaderType.ts";
 
-type HeaderProps = {
-    className?: string;
-}
-
-function Header({className = ""}: HeaderProps): JSX.Element {
+function Header({className = ""}: HeaderType): JSX.Element {
     const {data} = useGetUserByDataQuery("me");
 
     const navigate: NavigateFunction = useNavigate();
@@ -32,7 +29,7 @@ function Header({className = ""}: HeaderProps): JSX.Element {
     };
 
     return (
-        <div className={`${style.component} + ${className}`}>
+        <div className={`${style.header} + ${className}`}>
             <div className={style.content}>
                 <LogoLink href="/" className={style.logo}/>
                 <div className={style.links}>

@@ -1,8 +1,8 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
 
-export const edoApi = createApi({
-    reducerPath: "edoApi",
+export const educationApi = createApi({
+    reducerPath: "educationApi",
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -11,20 +11,20 @@ export const edoApi = createApi({
                 headers.set("Authorization", `Bearer ${token}`);
             }
             return headers;
-        },
+        }
     }),
     endpoints: (builder) => ({
-        getEdoEvents: builder.query({
-            query: () => "api/edo/events",
+        getEducationEvents: builder.query({
+            query: () => "api/education/events",
         }),
-        addEdoEvent: builder.mutation({
+        addEducationEvents: builder.mutation({
             query: (event) => ({
-                url: "api/edo/events",
+                url: "api/education/events",
                 method: "POST",
-                body: event,
-            }),
+                body: event
+            })
         }),
     }),
 });
 
-export const {useGetEdoEventsQuery, useAddEdoEventMutation} = edoApi;
+export const {useGetEducationEventsQuery, useAddEducationEventsMutation} = educationApi;

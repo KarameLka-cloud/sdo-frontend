@@ -1,19 +1,15 @@
 import {JSX} from "react";
 import {Link} from "react-router-dom";
 import style from "./LogoLink.module.css";
+import {LogoLinkType} from "../../../types/components/LogoLinkType.ts";
 
-type LogoLinkProps = {
-    href?: string;
-    className?: string;
-}
-
-function LogoLink({href = "", className = ""}: LogoLinkProps): JSX.Element {
+function LogoLink({href = "", className = ""}: LogoLinkType): JSX.Element {
     return (
         <Link to={href} className={`${className}`}>
             <img
                 src="/src/assets/images/logo_mfc.svg"
                 alt="LogoLink"
-                className={style.img}
+                className={style.logo_link}
             />
         </Link>
     );

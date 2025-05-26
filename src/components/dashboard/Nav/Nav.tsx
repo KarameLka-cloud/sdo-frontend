@@ -1,22 +1,11 @@
 import {JSX} from "react";
 import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import style from "./Nav.module.css";
+import {NavType} from "../../../types/components/NavType.ts";
 
-type NavLink = {
-    id: number;
-    name: string;
-    path: string;
-    icon?: string;
-}
-
-type NavProps = {
-    className?: string;
-    links: NavLink[];
-}
-
-function Nav({className = "", links = []}: NavProps): JSX.Element {
+function Nav({className = "", links = []}: NavType): JSX.Element {
     return (
-        <nav className={`${style.component} + ${className}`}>
+        <nav className={`${style.nav} + ${className}`}>
             {links.map(
                 ({id, name, path, icon}): JSX.Element => (
                     <NavLink

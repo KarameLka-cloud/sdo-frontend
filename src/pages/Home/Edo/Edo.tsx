@@ -2,7 +2,7 @@ import {JSX} from "react";
 import style from "./Edo.module.css";
 import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import EventItem from "../../../components/ui/EventItem/EventItem.tsx";
+import EventItem from "../../../components/ui/Event/Event.tsx";
 import {useGetEdoEventsQuery} from "../../../services/store/features/edoApi.ts";
 
 function Edo(): JSX.Element {

@@ -2,15 +2,9 @@ import {JSX} from "react";
 import {Outlet} from "react-router-dom";
 import Nav from "../../../components/dashboard/Nav/Nav.tsx";
 import Main from "../../../components/dashboard/Main/Main.tsx";
+import {NavLinkType} from "../../../types/components/NavLinkType.ts";
 
-type NavLink = {
-    id: number;
-    name: string;
-    path: string;
-    icon?: string;
-}
-
-const links: NavLink[] =
+const links: NavLinkType[] =
     [
         {
             id: 1,
@@ -58,7 +52,7 @@ function HomeLayout(): JSX.Element {
                 <Outlet/>
             </Main>
         </>
-    )
+    );
 }
 
 export default HomeLayout;

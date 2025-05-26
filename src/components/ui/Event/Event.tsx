@@ -1,7 +1,7 @@
 import {JSX} from "react";
-import style from "./EventItem.module.css";
+import style from "./Event.module.css";
 
-type EventItem = {
+type Event = {
     id: number;
     title: string;
     description: string;
@@ -11,10 +11,10 @@ type EventItem = {
 };
 
 type EventProps = {
-    event: EventItem;
+    event: Event;
 }
 
-function EventItem({event}: EventProps): JSX.Element {
+function Event({event}: EventProps): JSX.Element {
     return (
         <div className={style.event}>
             <div className={style.event_content}>
@@ -27,7 +27,7 @@ function EventItem({event}: EventProps): JSX.Element {
                 <div style={{textAlign: "center"}}>{event.date}</div>
             </div>
         </div>
-    )
+    );
 }
 
-export default EventItem;
+export default Event;

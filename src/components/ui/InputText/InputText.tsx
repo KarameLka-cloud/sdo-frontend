@@ -7,7 +7,7 @@ type InputTextProps = {
 }
 
 function InputText({className = "", ...props}: InputTextProps): JSX.Element {
-    return <input {...props} className={`${style.component} + ${className}`}/>;
+    return <input {...props} className={`${style.input_text} + ${className}`}/>;
 }
 
 export default InputText;

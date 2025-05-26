@@ -35,7 +35,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* Добавлена возможность создавать Edo Event 5203539
+* Добавлена возможность создавать Edo EventType 5203539
 
 ### [0.0.20](https://gitlab.com/KarameLka_xd/sdo_frontend/compare/v0.0.19...v0.0.20) (2025-05-21)
 

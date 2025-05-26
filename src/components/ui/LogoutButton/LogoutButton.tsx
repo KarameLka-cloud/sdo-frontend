@@ -8,7 +8,7 @@ type LogoutButtonProps = {
 
 function LogoutButton({className = "", ...props}: LogoutButtonProps): JSX.Element {
     return (
-        <div className={`${style.component} + ${className}`} {...props}>
+        <div className={`${style.logout} + ${className}`} {...props}>
             <img src="/src/assets/images/icons/exit.svg" alt="" className={style.img}/>
         </div>
     );
