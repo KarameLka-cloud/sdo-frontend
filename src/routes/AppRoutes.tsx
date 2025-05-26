@@ -10,12 +10,16 @@ import Login from "../pages/Auth/Login/Login.tsx";
 import Home from "../pages/Home/Home/Home.tsx";
 import Career from "../pages/Home/Career/Career.tsx";
 import Achievements from "../pages/Home/Achievements/Achievements.tsx";
-import Interns from "../pages/Home/Interns/Interns.tsx";
+// import Interns from "../pages/Home/Interns/Interns.tsx";
 import Knowledge from "../pages/Home/Knowledge/Knowledge.tsx";
-import Education from "../pages/Home/Education/Education.tsx";
-import Edo from "../pages/Home/Edo/Edo.tsx";
 import TopServices from "../pages/Home/Knowledge/TopServices/TopServices.tsx";
-import Events from "../pages/Home/Edo/Events/Events.tsx";
+import Education from "../pages/Home/Education/Education.tsx";
+import EducationCourses from "../pages/Home/Education/Courses/Courses.tsx";
+import EducationEvents from "../pages/Home/Education/Events/Events.tsx";
+import EducationWebinars from "../pages/Home/Education/Webinars/Webinars.tsx";
+import EducationTests from "../pages/Home/Education/Tests/Tests.tsx";
+import Edo from "../pages/Home/Edo/Edo.tsx";
+import EdoEvents from "../pages/Home/Edo/Events/Events.tsx";
 import UsersAdmin from "../pages/Admin/Users/Users.tsx";
 import KnowledgeAdmin from "../pages/Admin/Knowledge/Knowledge.tsx";
 import EducationAdmin from "../pages/Admin/Education/Education.tsx";
@@ -69,10 +73,6 @@ const AppRoutes = createBrowserRouter([
                         element: <PageTitle title={"Достижения"} element={<Achievements/>}/>,
                     },
                     {
-                        path: "user/interns",
-                        element: <PageTitle title={"Стажеры"} element={<Interns/>}/>,
-                    },
-                    {
                         path: "user/knowledge",
                         element: <PageTitle title={"База знаний"} element={<Knowledge/>}/>,
                     },
@@ -85,12 +85,28 @@ const AppRoutes = createBrowserRouter([
                         element: <PageTitle title={"Обучение"} element={<Education/>}/>,
                     },
                     {
+                        path: "user/education/courses",
+                        element: <PageTitle title={"Курсы"} element={<EducationCourses/>}/>,
+                    },
+                    {
+                        path: "user/education/events",
+                        element: <PageTitle title={"Мероприятия"} element={<EducationEvents/>}/>,
+                    },
+                    {
+                        path: "user/education/webinars",
+                        element: <PageTitle title={"Вебинары"} element={<EducationWebinars/>}/>,
+                    },
+                    {
+                        path: "user/education/tests",
+                        element: <PageTitle title={"Тесты"} element={<EducationTests/>}/>,
+                    },
+                    {
                         path: "user/edo",
                         element: <PageTitle title={"ЕДО"} element={<Edo/>}/>,
                     },
                     {
                         path: "user/edo/events",
-                        element: <PageTitle title={"Мероприятия"} element={<Events/>}/>,
+                        element: <PageTitle title={"Мероприятия"} element={<EdoEvents/>}/>,
                     },
                 ]
             },

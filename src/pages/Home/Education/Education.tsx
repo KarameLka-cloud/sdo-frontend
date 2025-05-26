@@ -34,7 +34,7 @@ function Education(): JSX.Element {
                                 <EventItem event={item}/>
                             )
                         })}
-                        <Link to="" className={style.events_link}>Смотреть все</Link>
+                        <Link to="events" className={style.events_link}>Смотреть все</Link>
                     </>
                 ) : (
                     <div>Мероприятий нет</div>
