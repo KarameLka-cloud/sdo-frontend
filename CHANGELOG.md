@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.29](///compare/v0.0.28...v0.0.29) (2025-06-08)
+
+
+### Bug Fixes
+
+* Изменен README.md b0491d8
+
 ### [0.0.28](///compare/v0.0.27...v0.0.28) (2025-06-08)
 
 
