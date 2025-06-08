@@ -21,6 +21,8 @@ function Edo(): JSX.Element {
         <>
             <HeaderPage>Единый день обучения</HeaderPage>
 
+            <h3 className={style.header_services}>Электронные курсы</h3>
+
             <h3 className={style.header_services}>Мероприятия</h3>
             <div className={style.events_container}>
                 {error ? (
@@ -40,6 +42,8 @@ function Edo(): JSX.Element {
                     <div>Мероприятий нет</div>
                 )}
             </div>
+
+            <h3 className={style.header_services}>Назначенные тесты</h3>
         </>
     );
 }

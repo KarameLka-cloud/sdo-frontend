@@ -3,6 +3,7 @@ import Cookie from "js-cookie";
 
 export const edoApi = createApi({
     reducerPath: "edoApi",
+    tagTypes: ['Events'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -16,6 +17,10 @@ export const edoApi = createApi({
     endpoints: (builder) => ({
         getEdoEvents: builder.query({
             query: () => "api/edo/events",
+            providesTags: (result) =>
+                result
+                    ? [...result.map(({id}: {id: number}) => ({type: 'Events' as const, id})), 'Events']
+                    : ['Events'],
         }),
         addEdoEvent: builder.mutation({
             query: (event) => ({
@@ -23,6 +28,7 @@ export const edoApi = createApi({
                 method: "POST",
                 body: event,
             }),
+            invalidatesTags: ['Events'],
         }),
     }),
 });

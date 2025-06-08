@@ -27,7 +27,7 @@ function Home(): JSX.Element {
                         <div className={style.info_description}>{data.description}</div>
                         <img
                             className={style.info_img}
-                            src="/src/assets/images/my_info.png"
+                            src="/src/assets/images/my_info.svg"
                             alt="Девушка"
                         />
                     </div>
