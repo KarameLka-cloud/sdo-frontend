@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.32](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.31...v0.0.32) (2025-06-25)
+
+
+### Bug Fixes
+
+* Стилизована форма создания, добавлен уведомление с продтверждением удаления записи ([0f47f5e](https://github.com/KarameLka-cloud/sdo-frontend/commit/0f47f5e1223cc541046631afdd1a8a2806a9d516))
+
 ### [0.0.31](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.30...v0.0.31) (2025-06-25)
 
 
