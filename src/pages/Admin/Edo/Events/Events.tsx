@@ -1,6 +1,7 @@
 import {JSX, useState} from "react";
-import EventItem from "../../../../components/ui/Event/Event.tsx";
+import style from "./Events.module.css";
 import {EventType} from "../../../../types";
+import EventItem from "../../../../components/ui/Event/Event.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import {useGetEdoEventsQuery, useAddEdoEventMutation} from "../../../../services/store/features/edoApi.ts";
 
@@ -40,21 +41,19 @@ function Events(): JSX.Element {
 
     return (
         <>
-            <div>
+            <div className={style.form}>
                 {addError ? (<>Error</>) : addLoading ? (<>Loading...</>) : null}
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}
-                           onChange={handleChange}/>
-                <br/>
+                           onChange={handleChange} className={style.form_input}/>
                 <InputText type="text" name="description" placeholder="Описание" value={formData.description}
-                           onChange={handleChange}/>
-                <br/>
+                           onChange={handleChange} className={style.form_input}/>
                 <InputText type="text" name="department" placeholder="Отделения" value={formData.department}
-                           onChange={handleChange}/>
-                <br/>
-                <input type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange}/>
-                <input type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange}/>
-                <br/>
-                <button onClick={handleAddEdoEvent}>Создать</button>
+                           onChange={handleChange} className={style.form_input}/>
+                <div className={style.form_date}>
+                    <input type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange} className={style.form_input_time}/>
+                    <input type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange} className={style.form_input_date}/>
+                </div>
+                <button onClick={handleAddEdoEvent} className={style.button_create}>Создать</button>
             </div>
             <hr/>
             <div>

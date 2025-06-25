@@ -20,7 +20,10 @@ function Event({event, delete: deleteEventButton = false}: EventProps): JSX.Elem
     const [deleteEvent] = useDeleteEdoEventMutation();
 
     const handleDeleteEvent = async (id: number) => {
-        await deleteEvent(id).unwrap();
+        const isDelete = confirm("Вы хотите удалить запись?");
+        if (isDelete) {
+            await deleteEvent(id).unwrap();
+        }
     }
 
     return (
