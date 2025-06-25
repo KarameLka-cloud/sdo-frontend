@@ -30,7 +30,14 @@ export const edoApi = createApi({
             }),
             invalidatesTags: ['Events'],
         }),
+        deleteEdoEvent: builder.mutation({
+            query: (id) => ({
+                url: `api/edo/events/${id}`,
+                method: "DELETE"
+            }),
+            invalidatesTags: ['Events']
+        })
     }),
 });
 
-export const {useGetEdoEventsQuery, useAddEdoEventMutation} = edoApi;
+export const {useGetEdoEventsQuery, useAddEdoEventMutation, useDeleteEdoEventMutation} = edoApi;

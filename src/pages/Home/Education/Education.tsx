@@ -43,6 +43,8 @@ function Education(): JSX.Element {
                 )}
             </div>
 
+            <h3 className={style.header_services}>Вебинары</h3>
+
             <h3 className={style.header_services}>Назначенные тесты</h3>
         </>
     );

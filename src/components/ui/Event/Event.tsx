@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
+import {useDeleteEdoEventMutation} from "../../../services/store/features/edoApi.ts";
 
 type Event = {
     id: number;
@@ -12,9 +13,16 @@ type Event = {
 
 type EventProps = {
     event: Event;
+    delete?: boolean;
 }
 
-function Event({event}: EventProps): JSX.Element {
+function Event({event, delete: deleteEventButton = false}: EventProps): JSX.Element {
+    const [deleteEvent] = useDeleteEdoEventMutation();
+
+    const handleDeleteEvent = async (id: number) => {
+        await deleteEvent(id).unwrap();
+    }
+
     return (
         <div className={style.event}>
             <div className={style.event_content}>
@@ -22,6 +30,13 @@ function Event({event}: EventProps): JSX.Element {
                 <span className={style.event_description}>{event.description}</span>
                 <span className={style.event_departments}>{event.department}</span>
             </div>
+            {
+                deleteEventButton ? (
+                    <div onClick={() => handleDeleteEvent(event.id)} className={style.delete_button}>
+                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить" className="trash_icon"/>
+                    </div>
+                ) : null
+            }
             <div className={style.event_time}>
                 <div style={{textAlign: "center"}}>{event.time}</div>
                 <div style={{textAlign: "center"}}>{event.date}</div>

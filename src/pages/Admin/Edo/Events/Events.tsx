@@ -1,8 +1,14 @@
 import {JSX, useState} from "react";
-import {useAddEdoEventMutation} from "../../../../services/store/features/edoApi.ts";
+import EventItem from "../../../../components/ui/Event/Event.tsx";
+import {EventType} from "../../../../types";
+import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import {useGetEdoEventsQuery, useAddEdoEventMutation} from "../../../../services/store/features/edoApi.ts";
 
 function Events(): JSX.Element {
-    const [addEdoEvent, {isLoading, isError}] = useAddEdoEventMutation();
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-expect-error
+    const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery();
+    const [addEdoEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
 
     const [formData, setFormData] = useState({
         title: "",
@@ -34,22 +40,36 @@ function Events(): JSX.Element {
 
     return (
         <>
-            <div>Edit events page</div>
             <div>
-                {isError ? (<>Error</>) : isLoading ? (<>Loading...</>) : null}
-                <input type="text" name="title" placeholder="Название" value={formData.title} onChange={handleChange}/>
+                {addError ? (<>Error</>) : addLoading ? (<>Loading...</>) : null}
+                <InputText type="text" name="title" placeholder="Название" value={formData.title}
+                           onChange={handleChange}/>
                 <br/>
-                <input type="text" name="description" placeholder="Описание" value={formData.description}
-                       onChange={handleChange}/>
+                <InputText type="text" name="description" placeholder="Описание" value={formData.description}
+                           onChange={handleChange}/>
                 <br/>
-                <input type="text" name="department" placeholder="Отделения" value={formData.department}
-                       onChange={handleChange}/>
+                <InputText type="text" name="department" placeholder="Отделения" value={formData.department}
+                           onChange={handleChange}/>
                 <br/>
                 <input type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange}/>
-                <br/>
                 <input type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange}/>
                 <br/>
                 <button onClick={handleAddEdoEvent}>Создать</button>
+            </div>
+            <hr/>
+            <div>
+                {listError ? (
+                    <>Ошибка загрузки</>
+                ) : listLoading ? (
+                    <>Загрузка...</>
+                ) : listData && listData.length > 0 ? (
+                    listData.map((item: EventType) => {
+                        return (
+                            <EventItem key={item.id} event={item} delete={true}/>
+                        )
+                    })
+                ) : <>Мероприятий нет</>
+                }
             </div>
         </>
     )

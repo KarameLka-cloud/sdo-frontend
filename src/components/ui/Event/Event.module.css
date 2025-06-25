@@ -28,8 +28,19 @@
 }
 
 .event_time {
+    margin-left: 1rem;
     padding: 0.4rem 1.4rem;
     border-radius: 1rem;
     background-color: var(--mfc-white-color);
     border: 0.1rem solid var(--mfc-middle-color);
+}
+
+.delete_button {
+    height: 2rem;
+    width: 2rem;
+    margin-left: auto;
+    padding: 0.2rem;
+    cursor: pointer;
+    background-color: #e95555;
+    border-radius: 0.2rem;
 }
