@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.31](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.30...v0.0.31) (2025-06-25)
+
+
+### Bug Fixes
+
+* Стилизованы ссылки в Админке, добавлен кнопка удаления мероприятия и добавлена мутация удаления ([41cab96](https://github.com/KarameLka-cloud/sdo-frontend/commit/41cab968193f4c59bb34500db3df2ba8ae6a8d1e))
+
 ### [0.0.30](///compare/v0.0.29...v0.0.30) (2025-06-08)
 
 
