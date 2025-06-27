@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.33](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.32...v0.0.33) (2025-06-27)
+
+
+### Bug Fixes
+
+* Вынесены типы компонентов в отдельные файлы, добавлен crud для ЕДО в админке, прописаны роуты, созданы страницы ([ec912ac](https://github.com/KarameLka-cloud/sdo-frontend/commit/ec912ac6757d888b5783bbaf48c2a0a07d003c15))
+
 ### [0.0.32](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.31...v0.0.32) (2025-06-25)
 
 
