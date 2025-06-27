@@ -22,9 +22,26 @@ function Edo(): JSX.Element {
             <HeaderPage>Единый день обучения</HeaderPage>
 
             <h3 className={style.header_services}>Электронные курсы</h3>
+            <div className={style.container}>
+                <div className={style.courses_list}>
+                    <div className={style.course}>
+                        <div className={style.title}>dfsdfsdfd</div>
+                        <div className={style.date}>Пройти до 05.02.2025г.</div>
+                    </div>
+                    <div className={style.course}>
+                        <div className={style.title}>dfsdfsdfd</div>
+                        <div className={style.date}>Пройти до 05.02.2025г.</div>
+                    </div>
+                    <div className={style.course}>
+                        <div className={style.title}>dfsdfsdfd</div>
+                        <div className={style.date}>Пройти до 05.02.2025г.</div>
+                    </div>
+                </div>
+                <Link to="courses" className={style.link}>Смотреть все</Link>
+            </div>
 
             <h3 className={style.header_services}>Мероприятия</h3>
-            <div className={style.events_container}>
+            <div className={style.container}>
                 {error ? (
                     <>Ошибка</>
                 ) : isLoading ? (
@@ -36,7 +53,7 @@ function Edo(): JSX.Element {
                                 <EventItem key={item.id} event={item}/>
                             )
                         })}
-                        <Link to="events" className={style.events_link}>Смотреть все</Link>
+                        <Link to="events" className={style.link}>Смотреть все</Link>
                     </>
                 ) : (
                     <div>Мероприятий нет</div>
@@ -44,6 +61,23 @@ function Edo(): JSX.Element {
             </div>
 
             <h3 className={style.header_services}>Назначенные тесты</h3>
+            <div className={style.container}>
+                <div className={style.tests_list}>
+                    <div className={style.course}>
+                        <div className={style.title}>dfsdfsdfd</div>
+                        <div className={style.date}>Пройти до 05.02.2025г.</div>
+                    </div>
+                    <div className={style.course}>
+                        <div className={style.title}>dfsdfsdfd</div>
+                        <div className={style.date}>Пройти до 05.02.2025г.</div>
+                    </div>
+                    <div className={style.course}>
+                        <div className={style.title}>dfsdfsdfd</div>
+                        <div className={style.date}>Пройти до 05.02.2025г.</div>
+                    </div>
+                </div>
+                <Link to="tests" className={style.link}>Смотреть все</Link>
+            </div>
         </>
     );
 }

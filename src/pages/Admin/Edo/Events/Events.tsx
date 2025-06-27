@@ -3,13 +3,18 @@ import style from "./Events.module.css";
 import {EventType} from "../../../../types";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
-import {useGetEdoEventsQuery, useAddEdoEventMutation} from "../../../../services/store/features/edoApi.ts";
+import {
+    useGetEdoEventsQuery,
+    useAddEdoEventMutation,
+    useDeleteEdoEventMutation
+} from "../../../../services/store/features/edoApi.ts";
 
 function Events(): JSX.Element {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-expect-error
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery();
     const [addEdoEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
+    const [deleteEdoEvent] = useDeleteEdoEventMutation();
 
     const [formData, setFormData] = useState({
         title: "",
@@ -50,8 +55,10 @@ function Events(): JSX.Element {
                 <InputText type="text" name="department" placeholder="Отделения" value={formData.department}
                            onChange={handleChange} className={style.form_input}/>
                 <div className={style.form_date}>
-                    <input type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange} className={style.form_input_time}/>
-                    <input type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange} className={style.form_input_date}/>
+                    <input type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange}
+                           className={style.form_input_time}/>
+                    <input type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange}
+                           className={style.form_input_date}/>
                 </div>
                 <button onClick={handleAddEdoEvent} className={style.button_create}>Создать</button>
             </div>
@@ -64,7 +71,7 @@ function Events(): JSX.Element {
                 ) : listData && listData.length > 0 ? (
                     listData.map((item: EventType) => {
                         return (
-                            <EventItem key={item.id} event={item} delete={true}/>
+                            <EventItem key={item.id} event={item} mutation={deleteEdoEvent}/>
                         )
                     })
                 ) : <>Мероприятий нет</>

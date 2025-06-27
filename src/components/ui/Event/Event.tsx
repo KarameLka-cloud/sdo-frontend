@@ -1,28 +1,12 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
-import {useDeleteEdoEventMutation} from "../../../services/store/features/edoApi.ts";
+import {EventType} from "../../../types";
 
-type Event = {
-    id: number;
-    title: string;
-    description: string;
-    department: string;
-    time: string;
-    date: string;
-};
-
-type EventProps = {
-    event: Event;
-    delete?: boolean;
-}
-
-function Event({event, delete: deleteEventButton = false}: EventProps): JSX.Element {
-    const [deleteEvent] = useDeleteEdoEventMutation();
-
+function Event({event, mutation}: EventType): JSX.Element {
     const handleDeleteEvent = async (id: number) => {
         const isDelete = confirm("Вы хотите удалить запись?");
         if (isDelete) {
-            await deleteEvent(id).unwrap();
+            await mutation(id).unwrap();
         }
     }
 
@@ -34,7 +18,7 @@ function Event({event, delete: deleteEventButton = false}: EventProps): JSX.Elem
                 <span className={style.event_departments}>{event.department}</span>
             </div>
             {
-                deleteEventButton ? (
+                mutation ? (
                     <div onClick={() => handleDeleteEvent(event.id)} className={style.delete_button}>
                         <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить" className="trash_icon"/>
                     </div>

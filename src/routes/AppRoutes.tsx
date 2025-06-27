@@ -19,7 +19,9 @@ import EducationEvents from "../pages/Home/Education/Events/Events.tsx";
 import EducationWebinars from "../pages/Home/Education/Webinars/Webinars.tsx";
 import EducationTests from "../pages/Home/Education/Tests/Tests.tsx";
 import Edo from "../pages/Home/Edo/Edo.tsx";
+import EdoCourses from "../pages/Home/Edo/Courses/Courses.tsx";
 import EdoEvents from "../pages/Home/Edo/Events/Events.tsx";
+import EdoTests from "../pages/Home/Edo/Tests/Tests.tsx";
 import UsersAdmin from "../pages/Admin/Users/Users.tsx";
 import KnowledgeAdmin from "../pages/Admin/Knowledge/Knowledge.tsx";
 import EducationAdmin from "../pages/Admin/Education/Education.tsx";
@@ -105,8 +107,17 @@ const AppRoutes = createBrowserRouter([
                         element: <PageTitle title={"ЕДО"} element={<Edo/>}/>,
                     },
                     {
+                        path: "user/edo/courses",
+                        element: <PageTitle title={""} element={<EdoCourses/>}/>,
+
+                    },
+                    {
                         path: "user/edo/events",
                         element: <PageTitle title={"Мероприятия"} element={<EdoEvents/>}/>,
+                    },
+                    {
+                        path: "user/edo/tests",
+                        element: <PageTitle title={""} element={<EdoTests/>}/>
                     },
                 ]
             },

@@ -3,7 +3,7 @@ import Cookie from "js-cookie";
 
 export const edoApi = createApi({
     reducerPath: "edoApi",
-    tagTypes: ['Events'],
+    tagTypes: ['Courses', 'Events', 'Tests'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -15,11 +15,36 @@ export const edoApi = createApi({
         },
     }),
     endpoints: (builder) => ({
+        // Edo courses
+        getEdoCourses: builder.query({
+            query: () => "api/edo/courses",
+            providesTags: (result) =>
+                result
+                    ? [...result.map(({id}: { id: number }) => ({type: 'Courses' as const, id})), 'Courses']
+                    : ['Courses'],
+        }),
+        addEdoCourse: builder.mutation({
+            query: (course) => ({
+                url: "api/edo/courses",
+                method: "POST",
+                body: course,
+            }),
+            invalidatesTags: ['Courses'],
+        }),
+        deleteEdoCourse: builder.mutation({
+            query: (id) => ({
+                url: `api/edo/courses/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ['Courses'],
+        }),
+
+        // Edo events
         getEdoEvents: builder.query({
             query: () => "api/edo/events",
             providesTags: (result) =>
                 result
-                    ? [...result.map(({id}: {id: number}) => ({type: 'Events' as const, id})), 'Events']
+                    ? [...result.map(({id}: { id: number }) => ({type: 'Events' as const, id})), 'Events']
                     : ['Events'],
         }),
         addEdoEvent: builder.mutation({
@@ -33,10 +58,12 @@ export const edoApi = createApi({
         deleteEdoEvent: builder.mutation({
             query: (id) => ({
                 url: `api/edo/events/${id}`,
-                method: "DELETE"
+                method: "DELETE",
             }),
-            invalidatesTags: ['Events']
-        })
+            invalidatesTags: ['Events'],
+        }),
+
+        // Edo tests
     }),
 });
 

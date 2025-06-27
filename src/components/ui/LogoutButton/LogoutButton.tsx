@@ -1,12 +1,8 @@
 import {JSX} from "react";
 import style from "./LogoutButton.module.css";
+import {LogoutButtonType} from "../../../types/components/LogoutButtonType.ts";
 
-type LogoutButtonProps = {
-    className: string;
-    [x: string]: unknown;
-}
-
-function LogoutButton({className = "", ...props}: LogoutButtonProps): JSX.Element {
+function LogoutButton({className = "", ...props}: LogoutButtonType): JSX.Element {
     return (
         <div className={`${style.logout} + ${className}`} {...props}>
             <img src="/src/assets/images/icons/exit.svg" alt="" className={style.img}/>

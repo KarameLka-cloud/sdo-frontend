@@ -1,16 +1,34 @@
 import {JSX} from "react";
 import style from "./Edo.module.css";
-import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
+import LinkService from "../../../components/ui/LinkService/LinkService.tsx";
+
+const links = [
+    {
+        id: 1,
+        title: "Электронные курсы",
+        path: "courses",
+    },
+    {
+        id: 2,
+        title: "Мероприятия",
+        path: "events",
+    },
+    {
+        id: 3,
+        title: "Тесты",
+        path: "tests",
+    },
+]
 
 function Edo(): JSX.Element {
     return (
         <>
             <HeaderPage>Единый день обучения</HeaderPage>
             <div className={style.links}>
-                <Link to="courses" className={style.link}>Электронные курсы</Link>
-                <Link to="events" className={style.link}>Мероприятия</Link>
-                <Link to="tests" className={style.link}>Тесты</Link>
+                {links.map((link) => (
+                    <LinkService item={link}/>
+                ))}
             </div>
         </>
     )

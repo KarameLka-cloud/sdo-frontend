@@ -1,7 +1,30 @@
 import {JSX} from "react";
 import style from "./Education.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
-import {Link} from "react-router-dom";
+import LinkService from "../../../components/ui/LinkService/LinkService.tsx";
+
+const links = [
+    {
+        id: 1,
+        title: "Электронные курсы",
+        path: "courses",
+    },
+    {
+        id: 2,
+        title: "Мероприятия",
+        path: "events",
+    },
+    {
+        id: 3,
+        title: "Вебинары",
+        path: "webinars",
+    },
+    {
+        id: 4,
+        title: "Тесты",
+        path: "tests",
+    },
+]
 
 function EducationEducation(): JSX.Element {
     return (
@@ -9,10 +32,9 @@ function EducationEducation(): JSX.Element {
             <HeaderPage>Обучение</HeaderPage>
 
             <div className={style.links}>
-                <Link to="courses" className={style.link}>Электронные курсы</Link>
-                <Link to="events" className={style.link}>Мероприятия</Link>
-                <Link to="webinars" className={style.link}>Вебинары</Link>
-                <Link to="tests" className={style.link}>Тесты</Link>
+                {links.map((link) => (
+                    <LinkService item={link}/>
+                ))}
             </div>
         </>
     )

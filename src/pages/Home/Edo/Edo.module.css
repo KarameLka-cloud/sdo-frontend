@@ -5,7 +5,7 @@
     font-weight: 400;
 }
 
-.events_link {
+.link {
     display: block;
     width: fit-content;
     padding: 0.2rem 0.4rem;
@@ -16,8 +16,36 @@
     color: #101828;
 }
 
-.events_container {
+.container {
     padding: 1rem;
     border-radius: 1rem;
     background-color: var(--mfc-middle-color);
+}
+
+.courses_list,
+.tests_list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.course,
+.test {
+    width: 32%;
+    padding: 1rem;
+    border-radius: 1rem;
+    background-color: var(--mfc-light-color);
+    color: #101828;
+    font-weight: 600;
+}
+
+.title {
+    padding-bottom: 1rem;
+    font-size: 1rem;
+}
+
+.date {
+    padding-top: 0.4rem;
+    color: gray;
+    font-size: 0.8rem;
+    border-top: 0.1rem solid var(--mfc-dark-color);
 }

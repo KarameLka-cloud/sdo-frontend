@@ -1,12 +1,8 @@
 import {JSX} from "react";
 import style from "./InputText.module.css";
+import {InputTextType} from "../../../types/components/InputTextType.ts";
 
-type InputTextProps = {
-    className?: string;
-    [x: string]: unknown;
-}
-
-function InputText({className = "", ...props}: InputTextProps): JSX.Element {
+function InputText({className = "", ...props}: InputTextType): JSX.Element {
     return <input {...props} className={`${style.input_text} + ${className}`}/>;
 }
 
