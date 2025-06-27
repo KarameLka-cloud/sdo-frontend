@@ -1,6 +1,5 @@
 import {JSX, useState} from "react";
 import style from "./Events.module.css";
-import {EventType} from "../../../../types";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import {
@@ -69,7 +68,14 @@ function Events(): JSX.Element {
                 ) : listLoading ? (
                     <>Загрузка...</>
                 ) : listData && listData.length > 0 ? (
-                    listData.map((item: EventType) => {
+                    listData.map((item: {
+                        id: number;
+                        title: string;
+                        description: string;
+                        department: string;
+                        time: string;
+                        date: string;
+                    }) => {
                         return (
                             <EventItem key={item.id} event={item} mutation={deleteEdoEvent}/>
                         )
