@@ -1,5 +1,4 @@
 import {JSX} from "react";
-import {EventType} from "../../../../types";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import {useGetEdoEventsQuery} from "../../../../services/store/features/edoApi";
@@ -16,7 +15,14 @@ function Events(): JSX.Element {
             ) : isLoading ? (
                 <>Загрузка...</>
             ) : data != data.length ? (
-                data.map((item: EventType) => {
+                data.map((item: {
+                    id: number;
+                    title: string;
+                    description: string;
+                    department: string;
+                    time: string;
+                    date: string;
+                }) => {
                     return (
                         <EventItem key={item.id} event={item}/>
                     )

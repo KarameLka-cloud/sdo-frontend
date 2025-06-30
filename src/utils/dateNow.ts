@@ -1,4 +1,4 @@
-const formattedDate = () => {
+const formattedDate: () => string = (): string => {
     const date = new Date();
     const optionsDate: Intl.DateTimeFormatOptions = {
         day: "2-digit",

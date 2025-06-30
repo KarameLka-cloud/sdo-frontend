@@ -3,9 +3,10 @@ import style from "./Edo.module.css";
 import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../components/ui/Event/Event.tsx";
-import {useGetEdoEventsQuery} from "../../../services/store/features/edoApi.ts";
+import {useGetEdoCoursesQuery, useGetEdoEventsQuery} from "../../../services/store/features/edoApi.ts";
 
 function Edo(): JSX.Element {
+    const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery();
     const {data, error, isLoading} = useGetEdoEventsQuery("");
 
     type EventItem = {
@@ -22,6 +23,15 @@ function Edo(): JSX.Element {
             <HeaderPage>Единый день обучения</HeaderPage>
 
             <h3 className={style.header_services}>Электронные курсы</h3>
+            {courseError ? (
+                <div>error</div>
+            ) : courseLoading ? (
+                <div>loading...</div>
+            ) : courseData ? (
+                console.log(courseData)
+            ) : null
+            }
+
             <div className={style.container}>
                 <div className={style.courses_list}>
                     <div className={style.course}>

@@ -67,4 +67,11 @@ export const edoApi = createApi({
     }),
 });
 
-export const {useGetEdoEventsQuery, useAddEdoEventMutation, useDeleteEdoEventMutation} = edoApi;
+export const {
+    useGetEdoCoursesQuery,
+    useAddEdoCourseMutation,
+    useDeleteEdoCourseMutation,
+    useGetEdoEventsQuery,
+    useAddEdoEventMutation,
+    useDeleteEdoEventMutation,
+} = edoApi;
