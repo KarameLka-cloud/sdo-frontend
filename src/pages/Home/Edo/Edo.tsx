@@ -6,7 +6,7 @@ import EventItem from "../../../components/ui/Event/Event.tsx";
 import {useGetEdoCoursesQuery, useGetEdoEventsQuery} from "../../../services/store/features/edoApi.ts";
 
 function Edo(): JSX.Element {
-    const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery();
+    const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");
     const {data, error, isLoading} = useGetEdoEventsQuery("");
 
     type EventItem = {

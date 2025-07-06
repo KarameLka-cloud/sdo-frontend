@@ -1,6 +1,5 @@
 import {createBrowserRouter, Navigate} from "react-router-dom";
-import ProtectedRouteLogin from "../components/protected/ProtectedRouteLogin.tsx";
-import ProtectedRouteDashboard from "../components/protected/ProtectedRouteDashboard.tsx";
+import {ProtectedRouteLogin, ProtectedRouteDashboard} from "../components/protected/ProtectedRoutes.tsx";
 import PageTitle from "../components/PageTitle.tsx";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.tsx";
 import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout.tsx";
@@ -10,7 +9,6 @@ import Login from "../pages/Auth/Login/Login.tsx";
 import Home from "../pages/Home/Home/Home.tsx";
 import Career from "../pages/Home/Career/Career.tsx";
 import Achievements from "../pages/Home/Achievements/Achievements.tsx";
-// import Interns from "../pages/Home/Interns/Interns.tsx";
 import Knowledge from "../pages/Home/Knowledge/Knowledge.tsx";
 import TopServices from "../pages/Home/Knowledge/TopServices/TopServices.tsx";
 import Education from "../pages/Home/Education/Education.tsx";

@@ -1,4 +1,4 @@
-type Event = {
+export type EventType = {
     id: number;
     title: string;
     description: string;
@@ -6,8 +6,3 @@ type Event = {
     time: string;
     date: string;
 };
-
-export type EventType = {
-    event: Event;
-    mutation?: any;
-}

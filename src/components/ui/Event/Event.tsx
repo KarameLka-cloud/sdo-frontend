@@ -2,7 +2,12 @@ import {JSX} from "react";
 import style from "./Event.module.css";
 import {EventType} from "../../../types";
 
-function Event({event, mutation}: EventType): JSX.Element {
+export type EventProps = {
+    event: EventType;
+    mutation?: any;
+}
+
+function Event({event, mutation}: EventProps): JSX.Element {
     const handleDeleteEvent = async (id: number) => {
         const isDelete = confirm("Вы хотите удалить запись?");
         if (isDelete) {
