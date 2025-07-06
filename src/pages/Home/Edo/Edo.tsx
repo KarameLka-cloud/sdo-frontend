@@ -3,20 +3,12 @@ import style from "./Edo.module.css";
 import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../components/ui/Event/Event.tsx";
+import {EventType} from "../../../types";
 import {useGetEdoCoursesQuery, useGetEdoEventsQuery} from "../../../services/store/features/edoApi.ts";
 
 function Edo(): JSX.Element {
     const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");
     const {data, error, isLoading} = useGetEdoEventsQuery("");
-
-    type EventItem = {
-        id: number;
-        title: string;
-        description: string;
-        department: string;
-        time: string;
-        date: string;
-    };
 
     return (
         <>
@@ -58,7 +50,7 @@ function Edo(): JSX.Element {
                     <>Загрузка...</>
                 ) : data && data.length > 0 ? (
                     <>
-                        {data.slice(0, 3).map((item: EventItem): JSX.Element => {
+                        {data.slice(0, 3).map((item: EventType): JSX.Element => {
                             return (
                                 <EventItem key={item.id} event={item}/>
                             )
