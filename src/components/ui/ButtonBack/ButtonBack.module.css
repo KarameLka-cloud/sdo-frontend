@@ -1,0 +1,16 @@
+.button_back {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.4rem;
+    cursor: pointer;
+}
+
+.img_back {
+    height: 1.4rem;
+    transform: translateX(0);
+    transition: transform ease-in-out 0.2s;
+}
+
+.button_back:hover .img_back {
+    transform: translateX(-0.2rem);
+}

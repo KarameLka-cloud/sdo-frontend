@@ -1,5 +1,6 @@
 import {JSX, useState} from "react";
 import style from "./Events.module.css";
+import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import {EventType} from "../../../../types";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
@@ -10,9 +11,7 @@ import {
 } from "../../../../services/store/features/edoApi.ts";
 
 function Events(): JSX.Element {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
-    const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery();
+    const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery("");
     const [addEdoEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
     const [deleteEdoEvent] = useDeleteEdoEventMutation();
 
@@ -46,6 +45,7 @@ function Events(): JSX.Element {
 
     return (
         <>
+            <ButtonBack/>
             <div className={style.form}>
                 {addError ? (<>Error</>) : addLoading ? (<>Loading...</>) : null}
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}

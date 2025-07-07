@@ -64,6 +64,28 @@ export const edoApi = createApi({
         }),
 
         // Edo tests
+        getEdoTests: builder.query({
+            query: () => "api/edo/tests",
+            providesTags: (result) =>
+                result
+                    ? [...result.map(({id}: { id: number }) => ({type: 'Tests' as const, id})), 'Tests']
+                    : ['Tests'],
+        }),
+        addEdoTest: builder.mutation({
+            query: (test) => ({
+                url: "api/edo/tests",
+                method: "POST",
+                body: test
+            }),
+            invalidatesTags: ['Tests'],
+        }),
+        deleteEdoTest: builder.mutation({
+            query: (id) => ({
+                url: `api/edo/tests/${id}`,
+                method: "DELETE",
+            }),
+            invalidatesTags: ['Tests'],
+        })
     }),
 });
 
@@ -74,4 +96,7 @@ export const {
     useGetEdoEventsQuery,
     useAddEdoEventMutation,
     useDeleteEdoEventMutation,
+    useGetEdoTestsQuery,
+    useAddEdoTestMutation,
+    useDeleteEdoTestMutation,
 } = edoApi;
