@@ -1,17 +1,19 @@
 import {JSX, useState} from "react";
 import style from "./Tests.module.css";
+import {TestType} from "../../../../types/components/TestType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import TestItem from "../../../../components/ui/Test/Test.tsx";
 import {
     useGetEdoTestsQuery,
     useAddEdoTestMutation,
-    // useDeleteEdoTestMutation
+    useDeleteEdoTestMutation
 } from "../../../../services/store/features/edoApi.ts";
 
 function Tests(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoTestsQuery("");
     const [addEdoTest, {isLoading: addLoading, isError: addError}] = useAddEdoTestMutation();
-    // const [deleteTest] = useDeleteEdoTestMutation();
+    const [deleteTest] = useDeleteEdoTestMutation();
 
     const [formData, setFormData] = useState({
         title: "",
@@ -57,13 +59,9 @@ function Tests(): JSX.Element {
             ) : listLoading ? (
                 <>Загрузка...</>
             ) : listData && listData.length > 0 ? (
-                listData.map((item: { title: string, url: string, date_end: string }) => {
+                listData.map((item: TestType) => {
                     return (
-                        <>
-                            <div>{item.title}</div>
-                            <div>{item.url}</div>
-                            <div>{item.date_end}</div>
-                        </>
+                        <TestItem test={item} mutation={deleteTest} className={style.test}/>
                     )
                 })
             ) : <>Тестов нет</>

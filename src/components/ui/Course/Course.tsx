@@ -5,14 +5,31 @@ import {CourseType} from "../../../types/components/CourseType.ts";
 type CourseProps = {
     className?: string;
     course: CourseType,
-    // mutation?: any,
+    mutation?: any,
 }
 
-function Course({className, course}: CourseProps): JSX.Element {
+function Course({className, course, mutation}: CourseProps): JSX.Element {
+    const handleDeleteCourse = async (id: number) => {
+        const isDelete = confirm("Вы хотите удалить запись?");
+        if (isDelete) {
+            await mutation(id).unwrap();
+        }
+    }
+
     return (
-        <div className={`${style.course} + ${className}`} onClick={() => window.open(course.url, "_blank")}>
-            <div className={style.title}>{course.title}</div>
-            <div className={style.date_end}>{`Пройти до ${course.date_end}г.`}</div>
+        <div className={`${style.course} + ${className}`}>
+            <div className={style.content}>
+                <div className={style.title} onClick={() => window.open(course.url, "_blank")}>{course.title}</div>
+                {mutation ? <div className={style.url}>{course.url}</div> : null}
+                <div className={style.date_end}>{`Пройти до ${course.date_end}г.`}</div>
+            </div>
+            {
+                mutation ? (
+                    <div onClick={() => handleDeleteCourse(course.id)} className={style.delete_button}>
+                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить"/>
+                    </div>
+                ) : null
+            }
         </div>
     )
 }

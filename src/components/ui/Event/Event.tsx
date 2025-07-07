@@ -25,7 +25,7 @@ function Event({event, mutation}: EventProps): JSX.Element {
             {
                 mutation ? (
                     <div onClick={() => handleDeleteEvent(event.id)} className={style.delete_button}>
-                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить" className="trash_icon"/>
+                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить"/>
                     </div>
                 ) : null
             }

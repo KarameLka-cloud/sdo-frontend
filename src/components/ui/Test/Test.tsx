@@ -5,14 +5,31 @@ import {TestType} from "../../../types/components/TestType.ts";
 type TestProps = {
     className?: string;
     test: TestType,
-    // mutation?: any,
+    mutation?: any,
 }
 
-function Test({className, test}: TestProps): JSX.Element {
+function Test({className, test, mutation}: TestProps): JSX.Element {
+    const handleDeleteTest = async (id: number) => {
+        const isDelete = confirm("Вы хотите удалить запись?");
+        if (isDelete) {
+            await mutation(id).unwrap();
+        }
+    }
+
     return (
-        <div className={`${style.test} + ${className}`} onClick={() => window.open(test.url, "_blank")}>
-            <div className={style.title}>{test.title}</div>
-            <div className={style.date_end}>{`Пройти до ${test.date_end}г.`}</div>
+        <div className={`${style.test} + ${className}`}>
+            <div className={style.content}>
+                <div className={style.title} onClick={() => window.open(test.url, "_blank")}>{test.title}</div>
+                {mutation ? <div className={style.url}>{test.url}</div> : null}
+                <div className={style.date_end}>{`Пройти до ${test.date_end}г.`}</div>
+            </div>
+            {
+                mutation ? (
+                    <div onClick={() => handleDeleteTest(test.id)} className={style.delete_button}>
+                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить"/>
+                    </div>
+                ) : null
+            }
         </div>
     )
 }

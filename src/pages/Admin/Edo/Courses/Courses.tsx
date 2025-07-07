@@ -2,16 +2,18 @@ import {JSX, useState} from "react";
 import style from "./Courses.module.css";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import CourseItem from "../../../../components/ui/Course/Course.tsx";
+import {CourseType} from "../../../../types/components/CourseType.ts";
 import {
     useGetEdoCoursesQuery,
     useAddEdoCourseMutation,
-    // useDeleteEdoCourseMutation
+    useDeleteEdoCourseMutation
 } from "../../../../services/store/features/edoApi.ts";
 
 function Courses(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoCoursesQuery("");
     const [addEdoCourse, {isLoading: addLoading, isError: addError}] = useAddEdoCourseMutation();
-    // const [deleteEdoCourse] = useDeleteEdoCourseMutation();
+    const [deleteEdoCourse] = useDeleteEdoCourseMutation();
 
     const [formData, setFormData] = useState({
         title: "",
@@ -56,13 +58,9 @@ function Courses(): JSX.Element {
             ) : listLoading ? (
                 <>Загрузка...</>
             ) : listData && listData.length > 0 ? (
-                listData.map((item: {title: string, url: string, date_end: string}) => {
+                listData.map((item: CourseType) => {
                     return (
-                        <>
-                            <div>{item.title}</div>
-                            <div>{item.url}</div>
-                            <div>{item.date_end}</div>
-                        </>
+                        <CourseItem course={item} mutation={deleteEdoCourse} className={style.course}/>
                     )
                 })
             ) : <>Курсов нет</>
