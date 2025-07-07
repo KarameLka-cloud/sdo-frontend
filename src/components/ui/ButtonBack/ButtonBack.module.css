@@ -1,6 +1,7 @@
 .button_back {
     display: flex;
     align-items: center;
+    width: fit-content;
     margin-bottom: 0.4rem;
     cursor: pointer;
 }

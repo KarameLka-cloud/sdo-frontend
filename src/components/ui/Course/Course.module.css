@@ -21,7 +21,8 @@
 
 .url {
     padding-bottom: 1rem;
-    font-size: 1rem;
+    color: gray;
+    font-size: 0.9rem;
 }
 
 .date_end {

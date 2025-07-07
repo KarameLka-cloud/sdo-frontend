@@ -61,7 +61,7 @@ function Tests(): JSX.Element {
             ) : listData && listData.length > 0 ? (
                 listData.map((item: TestType) => {
                     return (
-                        <TestItem test={item} mutation={deleteTest} className={style.test}/>
+                        <TestItem key={item.id} test={item} mutation={deleteTest} className={style.test}/>
                     )
                 })
             ) : <>Тестов нет</>

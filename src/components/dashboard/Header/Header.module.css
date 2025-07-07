@@ -25,6 +25,7 @@
 .link_inactive {
     color: #6a7282;
     font-weight: 500;
+    transition: color ease-in-out 0.2s;
 }
 
 .link_inactive:hover {

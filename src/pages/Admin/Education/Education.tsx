@@ -33,7 +33,7 @@ function EducationEducation(): JSX.Element {
 
             <div className={style.links}>
                 {links.map((link) => (
-                    <LinkService item={link}/>
+                    <LinkService key={link.id} item={link}/>
                 ))}
             </div>
         </>

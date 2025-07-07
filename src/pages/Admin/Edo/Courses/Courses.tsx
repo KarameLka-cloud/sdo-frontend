@@ -60,7 +60,7 @@ function Courses(): JSX.Element {
             ) : listData && listData.length > 0 ? (
                 listData.map((item: CourseType) => {
                     return (
-                        <CourseItem course={item} mutation={deleteEdoCourse} className={style.course}/>
+                        <CourseItem key={item.id} course={item} mutation={deleteEdoCourse} className={style.course}/>
                     )
                 })
             ) : <>Курсов нет</>
