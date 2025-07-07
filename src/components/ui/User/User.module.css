@@ -19,11 +19,19 @@
     margin-left: auto;
 }
 
-.button_save {
+.save_button {
+    height: 1.8rem;
+    width: 1.8rem;
     margin-left: 1rem;
-    border: none;
+    padding: 0.4rem 0.6rem;
     background-color: green;
     border-radius: 0.6rem;
     color: var(--mfc-white-color);
     cursor: pointer;
+}
+
+.save_button_icon {
+    height: 100%;
+    width: 100%;
+    transform: scale(1.8);
 }

@@ -18,7 +18,7 @@ function Users(): JSX.Element {
             {error ? (<>Error</>) : isLoading ? (<>Loading</>) : data ? (
                 data.map((item: UserType): JSX.Element => {
                     return (
-                        <User key={item.id} user={item}/>
+                        <User key={item.id} user={item} className={style.user}/>
                     )
                 })
             ) : null}

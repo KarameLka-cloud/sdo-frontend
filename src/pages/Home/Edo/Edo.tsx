@@ -1,10 +1,10 @@
 import {JSX} from "react";
 import style from "./Edo.module.css";
-import {Link} from "react-router-dom";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
+import SeeAllButton from "../../../components/ui/SeeAllButton/SeeAllButton";
 import {EventType} from "../../../types";
 import {CourseType} from "../../../types/components/CourseType.ts";
 import {
@@ -38,7 +38,7 @@ function Edo(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <Link to="courses" className={style.link}>Смотреть все</Link>
+                        <SeeAllButton to="courses"/>
                     </>
                 ) : (
                     <div>Курсов нет</div>
@@ -58,7 +58,7 @@ function Edo(): JSX.Element {
                                 <EventItem key={item.id} event={item}/>
                             )
                         })}
-                        <Link to="events" className={style.link}>Смотреть все</Link>
+                        <SeeAllButton to="events"/>
                     </>
                 ) : (
                     <div>Мероприятий нет</div>
@@ -80,7 +80,7 @@ function Edo(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <Link to="tests" className={style.link}>Смотреть все</Link>
+                        <SeeAllButton to="tests"/>
                     </>
                 ) : (
                     <div>Тестов нет</div>

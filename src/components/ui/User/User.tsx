@@ -18,9 +18,10 @@ function User({user, className}: UserProps): JSX.Element {
                 <option>Пользователь</option>
                 <option>Администратор</option>
             </select>
-            <button className={style.button_save}>
-                Сохранить
-            </button>
+            <div className={style.save_button}>
+                <img src="/src/assets/images/icons/checkmark.svg" alt="Кнопка сохранить"
+                     className={style.save_button_icon}/>
+            </div>
         </div>
     )
 }
