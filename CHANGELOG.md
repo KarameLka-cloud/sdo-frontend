@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.39](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.38...v0.0.39) (2025-07-07)
+
+
+### Bug Fixes
+
+* Доделан блок с администрированием страницы ЕДО ([b0ce73a](https://github.com/KarameLka-cloud/sdo-frontend/commit/b0ce73a7d976fdbaf5a36d5705b27b806863a880))
+
 ### [0.0.38](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.37...v0.0.38) (2025-07-07)
 
 
