@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.38](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.37...v0.0.38) (2025-07-07)
+
+
+### Bug Fixes
+
+* Стилизованы карточки, вывод списков во всех блоках на странице едо для пользователя ([d754cdd](https://github.com/KarameLka-cloud/sdo-frontend/commit/d754cddb0177a235b291f391ac3090d780ed3db8))
+
 ### [0.0.37](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.36...v0.0.37) (2025-07-07)
 
 
