@@ -2,7 +2,7 @@ import {JSX} from "react";
 import style from "./Event.module.css";
 import {EventType} from "../../../types";
 
-export type EventProps = {
+type EventProps = {
     event: EventType;
     mutation?: any;
 }

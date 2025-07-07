@@ -1,7 +1,8 @@
 import {JSX} from "react";
+import {EventType} from "../../../../types";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
-import {EventType} from "../../../../types";
+import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import {useGetEdoEventsQuery} from "../../../../services/store/features/edoApi";
 
 function Events(): JSX.Element {
@@ -10,6 +11,7 @@ function Events(): JSX.Element {
     return (
         <>
             <HeaderPage>Мероприятия</HeaderPage>
+            <ButtonBack/>
 
             {error ? (
                 <>Ошибка</>
