@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.42](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.41...v0.0.42) (2025-07-08)
+
+
+### Bug Fixes
+
+* Изменен метод импорта картинок в компоненты ([4b2e5e1](https://github.com/KarameLka-cloud/sdo-frontend/commit/4b2e5e1b3771d7da13c7d9b3b47f179f2fea3f98))
+
 ### [0.0.41](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.40...v0.0.41) (2025-07-07)
 
 
