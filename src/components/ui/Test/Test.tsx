@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Test.module.css";
+import icon_trash from "../../../assets/images/icons/trash.svg";
 import {TestType} from "../../../types/components/TestType.ts";
 
 type TestProps = {
@@ -26,7 +27,7 @@ function Test({className, test, mutation}: TestProps): JSX.Element {
             {
                 mutation ? (
                     <div onClick={() => handleDeleteTest(test.id)} className={style.delete_button}>
-                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить"/>
+                        <img src={icon_trash} alt="Кнопка удалить"/>
                     </div>
                 ) : null
             }

@@ -1,6 +1,8 @@
 import {JSX, SetStateAction, useState} from "react";
-import {NavigateFunction, useNavigate} from "react-router-dom";
 import style from "./Login.module.css";
+import image_login_background from "../../../assets/images/login_background.svg";
+import image_document from "../../../assets/images/document.svg";
+import {NavigateFunction, useNavigate} from "react-router-dom";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
 import Error from "../../../components/ui/Error/Error.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
@@ -69,11 +71,11 @@ function Login(): JSX.Element {
                     className={style.input}
                 />
                 <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
-                <img src="/src/assets/images/document_image.svg" alt="" className={style.document_image_1}/>
-                <img src="/src/assets/images/document_image.svg" alt="" className={style.document_image_2}/>
+                <img src={image_document} alt="" className={style.document_image_1}/>
+                <img src={image_document} alt="" className={style.document_image_2}/>
             </form>
 
-            <img src="/src/assets/images/login_background.svg" alt="" className={style.image}/>
+            <img src={image_login_background} alt="" className={style.image}/>
 
         </div>
     );

@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Home.module.css";
+import my_info from "../../../assets/images/my_info.svg";
 import dateNow from "../../../utils/dateNow.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/userApi.ts";
 
@@ -27,7 +28,7 @@ function Home(): JSX.Element {
                         <div className={style.info_description}>{data.description}</div>
                         <img
                             className={style.info_img}
-                            src="/src/assets/images/my_info.svg"
+                            src={my_info}
                             alt="Девушка"
                         />
                     </div>

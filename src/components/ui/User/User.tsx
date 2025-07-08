@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./User.module.css";
+import icon_checkmark from "../../../assets/images/icons/checkmark.svg";
 import {UserType} from "../../../types/components/UserType.ts";
 
 type UserProps = {
@@ -19,8 +20,7 @@ function User({user, className}: UserProps): JSX.Element {
                 <option>Администратор</option>
             </select>
             <div className={style.save_button}>
-                <img src="/src/assets/images/icons/checkmark.svg" alt="Кнопка сохранить"
-                     className={style.save_button_icon}/>
+                <img src={icon_checkmark} alt="Кнопка сохранить" className={style.save_button_icon}/>
             </div>
         </div>
     )

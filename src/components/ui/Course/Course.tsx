@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Course.module.css";
+import icon_trash from "../../../assets/images/icons/trash.svg";
 import {CourseType} from "../../../types/components/CourseType.ts";
 
 type CourseProps = {
@@ -26,7 +27,7 @@ function Course({className, course, mutation}: CourseProps): JSX.Element {
             {
                 mutation ? (
                     <div onClick={() => handleDeleteCourse(course.id)} className={style.delete_button}>
-                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить"/>
+                        <img src={icon_trash} alt="Кнопка удалить"/>
                     </div>
                 ) : null
             }

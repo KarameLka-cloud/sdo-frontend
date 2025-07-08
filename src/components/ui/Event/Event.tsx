@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
+import icon_trash from "../../../assets/images/icons/trash.svg";
 import {EventType} from "../../../types";
 
 type EventProps = {
@@ -25,7 +26,7 @@ function Event({event, mutation}: EventProps): JSX.Element {
             {
                 mutation ? (
                     <div onClick={() => handleDeleteEvent(event.id)} className={style.delete_button}>
-                        <img src="/src/assets/images/icons/trash.svg" alt="Кнопка удалить"/>
+                        <img src={icon_trash} alt="Кнопка удалить"/>
                     </div>
                 ) : null
             }

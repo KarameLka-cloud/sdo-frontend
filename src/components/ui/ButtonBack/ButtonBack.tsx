@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./ButtonBack.module.css";
+import icon_back from "../../../assets/images/icons/back.svg";
 import {ButtonBackType} from "../../../types/components/ButtonBackType.ts";
 import {useNavigate} from "react-router-dom";
 
@@ -8,7 +9,7 @@ function ButtonBack({className = ""}: ButtonBackType): JSX.Element {
 
     return (
         <div className={`${style.button_back} + ${className}`} onClick={() => navigate(-1)}>
-            <img className={style.img_back} src="/src/assets/images/icons/back.svg" alt="Назад"/>
+            <img className={style.img_back} src={icon_back} alt="Назад"/>
             Назад
         </div>
     )

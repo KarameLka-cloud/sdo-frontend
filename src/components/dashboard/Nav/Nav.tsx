@@ -1,6 +1,7 @@
 import {JSX} from "react";
-import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import style from "./Nav.module.css";
+import image_mfc_corp from "../../../assets/images/mfc_corp.png";
+import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import {NavType} from "../../../types/components/NavType.ts";
 
 function Nav({className = "", links = []}: NavType): JSX.Element {
@@ -26,7 +27,7 @@ function Nav({className = "", links = []}: NavType): JSX.Element {
                 target="_blank"
                 className={style.main_corp_link}
             >
-                <img src="/src/assets/images/mfc_corp.png" alt="Логотип МФЦ" className={style.main_corp_image}/>
+                <img src={image_mfc_corp} alt="Логотип МФЦ" className={style.main_corp_image}/>
                 Корпоративный портал
             </a>
         </nav>
