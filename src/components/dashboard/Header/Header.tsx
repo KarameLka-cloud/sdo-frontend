@@ -3,7 +3,6 @@ import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
-// import {logout} from "../../../services/auth/logout.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 import {HeaderType} from "../../../types/components/HeaderType.ts";
 

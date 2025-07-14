@@ -12,11 +12,13 @@ function LogoutButton({className = "", ...props}: LogoutButtonType): JSX.Element
 
     const handleLogout = async () => {
         try {
-            await logoutMutation("");
+            await logoutMutation("").unwrap();
             Cookie.remove("auth_token");
-            navigate("/auth");
-        } catch (error) {
-            navigate("/auth");
+            navigate("/login");
+        } catch (error: any) {
+            console.error(error);
+            Cookie.remove("auth_token");
+            navigate("/login");
         }
     }
 

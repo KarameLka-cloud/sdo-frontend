@@ -49,7 +49,7 @@ const AppRoutes = createBrowserRouter([
         element: <ProtectedRouteLogin element={<AuthLayout/>}/>,
         children: [
             {
-                path: "auth",
+                path: "login",
                 element: <PageTitle title={"Авторизация"} element={<Login/>}/>,
             },
         ],

@@ -37,7 +37,7 @@ export const ProtectedRouteLogin = ({element}: ProtectedRouteProps): JSX.Element
 
 export const ProtectedRouteDashboard = ({element}: ProtectedRouteProps): JSX.Element => {
     const isAuth: boolean = Cookie.get("auth_token") == null;
-    return !isAuth ? element : <Navigate to="auth" replace/>;
+    return !isAuth ? element : <Navigate to="login" replace/>;
 }
 
 export default {ProtectedRouteLogin, ProtectedRouteDashboard};
