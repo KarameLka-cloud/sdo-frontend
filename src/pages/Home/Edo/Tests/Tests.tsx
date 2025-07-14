@@ -4,7 +4,7 @@ import {CourseType} from "../../../../types/components/CourseType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage.tsx";
 import TestItem from "../../../../components/ui/Test/Test.tsx";
-import {useGetEdoTestsQuery} from "../../../../services/store/features/edoApi.ts";
+import {useGetEdoTestsQuery} from "../../../../services/store/features/edo.ts";
 
 function Tests(): JSX.Element {
     const {data: testData, error: testError, isLoading: testLoading} = useGetEdoTestsQuery("");

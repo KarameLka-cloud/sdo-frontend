@@ -1,7 +1,7 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
 import icon_trash from "../../../assets/images/icons/trash.svg";
-import {EventType} from "../../../types";
+import {EventType} from "../../../types/components/EventType";
 
 type EventProps = {
     event: EventType;

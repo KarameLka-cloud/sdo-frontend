@@ -4,7 +4,7 @@ import {CourseType} from "../../../../types/components/CourseType.ts";
 import CourseItem from "../../../../components/ui/Course/Course.tsx";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import {useGetEdoCoursesQuery} from "../../../../services/store/features/edoApi.ts";
+import {useGetEdoCoursesQuery} from "../../../../services/store/features/edo.ts";
 
 function Courses(): JSX.Element {
     const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");

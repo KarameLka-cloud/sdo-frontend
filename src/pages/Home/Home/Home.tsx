@@ -2,7 +2,7 @@ import {JSX} from "react";
 import style from "./Home.module.css";
 import my_info from "../../../assets/images/my_info.svg";
 import dateNow from "../../../utils/dateNow.ts";
-import {useGetUserByDataQuery} from "../../../services/store/features/userApi.ts";
+import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 
 function Home(): JSX.Element {
     const {data, error, isLoading} = useGetUserByDataQuery("me");

@@ -5,7 +5,7 @@ import {Navigate} from "react-router-dom";
 // type ProtectedRouteProps = {
 //     element: JSX.Element;
 //     /**
-//      * `restricted` — маршрут только для НЕавторизованных (например, `/login`).
+//      * `restricted` — маршрут только для НЕавторизованных (например, `/auth`).
 //      * `private` — маршрут только для авторизованных (например, `/dashboard`).
 //      */
 //     access: "restricted" | "private";
@@ -20,7 +20,7 @@ import {Navigate} from "react-router-dom";
 //     }
 //
 //     if (access === "restricted" && isAuth) {
-//         return <Navigate to={redirectTo || "login"} replace/>;
+//         return <Navigate to={redirectTo || "auth"} replace/>;
 //     }
 //
 //     return element;
@@ -37,7 +37,7 @@ export const ProtectedRouteLogin = ({element}: ProtectedRouteProps): JSX.Element
 
 export const ProtectedRouteDashboard = ({element}: ProtectedRouteProps): JSX.Element => {
     const isAuth: boolean = Cookie.get("auth_token") == null;
-    return !isAuth ? element : <Navigate to="login" replace/>;
+    return !isAuth ? element : <Navigate to="auth" replace/>;
 }
 
 export default {ProtectedRouteLogin, ProtectedRouteDashboard};

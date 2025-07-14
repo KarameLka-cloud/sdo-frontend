@@ -1,21 +1,26 @@
 import {configureStore} from "@reduxjs/toolkit";
 import {setupListeners} from "@reduxjs/toolkit/query";
-import {userApi} from "./features/userApi";
-import {educationApi} from "./features/educationApi";
-import {edoApi} from "./features/edoApi";
+import {login, logout} from "./features/auth.ts";
+import {user} from "./features/user.ts";
+import {education} from "./features/education.ts";
+import {edo} from "./features/edo.ts";
 
 export const store = configureStore({
     reducer: {
-        [userApi.reducerPath]: userApi.reducer,
-        [educationApi.reducerPath]: educationApi.reducer,
-        [edoApi.reducerPath]: edoApi.reducer,
+        [login.reducerPath]: login.reducer,
+        [logout.reducerPath]: logout.reducer,
+        [user.reducerPath]: user.reducer,
+        [education.reducerPath]: education.reducer,
+        [edo.reducerPath]: edo.reducer,
     },
 
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(
-            userApi.middleware,
-            educationApi.middleware,
-            edoApi.middleware
+            login.middleware,
+            logout.middleware,
+            user.middleware,
+            education.middleware,
+            edo.middleware
         ),
 });
 

@@ -8,7 +8,7 @@ import {
     useGetEdoCoursesQuery,
     useAddEdoCourseMutation,
     useDeleteEdoCourseMutation
-} from "../../../../services/store/features/edoApi.ts";
+} from "../../../../services/store/features/edo.ts";
 
 function Courses(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoCoursesQuery("");

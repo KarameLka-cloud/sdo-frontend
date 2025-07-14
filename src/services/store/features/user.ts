@@ -1,8 +1,8 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
 
-export const userApi = createApi({
-    reducerPath: "userApi",
+export const user = createApi({
+    reducerPath: "user",
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -23,4 +23,4 @@ export const userApi = createApi({
     }),
 });
 
-export const {useGetUserByDataQuery, useGetUsersQuery} = userApi;
+export const {useGetUserByDataQuery, useGetUsersQuery} = user;

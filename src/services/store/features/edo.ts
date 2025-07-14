@@ -1,8 +1,8 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
 
-export const edoApi = createApi({
-    reducerPath: "edoApi",
+export const edo = createApi({
+    reducerPath: "edo",
     tagTypes: ['Courses', 'Events', 'Tests'],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
@@ -99,4 +99,4 @@ export const {
     useGetEdoTestsQuery,
     useAddEdoTestMutation,
     useDeleteEdoTestMutation,
-} = edoApi;
+} = edo;

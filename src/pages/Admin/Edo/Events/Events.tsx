@@ -2,13 +2,13 @@ import {JSX, useState} from "react";
 import style from "./Events.module.css";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
-import {EventType} from "../../../../types";
+import {EventType} from "../../../../types/components/EventType.ts";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import {
     useGetEdoEventsQuery,
     useAddEdoEventMutation,
     useDeleteEdoEventMutation
-} from "../../../../services/store/features/edoApi.ts";
+} from "../../../../services/store/features/edo.ts";
 
 function Events(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery("");

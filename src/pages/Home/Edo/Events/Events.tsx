@@ -1,9 +1,9 @@
 import {JSX} from "react";
-import {EventType} from "../../../../types";
+import {EventType} from "../../../../types/components/EventType.ts";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import {useGetEdoEventsQuery} from "../../../../services/store/features/edoApi";
+import {useGetEdoEventsQuery} from "../../../../services/store/features/edo.ts";
 
 function Events(): JSX.Element {
     const {data, error, isLoading} = useGetEdoEventsQuery("");

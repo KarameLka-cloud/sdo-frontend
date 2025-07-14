@@ -8,7 +8,7 @@ import {
     useGetEdoTestsQuery,
     useAddEdoTestMutation,
     useDeleteEdoTestMutation
-} from "../../../../services/store/features/edoApi.ts";
+} from "../../../../services/store/features/edo.ts";
 
 function Tests(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoTestsQuery("");

@@ -1,15 +1,19 @@
-import {JSX, SetStateAction, useState} from "react";
+import {JSX, useState} from "react";
 import style from "./Login.module.css";
+import {NavigateFunction, useNavigate} from "react-router-dom";
+import Cookie from "js-cookie";
 import image_login_background from "../../../assets/images/login_background.svg";
 import image_document from "../../../assets/images/document.svg";
-import {NavigateFunction, useNavigate} from "react-router-dom";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
-import Error from "../../../components/ui/Error/Error.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import {login} from "../../../services/auth/login.ts";
+import Error from "../../../components/ui/Error/Error.tsx";
+
+import {useLoginMutation} from "../../../services/store/features/auth.ts";
 
 function Login(): JSX.Element {
     const navigate: NavigateFunction = useNavigate();
+    const [login] = useLoginMutation();
+    const [error, setError] = useState("");
 
     const [formData, setFormData] = useState({
         login: "",
@@ -25,26 +29,20 @@ function Login(): JSX.Element {
         });
     };
 
-    const [error, setError] = useState(""); //\u200B
-
-    function handleError(error: SetStateAction<string>): void {
-        setError(error);
-    }
-
-    const handleLogin: (e: {
-        preventDefault: () => void;
-    }) => Promise<void> = async (e: {
-        preventDefault: () => void;
-    }): Promise<void> => {
+    const handleLogin = async (e: any) => {
         e.preventDefault();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const result: { success: boolean; message: string } = await login(formData);
-        if (result.success) {
+        try {
+            const result = await login(formData).unwrap();
+            Cookie.set("auth_token", result.auth_token);
             navigate("/");
-        } else {
-            handleError(result.message);
+        } catch (error: any) {
+            setError(error.data.message);
         }
+
+        setFormData({
+            login: "",
+            password: "",
+        });
     };
 
     return (

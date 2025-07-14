@@ -1,32 +1,14 @@
 import {JSX} from "react";
-import {NavigateFunction, NavLink, NavLinkRenderProps, useNavigate} from "react-router-dom";
+import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
-import {logout} from "../../../services/auth/logout.ts";
-import {useGetUserByDataQuery} from "../../../services/store/features/userApi.ts";
+// import {logout} from "../../../services/auth/logout.ts";
+import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 import {HeaderType} from "../../../types/components/HeaderType.ts";
 
 function Header({className = ""}: HeaderType): JSX.Element {
     const {data} = useGetUserByDataQuery("me");
-
-    const navigate: NavigateFunction = useNavigate();
-
-    const handleLogout: (e: {
-        preventDefault: () => void;
-    }) => Promise<void> = async (e: {
-        preventDefault: () => void;
-    }): Promise<void> => {
-        e.preventDefault();
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        const result: { success: boolean } = await logout();
-        if (result.success) {
-            navigate("login");
-        } else {
-            navigate("login");
-        }
-    };
 
     return (
         <div className={`${style.header} + ${className}`}>
@@ -56,7 +38,7 @@ function Header({className = ""}: HeaderType): JSX.Element {
                             {`${data.name.split(" ")[1]} ${data.name.split(" ")[0][0]}.`}
                         </div>
                     ) : null}
-                    <LogoutButton className={style.logout} onClick={handleLogout}/>
+                    <LogoutButton className={style.logout}/>
                 </div>
             </div>
         </div>

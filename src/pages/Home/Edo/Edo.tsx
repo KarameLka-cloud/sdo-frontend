@@ -5,13 +5,13 @@ import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
 import SeeAllButton from "../../../components/ui/SeeAllButton/SeeAllButton";
-import {EventType} from "../../../types";
+import {EventType} from "../../../types/components/EventType.ts";
 import {CourseType} from "../../../types/components/CourseType.ts";
 import {
     useGetEdoCoursesQuery,
     useGetEdoEventsQuery,
     useGetEdoTestsQuery
-} from "../../../services/store/features/edoApi.ts";
+} from "../../../services/store/features/edo.ts";
 
 function Edo(): JSX.Element {
     const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");

@@ -1,8 +1,8 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
 
-export const educationApi = createApi({
-    reducerPath: "educationApi",
+export const education = createApi({
+    reducerPath: "education",
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -27,4 +27,4 @@ export const educationApi = createApi({
     }),
 });
 
-export const {useGetEducationEventsQuery, useAddEducationEventsMutation} = educationApi;
+export const {useGetEducationEventsQuery, useAddEducationEventsMutation} = education;
