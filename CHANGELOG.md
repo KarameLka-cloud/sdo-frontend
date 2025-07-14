@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.43](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.42...v0.0.43) (2025-07-14)
+
+
+### Bug Fixes
+
+* Переделал авторизацию с axios на redux ([373d2fe](https://github.com/KarameLka-cloud/sdo-frontend/commit/373d2fea27b03870e70a59155b96d840bbca823a))
+
 ### [0.0.42](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.41...v0.0.42) (2025-07-08)
 
 
