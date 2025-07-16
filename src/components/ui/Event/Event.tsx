@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
+import convertDate from "../../../utils/convertDate.ts";
 import icon_trash from "../../../assets/images/icons/trash.svg";
 import {EventType} from "../../../types/components/EventType";
 
@@ -32,7 +33,7 @@ function Event({event, mutation}: EventProps): JSX.Element {
             }
             <div className={style.event_time}>
                 <div style={{textAlign: "center"}}>{event.time}</div>
-                <div style={{textAlign: "center"}}>{event.date}</div>
+                <div style={{textAlign: "center"}}>{convertDate(event.date)}</div>
             </div>
         </div>
     );

@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Test.module.css";
+import convertDate from "../../../utils/convertDate.ts";
 import icon_trash from "../../../assets/images/icons/trash.svg";
 import {TestType} from "../../../types/components/TestType.ts";
 
@@ -22,7 +23,7 @@ function Test({className, test, mutation}: TestProps): JSX.Element {
             <div className={style.content}>
                 <div className={style.title} onClick={() => window.open(test.url, "_blank")}>{test.title}</div>
                 {mutation ? <div className={style.url}>{test.url}</div> : null}
-                <div className={style.date_end}>{`Пройти до ${test.date_end}г.`}</div>
+                <div className={style.date_end}>{`Пройти до ${convertDate(test.date_end)}г.`}</div>
             </div>
             {
                 mutation ? (

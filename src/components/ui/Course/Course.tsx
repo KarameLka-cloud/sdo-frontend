@@ -1,6 +1,7 @@
 import {JSX} from "react";
-import style from "./Course.module.css";
 import icon_trash from "../../../assets/images/icons/trash.svg";
+import convertDate from "../../../utils/convertDate.ts";
+import style from "./Course.module.css";
 import {CourseType} from "../../../types/components/CourseType.ts";
 
 type CourseProps = {
@@ -22,7 +23,7 @@ function Course({className, course, mutation}: CourseProps): JSX.Element {
             <div className={style.content}>
                 <div className={style.title} onClick={() => window.open(course.url, "_blank")}>{course.title}</div>
                 {mutation ? <div className={style.url}>{course.url}</div> : null}
-                <div className={style.date_end}>{`Пройти до ${course.date_end}г.`}</div>
+                <div className={style.date_end}>{`Пройти до ${convertDate(course.date_end)}г.`}</div>
             </div>
             {
                 mutation ? (
