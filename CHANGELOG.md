@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.45](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.44...v0.0.45) (2025-07-16)
+
+
+### Bug Fixes
+
+* Изменен формат отображения даты ([16d13b1](https://github.com/KarameLka-cloud/sdo-frontend/commit/16d13b10717387d85b93d2bfe8bfda4826281f04))
+
 ### [0.0.44](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.43...v0.0.44) (2025-07-14)
 
 
