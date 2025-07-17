@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.46](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.45...v0.0.46) (2025-07-17)
+
+
+### Bug Fixes
+
+* Изменена страница ТОП-25, добавлен loader, вынесен цвет в переменную ([45097f9](https://github.com/KarameLka-cloud/sdo-frontend/commit/45097f94a7ad31b16b56647a2fb515f4d60a1e51))
+* Изменены пути, пофиксил баг с перерисовкой всех компонентов при переходе между Главной и Администрированием ([d234715](https://github.com/KarameLka-cloud/sdo-frontend/commit/d2347156cf97152af50d170e017df579d24dddb4))
+
 ### [0.0.45](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.44...v0.0.45) (2025-07-16)
 
 
