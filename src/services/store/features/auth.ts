@@ -1,24 +1,8 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
 
-export const login = createApi({
-    reducerPath: "login",
-    baseQuery: fetchBaseQuery({
-        baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
-    }),
-    endpoints: (builder) => ({
-        login: builder.mutation({
-            query: (credentials) => ({
-                url: "api/auth/login",
-                method: "POST",
-                body: credentials
-            })
-        })
-    })
-});
-
-export const logout = createApi({
-    reducerPath: "logout",
+export const auth = createApi({
+    reducerPath: "auth",
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -30,6 +14,13 @@ export const logout = createApi({
         }
     }),
     endpoints: (builder) => ({
+        login: builder.mutation({
+            query: (credentials) => ({
+                url: "api/auth/login",
+                method: "POST",
+                body: credentials
+            })
+        }),
         logout: builder.mutation({
             query: () => ({
                 url: "api/auth/logout",
@@ -39,5 +30,4 @@ export const logout = createApi({
     })
 });
 
-export const {useLoginMutation} = login;
-export const {useLogoutMutation} = logout;
+export const {useLoginMutation, useLogoutMutation} = auth;

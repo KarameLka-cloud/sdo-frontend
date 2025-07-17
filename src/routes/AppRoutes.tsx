@@ -35,10 +35,6 @@ import EdoTestsAdmin from "../pages/Admin/Edo/Tests/Tests.tsx";
 const AppRoutes = createBrowserRouter([
     {
         path: "/",
-        element: <Navigate to="user/home"/>,
-    },
-    {
-        path: "user",
         element: <Navigate to="home"/>,
     },
     {
@@ -61,60 +57,60 @@ const AppRoutes = createBrowserRouter([
                 element: <HomeLayout/>,
                 children: [
                     {
-                        path: "user/home",
+                        path: "home",
                         element: <PageTitle title={"Главная"} element={<Home/>}/>,
                     },
                     {
-                        path: "user/career",
+                        path: "career",
                         element: <PageTitle title={"Карьера"} element={<Career/>}/>,
                     },
                     {
-                        path: "user/achievements",
+                        path: "achievements",
                         element: <PageTitle title={"Достижения"} element={<Achievements/>}/>,
                     },
                     {
-                        path: "user/knowledge",
+                        path: "knowledge",
                         element: <PageTitle title={"База знаний"} element={<Knowledge/>}/>,
                     },
                     {
-                        path: "user/knowledge/top",
+                        path: "knowledge/top",
                         element: <PageTitle title={"ТОП 25"} element={<TopServices/>}/>,
                     },
                     {
-                        path: "user/education",
+                        path: "education",
                         element: <PageTitle title={"Обучение"} element={<Education/>}/>,
                     },
                     {
-                        path: "user/education/courses",
+                        path: "education/courses",
                         element: <PageTitle title={"Курсы"} element={<EducationCourses/>}/>,
                     },
                     {
-                        path: "user/education/events",
+                        path: "education/events",
                         element: <PageTitle title={"Мероприятия"} element={<EducationEvents/>}/>,
                     },
                     {
-                        path: "user/education/webinars",
+                        path: "education/webinars",
                         element: <PageTitle title={"Вебинары"} element={<EducationWebinars/>}/>,
                     },
                     {
-                        path: "user/education/tests",
+                        path: "education/tests",
                         element: <PageTitle title={"Тесты"} element={<EducationTests/>}/>,
                     },
                     {
-                        path: "user/edo",
+                        path: "edo",
                         element: <PageTitle title={"ЕДО"} element={<Edo/>}/>,
                     },
                     {
-                        path: "user/edo/courses",
+                        path: "edo/courses",
                         element: <PageTitle title={""} element={<EdoCourses/>}/>,
 
                     },
                     {
-                        path: "user/edo/events",
+                        path: "edo/events",
                         element: <PageTitle title={"Мероприятия"} element={<EdoEvents/>}/>,
                     },
                     {
-                        path: "user/edo/tests",
+                        path: "edo/tests",
                         element: <PageTitle title={""} element={<EdoTests/>}/>
                     },
                 ]

@@ -22,23 +22,18 @@
     margin-right: auto;
 }
 
-.link_inactive {
+.link {
     color: #6a7282;
     font-weight: 500;
     transition: color ease-in-out 0.2s;
 }
 
-.link_inactive:hover {
-    color: #364153;
-}
-
-.link_active {
-    color: #101828;
-    font-weight: 500;
-}
-
 .link:not(:last-child) {
     margin-right: 1rem;
+}
+
+.link:hover {
+    color: #364153;
 }
 
 .right_content {

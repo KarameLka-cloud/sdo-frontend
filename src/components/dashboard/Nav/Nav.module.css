@@ -7,9 +7,13 @@
     overflow: auto;
 }
 
-.link_inactive {
+.link {
     display: inline-flex;
     align-items: center;
+    margin-top: 0.5rem;
+}
+
+.link_inactive {
     color: #6a7282;
     font-weight: 500;
     line-height: 1.25rem;
@@ -21,8 +25,6 @@
 }
 
 .link_active {
-    display: inline-flex;
-    align-items: center;
     color: #101828;
     font-weight: 500;
     line-height: 1.25rem;

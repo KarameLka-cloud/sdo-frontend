@@ -13,7 +13,7 @@ function Nav({className = "", links = []}: NavType): JSX.Element {
                         key={id}
                         to={path}
                         className={({isActive}: NavLinkRenderProps): string =>
-                            isActive ? style.link_active : style.link_inactive
+                            isActive ? `${style.link} ${style.link_active}` : `${style.link} ${style.link_inactive}`
                         }
                     >
                         <img src={icon} alt="" className={style.icon}/>

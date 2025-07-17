@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import {NavLink, NavLinkRenderProps} from "react-router-dom";
+import {NavLink} from "react-router-dom";
 import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
@@ -15,18 +15,14 @@ function Header({className = ""}: HeaderType): JSX.Element {
                 <LogoLink href="/" className={style.logo}/>
                 <div className={style.links}>
                     <NavLink
-                        to="user"
-                        className={({isActive}: NavLinkRenderProps): string =>
-                            isActive ? `${style.link} ${style.link_active}` : `${style.link} ${style.link_inactive}`
-                        }
+                        to="/"
+                        className={style.link}
                     >
                         Главная
                     </NavLink>
                     <NavLink
                         to="admin"
-                        className={({isActive}: NavLinkRenderProps): string =>
-                            isActive ? `${style.link} ${style.link_active}` : `${style.link} ${style.link_inactive}`
-                        }
+                        className={style.link}
                     >
                         Администрирование
                     </NavLink>
