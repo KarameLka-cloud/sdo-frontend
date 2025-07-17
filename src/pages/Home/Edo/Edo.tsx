@@ -1,6 +1,7 @@
 import {JSX} from "react";
 import style from "./Edo.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
+import Loader from "../../../components/ui/Loader/Loader.tsx";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
@@ -28,7 +29,7 @@ function Edo(): JSX.Element {
                 {courseError ? (
                     <>Ошибка</>
                 ) : courseLoading ? (
-                    <>Загрузка...</>
+                    <Loader className={style.loader}/>
                 ) : courseData && courseData.length > 0 ? (
                     <>
                         <div className={style.courses_list}>
@@ -50,7 +51,7 @@ function Edo(): JSX.Element {
                 {eventError ? (
                     <>Ошибка</>
                 ) : eventLoading ? (
-                    <>Загрузка...</>
+                    <Loader className={style.loader}/>
                 ) : eventData && eventData.length > 0 ? (
                     <>
                         {eventData.slice(0, 3).map((item: EventType): JSX.Element => {
@@ -70,7 +71,7 @@ function Edo(): JSX.Element {
                 {testError ? (
                     <>Ошибка</>
                 ) : testLoading ? (
-                    <>Загрузка...</>
+                    <Loader className={style.loader}/>
                 ) : testData && testData.length > 0 ? (
                     <>
                         <div className={style.courses_list}>

@@ -12,9 +12,8 @@
     display: inline-block;
     margin: 0.5rem 0;
     font-size: 1.7rem;
-    color: #5d5db8;
+    color: var(--mfc-black-color);
     font-weight: 600;
-    text-decoration: underline;
 }
 
 .theoretical_courses_component {
@@ -24,7 +23,7 @@
 }
 
 .theoretical_courses_title {
-    color: #101828;
+    color: var(--mfc-black-color);
     font-size: 1.7rem;
     font-weight: 600;
 }
@@ -36,7 +35,7 @@
 }
 
 .general_courses_title {
-    color: #101828;
+    color: var(--mfc-black-color);
     font-size: 1.7rem;
     font-weight: 600;
 }
