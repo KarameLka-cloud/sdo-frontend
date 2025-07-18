@@ -1,5 +1,9 @@
 import {JSX} from "react";
 import {EventType} from "../../../../types/components/EventType.ts";
+import style from "./Events.module.css";
+import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../../components/ui/Loader/Loader.tsx";
+import NoData from "../../../../components/ui/NoData/NoData.tsx";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
@@ -14,9 +18,9 @@ function Events(): JSX.Element {
             <ButtonBack/>
 
             {error ? (
-                <>Ошибка</>
+                <ErrorData/>
             ) : isLoading ? (
-                <>Загрузка...</>
+                <Loader className={style.loader}/>
             ) : data != data.length ? (
                 data.map((item: EventType) => {
                     return (
@@ -24,7 +28,7 @@ function Events(): JSX.Element {
                     )
                 })
             ) : (
-                <div>Мероприятий нет</div>
+                <NoData>Мероприятий нет</NoData>
             )}
         </>
     );

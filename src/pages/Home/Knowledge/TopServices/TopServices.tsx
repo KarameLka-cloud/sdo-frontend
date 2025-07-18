@@ -1,11 +1,13 @@
 import {JSX} from "react";
 import style from "./TopServices.module.css";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
+import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 
 function TopServices(): JSX.Element {
     return (
         <>
             <HeaderPage className={style.header}>ТОП 25</HeaderPage>
+            <ButtonBack/>
 
             <h3 className={style.header_services}>Короткие услуги</h3>
 

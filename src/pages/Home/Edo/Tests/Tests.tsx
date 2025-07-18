@@ -1,6 +1,9 @@
 import {JSX} from "react";
 import style from "./Tests.module.css";
 import {CourseType} from "../../../../types/components/CourseType.ts";
+import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../../components/ui/Loader/Loader.tsx";
+import NoData from "../../../../components/ui/NoData/NoData.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage.tsx";
 import TestItem from "../../../../components/ui/Test/Test.tsx";
@@ -15,9 +18,9 @@ function Tests(): JSX.Element {
             <ButtonBack/>
 
             {testError ? (
-                <>Ошибка</>
+                <ErrorData/>
             ) : testLoading ? (
-                <>Загрузка...</>
+                <Loader className={style.loader}/>
             ) : testData && testData.length > 0 ? (
                 testData.map((item: CourseType): JSX.Element => {
                     return (
@@ -25,7 +28,7 @@ function Tests(): JSX.Element {
                     )
                 })
             ) : (
-                <div>Тестов нет</div>
+                <NoData>Тестов нет</NoData>
             )}
         </>
     )

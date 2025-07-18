@@ -1,10 +1,12 @@
 import {JSX} from "react";
 import style from "./Users.module.css";
 import {UserType} from "../../../types/components/UserType.ts";
-import {useGetUsersQuery} from "../../../services/store/features/user.ts";
+import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../components/ui/Loader/Loader.tsx";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
 import User from "../../../components/ui/User/User.tsx";
+import {useGetUsersQuery} from "../../../services/store/features/user.ts";
 
 function Users(): JSX.Element {
     const {data, error, isLoading} = useGetUsersQuery("");
@@ -15,7 +17,11 @@ function Users(): JSX.Element {
 
             <InputText placeholder={'Поиск'} className={style.input}/>
 
-            {error ? (<>Error</>) : isLoading ? (<>Loading</>) : data ? (
+            {error ? (
+                <ErrorData/>
+            ) : isLoading ? (
+                <Loader className={style.loader}/>
+            ) : data ? (
                 data.map((item: UserType): JSX.Element => {
                     return (
                         <User key={item.id} user={item} className={style.user}/>

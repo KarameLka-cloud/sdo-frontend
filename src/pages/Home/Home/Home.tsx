@@ -1,7 +1,8 @@
 import {JSX} from "react";
 import style from "./Home.module.css";
 import my_info from "../../../assets/images/my_info.svg";
-import LoaderImage from "../../../components/ui/LoaderImage/LoaderImage.tsx";
+import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../components/ui/Loader/Loader.tsx";
 import dateNow from "../../../utils/dateNow.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 
@@ -15,10 +16,9 @@ function Home(): JSX.Element {
     return (
         <>
             {error ? (
-                <>Ошибка получения данных</>
+                <ErrorData/>
             ) : isLoading ? (
-                // <>Загрузка...</>
-                <LoaderImage/>
+                <Loader className={style.loader}/>
             ) : data ? (
                 <>
                     <div className={style.info_component}>

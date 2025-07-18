@@ -1,7 +1,9 @@
 import {JSX} from "react";
 import style from "./Edo.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
+import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
+import NoData from "../../../components/ui/NoData/NoData.tsx";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
@@ -27,7 +29,7 @@ function Edo(): JSX.Element {
             <h3 className={style.header_services}>Электронные курсы</h3>
             <div className={style.container}>
                 {courseError ? (
-                    <>Ошибка</>
+                    <ErrorData/>
                 ) : courseLoading ? (
                     <Loader className={style.loader}/>
                 ) : courseData && courseData.length > 0 ? (
@@ -42,14 +44,14 @@ function Edo(): JSX.Element {
                         <SeeAllButton to="courses"/>
                     </>
                 ) : (
-                    <div>Курсов нет</div>
+                    <NoData>Курсов нет</NoData>
                 )}
             </div>
 
             <h3 className={style.header_services}>Мероприятия</h3>
             <div className={style.container}>
                 {eventError ? (
-                    <>Ошибка</>
+                    <ErrorData/>
                 ) : eventLoading ? (
                     <Loader className={style.loader}/>
                 ) : eventData && eventData.length > 0 ? (
@@ -62,14 +64,14 @@ function Edo(): JSX.Element {
                         <SeeAllButton to="events"/>
                     </>
                 ) : (
-                    <div>Мероприятий нет</div>
+                    <NoData>Мероприятий нет</NoData>
                 )}
             </div>
 
             <h3 className={style.header_services}>Назначенные тесты</h3>
             <div className={style.container}>
                 {testError ? (
-                    <>Ошибка</>
+                    <ErrorData/>
                 ) : testLoading ? (
                     <Loader className={style.loader}/>
                 ) : testData && testData.length > 0 ? (
@@ -84,7 +86,7 @@ function Edo(): JSX.Element {
                         <SeeAllButton to="tests"/>
                     </>
                 ) : (
-                    <div>Тестов нет</div>
+                    <NoData>Тестов нет</NoData>
                 )}
             </div>
         </>

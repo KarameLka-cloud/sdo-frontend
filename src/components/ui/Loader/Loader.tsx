@@ -2,7 +2,7 @@ import {SVGProps} from "react";
 
 export function Loader(props: SVGProps<SVGSVGElement>) {
     return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+        <svg xmlns="http://www.w3.org/2000/svg" width="1.59rem" height="1.59rem" display="block"
              viewBox="0 0 24 24" {...props}>
             <circle cx="4" cy="12" r="3" fill="currentColor">
                 <animate id="svgSpinners3DotsFade0" fill="freeze" attributeName="opacity"
