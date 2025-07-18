@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.47](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.46...v0.0.47) (2025-07-18)
+
+
+### Bug Fixes
+
+* Добавлены компоненты Loader, ErrorData, NoData. Полностью готов блок edo на странице home ([8d9a986](https://github.com/KarameLka-cloud/sdo-frontend/commit/8d9a9862c9f90073a626a41c9cbc4554695208ff))
+
 ### [0.0.46](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.45...v0.0.46) (2025-07-17)
 
 
