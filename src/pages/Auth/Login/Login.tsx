@@ -12,7 +12,7 @@ import {useLoginMutation} from "../../../services/store/features/auth.ts";
 
 function Login(): JSX.Element {
     const navigate: NavigateFunction = useNavigate();
-    const [login] = useLoginMutation();
+    const [login, {isLoading}] = useLoginMutation();
     const [error, setError] = useState("");
 
     const [formData, setFormData] = useState({
@@ -68,7 +68,7 @@ function Login(): JSX.Element {
                     required
                     className={style.input}
                 />
-                <ButtonSubmit className={style.button}>Войти</ButtonSubmit>
+                <ButtonSubmit className={style.button} loading={isLoading}>Войти</ButtonSubmit>
                 <img src={image_document} alt="" className={style.document_image_1}/>
                 <img src={image_document} alt="" className={style.document_image_2}/>
             </form>
