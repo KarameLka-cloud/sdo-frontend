@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.48](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.47...v0.0.48) (2025-07-21)
+
+
+### Bug Fixes
+
+* Добавлен loader загрузки в кнопку submit ([b75ca71](https://github.com/KarameLka-cloud/sdo-frontend/commit/b75ca71e74ef0e4bff6b544c6c1bd9c564c18464))
+
 ### [0.0.47](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.46...v0.0.47) (2025-07-18)
 
 
