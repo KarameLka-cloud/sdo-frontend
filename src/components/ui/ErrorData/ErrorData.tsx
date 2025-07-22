@@ -4,7 +4,7 @@ import {ErrorDataType} from "../../../types/components/ErrorDataType.ts";
 
 function ErrorData({className}: ErrorDataType): JSX.Element {
     return (
-        <div className={`${style.errorData} ${className}`}>Ошибка получения данных (•ิ_•ิ)?</div>
+        <div className={`${style.errorData} ${className}`}>Ошибка получения данных (•ิ_•ิ)</div>
     )
 }
 
