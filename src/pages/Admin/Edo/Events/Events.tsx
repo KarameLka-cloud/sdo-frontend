@@ -77,7 +77,7 @@ function Events(): JSX.Element {
                 ) : listData && listData.length > 0 ? (
                     listData.map((item: EventType) => {
                         return (
-                            <EventItem key={item.id} event={item} mutation={deleteEdoEvent}/>
+                            <EventItem key={item.id} event={item} mutation={deleteEdoEvent} className={style.event}/>
                         )
                     })
                 ) : <>Мероприятий нет</>

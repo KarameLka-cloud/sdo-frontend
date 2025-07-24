@@ -29,6 +29,6 @@
     cursor: pointer;
 }
 
-.test {
+.test:not(:first-child) {
     margin-top: 1rem;
 }

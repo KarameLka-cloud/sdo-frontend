@@ -31,3 +31,7 @@
     background-color: green;
     cursor: pointer;
 }
+
+.event:not(:first-child) {
+    margin-top: 1rem;
+}

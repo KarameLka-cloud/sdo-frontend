@@ -20,7 +20,7 @@ function Event({className, event, mutation}: EventProps): JSX.Element {
 
     return (
         <div className={`${style.event} + ${className}`}>
-            <div className={style.event_content}>
+            <div>
                 <span className={style.title}>{event.title}</span>
                 <span className={style.description}>{event.description}</span>
                 <span className={style.departments}>{event.department}</span>
