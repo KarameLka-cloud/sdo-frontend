@@ -1,9 +1,10 @@
 import {SVGProps} from "react";
+import style from "./Loader.module.css";
 
 export function Loader(props: SVGProps<SVGSVGElement>) {
     return (
         <svg xmlns="http://www.w3.org/2000/svg" width="1.59rem" height="1.59rem" display="block"
-             viewBox="0 0 24 24" {...props}>
+             viewBox="0 0 24 24" {...props} className={style.loader}>
             <circle cx="4" cy="12" r="3" fill="currentColor">
                 <animate id="svgSpinners3DotsFade0" fill="freeze" attributeName="opacity"
                          begin="0;svgSpinners3DotsFade1.end-0.25s" dur="0.75s" values="1;.2"/>

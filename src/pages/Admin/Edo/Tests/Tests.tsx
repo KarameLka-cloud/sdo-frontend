@@ -4,6 +4,8 @@ import {TestType} from "../../../../types/components/TestType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import TestItem from "../../../../components/ui/Test/Test.tsx";
+import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
     useGetEdoTestsQuery,
     useAddEdoTestMutation,
@@ -43,7 +45,11 @@ function Tests(): JSX.Element {
         <>
             <ButtonBack/>
             <div className={style.form}>
-                {addError ? (<>Error</>) : addLoading ? (<>Loading...</>) : null}
+                {addError ? (
+                    <>Error</>
+                ) : addLoading ? (
+                    <>Loading...</>
+                ) : null}
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}
                            onChange={handleChange} className={style.form_input}/>
                 <InputText type="text" name="url" placeholder="Ссылка на тест" value={formData.url}
@@ -55,9 +61,9 @@ function Tests(): JSX.Element {
             </div>
             <hr/>
             {listError ? (
-                <>Ошибка загрузки</>
+                <ErrorData/>
             ) : listLoading ? (
-                <>Загрузка...</>
+                <Loader/>
             ) : listData && listData.length > 0 ? (
                 listData.map((item: TestType) => {
                     return (

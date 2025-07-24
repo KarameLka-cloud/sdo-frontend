@@ -33,6 +33,6 @@
     width: 32%;
 }
 
-.loader {
-    margin: 0 auto;
+.event:not(:first-child) {
+    margin-top: 1rem;
 }

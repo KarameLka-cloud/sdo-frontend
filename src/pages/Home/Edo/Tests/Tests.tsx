@@ -20,7 +20,7 @@ function Tests(): JSX.Element {
             {testError ? (
                 <ErrorData/>
             ) : testLoading ? (
-                <Loader className={style.loader}/>
+                <Loader/>
             ) : testData && testData.length > 0 ? (
                 testData.map((item: CourseType): JSX.Element => {
                     return (

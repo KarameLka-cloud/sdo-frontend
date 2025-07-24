@@ -18,7 +18,7 @@ function Home(): JSX.Element {
             {error ? (
                 <ErrorData/>
             ) : isLoading ? (
-                <Loader className={style.loader}/>
+                <Loader/>
             ) : data ? (
                 <>
                     <div className={style.info_component}>

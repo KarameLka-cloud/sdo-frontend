@@ -72,9 +72,7 @@ function Login(): JSX.Element {
                 <img src={image_document} alt="" className={style.document_image_1}/>
                 <img src={image_document} alt="" className={style.document_image_2}/>
             </form>
-
             <img src={image_login_background} alt="" className={style.image}/>
-
         </div>
     );
 }

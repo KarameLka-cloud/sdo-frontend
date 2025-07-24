@@ -7,26 +7,22 @@
     background-color: var(--mfc-light-color);
 }
 
-.event:not(:first-child) {
-    margin-top: 1rem;
-}
-
-.event_title {
+.title {
     display: block;
     font-weight: 600;
 }
 
-.event_description {
+.description {
     display: block;
     color: gray;
 }
 
-.event_departments {
+.departments {
     display: block;
     font-style: italic;
 }
 
-.event_time {
+.time {
     margin-left: 1rem;
     padding: 0.4rem 1.4rem;
     border-radius: 1rem;

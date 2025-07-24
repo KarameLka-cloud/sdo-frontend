@@ -1,9 +1,11 @@
 import {JSX, useState} from "react";
 import style from "./Courses.module.css";
+import {CourseType} from "../../../../types/components/CourseType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import CourseItem from "../../../../components/ui/Course/Course.tsx";
-import {CourseType} from "../../../../types/components/CourseType.ts";
+import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
     useGetEdoCoursesQuery,
     useAddEdoCourseMutation,
@@ -43,20 +45,25 @@ function Courses(): JSX.Element {
         <>
             <ButtonBack/>
             <div className={style.form}>
-                {addError ? (<>Error</>) : addLoading ? (<>Loading...</>) : null}
+                {addError ? (
+                    <>Error</>
+                ) : addLoading ? (
+                    <>Loading...</>
+                ) : null}
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}
                            onChange={handleChange} className={style.form_input}/>
                 <InputText type="text" name="url" placeholder="Ссылка на курс" value={formData.url}
                            onChange={handleChange} className={style.form_input}/>
-                <input type="date" name="date_end" placeholder="Пройти до" value={formData.date_end} onChange={handleChange}
+                <input type="date" name="date_end" placeholder="Пройти до" value={formData.date_end}
+                       onChange={handleChange}
                        className={style.form_input_date_end}/>
                 <button onClick={handleAddEdoCourse} className={style.button_create}>Создать</button>
             </div>
             <hr/>
             {listError ? (
-                <>Ошибка загрузки</>
+                <ErrorData/>
             ) : listLoading ? (
-                <>Загрузка...</>
+                <Loader/>
             ) : listData && listData.length > 0 ? (
                 listData.map((item: CourseType) => {
                     return (

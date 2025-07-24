@@ -1,9 +1,11 @@
 import {JSX, useState} from "react";
 import style from "./Events.module.css";
-import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import EventItem from "../../../../components/ui/Event/Event.tsx";
 import {EventType} from "../../../../types/components/EventType.ts";
+import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import EventItem from "../../../../components/ui/Event/Event.tsx";
+import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
     useGetEdoEventsQuery,
     useAddEdoEventMutation,
@@ -47,7 +49,11 @@ function Events(): JSX.Element {
         <>
             <ButtonBack/>
             <div className={style.form}>
-                {addError ? (<>Error</>) : addLoading ? (<>Loading...</>) : null}
+                {addError ? (
+                    <>Error</>
+                ) : addLoading ? (
+                    <>Loading...</>
+                ) : null}
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}
                            onChange={handleChange} className={style.form_input}/>
                 <InputText type="text" name="description" placeholder="Описание" value={formData.description}
@@ -65,9 +71,9 @@ function Events(): JSX.Element {
             <hr/>
             <div>
                 {listError ? (
-                    <>Ошибка загрузки</>
+                    <ErrorData/>
                 ) : listLoading ? (
-                    <>Загрузка...</>
+                    <Loader/>
                 ) : listData && listData.length > 0 ? (
                     listData.map((item: EventType) => {
                         return (

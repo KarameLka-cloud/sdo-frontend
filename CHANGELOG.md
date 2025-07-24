@@ -64,7 +64,7 @@ All notable changes to this project will be documented in this file. See [standa
 
 ### Bug Fixes
 
-* Создан компонент SeeAllButton ([4ed667c](https://github.com/KarameLka-cloud/sdo-frontend/commit/4ed667c2a5789199c2f91e7c598c87503b76fbac))
+* Создан компонент ButtonSeeAll ([4ed667c](https://github.com/KarameLka-cloud/sdo-frontend/commit/4ed667c2a5789199c2f91e7c598c87503b76fbac))
 
 ### [0.0.40](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.39...v0.0.40) (2025-07-07)
 

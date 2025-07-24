@@ -5,11 +5,12 @@ import icon_trash from "../../../assets/images/icons/trash.svg";
 import {EventType} from "../../../types/components/EventType";
 
 type EventProps = {
+    className?: string;
     event: EventType;
     mutation?: any;
 }
 
-function Event({event, mutation}: EventProps): JSX.Element {
+function Event({className, event, mutation}: EventProps): JSX.Element {
     const handleDeleteEvent = async (id: number) => {
         const isDelete = confirm("Вы хотите удалить запись?");
         if (isDelete) {
@@ -18,11 +19,11 @@ function Event({event, mutation}: EventProps): JSX.Element {
     }
 
     return (
-        <div className={style.event}>
+        <div className={`${style.event} + ${className}`}>
             <div className={style.event_content}>
-                <span className={style.event_title}>{event.title}</span>
-                <span className={style.event_description}>{event.description}</span>
-                <span className={style.event_departments}>{event.department}</span>
+                <span className={style.title}>{event.title}</span>
+                <span className={style.description}>{event.description}</span>
+                <span className={style.departments}>{event.department}</span>
             </div>
             {
                 mutation ? (
@@ -31,7 +32,7 @@ function Event({event, mutation}: EventProps): JSX.Element {
                     </div>
                 ) : null
             }
-            <div className={style.event_time}>
+            <div className={style.time}>
                 <div style={{textAlign: "center"}}>{event.time}</div>
                 <div style={{textAlign: "center"}}>{convertDate(event.date)}</div>
             </div>

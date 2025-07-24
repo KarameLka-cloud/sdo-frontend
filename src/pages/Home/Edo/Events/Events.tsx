@@ -20,11 +20,11 @@ function Events(): JSX.Element {
             {error ? (
                 <ErrorData/>
             ) : isLoading ? (
-                <Loader className={style.loader}/>
+                <Loader/>
             ) : data != data.length ? (
                 data.map((item: EventType) => {
                     return (
-                        <EventItem key={item.id} event={item}/>
+                        <EventItem key={item.id} event={item} className={style.event}/>
                     )
                 })
             ) : (

@@ -7,7 +7,7 @@ import NoData from "../../../components/ui/NoData/NoData.tsx";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
-import SeeAllButton from "../../../components/ui/SeeAllButton/SeeAllButton";
+import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
 import {EventType} from "../../../types/components/EventType.ts";
 import {CourseType} from "../../../types/components/CourseType.ts";
 import {
@@ -31,7 +31,7 @@ function Edo(): JSX.Element {
                 {courseError ? (
                     <ErrorData/>
                 ) : courseLoading ? (
-                    <Loader className={style.loader}/>
+                    <Loader/>
                 ) : courseData && courseData.length > 0 ? (
                     <>
                         <div className={style.courses_list}>
@@ -41,7 +41,7 @@ function Edo(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <SeeAllButton to="courses"/>
+                        <ButtonSeeAll to="courses"/>
                     </>
                 ) : (
                     <NoData>Курсов нет</NoData>
@@ -53,15 +53,15 @@ function Edo(): JSX.Element {
                 {eventError ? (
                     <ErrorData/>
                 ) : eventLoading ? (
-                    <Loader className={style.loader}/>
+                    <Loader/>
                 ) : eventData && eventData.length > 0 ? (
                     <>
                         {eventData.slice(0, 3).map((item: EventType): JSX.Element => {
                             return (
-                                <EventItem key={item.id} event={item}/>
+                                <EventItem key={item.id} event={item} className={style.event}/>
                             )
                         })}
-                        <SeeAllButton to="events"/>
+                        <ButtonSeeAll to="events"/>
                     </>
                 ) : (
                     <NoData>Мероприятий нет</NoData>
@@ -73,7 +73,7 @@ function Edo(): JSX.Element {
                 {testError ? (
                     <ErrorData/>
                 ) : testLoading ? (
-                    <Loader className={style.loader}/>
+                    <Loader/>
                 ) : testData && testData.length > 0 ? (
                     <>
                         <div className={style.courses_list}>
@@ -83,7 +83,7 @@ function Edo(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <SeeAllButton to="tests"/>
+                        <ButtonSeeAll to="tests"/>
                     </>
                 ) : (
                     <NoData>Тестов нет</NoData>

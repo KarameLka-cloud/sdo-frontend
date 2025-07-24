@@ -20,7 +20,7 @@ function Users(): JSX.Element {
             {error ? (
                 <ErrorData/>
             ) : isLoading ? (
-                <Loader className={style.loader}/>
+                <Loader/>
             ) : data ? (
                 data.map((item: UserType): JSX.Element => {
                     return (

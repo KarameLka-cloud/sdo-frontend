@@ -20,7 +20,7 @@ function Courses(): JSX.Element {
             {courseError ? (
                 <ErrorData/>
             ) : courseLoading ? (
-                <Loader className={style.loader}/>
+                <Loader/>
             ) : courseData && courseData.length > 0 ? (
                 courseData.map((item: CourseType): JSX.Element => {
                     return (
