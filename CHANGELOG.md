@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.50](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.49...v0.0.50) (2025-07-24)
+
+
+### Bug Fixes
+
+* Некоторые стили вынесены в сами компоненты, исправлены недочёты в вёрстке ([c407728](https://github.com/KarameLka-cloud/sdo-frontend/commit/c4077289e3eba261e120feee15b3b2364a13f340))
+
 ### [0.0.49](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.48...v0.0.49) (2025-07-22)
 
 
