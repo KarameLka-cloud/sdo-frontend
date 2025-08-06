@@ -7,7 +7,7 @@ import dateNow from "../../../utils/dateNow.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 
 function Home(): JSX.Element {
-    const {data, error, isLoading} = useGetUserByDataQuery("me");
+    const {data, error, isLoading} = useGetUserByDataQuery("");
 
     function getName(userName: string): string {
         return userName.split(" ")[1];

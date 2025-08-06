@@ -35,6 +35,6 @@
     margin-left: auto;
     padding: 0.2rem;
     cursor: pointer;
-    background-color: #e95555;
+    background-color: var(--mfc-red-color);
     border-radius: 0.2rem;
 }

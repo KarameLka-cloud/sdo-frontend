@@ -15,7 +15,7 @@ export const user = createApi({
     }),
     endpoints: (builder) => ({
         getUserByData: builder.query({
-            query: (name) => `api/users/${name}`,
+            query: () => `api/users/me`,
         }),
         getUsers: builder.query({
             query: (): string => `api/users`

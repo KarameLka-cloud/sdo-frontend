@@ -1,11 +1,11 @@
-const firstWednesday = (): string => {
+const firstWednesday: () => string = (): string => {
     const today = new Date();
-    let year = today.getFullYear();
-    let month = today.getMonth();
+    let year: number = today.getFullYear();
+    let month: number = today.getMonth();
 
-    let firstWednesday = new Date(year, month, 1);
+    let firstWednesday: Date = new Date(year, month, 1);
 
-    while (firstWednesday.getDay() !== 3) { // 3 = среда
+    while (firstWednesday.getDay() !== 3) {
         firstWednesday.setDate(firstWednesday.getDate() + 1);
     }
 
@@ -23,9 +23,9 @@ const firstWednesday = (): string => {
         }
     }
 
-    const day = String(firstWednesday.getDate()).padStart(2, '0');
-    const monthFormatted = String(firstWednesday.getMonth() + 1).padStart(2, '0');
-    const yearFormatted = firstWednesday.getFullYear();
+    const day: string = String(firstWednesday.getDate()).padStart(2, '0');
+    const monthFormatted: string = String(firstWednesday.getMonth() + 1).padStart(2, '0');
+    const yearFormatted: string = String(firstWednesday.getFullYear());
 
     return `${day}.${monthFormatted}.${yearFormatted}`;
 }

@@ -28,9 +28,12 @@
     justify-content: space-between;
 }
 
-.course,
-.test {
+.course {
     width: 32%;
+}
+
+.test {
+    width: 24%;
 }
 
 .event:not(:first-child) {
@@ -38,5 +41,5 @@
 }
 
 .firstWednesday {
-    color: #e04e39;
+    color: var(--mfc-red-color);
 }

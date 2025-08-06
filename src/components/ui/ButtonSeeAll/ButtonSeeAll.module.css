@@ -4,6 +4,13 @@
     padding: 0.2rem 0.4rem;
     margin: 1rem 1rem 0 auto;
     border-radius: 0.6rem;
-    background-color: var(--mfc-white-color);
-    color: #101828;
+    background-color: var(--mfc-dark-color);
+    color: var(--mfc-white-color);
+    transition: background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.link:hover {
+    background-color: var(--mfc-light-color);
+    color: var(--mfc-black-color);
 }

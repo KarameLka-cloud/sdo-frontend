@@ -80,7 +80,7 @@ function Edo(): JSX.Element {
                 ) : testData && testData.length > 0 ? (
                     <>
                         <div className={style.courses_list}>
-                            {testData.slice(0, 3).map((item: CourseType): JSX.Element => {
+                            {testData.slice(0, 4).map((item: CourseType): JSX.Element => {
                                 return (
                                     <TestItem key={item.id} test={item} className={style.test}/>
                                 )

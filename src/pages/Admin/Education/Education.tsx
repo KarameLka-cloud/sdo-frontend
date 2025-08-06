@@ -6,13 +6,13 @@ import LinkService from "../../../components/ui/LinkService/LinkService.tsx";
 const links = [
     {
         id: 1,
-        title: "Электронные курсы",
-        path: "courses",
+        title: "Мероприятия",
+        path: "events",
     },
     {
         id: 2,
-        title: "Мероприятия",
-        path: "events",
+        title: "Электронные курсы",
+        path: "courses",
     },
     {
         id: 3,

@@ -6,6 +6,12 @@
     background-color: var(--mfc-light-color);
     color: #101828;
     font-weight: 600;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+}
+
+.test:hover {
+    transform: scale(1.03);
 }
 
 .content {
@@ -38,6 +44,6 @@
     margin-left: 1rem;
     padding: 0.2rem;
     cursor: pointer;
-    background-color: #e95555;
+    background-color: var(--mfc-red-color);
     border-radius: 0.2rem;
 }
