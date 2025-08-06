@@ -36,3 +36,7 @@
 .event:not(:first-child) {
     margin-top: 1rem;
 }
+
+.firstWednesday {
+    color: #e04e39;
+}

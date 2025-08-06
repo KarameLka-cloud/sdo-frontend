@@ -1,5 +1,6 @@
 import {JSX} from "react";
 import style from "./Edo.module.css";
+import {firstWednesdayData} from "../../../utils/firstWednesday.ts";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
@@ -24,7 +25,29 @@ function Edo(): JSX.Element {
 
     return (
         <>
-            <HeaderPage>Единый день обучения</HeaderPage>
+            <HeaderPage>
+                Единый день обучения <span className={style.firstWednesday}>{firstWednesdayData}</span>
+            </HeaderPage>
+
+            <h3 className={style.header_services}>Мероприятия</h3>
+            <div className={style.container}>
+                {eventError ? (
+                    <ErrorData/>
+                ) : eventLoading ? (
+                    <Loader/>
+                ) : eventData && eventData.length > 0 ? (
+                    <>
+                        {eventData.slice(0, 3).map((item: EventType): JSX.Element => {
+                            return (
+                                <EventItem key={item.id} event={item} className={style.event}/>
+                            )
+                        })}
+                        <ButtonSeeAll to="events"/>
+                    </>
+                ) : (
+                    <NoData>Мероприятий нет</NoData>
+                )}
+            </div>
 
             <h3 className={style.header_services}>Электронные курсы</h3>
             <div className={style.container}>
@@ -45,26 +68,6 @@ function Edo(): JSX.Element {
                     </>
                 ) : (
                     <NoData>Курсов нет</NoData>
-                )}
-            </div>
-
-            <h3 className={style.header_services}>Мероприятия</h3>
-            <div className={style.container}>
-                {eventError ? (
-                    <ErrorData/>
-                ) : eventLoading ? (
-                    <Loader/>
-                ) : eventData && eventData.length > 0 ? (
-                    <>
-                        {eventData.slice(0, 3).map((item: EventType): JSX.Element => {
-                            return (
-                                <EventItem key={item.id} event={item} className={style.event}/>
-                            )
-                        })}
-                        <ButtonSeeAll to="events"/>
-                    </>
-                ) : (
-                    <NoData>Мероприятий нет</NoData>
                 )}
             </div>
 

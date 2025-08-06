@@ -1,4 +1,4 @@
 export type HeaderPageType = {
-    children: string;
+    children: string | string[] | any;
     className?: string;
 }
