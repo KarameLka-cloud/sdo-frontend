@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.53](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.52...v0.0.53) (2025-08-06)
+
+
+### Bug Fixes
+
+* Добавлен глобальный красный цвет,изменен стиль кнопки смотреть всё, изменен блок отображения тестов на главной странице, добавлена анимация при наведении на курс и тест ([810fc24](https://github.com/KarameLka-cloud/sdo-frontend/commit/810fc244268dce2651bf71c2ae0248024d9fa7c3))
+
 ### [0.0.52](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.51...v0.0.52) (2025-08-06)
 
 
