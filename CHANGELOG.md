@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.52](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.51...v0.0.52) (2025-08-06)
+
+
+### Bug Fixes
+
+* Добавлено отображение даты ЕДО в заголовке ([5bcb0e4](https://github.com/KarameLka-cloud/sdo-frontend/commit/5bcb0e43a46cfe3bb510c67804bad0bea4fed9a1))
+
 ### [0.0.51](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.50...v0.0.51) (2025-07-24)
 
 
