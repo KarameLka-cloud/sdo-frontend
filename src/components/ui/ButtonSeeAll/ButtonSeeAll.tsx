@@ -5,7 +5,7 @@ import {Link} from "react-router-dom";
 
 function ButtonSeeAll({to}: ButtonSeeAllType): JSX.Element {
     return (
-        <Link to={to} className={style.link}>Смотреть все</Link>
+        <Link to={to} className={style.link}>Смотреть всё</Link>
     )
 }
 

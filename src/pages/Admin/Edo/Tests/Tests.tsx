@@ -2,7 +2,9 @@ import {JSX, useState} from "react";
 import style from "./Tests.module.css";
 import {TestType} from "../../../../types/components/TestType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
+import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import TestItem from "../../../../components/ui/Test/Test.tsx";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../../components/ui/Loader/Loader.tsx";
@@ -32,7 +34,8 @@ function Tests(): JSX.Element {
         })
     };
 
-    const handleAddEdoTest = async () => {
+    const handleAddEdoTest = async (e: any) => {
+        e.preventDefault();
         await addEdoTest(formData).unwrap();
         setFormData({
             title: "",
@@ -44,21 +47,16 @@ function Tests(): JSX.Element {
     return (
         <>
             <ButtonBack/>
-            <div className={style.form}>
-                {addError ? (
-                    <>Error</>
-                ) : addLoading ? (
-                    <>Loading...</>
-                ) : null}
+            <form onSubmit={handleAddEdoTest} className={style.form}>
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}
-                           onChange={handleChange} className={style.form_input}/>
+                           onChange={handleChange} className={style.form_input_text}/>
                 <InputText type="text" name="url" placeholder="Ссылка на тест" value={formData.url}
-                           onChange={handleChange} className={style.form_input}/>
-                <input type="date" name="date_end" placeholder="Пройти до" value={formData.date_end}
-                       onChange={handleChange}
-                       className={style.form_input_date_end}/>
-                <button onClick={handleAddEdoTest} className={style.button_create}>Создать</button>
-            </div>
+                           onChange={handleChange} className={style.form_input_text}/>
+                <InputDate type="date" name="date_end" placeholder="Пройти до" value={formData.date_end}
+                           onChange={handleChange}
+                           className={style.form_input_date_end}/>
+                <ButtonSubmit loading={addLoading} className={style.button_create}>Создать</ButtonSubmit>
+            </form>
             <hr/>
             {listError ? (
                 <ErrorData/>

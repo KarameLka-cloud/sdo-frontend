@@ -2,7 +2,10 @@ import {JSX, useState} from "react";
 import style from "./Events.module.css";
 import {EventType} from "../../../../types/components/EventType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
+import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import InputTime from "../../../../components/ui/InputTime/InputTime.tsx";
+import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import EventItem from "../../../../components/ui/Event/Event.tsx";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../../components/ui/Loader/Loader.tsx";
@@ -34,7 +37,8 @@ function Events(): JSX.Element {
         })
     };
 
-    const handleAddEdoEvent = async () => {
+    const handleAddEdoEvent = async (e: any) => {
+        e.preventDefault();
         await addEdoEvent(formData).unwrap();
         setFormData({
             title: "",
@@ -48,26 +52,21 @@ function Events(): JSX.Element {
     return (
         <>
             <ButtonBack/>
-            <div className={style.form}>
-                {addError ? (
-                    <>Error</>
-                ) : addLoading ? (
-                    <>Loading...</>
-                ) : null}
+            <form onSubmit={handleAddEdoEvent} className={style.form}>
                 <InputText type="text" name="title" placeholder="Название" value={formData.title}
-                           onChange={handleChange} className={style.form_input}/>
+                           onChange={handleChange} className={style.form_input_text}/>
                 <InputText type="text" name="description" placeholder="Описание" value={formData.description}
-                           onChange={handleChange} className={style.form_input}/>
+                           onChange={handleChange} className={style.form_input_text}/>
                 <InputText type="text" name="department" placeholder="Отделения" value={formData.department}
-                           onChange={handleChange} className={style.form_input}/>
+                           onChange={handleChange} className={style.form_input_text}/>
                 <div className={style.form_date}>
-                    <input type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange}
-                           className={style.form_input_time}/>
-                    <input type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange}
-                           className={style.form_input_date}/>
+                    <InputDate type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange}
+                               className={style.form_input_date}/>
+                    <InputTime type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange}
+                               className={style.form_input_time}/>
                 </div>
-                <button onClick={handleAddEdoEvent} className={style.button_create}>Создать</button>
-            </div>
+                <ButtonSubmit loading={addLoading} className={style.button_create}>Создать</ButtonSubmit>
+            </form>
             <hr/>
             <div>
                 {listError ? (

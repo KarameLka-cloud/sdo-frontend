@@ -8,6 +8,7 @@
     font-weight: 600;
     transform: scale(1);
     transition: transform 0.2s ease;
+    cursor: pointer;
 }
 
 .course:hover {
@@ -22,7 +23,6 @@
 .title {
     padding-bottom: 1rem;
     font-size: 1rem;
-    cursor: pointer;
 }
 
 .url {

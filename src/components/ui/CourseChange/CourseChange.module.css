@@ -1,4 +1,4 @@
-.test {
+.course {
     display: flex;
     align-items: center;
     padding: 1rem;
@@ -6,13 +6,6 @@
     background-color: var(--mfc-light-color);
     color: #101828;
     font-weight: 600;
-    transform: scale(1);
-    transition: transform 0.2s ease;
-    cursor: pointer;
-}
-
-.test:hover {
-    transform: scale(1.03);
 }
 
 .content {
@@ -23,6 +16,7 @@
 .title {
     padding-bottom: 1rem;
     font-size: 1rem;
+    cursor: pointer;
 }
 
 .url {

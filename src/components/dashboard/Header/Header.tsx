@@ -10,7 +10,7 @@ function Header({className = ""}: HeaderType): JSX.Element {
     const {data} = useGetUserByDataQuery("me");
 
     return (
-        <div className={`${style.header} + ${className}`}>
+        <header className={`${style.header} + ${className}`}>
             <div className={style.content}>
                 <LogoLink href="/" className={style.logo}/>
                 <div className={style.links}>
@@ -36,7 +36,7 @@ function Header({className = ""}: HeaderType): JSX.Element {
                     <LogoutButton className={style.logout}/>
                 </div>
             </div>
-        </div>
+        </header>
     );
 }
 
