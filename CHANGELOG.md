@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.55](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.54...v0.0.55) (2025-08-19)
+
+
+### Bug Fixes
+
+* Добавлены хуки для форм, удаления, переключения. Добавлена форма для редактирования по нажатию на карандаш. Мелкие исправления в стилях ([29251cb](https://github.com/KarameLka-cloud/sdo-frontend/commit/29251cb092378bf799b3a45cdb7a666533a9b0b7))
+
 ### [0.0.54](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.53...v0.0.54) (2025-08-08)
 
 
