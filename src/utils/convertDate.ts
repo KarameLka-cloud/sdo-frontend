@@ -3,4 +3,4 @@ const convertDate = (inputDate: string): string => {
     return `${day}.${month}.${year}`;
 }
 
-export default convertDate
+export default convertDate;

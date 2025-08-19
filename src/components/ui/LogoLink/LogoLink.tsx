@@ -4,9 +4,9 @@ import image_logo_mfc from "../../../assets/images/logo_mfc.svg";
 import {Link} from "react-router-dom";
 import {LogoLinkType} from "../../../types/components/LogoLinkType.ts";
 
-function LogoLink({href = "", className = ""}: LogoLinkType): JSX.Element {
+function LogoLink({to = "", className = ""}: LogoLinkType): JSX.Element {
     return (
-        <Link to={href} className={`${className}`}>
+        <Link to={to} className={`${className}`}>
             <img
                 src={image_logo_mfc}
                 alt="LogoLink"

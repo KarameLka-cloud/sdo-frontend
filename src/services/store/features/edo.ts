@@ -31,6 +31,13 @@ export const edo = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
+        updateEdoCourse: builder.mutation({
+            query: ({id, ...course}) => ({
+                url: `api/edo/courses/${id}`,
+                method: "UPDATE",
+                body: course,
+            })
+        }),
         deleteEdoCourse: builder.mutation({
             query: (id) => ({
                 url: `api/edo/courses/${id}`,

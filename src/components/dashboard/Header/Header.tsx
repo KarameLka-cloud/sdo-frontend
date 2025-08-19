@@ -12,7 +12,7 @@ function Header({className = ""}: HeaderType): JSX.Element {
     return (
         <header className={`${style.header} + ${className}`}>
             <div className={style.content}>
-                <LogoLink href="/" className={style.logo}/>
+                <LogoLink to="/" className={style.logo}/>
                 <div className={style.links}>
                     <NavLink
                         to="/"

@@ -1,4 +1,4 @@
-import {JSX, useState} from "react";
+import {JSX} from "react";
 import style from "./Events.module.css";
 import {EventType} from "../../../../types/components/EventType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
@@ -6,7 +6,7 @@ import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import InputTime from "../../../../components/ui/InputTime/InputTime.tsx";
 import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import EventItem from "../../../../components/ui/Event/Event.tsx";
+import EventChange from "../../../../components/ui/EventChange/EventChange.tsx";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
@@ -14,13 +14,14 @@ import {
     useAddEdoEventMutation,
     useDeleteEdoEventMutation
 } from "../../../../services/store/features/edo.ts";
+import {useForm} from "../../../../hooks/useForm.ts";
 
 function Events(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery("");
     const [addEdoEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
     const [deleteEdoEvent] = useDeleteEdoEventMutation();
 
-    const [formData, setFormData] = useState({
+    const {formItems, setFormItems, handleChange} = useForm({
         title: "",
         description: "",
         department: "",
@@ -28,19 +29,10 @@ function Events(): JSX.Element {
         date: ""
     });
 
-    const handleChange = (e: {
-        target: { name: string; value: string };
-    }): void => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value
-        })
-    };
-
     const handleAddEdoEvent = async (e: any) => {
         e.preventDefault();
-        await addEdoEvent(formData).unwrap();
-        setFormData({
+        await addEdoEvent(formItems).unwrap();
+        setFormItems({
             title: "",
             description: "",
             department: "",
@@ -53,20 +45,22 @@ function Events(): JSX.Element {
         <>
             <ButtonBack/>
             <form onSubmit={handleAddEdoEvent} className={style.form}>
-                <InputText type="text" name="title" placeholder="Название" value={formData.title}
+                <InputText type="text" name="title" placeholder="Название" value={formItems.title}
                            onChange={handleChange} className={style.form_input_text}/>
-                <InputText type="text" name="description" placeholder="Описание" value={formData.description}
+                <InputText type="text" name="description" placeholder="Описание" value={formItems.description}
                            onChange={handleChange} className={style.form_input_text}/>
-                <InputText type="text" name="department" placeholder="Отделения" value={formData.department}
+                <InputText type="text" name="department" placeholder="Отделения" value={formItems.department}
                            onChange={handleChange} className={style.form_input_text}/>
                 <div className={style.form_date}>
-                    <InputDate type="date" name="date" placeholder="Дата" value={formData.date} onChange={handleChange}
+                    <InputDate type="date" name="date" placeholder="Дата" value={formItems.date} onChange={handleChange}
                                className={style.form_input_date}/>
-                    <InputTime type="time" name="time" placeholder="Время" value={formData.time} onChange={handleChange}
+                    <InputTime type="time" name="time" placeholder="Время" value={formItems.time}
+                               onChange={handleChange}
                                className={style.form_input_time}/>
                 </div>
                 <ButtonSubmit loading={addLoading} className={style.button_create}>Создать</ButtonSubmit>
             </form>
+            {addError && (<div>Error</div>)}
             <hr/>
             <div>
                 {listError ? (
@@ -76,7 +70,7 @@ function Events(): JSX.Element {
                 ) : listData && listData.length > 0 ? (
                     listData.map((item: EventType) => {
                         return (
-                            <EventItem key={item.id} event={item} mutation={deleteEdoEvent} className={style.event}/>
+                            <EventChange key={item.id} event={item} mutation={deleteEdoEvent} className={style.event}/>
                         )
                     })
                 ) : <>Мероприятий нет</>

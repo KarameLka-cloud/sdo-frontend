@@ -7,6 +7,7 @@ import image_document from "../../../assets/images/document.svg";
 import InputText from "../../../components/ui/InputText/InputText.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import Error from "../../../components/ui/Error/Error.tsx";
+import {useForm} from "../../../hooks/useForm.ts";
 
 import {useLoginMutation} from "../../../services/store/features/auth.ts";
 
@@ -14,32 +15,21 @@ function Login(): JSX.Element {
     const navigate: NavigateFunction = useNavigate();
     const [login, {isLoading}] = useLoginMutation();
     const [error, setError] = useState("");
-
-    const [formData, setFormData] = useState({
+    const {formItems, setFormItems, handleChange} = useForm({
         login: "",
         password: "",
     });
 
-    const handleChange = (e: {
-        target: { name: string; value: string };
-    }): void => {
-        setFormData({
-            ...formData,
-            [e.target.name]: e.target.value,
-        });
-    };
-
     const handleLogin = async (e: any) => {
         e.preventDefault();
         try {
-            const result = await login(formData).unwrap();
+            const result = await login(formItems).unwrap();
             Cookie.set("auth_token", result.auth_token);
             navigate("/");
         } catch (error: any) {
             setError(error.data.message);
         }
-
-        setFormData({
+        setFormItems({
             login: "",
             password: "",
         });
@@ -53,7 +43,7 @@ function Login(): JSX.Element {
                 <InputText
                     type="text"
                     name="login"
-                    value={formData.login}
+                    value={formItems.login}
                     onChange={handleChange}
                     placeholder="Логин"
                     required
@@ -62,7 +52,7 @@ function Login(): JSX.Element {
                 <InputText
                     type="password"
                     name="password"
-                    value={formData.password}
+                    value={formItems.password}
                     onChange={handleChange}
                     placeholder="Пароль"
                     required

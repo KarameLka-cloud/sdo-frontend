@@ -1,0 +1,8 @@
+.delete_button {
+    height: 2rem;
+    width: 2rem;
+    padding: 0.2rem;
+    cursor: pointer;
+    background-color: var(--mfc-red-color);
+    border-radius: 0.2rem;
+}

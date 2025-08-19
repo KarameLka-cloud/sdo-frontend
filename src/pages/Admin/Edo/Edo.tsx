@@ -27,7 +27,7 @@ function Edo(): JSX.Element {
             <HeaderPage>Единый день обучения</HeaderPage>
             <div className={style.links}>
                 {links.map((link) => (
-                    <LinkService key={link.id} item={link}/>
+                    <LinkService key={link.id} link={link}/>
                 ))}
             </div>
         </>

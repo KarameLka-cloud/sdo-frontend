@@ -1,4 +1,4 @@
 export type LogoLinkType = {
-    href?: string;
+    to?: string;
     className?: string;
 }
