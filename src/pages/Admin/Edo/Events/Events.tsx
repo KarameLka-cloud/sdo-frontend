@@ -12,13 +12,15 @@ import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
     useGetEdoEventsQuery,
     useAddEdoEventMutation,
-    useDeleteEdoEventMutation
+    useUpdateEdoEventMutation,
+    useDeleteEdoEventMutation,
 } from "../../../../services/store/features/edo.ts";
 import {useForm} from "../../../../hooks/useForm.ts";
 
 function Events(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery("");
     const [addEdoEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
+    const [updateEdoEvent] = useUpdateEdoEventMutation();
     const [deleteEdoEvent] = useDeleteEdoEventMutation();
 
     const {formItems, setFormItems, handleChange} = useForm({
@@ -70,7 +72,9 @@ function Events(): JSX.Element {
                 ) : listData && listData.length > 0 ? (
                     listData.map((item: EventType) => {
                         return (
-                            <EventChange key={item.id} event={item} mutation={deleteEdoEvent} className={style.event}/>
+                            <EventChange key={item.id} event={item} mutationDelete={deleteEdoEvent}
+                                         mutationUpdate={updateEdoEvent}
+                                         className={style.event}/>
                         )
                     })
                 ) : <>Мероприятий нет</>

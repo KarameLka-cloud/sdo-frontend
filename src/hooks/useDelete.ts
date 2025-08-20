@@ -8,11 +8,11 @@ export const useDelete = <T extends (id: any) => any>(
         async (id: Parameters<T>[0]) => {
             const isConfirm = confirm(message);
             if (!isConfirm) return;
-            try {
-                await mutation(id).unwrap();
-            } catch (e) {
-                console.error("Ошибка при выполнении мутации:", e);
-            }
+            // try {
+            await mutation(id).unwrap();
+            // } catch (e) {
+            //     console.error("Ошибка при выполнении мутации:", e);
+            // }
         },
         [mutation, message]
     )

@@ -34,9 +34,10 @@ export const edo = createApi({
         updateEdoCourse: builder.mutation({
             query: ({id, ...course}) => ({
                 url: `api/edo/courses/${id}`,
-                method: "UPDATE",
+                method: "PATCH",
                 body: course,
-            })
+            }),
+            invalidatesTags: ['Courses'],
         }),
         deleteEdoCourse: builder.mutation({
             query: (id) => ({
@@ -58,6 +59,14 @@ export const edo = createApi({
             query: (event) => ({
                 url: "api/edo/events",
                 method: "POST",
+                body: event,
+            }),
+            invalidatesTags: ['Events'],
+        }),
+        updateEdoEvent: builder.mutation({
+            query: ({id, ...event}) => ({
+                url: `api/edo/events/${id}`,
+                method: "PATCH",
                 body: event,
             }),
             invalidatesTags: ['Events'],
@@ -86,6 +95,14 @@ export const edo = createApi({
             }),
             invalidatesTags: ['Tests'],
         }),
+        updateEdoTest: builder.mutation({
+            query: ({id, ...test}) => ({
+                url: `api/edo/tests/${id}`,
+                method: "PATCH",
+                body: test,
+            }),
+            invalidatesTags: ['Tests'],
+        }),
         deleteEdoTest: builder.mutation({
             query: (id) => ({
                 url: `api/edo/tests/${id}`,
@@ -99,11 +116,14 @@ export const edo = createApi({
 export const {
     useGetEdoCoursesQuery,
     useAddEdoCourseMutation,
+    useUpdateEdoCourseMutation,
     useDeleteEdoCourseMutation,
     useGetEdoEventsQuery,
     useAddEdoEventMutation,
+    useUpdateEdoEventMutation,
     useDeleteEdoEventMutation,
     useGetEdoTestsQuery,
     useAddEdoTestMutation,
+    useUpdateEdoTestMutation,
     useDeleteEdoTestMutation,
 } = edo;

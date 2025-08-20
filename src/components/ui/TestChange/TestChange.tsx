@@ -4,8 +4,9 @@ import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
 import style from "./TestChange.module.css";
 import convertDate from "../../../utils/convertDate.ts";
-import icon_trash from "../../../assets/images/icons/trash.svg";
 import {JSX} from "react";
+import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
+import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
 
 
 type TestProps = {
@@ -21,7 +22,7 @@ function TestChange({className, test, mutation}: TestProps): JSX.Element {
         date_end: test.date_end,
     });
     const {value: edit, toggle: handleEdit} = useToggle();
-    const handleDelete = useDelete(mutation, "Удалить курс?");
+    const handleDelete = useDelete(mutation, "Удалить тест?");
 
     return (
         <div className={`${style.test} ${className}`}>
@@ -37,12 +38,8 @@ function TestChange({className, test, mutation}: TestProps): JSX.Element {
                     <div className={style.date_end}>{convertDate(test.date_end)}</div>
                 </div>
             }
-            <div onClick={handleEdit} className={style.delete_button}>
-                <img src={icon_trash} alt="Кнопка редактировать"/>
-            </div>
-            <div onClick={() => handleDelete(test.id)} className={style.delete_button}>
-                <img src={icon_trash} alt="Кнопка удалить"/>
-            </div>
+            {edit && <ButtonDelete onClick={() => handleDelete(test.id)}/>}
+            <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
         </div>
     )
 }

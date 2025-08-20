@@ -1,11 +1,12 @@
 import {JSX} from "react";
-import icon_trash from "../../../assets/images/icons/trash.svg";
 import convertDate from "../../../utils/convertDate.ts";
 import style from "./CourseChange.module.css";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
 import {TestType} from "../../../types/components/TestType.ts";
+import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
+import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
 
 type CourseProps = {
     className?: string;
@@ -36,12 +37,8 @@ function CourseChange({className, course, mutation}: CourseProps): JSX.Element {
                     <div className={style.date_end}>{convertDate(course.date_end)}</div>
                 </div>
             }
-            <div onClick={handleEdit} className={style.delete_button}>
-                <img src={icon_trash} alt="Кнопка редактировать"/>
-            </div>
-            <div onClick={() => handleDelete(course.id)} className={style.delete_button}>
-                <img src={icon_trash} alt="Кнопка удалить"/>
-            </div>
+            {edit && <ButtonDelete onClick={() => handleDelete(course.id)}/>}
+            <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
         </div>
     )
 }
