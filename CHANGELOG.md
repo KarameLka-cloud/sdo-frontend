@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.57](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.56...v0.0.57) (2025-08-21)
+
+
+### Bug Fixes
+
+* Добавлено два глобальных цвета, готовы все страницы в админке в разделе едо, изменения стилей в блоках для редактирования ([8baa7e2](https://github.com/KarameLka-cloud/sdo-frontend/commit/8baa7e2dae9ccc063e6f35a0298026d6d67c9379))
+
 ### [0.0.56](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.55...v0.0.56) (2025-08-20)
 
 
