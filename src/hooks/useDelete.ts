@@ -1,6 +1,6 @@
 import {useCallback} from "react";
 
-export const useDelete = <T extends (id: any) => any>(
+export const useDelete = <T extends (id: number) => any>(
     mutation: T,
     message = "Вы хотите удалить запись?"
 ) => {

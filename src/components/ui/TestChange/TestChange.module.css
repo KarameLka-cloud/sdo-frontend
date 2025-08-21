@@ -8,6 +8,16 @@
     font-weight: 600;
 }
 
+.form {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+}
+
+.input:not(:last-child) {
+    margin-bottom: 0.2rem;
+}
+
 .content {
     width: 100%;
     margin-right: auto;
@@ -19,16 +29,13 @@
 
 .url,
 .date_end {
-    color: gray;
+    color: var(--mfc-gray-color);
     font-size: 0.9rem;
 }
 
-.delete_button {
-    height: 2rem;
-    width: 2rem;
-    margin-left: 1rem;
-    padding: 0.2rem;
-    cursor: pointer;
-    background-color: var(--mfc-red-color);
-    border-radius: 0.2rem;
+.button_edit,
+.button_close,
+.button_save,
+.button_delete {
+    margin-left: 0.5rem;
 }

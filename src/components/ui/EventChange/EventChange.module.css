@@ -14,6 +14,10 @@
     flex-direction: column;
 }
 
+.input:not(:last-child) {
+    margin-bottom: 0.2rem;
+}
+
 .content {
     width: 100%;
     margin-right: auto;
@@ -26,8 +30,12 @@
 .description,
 .department,
 .date_time {
-    color: gray;
+    color: var(--mfc-gray-color);
     font-size: 0.9rem;
+}
+
+.date_time {
+    color: var(--mfc-black-color);
 }
 
 .button_edit,

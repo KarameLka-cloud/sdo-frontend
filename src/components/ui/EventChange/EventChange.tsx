@@ -37,9 +37,12 @@ function EventChange({className, event, mutationDelete, mutationUpdate}: EventPr
         <div className={`${style.event} ${className}`}>
             {edit ?
                 <div className={style.form}>
-                    <InputText type="text" name="title" value={formItems.title} onChange={handleChange}/>
-                    <InputText type="text" name="description" value={formItems.description} onChange={handleChange}/>
-                    <InputText type="text" name="department" value={formItems.department} onChange={handleChange}/>
+                    <InputText type="text" name="title" value={formItems.title} onChange={handleChange}
+                               className={style.input}/>
+                    <InputText type="text" name="description" value={formItems.description} onChange={handleChange}
+                               className={style.input}/>
+                    <InputText type="text" name="department" value={formItems.department} onChange={handleChange}
+                               className={style.input}/>
                     <div>
                         <InputDate type="date" name="date" value={formItems.date} onChange={handleChange}/>
                         <InputTime type="time" name="time" value={formItems.time} onChange={handleChange}/>
@@ -56,7 +59,7 @@ function EventChange({className, event, mutationDelete, mutationUpdate}: EventPr
                 <ButtonSave onClick={() => handleUpdate({id: event.id, ...formItems})} className={style.button_save}/>}
             {edit ? <ButtonClose onClick={handleEdit} className={style.button_close}/> :
                 <ButtonEdit onClick={handleEdit} className={style.button_edit}/>}
-            <ButtonDelete onClick={() => handleDelete(event.id)} className={style.button_delete}/>
+            {!edit && <ButtonDelete onClick={() => handleDelete(event.id)} className={style.button_delete}/>}
         </div>
     )
 }

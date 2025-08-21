@@ -11,14 +11,15 @@ import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
     useGetEdoTestsQuery,
     useAddEdoTestMutation,
-    useDeleteEdoTestMutation
+    useDeleteEdoTestMutation, useUpdateEdoTestMutation
 } from "../../../../services/store/features/edo.ts";
 import {useForm} from "../../../../hooks/useForm.ts";
 
 function Tests(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoTestsQuery("");
     const [addEdoTest, {isLoading: addLoading, isError: addError}] = useAddEdoTestMutation();
-    const [deleteTest] = useDeleteEdoTestMutation();
+    const [updateEdoTest] = useUpdateEdoTestMutation();
+    const [deleteEdoTest] = useDeleteEdoTestMutation();
 
     const {formItems, setFormItems, handleChange} = useForm({
         title: "",
@@ -58,7 +59,9 @@ function Tests(): JSX.Element {
             ) : listData && listData.length > 0 ? (
                 listData.map((item: TestType) => {
                     return (
-                        <TestChange key={item.id} test={item} mutation={deleteTest} className={style.test}/>
+                        <TestChange key={item.id} test={item} mutationUpdate={updateEdoTest}
+                                    mutationDelete={deleteEdoTest}
+                                    className={style.test}/>
                     )
                 })
             ) : <>Тестов нет</>

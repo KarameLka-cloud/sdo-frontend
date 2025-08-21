@@ -11,6 +11,7 @@ import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import {
     useGetEdoCoursesQuery,
     useAddEdoCourseMutation,
+    useUpdateEdoCourseMutation,
     useDeleteEdoCourseMutation
 } from "../../../../services/store/features/edo.ts";
 import {useForm} from "../../../../hooks/useForm.ts";
@@ -18,6 +19,7 @@ import {useForm} from "../../../../hooks/useForm.ts";
 function Courses(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoCoursesQuery("");
     const [addEdoCourse, {isLoading: addLoading, isError: addError}] = useAddEdoCourseMutation();
+    const [updateEdoCourse] = useUpdateEdoCourseMutation();
     const [deleteEdoCourse] = useDeleteEdoCourseMutation();
 
     const {formItems, setFormItems, handleChange} = useForm({
@@ -57,7 +59,8 @@ function Courses(): JSX.Element {
             ) : listData && listData.length > 0 ? (
                 listData.map((item: CourseType) => {
                     return (
-                        <CourseChange key={item.id} course={item} mutation={deleteEdoCourse} className={style.course}/>
+                        <CourseChange key={item.id} course={item} mutationDelete={deleteEdoCourse}
+                                      mutationUpdate={updateEdoCourse} className={style.course}/>
                     )
                 })
             ) : <>Курсов нет</>
