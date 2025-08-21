@@ -1,3 +1,4 @@
+import * as React from "react";
 import {JSX, useState} from "react";
 import style from "./Login.module.css";
 import {NavigateFunction, useNavigate} from "react-router-dom";
@@ -8,7 +9,6 @@ import InputText from "../../../components/ui/InputText/InputText.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import Error from "../../../components/ui/Error/Error.tsx";
 import {useForm} from "../../../hooks/useForm.ts";
-
 import {useLoginMutation} from "../../../services/store/features/auth.ts";
 
 function Login(): JSX.Element {
@@ -20,7 +20,7 @@ function Login(): JSX.Element {
         password: "",
     });
 
-    const handleLogin = async (e: any) => {
+    const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
             const result = await login(formItems).unwrap();

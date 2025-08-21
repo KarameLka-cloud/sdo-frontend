@@ -1,3 +1,4 @@
+import * as React from "react";
 import {JSX} from "react";
 import style from "./Tests.module.css";
 import {TestType} from "../../../../types/components/TestType.ts";
@@ -27,7 +28,7 @@ function Tests(): JSX.Element {
         date_end: ""
     });
 
-    const handleAddEdoTest = async (e: any) => {
+    const handleAddEdoTest = async (e: React.FormEvent) => {
         e.preventDefault();
         await addEdoTest(formItems).unwrap();
         setFormItems({

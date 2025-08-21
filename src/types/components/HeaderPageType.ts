@@ -1,4 +1,6 @@
+import {ReactNode} from "react";
+
 export type HeaderPageType = {
-    children: string | string[] | any;
+    children: ReactNode
     className?: string;
 }

@@ -1,3 +1,4 @@
+import * as React from "react";
 import {JSX} from "react";
 import style from "./Courses.module.css";
 import {CourseType} from "../../../../types/components/CourseType.ts";
@@ -28,7 +29,7 @@ function Courses(): JSX.Element {
         date_end: "",
     });
 
-    const handleAddEdoCourse = async (e: any) => {
+    const handleAddEdoCourse = async (e: React.FormEvent) => {
         e.preventDefault();
         await addEdoCourse(formItems).unwrap();
         setFormItems({

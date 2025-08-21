@@ -1,3 +1,4 @@
+import * as React from "react";
 import {JSX} from "react";
 import style from "./Events.module.css";
 import {EventType} from "../../../../types/components/EventType.ts";
@@ -31,7 +32,7 @@ function Events(): JSX.Element {
         date: ""
     });
 
-    const handleAddEdoEvent = async (e: any) => {
+    const handleAddEdoEvent = async (e: React.FormEvent) => {
         e.preventDefault();
         await addEdoEvent(formItems).unwrap();
         setFormItems({
