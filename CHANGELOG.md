@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.59](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.58...v0.0.59) (2025-08-26)
+
+
+### Bug Fixes
+
+* Добавлен функционал в админке для создания контента на странице образования ([f3bcdf9](https://github.com/KarameLka-cloud/sdo-frontend/commit/f3bcdf9fa1e017e83c84f8dea5b462f7dfc8e9d8))
+
 ### [0.0.58](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.57...v0.0.58) (2025-08-21)
 
 
