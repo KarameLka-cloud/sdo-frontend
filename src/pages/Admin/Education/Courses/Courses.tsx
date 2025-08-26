@@ -1,8 +1,73 @@
+import * as React from "react";
 import {JSX} from "react";
+import style from "./Courses.module.css";
+import {CourseType} from "../../../../types/components/CourseType.ts";
+import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
+import InputText from "../../../../components/ui/InputText/InputText.tsx";
+import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
+import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import CourseChange from "../../../../components/ui/CourseChange/CourseChange.tsx";
+import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
+import Loader from "../../../../components/ui/Loader/Loader.tsx";
+import {
+    useGetEducationCoursesQuery,
+    useAddEducationCourseMutation,
+    useUpdateEducationCourseMutation,
+    useDeleteEducationCourseMutation,
+} from "../../../../services/store/features/education.ts";
+import {useForm} from "../../../../hooks/useForm.ts";
 
 function Courses(): JSX.Element {
+    const {data: listData, isLoading: listLoading, isError: listError} = useGetEducationCoursesQuery("");
+    const [addCourse, {isLoading: addLoading, isError: addError}] = useAddEducationCourseMutation();
+    const [updateCourse] = useUpdateEducationCourseMutation();
+    const [deleteCourse] = useDeleteEducationCourseMutation();
+
+    const {formItems, setFormItems, handleChange} = useForm({
+        title: "",
+        url: "",
+        date_end: "",
+    });
+
+    const handleAddEdoCourse = async (e: React.FormEvent) => {
+        e.preventDefault();
+        await addCourse(formItems).unwrap();
+        setFormItems({
+            title: "",
+            url: "",
+            date_end: "",
+        })
+    };
+
     return (
-        <>Edit courses page</>
+        <>
+            <ButtonBack/>
+            <form onSubmit={handleAddEdoCourse} className={style.form}>
+                <InputText type="text" name="title" placeholder="Название" value={formItems.title}
+                           onChange={handleChange} className={style.form_input_text}/>
+                <InputText type="text" name="url" placeholder="Ссылка на курс" value={formItems.url}
+                           onChange={handleChange} className={style.form_input_text}/>
+                <InputDate type="date" name="date_end" placeholder="Пройти до" value={formItems.date_end}
+                           onChange={handleChange} className={style.form_input_date_end}/>
+                <ButtonSubmit loading={addLoading} className={style.button_create}>Создать</ButtonSubmit>
+            </form>
+            {addError && (<div>Error</div>)}
+            <hr/>
+            {listError ? (
+                <ErrorData/>
+            ) : listLoading ? (
+                <Loader/>
+            ) : listData && listData.length > 0 ? (
+                listData.map((item: CourseType) => {
+                    return (
+                        <CourseChange key={item.id} course={item} mutationUpdate={updateCourse}
+                                      mutationDelete={deleteCourse}
+                                      className={style.course}/>
+                    )
+                })
+            ) : <>Курсов нет</>
+            }
+        </>
     )
 }
 

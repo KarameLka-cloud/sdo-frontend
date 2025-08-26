@@ -18,9 +18,9 @@ import {useForm} from "../../../../hooks/useForm.ts";
 
 function Tests(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoTestsQuery("");
-    const [addEdoTest, {isLoading: addLoading, isError: addError}] = useAddEdoTestMutation();
-    const [updateEdoTest] = useUpdateEdoTestMutation();
-    const [deleteEdoTest] = useDeleteEdoTestMutation();
+    const [addTest, {isLoading: addLoading, isError: addError}] = useAddEdoTestMutation();
+    const [updateTest] = useUpdateEdoTestMutation();
+    const [deleteTest] = useDeleteEdoTestMutation();
 
     const {formItems, setFormItems, handleChange} = useForm({
         title: "",
@@ -30,7 +30,7 @@ function Tests(): JSX.Element {
 
     const handleAddEdoTest = async (e: React.FormEvent) => {
         e.preventDefault();
-        await addEdoTest(formItems).unwrap();
+        await addTest(formItems).unwrap();
         setFormItems({
             title: "",
             url: "",
@@ -60,8 +60,8 @@ function Tests(): JSX.Element {
             ) : listData && listData.length > 0 ? (
                 listData.map((item: TestType) => {
                     return (
-                        <TestChange key={item.id} test={item} mutationUpdate={updateEdoTest}
-                                    mutationDelete={deleteEdoTest}
+                        <TestChange key={item.id} test={item} mutationUpdate={updateTest}
+                                    mutationDelete={deleteTest}
                                     className={style.test}/>
                     )
                 })

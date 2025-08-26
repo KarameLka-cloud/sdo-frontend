@@ -1,10 +1,3 @@
-.header_services {
-    margin: 0 0 0.6rem 0;
-    color: var(--mfc-black-color);
-    font-size: 1.4rem;
-    font-weight: 400;
-}
-
 .container {
     padding: 1rem;
     border-radius: 1rem;
@@ -25,15 +18,22 @@
 .courses_list,
 .tests_list {
     display: flex;
-    justify-content: space-between;
 }
 
 .course {
     width: 32%;
 }
 
+.course:not(:first-child) {
+    margin-left: 1%;
+}
+
 .test {
     width: 24%;
+}
+
+.test:not(:first-child) {
+    margin-left: 1%;
 }
 
 .event:not(:first-child) {

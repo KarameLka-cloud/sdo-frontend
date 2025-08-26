@@ -19,9 +19,9 @@ import {useForm} from "../../../../hooks/useForm.ts";
 
 function Courses(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoCoursesQuery("");
-    const [addEdoCourse, {isLoading: addLoading, isError: addError}] = useAddEdoCourseMutation();
-    const [updateEdoCourse] = useUpdateEdoCourseMutation();
-    const [deleteEdoCourse] = useDeleteEdoCourseMutation();
+    const [addCourse, {isLoading: addLoading, isError: addError}] = useAddEdoCourseMutation();
+    const [updateCourse] = useUpdateEdoCourseMutation();
+    const [deleteCourse] = useDeleteEdoCourseMutation();
 
     const {formItems, setFormItems, handleChange} = useForm({
         title: "",
@@ -31,7 +31,7 @@ function Courses(): JSX.Element {
 
     const handleAddEdoCourse = async (e: React.FormEvent) => {
         e.preventDefault();
-        await addEdoCourse(formItems).unwrap();
+        await addCourse(formItems).unwrap();
         setFormItems({
             title: "",
             url: "",
@@ -60,8 +60,9 @@ function Courses(): JSX.Element {
             ) : listData && listData.length > 0 ? (
                 listData.map((item: CourseType) => {
                     return (
-                        <CourseChange key={item.id} course={item} mutationDelete={deleteEdoCourse}
-                                      mutationUpdate={updateEdoCourse} className={style.course}/>
+                        <CourseChange key={item.id} course={item} mutationUpdate={updateCourse}
+                                      mutationDelete={deleteCourse}
+                                      className={style.course}/>
                     )
                 })
             ) : <>Курсов нет</>

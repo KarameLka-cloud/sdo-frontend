@@ -18,8 +18,8 @@ import {
 } from "../../../services/store/features/edo.ts";
 
 function Edo(): JSX.Element {
-    const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEdoEventsQuery("");
+    const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");
     const {data: testData, error: testError, isLoading: testLoading} = useGetEdoTestsQuery("");
 
 

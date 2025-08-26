@@ -20,9 +20,9 @@ import {useForm} from "../../../../hooks/useForm.ts";
 
 function Events(): JSX.Element {
     const {data: listData, isLoading: listLoading, isError: listError} = useGetEdoEventsQuery("");
-    const [addEdoEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
-    const [updateEdoEvent] = useUpdateEdoEventMutation();
-    const [deleteEdoEvent] = useDeleteEdoEventMutation();
+    const [addEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
+    const [updateEvent] = useUpdateEdoEventMutation();
+    const [deleteEvent] = useDeleteEdoEventMutation();
 
     const {formItems, setFormItems, handleChange} = useForm({
         title: "",
@@ -34,7 +34,7 @@ function Events(): JSX.Element {
 
     const handleAddEdoEvent = async (e: React.FormEvent) => {
         e.preventDefault();
-        await addEdoEvent(formItems).unwrap();
+        await addEvent(formItems).unwrap();
         setFormItems({
             title: "",
             description: "",
@@ -73,8 +73,8 @@ function Events(): JSX.Element {
                 ) : listData && listData.length > 0 ? (
                     listData.map((item: EventType) => {
                         return (
-                            <EventChange key={item.id} event={item} mutationDelete={deleteEdoEvent}
-                                         mutationUpdate={updateEdoEvent}
+                            <EventChange key={item.id} event={item} mutationUpdate={updateEvent}
+                                         mutationDelete={deleteEvent}
                                          className={style.event}/>
                         )
                     })
