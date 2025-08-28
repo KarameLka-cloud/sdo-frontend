@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.60](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.59...v0.0.60) (2025-08-28)
+
+
+### Bug Fixes
+
+* Функция logout вынесена в хук, переделан компонент ProtectedRoutes, добавлена проверка на роль администратора ([5489093](https://github.com/KarameLka-cloud/sdo-frontend/commit/54890931dd5f79ed290b68b734716b83c1ffcbcf))
+
 ### [0.0.59](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.58...v0.0.59) (2025-08-26)
 
 
