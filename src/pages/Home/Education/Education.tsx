@@ -7,13 +7,19 @@ import {EventType} from "../../../types/components/EventType.ts";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
 import NoData from "../../../components/ui/NoData/NoData.tsx";
-import {useGetEducationEventsQuery, useGetEducationCoursesQuery} from "../../../services/store/features/education.ts";
+import {
+    useGetEducationEventsQuery,
+    useGetEducationCoursesQuery,
+    useGetEducationTestsQuery
+} from "../../../services/store/features/education.ts";
 import {CourseType} from "../../../types/components/CourseType.ts";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
+import TestItem from "../../../components/ui/Test/Test.tsx";
 
 function Education(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEducationEventsQuery("");
     const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEducationCoursesQuery("");
+    const {data: testData, error: testError, isLoading: testLoading} = useGetEducationTestsQuery("");
 
     return (
         <>
@@ -58,6 +64,28 @@ function Education(): JSX.Element {
                     </>
                 ) : (
                     <NoData>Курсов нет</NoData>
+                )}
+            </div>
+
+            <h3 className={style.header_services}>Назначенные тесты</h3>
+            <div className={style.container}>
+                {testError ? (
+                    <ErrorData/>
+                ) : testLoading ? (
+                    <Loader/>
+                ) : testData && testData.length > 0 ? (
+                    <>
+                        <div className={style.courses_list}>
+                            {testData.slice(0, 4).map((item: CourseType): JSX.Element => {
+                                return (
+                                    <TestItem key={item.id} test={item} className={style.test}/>
+                                )
+                            })}
+                        </div>
+                        <ButtonSeeAll to="tests"/>
+                    </>
+                ) : (
+                    <NoData>Тестов нет</NoData>
                 )}
             </div>
         </>

@@ -1,5 +1,5 @@
 import {createBrowserRouter, Navigate} from "react-router-dom";
-import {ProtectedRouteLogin, ProtectedRouteDashboard} from "../components/protected/ProtectedRoutes.tsx";
+import {ProtectedRoute, ProtectedRouteAdmin} from "../components/protected/ProtectedRoutes.tsx";
 import PageTitle from "../components/PageTitle.tsx";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout.tsx";
 import DashboardLayout from "../layouts/DashboardLayout/DashboardLayout.tsx";
@@ -42,7 +42,7 @@ const AppRoutes = createBrowserRouter([
         element: <Navigate to="users"/>,
     },
     {
-        element: <ProtectedRouteLogin element={<AuthLayout/>}/>,
+        element: <ProtectedRoute elementLogin={<AuthLayout/>} route={"login"}/>,
         children: [
             {
                 path: "login",
@@ -51,7 +51,7 @@ const AppRoutes = createBrowserRouter([
         ],
     },
     {
-        element: <ProtectedRouteDashboard element={<DashboardLayout/>}/>,
+        element: <ProtectedRoute elementDashboard={<DashboardLayout/>} route={"dashboard"}/>,
         children: [
             {
                 element: <HomeLayout/>,
@@ -116,7 +116,7 @@ const AppRoutes = createBrowserRouter([
                 ]
             },
             {
-                element: <AdminLayout/>,
+                element: <ProtectedRouteAdmin elementAdmin={<AdminLayout/>}/>,
                 children: [
                     {
                         path: "admin/users",

@@ -7,30 +7,33 @@ import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 import {HeaderType} from "../../../types/components/HeaderType.ts";
 
 function Header({className = ""}: HeaderType): JSX.Element {
-    const {data} = useGetUserByDataQuery("me");
+    const {data: user} = useGetUserByDataQuery("me");
 
     return (
         <header className={`${style.header} + ${className}`}>
             <div className={style.content}>
                 <LogoLink to="/" className={style.logo}/>
-                <div className={style.links}>
-                    <NavLink
-                        to="/"
-                        className={style.link}
-                    >
-                        Главная
-                    </NavLink>
-                    <NavLink
-                        to="admin"
-                        className={style.link}
-                    >
-                        Администрирование
-                    </NavLink>
-                </div>
+                {user?.role === "admin" &&
+                    <div className={style.links}>
+                        <NavLink
+                            to="/"
+                            className={style.link}
+                        >
+                            Главная
+                        </NavLink>
+                        <NavLink
+                            to="admin"
+                            className={style.link}
+                        >
+                            Администрирование
+                        </NavLink>
+                    </div>
+                }
+
                 <div className={style.right_content}>
-                    {data ? (
+                    {user ? (
                         <div className={style.name}>
-                            {`${data.name.split(" ")[1]} ${data.name.split(" ")[0][0]}.`}
+                            {`${user.name.split(" ")[1]} ${user.name.split(" ")[0][0]}.`}
                         </div>
                     ) : null}
                     <LogoutButton className={style.logout}/>

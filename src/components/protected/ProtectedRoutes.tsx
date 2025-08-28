@@ -1,43 +1,45 @@
 import {JSX} from "react";
 import Cookie from "js-cookie";
 import {Navigate} from "react-router-dom";
-
-// type ProtectedRouteProps = {
-//     element: JSX.Element;
-//     /**
-//      * `restricted` — маршрут только для НЕавторизованных (например, `/auth`).
-//      * `private` — маршрут только для авторизованных (например, `/dashboard`).
-//      */
-//     access: "restricted" | "private";
-//     redirectTo?: string;
-// }
-//
-// function ProtectedRoute({element, access}: ProtectedRouteProps): JSX.Element {
-//     const isAuth = Cookie.get("auth_token") != null;
-//
-//     if (access === "private" && !isAuth) {
-//         return <Navigate to={redirectTo || "/"} replace/>;
-//     }
-//
-//     if (access === "restricted" && isAuth) {
-//         return <Navigate to={redirectTo || "auth"} replace/>;
-//     }
-//
-//     return element;
-// }
+import {useGetUserByDataQuery} from "../../services/store/features/user.ts";
 
 type ProtectedRouteProps = {
-    element: JSX.Element;
+    elementLogin?: JSX.Element;
+    elementDashboard?: JSX.Element;
+    elementAdmin?: JSX.Element;
+    route?: "login" | "dashboard";
 }
 
-export const ProtectedRouteLogin = ({element}: ProtectedRouteProps): JSX.Element => {
-    const isAuth: boolean = Cookie.get("auth_token") == null;
-    return !isAuth ? <Navigate to="/" replace/> : element;
+const ProtectedRoute = ({elementDashboard, elementLogin, route}: ProtectedRouteProps) => {
+    // const {isLoading, error} = useGetUserByDataQuery("me");
+    const isAuth = Boolean(Cookie.get("auth_token"));
+    if (isAuth) {
+        if (route === "login") {
+            return <Navigate to="/" replace/>;
+        }
+        // if (!isLoading) {
+        //     if (error) {
+        //         Cookie.remove("auth_token");
+        //         return <Navigate to="login" replace/>
+        //     }
+        // }
+        return elementDashboard;
+    } else {
+        if (route === "dashboard") {
+            return <Navigate to="login" replace/>;
+        }
+        return elementLogin;
+    }
 }
 
-export const ProtectedRouteDashboard = ({element}: ProtectedRouteProps): JSX.Element => {
-    const isAuth: boolean = Cookie.get("auth_token") == null;
-    return !isAuth ? element : <Navigate to="login" replace/>;
-}
+const ProtectedRouteAdmin = ({elementAdmin}: ProtectedRouteProps) => {
+    const {data: user, isLoading} = useGetUserByDataQuery("me");
+    if (!isLoading) {
+        if (user?.role !== "admin") {
+            return <Navigate to="home" replace/>;
+        }
+    }
+    return elementAdmin;
+};
 
-export default {ProtectedRouteLogin, ProtectedRouteDashboard};
+export {ProtectedRoute, ProtectedRouteAdmin};

@@ -39,6 +39,7 @@
 .right_content {
     display: flex;
     align-items: center;
+    margin-left: auto;
 }
 
 .name {

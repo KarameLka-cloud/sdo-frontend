@@ -7,7 +7,7 @@ import dateNow from "../../../utils/dateNow.ts";
 import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 
 function Home(): JSX.Element {
-    const {data, error, isLoading} = useGetUserByDataQuery("");
+    const {data: user, error, isLoading} = useGetUserByDataQuery("");
 
     function getName(userName: string): string {
         return userName.split(" ")[1];
@@ -19,15 +19,15 @@ function Home(): JSX.Element {
                 <ErrorData/>
             ) : isLoading ? (
                 <Loader/>
-            ) : data ? (
+            ) : user ? (
                 <>
                     <div className={style.info_component}>
                         <div className={style.info_date}>{dateNow}</div>
                         <div className={style.info_name}>{`Привет, ${getName(
-                            data.name
+                            user.name
                         )}`}</div>
-                        <div className={style.info_department}>{data.department}</div>
-                        <div className={style.info_description}>{data.description}</div>
+                        <div className={style.info_department}>{user.department}</div>
+                        <div className={style.info_description}>{user.description}</div>
                         <img
                             className={style.info_img}
                             src={my_info}
