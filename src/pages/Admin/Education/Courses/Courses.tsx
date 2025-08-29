@@ -1,7 +1,7 @@
 import * as React from "react";
 import {JSX} from "react";
 import style from "./Courses.module.css";
-import {CourseType} from "../../../../types/components/CourseType.ts";
+import {CourseType} from "../../../../types/api/CourseType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";
 import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";

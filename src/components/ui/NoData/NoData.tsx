@@ -1,6 +1,10 @@
 import {JSX} from "react";
-import {NoDataType} from "../../../types/components/NoDataType.ts";
 import style from "./NoData.module.css";
+
+type NoDataType = {
+    children: string,
+    className?: string,
+}
 
 function NoData({children, className}: NoDataType): JSX.Element {
     return (

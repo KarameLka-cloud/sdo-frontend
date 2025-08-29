@@ -4,7 +4,10 @@ import style from "./Header.module.css";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
 import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
-import {HeaderType} from "../../../types/components/HeaderType.ts";
+
+type HeaderType = {
+    className?: string;
+}
 
 function Header({className = ""}: HeaderType): JSX.Element {
     const {data: user} = useGetUserByDataQuery("me");

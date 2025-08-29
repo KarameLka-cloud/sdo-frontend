@@ -3,7 +3,7 @@ import style from "./Education.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
-import {EventType} from "../../../types/components/EventType.ts";
+import {EventType} from "../../../types/api/EventType.ts";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
 import NoData from "../../../components/ui/NoData/NoData.tsx";
@@ -12,7 +12,7 @@ import {
     useGetEducationCoursesQuery,
     useGetEducationTestsQuery
 } from "../../../services/store/features/education.ts";
-import {CourseType} from "../../../types/components/CourseType.ts";
+import {CourseType} from "../../../types/api/CourseType.ts";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
 

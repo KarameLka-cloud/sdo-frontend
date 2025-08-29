@@ -9,8 +9,8 @@ import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
 import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
-import {EventType} from "../../../types/components/EventType.ts";
-import {CourseType} from "../../../types/components/CourseType.ts";
+import {EventType} from "../../../types/api/EventType.ts";
+import {CourseType} from "../../../types/api/CourseType.ts";
 import {
     useGetEdoCoursesQuery,
     useGetEdoEventsQuery,

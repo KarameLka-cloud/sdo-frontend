@@ -1,6 +1,11 @@
 import {JSX} from "react";
 import style from "./HeaderPage.module.css";
-import {HeaderPageType} from "../../../types/components/HeaderPageType.ts";
+import {ReactNode} from "react";
+
+type HeaderPageType = {
+    children: ReactNode
+    className?: string;
+}
 
 function HeaderPage({children, className = ""}: HeaderPageType): JSX.Element {
     return <h2 className={`${style.header_page} + ${className}`}>{children}</h2>;

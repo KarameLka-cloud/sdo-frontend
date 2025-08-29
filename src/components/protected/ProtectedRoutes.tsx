@@ -3,14 +3,14 @@ import Cookie from "js-cookie";
 import {Navigate} from "react-router-dom";
 import {useGetUserByDataQuery} from "../../services/store/features/user.ts";
 
-type ProtectedRouteProps = {
+type ProtectedRoutePropsType = {
     elementLogin?: JSX.Element;
     elementDashboard?: JSX.Element;
     elementAdmin?: JSX.Element;
     route?: "login" | "dashboard";
 }
 
-const ProtectedRoute = ({elementDashboard, elementLogin, route}: ProtectedRouteProps) => {
+const ProtectedRoute = ({elementDashboard, elementLogin, route}: ProtectedRoutePropsType) => {
     // const {isLoading, error} = useGetUserByDataQuery("me");
     const isAuth = Boolean(Cookie.get("auth_token"));
     if (isAuth) {
@@ -32,7 +32,7 @@ const ProtectedRoute = ({elementDashboard, elementLogin, route}: ProtectedRouteP
     }
 }
 
-const ProtectedRouteAdmin = ({elementAdmin}: ProtectedRouteProps) => {
+const ProtectedRouteAdmin = ({elementAdmin}: ProtectedRoutePropsType) => {
     const {data: user, isLoading} = useGetUserByDataQuery("me");
     if (!isLoading) {
         if (user?.role !== "admin") {

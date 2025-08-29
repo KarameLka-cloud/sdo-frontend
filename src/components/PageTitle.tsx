@@ -1,11 +1,11 @@
 import {JSX} from "react";
 
-type PageTitleProps = {
+type PageTitlePropsType = {
     title: string;
     element: JSX.Element;
 }
 
-function PageTitle({title, element}: PageTitleProps): JSX.Element {
+function PageTitle({title, element}: PageTitlePropsType): JSX.Element {
     document.title = title + " - " + "СДО";
     return element;
 }

@@ -1,14 +1,14 @@
 import {JSX} from "react";
 import style from "./User.module.css";
 import icon_checkmark from "../../../assets/images/icons/checkmark.svg";
-import {UserType} from "../../../types/components/UserType.ts";
+import {UserType} from "../../../types/api/UserType.ts";
 
-type UserProps = {
+type UserPropsType = {
     user: UserType;
     className?: string;
 }
 
-function User({user, className}: UserProps): JSX.Element {
+function User({user, className}: UserPropsType): JSX.Element {
     return (
         <div className={`${style.user} + ${className}`}>
             <div className={style.content}>

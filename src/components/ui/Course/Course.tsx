@@ -1,14 +1,14 @@
 import {JSX} from "react";
-import convertDate from "../../../utils/convertDate.ts";
 import style from "./Course.module.css";
-import {CourseType} from "../../../types/components/CourseType.ts";
+import convertDate from "../../../utils/convertDate.ts";
+import {CourseType} from "../../../types/api/CourseType.ts";
 
-type CourseProps = {
+type CoursePropsType = {
     className?: string;
     course: CourseType;
 }
 
-function Course({className, course}: CourseProps): JSX.Element {
+function Course({className, course}: CoursePropsType): JSX.Element {
     return (
         <div className={`${style.course} + ${className}`} onClick={() => window.open(course.url, "_blank")}>
             <div className={style.content}>

@@ -1,26 +1,26 @@
 import {JSX} from "react";
-import convertDate from "../../../utils/convertDate.ts";
 import style from "./CourseChange.module.css";
+import {CourseType} from "../../../types/api/CourseType.ts";
+import convertDate from "../../../utils/convertDate.ts";
 import InputText from "../InputText/InputText.tsx";
 import InputDate from "../InputDate/InputDate.tsx";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
-import {TestType} from "../../../types/components/TestType.ts";
 import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
 import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
 import ButtonSave from "../ButtonSave/ButtonSave.tsx";
 import ButtonClose from "../ButtonClose/ButtonClose.tsx";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
 
-type CourseProps = {
+type CoursePropsType = {
     className?: string;
-    course: TestType;
+    course: CourseType;
     mutationUpdate: any;
     mutationDelete: any;
 }
 
-function CourseChange({className, course, mutationUpdate, mutationDelete}: CourseProps): JSX.Element {
+function CourseChange({className, course, mutationUpdate, mutationDelete}: CoursePropsType): JSX.Element {
     const {formItems, handleChange} = useForm({
         title: course.title,
         url: course.url,

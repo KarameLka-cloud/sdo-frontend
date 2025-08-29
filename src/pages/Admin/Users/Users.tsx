@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import style from "./Users.module.css";
-import {UserType} from "../../../types/components/UserType.ts";
+import {UserType} from "../../../types/api/UserType.ts";
 import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";

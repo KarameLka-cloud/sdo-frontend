@@ -1,7 +1,12 @@
 import {JSX} from "react";
 import style from "./InputTime.module.css";
 
-function InputTime({className = "", ...props}): JSX.Element {
+type InputTimeType = {
+    className?: string;
+    [x: string]: unknown;
+}
+
+function InputTime({className = "", ...props}: InputTimeType): JSX.Element {
     return <input className={`${style.input_time} ${className}`} {...props} />;
 }
 

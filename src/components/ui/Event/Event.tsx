@@ -1,14 +1,14 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
 import convertDate from "../../../utils/convertDate.ts";
-import {EventType} from "../../../types/components/EventType";
+import {EventType} from "../../../types/api/EventType.ts";
 
-type EventProps = {
+type EventPropsType = {
     className?: string;
     event: EventType;
 }
 
-function Event({className, event}: EventProps): JSX.Element {
+function Event({className, event}: EventPropsType): JSX.Element {
     return (
         <div className={`${style.event} + ${className}`}>
             <div>

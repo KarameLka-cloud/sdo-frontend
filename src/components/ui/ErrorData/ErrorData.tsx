@@ -1,6 +1,9 @@
 import {JSX} from "react";
 import style from "./ErrorData.module.css";
-import {ErrorDataType} from "../../../types/components/ErrorDataType.ts";
+
+type ErrorDataType = {
+    className?: string;
+}
 
 function ErrorData({className}: ErrorDataType): JSX.Element {
     return (

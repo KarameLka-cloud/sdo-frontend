@@ -7,21 +7,21 @@ import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
 import ButtonSave from "../ButtonSave/ButtonSave.tsx";
 import ButtonClose from "../ButtonClose/ButtonClose.tsx";
 import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
-import {EventType} from "../../../types/components/EventType.ts";
+import {EventType} from "../../../types/api/EventType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
 
-type EventProps = {
+type EventPropsType = {
     className?: string;
     event: EventType;
     mutationDelete?: any;
     mutationUpdate?: any;
 }
 
-function EventChange({className, event, mutationDelete, mutationUpdate}: EventProps): JSX.Element {
+function EventChange({className, event, mutationDelete, mutationUpdate}: EventPropsType): JSX.Element {
     const {formItems, handleChange} = useForm({
         title: event.title,
         description: event.description,

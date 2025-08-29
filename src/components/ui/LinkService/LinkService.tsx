@@ -1,13 +1,16 @@
 import {JSX} from "react";
 import style from "./LinkService.module.css";
 import {Link} from "react-router-dom";
-import {LinkServiceType} from "../../../types/components/LinkServiceType.ts";
 
-export type LinkServiceProps = {
-    link: LinkServiceType;
+export type LinkServiceType = {
+    link: {
+        id: number;
+        title: string;
+        path: string;
+    }
 }
 
-function LinkService({link}: LinkServiceProps): JSX.Element {
+function LinkService({link}: LinkServiceType): JSX.Element {
     return <Link to={link.path} className={style.link}>{link.title}</Link>
 
 }

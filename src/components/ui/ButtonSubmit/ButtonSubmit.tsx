@@ -1,6 +1,11 @@
 import {JSX} from "react";
 import style from "./ButtonSubmit.module.css";
-import {ButtonSubmitType} from "../../../types/components/ButtonSubmitType.ts";
+
+type ButtonSubmitType = {
+    children: string;
+    loading?: boolean;
+    className?: string;
+}
 
 function ButtonSubmit({children, loading, className = ""}: ButtonSubmitType): JSX.Element {
     return (

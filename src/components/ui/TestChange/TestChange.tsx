@@ -1,4 +1,4 @@
-import {TestType} from "../../../types/components/TestType.ts";
+import {TestType} from "../../../types/api/TestType.ts";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
@@ -14,14 +14,14 @@ import ButtonClose from "../ButtonClose/ButtonClose.tsx";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
 
 
-type TestProps = {
+type TestPropsType = {
     className?: string;
     test: TestType;
     mutationUpdate: any;
     mutationDelete: any;
 }
 
-function TestChange({className, test, mutationUpdate, mutationDelete}: TestProps): JSX.Element {
+function TestChange({className, test, mutationUpdate, mutationDelete}: TestPropsType): JSX.Element {
     const {formItems, handleChange} = useForm({
         title: test.title,
         url: test.url,

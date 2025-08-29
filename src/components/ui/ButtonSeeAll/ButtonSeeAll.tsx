@@ -1,7 +1,10 @@
 import {JSX} from "react";
 import style from "./ButtonSeeAll.module.css";
-import {ButtonSeeAllType} from "../../../types/components/ButtonSeeAllType.ts";
 import {Link} from "react-router-dom";
+
+type ButtonSeeAllType = {
+    to: string;
+}
 
 function ButtonSeeAll({to}: ButtonSeeAllType): JSX.Element {
     return (

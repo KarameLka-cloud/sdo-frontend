@@ -2,7 +2,12 @@ import {JSX} from "react";
 import style from "./Nav.module.css";
 import image_mfc_corp from "../../../assets/images/mfc_corp.png";
 import {NavLink, NavLinkRenderProps} from "react-router-dom";
-import {NavType} from "../../../types/components/NavType.ts";
+import {NavLinkType} from "../../../types/components/NavLinkType.ts";
+
+type NavType = {
+    className?: string;
+    links: NavLinkType[];
+}
 
 function Nav({className = "", links = []}: NavType): JSX.Element {
     return (

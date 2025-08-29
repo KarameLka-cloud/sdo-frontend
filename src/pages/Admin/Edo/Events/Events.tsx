@@ -1,7 +1,7 @@
 import * as React from "react";
 import {JSX} from "react";
 import style from "./Events.module.css";
-import {EventType} from "../../../../types/components/EventType.ts";
+import {EventType} from "../../../../types/api/EventType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
 import InputText from "../../../../components/ui/InputText/InputText.tsx";

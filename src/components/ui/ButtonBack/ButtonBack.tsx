@@ -1,8 +1,11 @@
 import {JSX} from "react";
 import style from "./ButtonBack.module.css";
 import icon_back from "../../../assets/images/icons/back.svg";
-import {ButtonBackType} from "../../../types/components/ButtonBackType.ts";
 import {useNavigate} from "react-router-dom";
+
+type ButtonBackType = {
+    className?: string;
+}
 
 function ButtonBack({className = ""}: ButtonBackType): JSX.Element {
     const navigate = useNavigate();
