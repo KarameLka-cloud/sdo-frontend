@@ -19,17 +19,13 @@
 
 .links {
     margin-left: 8.3rem;
-    margin-right: auto;
 }
 
 .link {
+    margin-right: 1rem;
     color: #6a7282;
     font-weight: 500;
     transition: color ease-in-out 0.2s;
-}
-
-.link:not(:last-child) {
-    margin-right: 1rem;
 }
 
 .link:hover {

@@ -19,10 +19,6 @@
     cursor: wait;
 }
 
-.text {
-    display: inline-block;
-}
-
 .loader {
     display: inline-block;
     width: 0.7rem;

@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import style from "./Edo.module.css";
-import {firstWednesdayData} from "../../../utils/firstWednesday.ts";
+import firstWednesdayData from "../../../utils/firstWednesday.ts";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";

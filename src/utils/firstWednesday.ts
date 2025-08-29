@@ -30,4 +30,6 @@ const firstWednesday: () => string = (): string => {
     return `${day}.${monthFormatted}.${yearFormatted}`;
 }
 
-export const firstWednesdayData = firstWednesday();
+const firstWednesdayData = firstWednesday();
+
+export default firstWednesdayData;

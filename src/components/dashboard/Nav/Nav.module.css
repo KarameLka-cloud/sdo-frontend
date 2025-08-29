@@ -10,6 +10,8 @@
 .link {
     display: inline-flex;
     align-items: center;
+    font-weight: 500;
+    line-height: 1.25rem;
 }
 
 .link:not(:first-child) {
@@ -18,8 +20,6 @@
 
 .link_inactive {
     color: #6a7282;
-    font-weight: 500;
-    line-height: 1.25rem;
     transition: color ease-in-out 0.2s;
 }
 
@@ -29,8 +29,6 @@
 
 .link_active {
     color: #101828;
-    font-weight: 500;
-    line-height: 1.25rem;
 }
 
 .icon {

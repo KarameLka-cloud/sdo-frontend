@@ -5,7 +5,7 @@ import {DevelopmentType} from "../../../types/components/DevelopmentType.ts";
 
 function Development({className = ""}: DevelopmentType): JSX.Element {
     return (
-        <img src={image_development} alt="" className={`${style.development} + ${className}`}/>
+        <img src={image_development} alt="В разработке" className={`${style.development} + ${className}`}/>
     )
 }
 
