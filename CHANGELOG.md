@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.62](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.61...v0.0.62) (2025-08-29)
+
+
+### Bug Fixes
+
+* Переделал систему типов. Теперь если тип импортируется более одного раза, то выносится в отдельный файл. В противном случае записывается в сам компонент ([617d452](https://github.com/KarameLka-cloud/sdo-frontend/commit/617d45261c7c3a233e35853ea3888f7676c74b5c))
+
 ### [0.0.61](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.60...v0.0.61) (2025-08-29)
 
 
