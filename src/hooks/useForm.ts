@@ -14,5 +14,5 @@ export function useForm<T extends Record<string, any>>(initialValues: FormValues
             [name]: value,
         }));
     };
-    return {formItems, setFormItems, handleChange};
+    return {handleChange, formItems, setFormItems};
 }
