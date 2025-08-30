@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.63](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.62...v0.0.63) (2025-08-30)
+
+
+### Bug Fixes
+
+* Создан хук для логина ([c60cb0c](https://github.com/KarameLka-cloud/sdo-frontend/commit/c60cb0c01a8c81b3376292447ae9cfc97e78ec11))
+
 ### [0.0.62](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.61...v0.0.62) (2025-08-29)
 
 
