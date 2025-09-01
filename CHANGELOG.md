@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.66](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.65...v0.0.66) (2025-09-01)
+
+
+### Bug Fixes
+
+* Добавлена страница для работы с вебинарами, вынесем метод конвертирования времени, рефакторинг кода ([4efb91f](https://github.com/KarameLka-cloud/sdo-frontend/commit/4efb91f52ec158a55f84bc04c45ba616a465008e))
+
 ### [0.0.65](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.64...v0.0.65) (2025-09-01)
 
 
