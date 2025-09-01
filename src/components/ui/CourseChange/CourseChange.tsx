@@ -47,10 +47,12 @@ function CourseChange({className, course, mutationUpdate, mutationDelete}: Cours
                     <div className={style.date_end}>{convertDate(course.date_end)}</div>
                 </div>
             }
-            {edit &&
-                <ButtonSave onClick={() => handleUpdate({id: course.id, ...formItems})} className={style.button_save}/>}
-            {edit ? <ButtonClose onClick={handleEdit} className={style.button_close}/> :
-                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>}
+            {edit ? <>
+                    <ButtonSave onClick={() => handleUpdate({id: course.id, ...formItems})} className={style.button_save}/>
+                    <ButtonClose onClick={handleEdit} className={style.button_close}/>
+                </> :
+                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
+            }
             {!edit && <ButtonDelete onClick={() => handleDelete(course.id)} className={style.button_delete}/>}
         </div>
     )

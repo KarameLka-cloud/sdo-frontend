@@ -1,15 +1,8 @@
 import {useState, useEffect} from "react";
-
-interface User {
-    department?: string;
-    description?: string;
-    name?: string;
-    role?: string;
-    role_name?: string;
-}
+import {UserType} from "../types/api/UserType.ts";
 
 export const useUser = () => {
-    const [user, setUser] = useState<User>({});
+    const [user, setUser] = useState<UserType>({});
 
     useEffect(() => {
         try {
@@ -23,9 +16,9 @@ export const useUser = () => {
     }, []);
 
     return {
+        name: user.name || "",
         department: user.department || "",
         description: user.description || "",
-        name: user.name || "",
         role: user.role || "",
         role_name: user.role_name || "",
     };

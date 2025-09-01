@@ -55,10 +55,12 @@ function EventChange({className, event, mutationDelete, mutationUpdate}: EventPr
                     <div className={style.date_time}>{`${convertDate(event.date)} ${event.time}`}</div>
                 </div>
             }
-            {edit &&
-                <ButtonSave onClick={() => handleUpdate({id: event.id, ...formItems})} className={style.button_save}/>}
-            {edit ? <ButtonClose onClick={handleEdit} className={style.button_close}/> :
-                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>}
+            {edit ? <>
+                    <ButtonSave onClick={() => handleUpdate({id: event.id, ...formItems})} className={style.button_save}/>
+                    <ButtonClose onClick={handleEdit} className={style.button_close}/>
+                </> :
+                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
+            }
             {!edit && <ButtonDelete onClick={() => handleDelete(event.id)} className={style.button_delete}/>}
         </div>
     )

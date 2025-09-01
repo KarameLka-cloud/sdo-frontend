@@ -1,7 +1,9 @@
 import {JSX} from "react";
 import style from "./User.module.css";
-import icon_checkmark from "../../../assets/images/icons/checkmark.svg";
 import {UserType} from "../../../types/api/UserType.ts";
+import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
+import ButtonClose from "../ButtonClose/ButtonClose.tsx";
+import {useToggle} from "../../../hooks/useToggle.ts";
 
 type UserPropsType = {
     user: UserType;
@@ -9,19 +11,20 @@ type UserPropsType = {
 }
 
 function User({user, className}: UserPropsType): JSX.Element {
+    const {toggle, value} = useToggle();
+
     return (
         <div className={`${style.user} + ${className}`}>
             <div className={style.content}>
                 <div className={style.name}>{user.name}</div>
                 <div className={style.department}>{user.department}</div>
             </div>
-            <select className={style.select}>
-                <option>Пользователь</option>
-                <option>Администратор</option>
-            </select>
-            <div className={style.save_button}>
-                <img src={icon_checkmark} alt="Кнопка сохранить" className={style.save_button_icon}/>
-            </div>
+            {user.role && <div className={style.role}>{user.role_name}</div>}
+            {value ? <>
+                <div className={style.input}>Edit</div>
+                <ButtonClose className={style.close} onClick={toggle}/>
+            </> : <ButtonEdit className={style.edit} onClick={toggle}/>
+            }
         </div>
     )
 }
