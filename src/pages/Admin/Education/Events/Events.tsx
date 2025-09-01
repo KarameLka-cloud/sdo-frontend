@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {JSX} from "react";
 import style from "./Events.module.css";
 import {EventType} from "../../../../types/api/EventType.ts";
@@ -32,7 +32,7 @@ function Events(): JSX.Element {
         date: ""
     });
 
-    const handleAddEdoEvent = async (e: React.FormEvent) => {
+    const handleAction = async (e: React.FormEvent) => {
         e.preventDefault();
         await addEvent(formItems).unwrap();
         setFormItems({
@@ -47,7 +47,7 @@ function Events(): JSX.Element {
     return (
         <>
             <ButtonBack/>
-            <form onSubmit={handleAddEdoEvent} className={style.form}>
+            <form onSubmit={handleAction} className={style.form}>
                 <InputText type="text" name="title" placeholder="Название" value={formItems.title}
                            onChange={handleChange} className={style.form_input_text}/>
                 <InputText type="text" name="description" placeholder="Описание" value={formItems.description}

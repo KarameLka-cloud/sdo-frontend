@@ -81,7 +81,7 @@ export const education = createApi({
 
         // Education webinars
         getEducationWebinars: builder.query({
-            query: () => "api/webinars/events",
+            query: () => "api/education/webinars",
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Webinars' as const, id})), 'Webinars']

@@ -2,6 +2,7 @@ import {JSX} from "react";
 import style from "./Event.module.css";
 import convertDate from "../../../utils/convertDate.ts";
 import {EventType} from "../../../types/api/EventType.ts";
+import {convertTime} from "../../../utils/convertTime.ts";
 
 type EventPropsType = {
     className?: string;
@@ -17,7 +18,7 @@ function Event({className, event}: EventPropsType): JSX.Element {
                 <span className={style.departments}>{event.department}</span>
             </div>
             <div className={style.time}>
-                <div style={{textAlign: "center"}}>{event.time}</div>
+                <div style={{textAlign: "center"}}>{convertTime(event.time)}</div>
                 <div style={{textAlign: "center"}}>{convertDate(event.date)}</div>
             </div>
         </div>

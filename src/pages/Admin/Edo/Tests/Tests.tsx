@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {JSX} from "react";
 import style from "./Tests.module.css";
 import {TestType} from "../../../../types/api/TestType.ts";
@@ -28,7 +28,7 @@ function Tests(): JSX.Element {
         date_end: ""
     });
 
-    const handleAddEdoTest = async (e: React.FormEvent) => {
+    const handleAction = async (e: React.FormEvent) => {
         e.preventDefault();
         await addTest(formItems).unwrap();
         setFormItems({
@@ -41,7 +41,7 @@ function Tests(): JSX.Element {
     return (
         <>
             <ButtonBack/>
-            <form onSubmit={handleAddEdoTest} className={style.form}>
+            <form onSubmit={handleAction} className={style.form}>
                 <InputText type="text" name="title" placeholder="Название" value={formItems.title}
                            onChange={handleChange} className={style.form_input_text}/>
                 <InputText type="text" name="url" placeholder="Ссылка на тест" value={formItems.url}

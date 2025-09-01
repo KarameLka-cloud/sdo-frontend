@@ -17,10 +17,13 @@
 
 .role {
     margin-left: 1rem;
-    padding: 0.2rem 0.4rem;
+    padding: 0.15rem 0.35rem;
     background-color: var(--mfc-red-color);
     border-radius: 0.6rem;
     color: white;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .edit {
