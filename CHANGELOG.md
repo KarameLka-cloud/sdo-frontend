@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.64](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.63...v0.0.64) (2025-09-01)
+
+
+### Bug Fixes
+
+* Переделал систему проверки роли, информация о пользователе после авторизации сохраняется в local store ([8d502c6](https://github.com/KarameLka-cloud/sdo-frontend/commit/8d502c62337562df520d9f902f6d96f540bdd104))
+
 ### [0.0.63](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.62...v0.0.63) (2025-08-30)
 
 
