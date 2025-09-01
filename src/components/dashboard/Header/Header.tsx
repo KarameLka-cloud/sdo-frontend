@@ -1,22 +1,22 @@
 import {JSX} from "react";
 import {NavLink} from "react-router-dom";
 import style from "./Header.module.css";
+import {useUser} from "../../../hooks/useUser.ts";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
-import {useGetUserByDataQuery} from "../../../services/store/features/user.ts";
 
 type HeaderType = {
     className?: string;
 }
 
 function Header({className = ""}: HeaderType): JSX.Element {
-    const {data: user} = useGetUserByDataQuery("me");
+    const {name, role} = useUser();
 
     return (
         <header className={`${style.header} + ${className}`}>
             <div className={style.content}>
                 <LogoLink to="/" className={style.logo}/>
-                {user?.role === "admin" &&
+                {role.includes("admin") &&
                     <div className={style.links}>
                         <NavLink
                             to="/"
@@ -34,11 +34,11 @@ function Header({className = ""}: HeaderType): JSX.Element {
                 }
 
                 <div className={style.right_content}>
-                    {user ? (
+                    {name && (
                         <div className={style.name}>
-                            {`${user.name.split(" ")[1]} ${user.name.split(" ")[0][0]}.`}
+                            {`${name.split(" ")[1]} ${name.split(" ")[0][0]}.`}
                         </div>
-                    ) : null}
+                    )}
                     <LogoutButton className={style.logout}/>
                 </div>
             </div>

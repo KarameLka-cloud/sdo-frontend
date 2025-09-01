@@ -1,4 +1,4 @@
-import * as React from "react";
+import React from "react";
 import {JSX} from "react";
 import style from "./Login.module.css";
 import image_login_background from "../../../assets/images/login_background.svg";

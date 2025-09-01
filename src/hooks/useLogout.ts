@@ -9,10 +9,11 @@ export const useLogout = () => {
     const logout = async () => {
         try {
             await logoutMutation("").unwrap();
+            localStorage.clear();
             Cookie.remove("auth_token");
             navigate("login");
         } catch (error: any) {
-            console.error(error);
+            localStorage.clear();
             Cookie.remove("auth_token");
             navigate("login");
         }

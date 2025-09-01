@@ -11,6 +11,7 @@ export const useLogin = () => {
     const loginUser = async (credentials: { login: string, password: string }) => {
         try {
             const response = await login(credentials).unwrap();
+            localStorage.setItem('user', JSON.stringify(response.user));
             Cookie.set("auth_token", response.auth_token);
             navigate("/");
         } catch (error: any) {
@@ -18,5 +19,5 @@ export const useLogin = () => {
             setErrorMessage(error.data.message);
         }
     }
-    return {loginUser, errorMessage, isLoading}
+    return {loginUser, errorMessage, isLoading};
 }

@@ -1,7 +1,7 @@
 import {JSX} from "react";
 import Cookie from "js-cookie";
 import {Navigate} from "react-router-dom";
-import {useGetUserByDataQuery} from "../../services/store/features/user.ts";
+import {useUser} from "../../hooks/useUser.ts";
 
 type ProtectedRoutePropsType = {
     elementLogin?: JSX.Element;
@@ -33,13 +33,14 @@ const ProtectedRoute = ({elementDashboard, elementLogin, route}: ProtectedRouteP
 }
 
 const ProtectedRouteAdmin = ({elementAdmin}: ProtectedRoutePropsType) => {
-    const {data: user, isLoading} = useGetUserByDataQuery("me");
-    if (!isLoading) {
-        if (user?.role !== "admin") {
-            return <Navigate to="home" replace/>;
-        }
+    const {role} = useUser();
+    if (!role) {
+        return null;
+    }
+    if (!role.includes("admin")) {
+        return <Navigate to="home" replace/>;
     }
     return elementAdmin;
-};
+}
 
 export {ProtectedRoute, ProtectedRouteAdmin};
