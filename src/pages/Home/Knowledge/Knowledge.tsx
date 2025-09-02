@@ -7,26 +7,22 @@ function Knowledge(): JSX.Element {
     return (
         <>
             <HeaderPage>База знаний</HeaderPage>
-            <div className={style.top_service_component}>
+            <Link to="top" className={`${style.top_service_component} ${style.button}`}>
                 <div className={style.top_service_title}>
                     Услуги, изучаемых в период адаптации
                 </div>
-                <Link to="top" className={style.top_service_link}>
-                    ТОП 25
-                </Link>
-            </div>
+                ТОП 25
+            </Link>
 
-            <div className={style.theoretical_courses_component}>
-                <Link to="/" className={style.theoretical_courses_title}>
-                    Теоретические курсы по услугам
-                </Link>
-            </div>
+            <Link to="https://sdo.prod.corp/course/index.php?categoryid=39"
+                  className={`${style.theoretical_courses_component} ${style.button}`}>
+                Теоретические курсы по услугам
+            </Link>
 
-            <div className={style.general_courses_component}>
-                <Link to="/" className={style.general_courses_title}>
-                    Общие курсы
-                </Link>
-            </div>
+            <Link to="https://sdo.prod.corp/course/index.php?categoryid=40"
+                  className={`${style.general_courses_component} ${style.button}`}>
+                Общие курсы
+            </Link>
         </>
     );
 }

@@ -6,3 +6,7 @@
     background-color: var(--mfc-green-color);
     border-radius: 0.2rem;
 }
+
+.button_save:hover {
+    background-color: #5bb85b;
+}

@@ -6,3 +6,7 @@
     background-color: var(--mfc-red-color);
     border-radius: 0.2rem;
 }
+
+.button_close:hover {
+    background-color: #ea7d4d;
+}

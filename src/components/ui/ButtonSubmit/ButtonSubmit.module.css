@@ -11,6 +11,10 @@
     cursor: pointer;
 }
 
+.button_submit:hover {
+    background-color: #5bb85b;
+}
+
 .button_submit_loading {
     padding: 0.625rem 1.25rem;
     border: 0;

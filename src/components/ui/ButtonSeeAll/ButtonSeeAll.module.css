@@ -8,6 +8,9 @@
     color: var(--mfc-white-color);
     transition: background-color 0.2s ease,
     color 0.2s ease;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
 }
 
 .link:hover {

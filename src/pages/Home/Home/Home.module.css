@@ -28,9 +28,9 @@
 
 .info_img {
     position: absolute;
-    height: 22rem;
-    right: 0.1rem;
-    bottom: -4.6rem;
+    height: 16rem;
+    right: 4rem;
+    top: -4rem;
 }
 
 .progress_info_component {

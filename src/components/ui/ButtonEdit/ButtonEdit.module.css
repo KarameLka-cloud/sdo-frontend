@@ -6,3 +6,7 @@
     background-color: var(--mfc-blue-color);
     border-radius: 0.2rem;
 }
+
+.button_edit:hover {
+    background-color: #30BCBCFF;
+}

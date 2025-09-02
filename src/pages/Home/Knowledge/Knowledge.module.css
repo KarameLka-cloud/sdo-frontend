@@ -1,19 +1,25 @@
+.button {
+    display: block;
+    width: 100%;
+    transform: scale(1);
+    transition: transform 0.2s ease;
+    color: var(--mfc-black-color);
+    font-size: 1.7rem;
+    font-weight: 600;
+}
+
+.button:hover {
+    transform: scale(1.03);
+}
+
 .top_service_component {
-    padding: 1.2rem 2rem;
+    padding: 1.5rem 2rem;
     border-radius: 2rem;
     background-color: var(--mfc-dark-color);
 }
 
 .top_service_title {
-    font-weight: 600;
-}
-
-.top_service_link {
-    display: inline-block;
-    margin: 0.5rem 0;
-    font-size: 1.7rem;
-    color: var(--mfc-black-color);
-    font-weight: 600;
+    font-size: 1rem !important;
 }
 
 .theoretical_courses_component {
@@ -22,22 +28,10 @@
     background-color: var(--mfc-middle-color);
 }
 
-.theoretical_courses_title {
-    color: var(--mfc-black-color);
-    font-size: 1.7rem;
-    font-weight: 600;
-}
-
 .general_courses_component {
     padding: 2.3rem 2rem;
     border-radius: 2rem;
     background-color: var(--mfc-light-color);
-}
-
-.general_courses_title {
-    color: var(--mfc-black-color);
-    font-size: 1.7rem;
-    font-weight: 600;
 }
 
 .theoretical_courses_component,

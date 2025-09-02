@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import style from "./Home.module.css";
-import my_info from "../../../assets/images/my_info.svg";
+import image_fox from "../../../assets/images/fox.png";
 import dateNow from "../../../utils/dateNow.ts";
 import {useUser} from "../../../hooks/useUser.ts";
 
@@ -16,7 +16,7 @@ function Home(): JSX.Element {
                 <div className={style.info_description}>{description}</div>
                 <img
                     className={style.info_img}
-                    src={my_info}
+                    src={image_fox}
                     alt="Девушка"
                 />
             </div>

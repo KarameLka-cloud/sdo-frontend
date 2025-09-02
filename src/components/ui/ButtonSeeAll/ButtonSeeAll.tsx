@@ -8,7 +8,7 @@ type ButtonSeeAllType = {
 
 function ButtonSeeAll({to}: ButtonSeeAllType): JSX.Element {
     return (
-        <Link to={to} className={style.link}>Смотреть всё</Link>
+        <Link to={to} className={style.link}>Показать всё</Link>
     )
 }
 
