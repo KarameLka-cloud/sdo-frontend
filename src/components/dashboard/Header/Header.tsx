@@ -16,7 +16,7 @@ function Header({className = ""}: HeaderType): JSX.Element {
         <header className={`${style.header} + ${className}`}>
             <div className={style.content}>
                 <LogoLink to="/" className={style.logo}/>
-                {role.includes("admin") &&
+                {role.includes("ADMIN") &&
                     <div className={style.links}>
                         <NavLink
                             to="/"

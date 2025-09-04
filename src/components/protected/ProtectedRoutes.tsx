@@ -37,7 +37,7 @@ const ProtectedRouteAdmin = ({elementAdmin}: ProtectedRoutePropsType) => {
     if (!role) {
         return null;
     }
-    if (!role.includes("admin")) {
+    if (!role.includes("ADMIN")) {
         return <Navigate to="home" replace/>;
     }
     return elementAdmin;
