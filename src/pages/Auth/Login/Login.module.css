@@ -47,16 +47,6 @@
     box-shadow: 0 1px 2px -1px;
 }
 
-.button {
-    margin-top: 1rem;
-    background-color: var(--mfc-red-color);
-    color: #ffffff;
-}
-
-.button:hover {
-    background-color: #e95555;
-}
-
 .document_image_1, .document_image_2 {
     position: absolute;
     height: 4rem;

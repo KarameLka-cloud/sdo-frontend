@@ -88,7 +88,7 @@ function Education(): JSX.Element {
                         <ButtonSeeAll to="webinars"/>
                     </>
                 ) : (
-                    <NoData>Мероприятий нет</NoData>
+                    <NoData>Вебинаров нет</NoData>
                 )}
             </div>
 

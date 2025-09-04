@@ -61,7 +61,7 @@ function Events(): JSX.Element {
                                onChange={handleChange}
                                className={style.form_input_time}/>
                 </div>
-                <ButtonSubmit loading={addLoading} className={style.button_create}>Создать</ButtonSubmit>
+                <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
             </form>
             {addError && (<div>Error</div>)}
             <hr/>

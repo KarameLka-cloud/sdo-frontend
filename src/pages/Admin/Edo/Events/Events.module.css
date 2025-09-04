@@ -16,12 +16,6 @@
     margin-left: 0.6rem;
 }
 
-.button_create {
-    width: fit-content;
-    background-color: green;
-    color: white;
-}
-
 .event:not(:first-child) {
     margin-top: 1rem;
 }

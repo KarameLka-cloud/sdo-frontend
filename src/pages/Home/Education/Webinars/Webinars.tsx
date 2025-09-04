@@ -28,7 +28,7 @@ function Events(): JSX.Element {
                     )
                 })
             ) : (
-                <NoData>Мероприятий нет</NoData>
+                <NoData>Вебинаров нет</NoData>
             )}
         </>
     );

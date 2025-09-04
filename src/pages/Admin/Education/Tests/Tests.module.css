@@ -12,12 +12,6 @@
     margin-bottom: 0.4rem;
 }
 
-.button_create {
-    width: fit-content;
-    background-color: green;
-    color: white;
-}
-
 .test:not(:first-child) {
     margin-top: 1rem;
 }
