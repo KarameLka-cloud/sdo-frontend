@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.68](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.67...v0.0.68) (2025-09-04)
+
+
+### Bug Fixes
+
+* Рефакторинг стиля компонента ButtonSubmit, исправлены сообщения на страницах вебинар, добавлен поиск по пользователям ([03da109](https://github.com/KarameLka-cloud/sdo-frontend/commit/03da109a8f9da19723c8a8cf04727334a3e124e3))
+
 ### [0.0.67](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.66...v0.0.67) (2025-09-02)
 
 
