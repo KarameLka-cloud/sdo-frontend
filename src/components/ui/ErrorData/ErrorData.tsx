@@ -1,7 +1,7 @@
 import {JSX} from "react";
 import style from "./ErrorData.module.css";
 
-type ErrorDataType = {
+interface ErrorDataType {
     className?: string;
 }
 

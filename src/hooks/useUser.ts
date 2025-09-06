@@ -1,5 +1,5 @@
 import {useState, useEffect} from "react";
-import {UserType} from "../types/api/UserType.ts";
+import {UserType} from "../interfaces/api/UserType.ts";
 
 export const useUser = () => {
     const [user, setUser] = useState<UserType>({});

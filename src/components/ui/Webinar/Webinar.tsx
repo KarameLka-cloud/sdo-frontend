@@ -1,10 +1,10 @@
 import {JSX} from "react";
 import style from "./Webinar.module.css";
 import convertDate from "../../../utils/convertDate.ts";
-import {WebinarType} from "../../../types/api/WebinarType.ts";
+import {WebinarType} from "../../../interfaces/api/WebinarType.ts";
 import {convertTime} from "../../../utils/convertTime.ts";
 
-type EventPropsType = {
+interface EventPropsType {
     className?: string;
     webinar: WebinarType;
 }

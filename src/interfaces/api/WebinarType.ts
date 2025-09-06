@@ -1,4 +1,4 @@
-export type WebinarType = {
+export interface WebinarType {
     id: number;
     title: string;
     time_start: string;

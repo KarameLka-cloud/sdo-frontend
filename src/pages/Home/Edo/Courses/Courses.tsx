@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import style from "./Courses.module.css";
-import {CourseType} from "../../../../types/api/CourseType.ts";
+import {CourseType} from "../../../../interfaces/api/CourseType.ts";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../../components/ui/Loader/Loader.tsx";
 import NoData from "../../../../components/ui/NoData/NoData.tsx";

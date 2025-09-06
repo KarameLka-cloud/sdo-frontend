@@ -4,11 +4,11 @@ import icon_exit from "../../../assets/images/icons/exit.svg";
 import {useLogout} from "../../../hooks/useLogout.ts";
 
 type LogoutButtonType = {
-    className: string;
+    className?: string;
     [x: string]: unknown;
 }
 
-function LogoutButton({className = "", ...props}: LogoutButtonType): JSX.Element {
+function LogoutButton({className, ...props}: LogoutButtonType): JSX.Element {
     const {logout} = useLogout();
     return (
         <div className={`${style.logout} + ${className}`} {...props} onClick={logout}>

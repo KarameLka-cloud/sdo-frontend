@@ -1,4 +1,4 @@
-import {TestType} from "../../../types/api/TestType.ts";
+import {TestType} from "../../../interfaces/api/TestType.ts";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
@@ -7,14 +7,11 @@ import InputText from "../InputText/InputText.tsx";
 import InputDate from "../InputDate/InputDate.tsx";
 import convertDate from "../../../utils/convertDate.ts";
 import {JSX} from "react";
-import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
-import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
-import ButtonSave from "../ButtonSave/ButtonSave.tsx";
-import ButtonClose from "../ButtonClose/ButtonClose.tsx";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
+import IconButton from "../IconButton/IconButton.tsx";
 
 
-type TestPropsType = {
+interface TestPropsType {
     className?: string;
     test: TestType;
     mutationUpdate: any;
@@ -49,12 +46,14 @@ function TestChange({className, test, mutationUpdate, mutationDelete}: TestProps
                 </div>
             }
             {edit ? <>
-                    <ButtonSave onClick={() => handleUpdate({id: test.id, ...formItems})} className={style.button_save}/>
-                    <ButtonClose onClick={handleEdit} className={style.button_close}/>
+                    <IconButton type={"save"} onClick={() => handleUpdate({id: test.id, ...formItems})}
+                                className={style.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
                 </> :
-                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
             }
-            {!edit && <ButtonDelete onClick={() => handleDelete(test.id)} className={style.button_delete}/>}
+            {!edit &&
+                <IconButton type={"delete"} onClick={() => handleDelete(test.id)} className={style.button_delete}/>}
         </div>
     )
 }

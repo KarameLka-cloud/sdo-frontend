@@ -1,12 +1,12 @@
 import {JSX} from "react";
 import style from "./Main.module.css";
 
-type MainPropsType = {
+interface MainPropsType {
     children?: JSX.Element;
     className?: string;
-};
+}
 
-function Main({children, className = ""}: MainPropsType): JSX.Element {
+function Main({children, className}: MainPropsType): JSX.Element {
     return (
         <main className={`${style.main} + ${className}`}>{children}</main>
     );

@@ -3,7 +3,7 @@ import Cookie from "js-cookie";
 import {Navigate} from "react-router-dom";
 import {useUser} from "../../hooks/useUser.ts";
 
-type ProtectedRoutePropsType = {
+interface ProtectedRoutePropsType {
     elementLogin?: JSX.Element;
     elementDashboard?: JSX.Element;
     elementAdmin?: JSX.Element;

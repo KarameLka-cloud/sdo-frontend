@@ -1,7 +1,7 @@
 import {JSX} from "react";
 import style from "./NoData.module.css";
 
-type NoDataType = {
+interface NoDataType {
     children: string,
     className?: string,
 }

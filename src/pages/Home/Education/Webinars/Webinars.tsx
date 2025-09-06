@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import {WebinarType} from "../../../../types/api/WebinarType.ts";
+import {WebinarType} from "../../../../interfaces/api/WebinarType.ts";
 import style from "./Webinars.module.css";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../../components/ui/Loader/Loader.tsx";

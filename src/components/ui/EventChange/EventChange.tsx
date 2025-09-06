@@ -3,19 +3,16 @@ import style from "./EventChange.module.css";
 import InputText from "../InputText/InputText.tsx";
 import InputDate from "../InputDate/InputDate.tsx";
 import InputTime from "../InputTime/InputTime.tsx";
-import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
-import ButtonSave from "../ButtonSave/ButtonSave.tsx";
-import ButtonClose from "../ButtonClose/ButtonClose.tsx";
-import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
-import {EventType} from "../../../types/api/EventType.ts";
+import {EventType} from "../../../interfaces/api/EventType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
 import {convertTime} from "../../../utils/convertTime.ts";
+import IconButton from "../IconButton/IconButton.tsx";
 
-type EventPropsType = {
+interface EventPropsType {
     className?: string;
     event: EventType;
     mutationDelete?: any;
@@ -57,12 +54,14 @@ function EventChange({className, event, mutationDelete, mutationUpdate}: EventPr
                 </div>
             }
             {edit ? <>
-                    <ButtonSave onClick={() => handleUpdate({id: event.id, ...formItems})} className={style.button_save}/>
-                    <ButtonClose onClick={handleEdit} className={style.button_close}/>
+                    <IconButton type={"save"} onClick={() => handleUpdate({id: event.id, ...formItems})}
+                                className={style.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
                 </> :
-                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
             }
-            {!edit && <ButtonDelete onClick={() => handleDelete(event.id)} className={style.button_delete}/>}
+            {!edit &&
+                <IconButton type={"delete"} onClick={() => handleDelete(event.id)} className={style.button_delete}/>}
         </div>
     )
 }

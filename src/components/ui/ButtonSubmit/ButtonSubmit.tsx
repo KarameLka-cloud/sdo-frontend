@@ -1,13 +1,13 @@
 import {JSX} from "react";
 import style from "./ButtonSubmit.module.css";
 
-type ButtonSubmitType = {
+interface ButtonSubmitType {
     children: string;
     loading?: boolean;
     className?: string;
 }
 
-function ButtonSubmit({children, loading, className = ""}: ButtonSubmitType): JSX.Element {
+function ButtonSubmit({children, loading, className}: ButtonSubmitType): JSX.Element {
     return (
         <button type="submit"
                 className={loading ? `${style.button_submit_loading} ${className}` : `${style.button_submit} ${className}`}

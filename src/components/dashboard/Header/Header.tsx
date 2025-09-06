@@ -5,11 +5,11 @@ import {useUser} from "../../../hooks/useUser.ts";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
 
-type HeaderType = {
+interface HeaderType {
     className?: string;
 }
 
-function Header({className = ""}: HeaderType): JSX.Element {
+function Header({className}: HeaderType): JSX.Element {
     const {name, role} = useUser();
 
     return (

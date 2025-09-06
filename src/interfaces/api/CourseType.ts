@@ -1,4 +1,4 @@
-export type TestType = {
+export interface CourseType {
     id: number;
     title: string;
     url: string;

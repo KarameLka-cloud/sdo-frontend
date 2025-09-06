@@ -1,9 +1,9 @@
 import {JSX} from "react";
 import style from "./Test.module.css";
 import convertDate from "../../../utils/convertDate.ts";
-import {TestType} from "../../../types/api/TestType.ts";
+import {TestType} from "../../../interfaces/api/TestType.ts";
 
-type TestPropsType = {
+interface TestPropsType {
     className?: string;
     test: TestType;
 }

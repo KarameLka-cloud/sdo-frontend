@@ -1,4 +1,4 @@
-export type UserType = {
+export interface UserType {
     id?: number;
     name?: string;
     department?: string;

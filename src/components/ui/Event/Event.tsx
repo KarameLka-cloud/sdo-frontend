@@ -1,10 +1,10 @@
 import {JSX} from "react";
 import style from "./Event.module.css";
 import convertDate from "../../../utils/convertDate.ts";
-import {EventType} from "../../../types/api/EventType.ts";
+import {EventType} from "../../../interfaces/api/EventType.ts";
 import {convertTime} from "../../../utils/convertTime.ts";
 
-type EventPropsType = {
+interface EventPropsType {
     className?: string;
     event: EventType;
 }

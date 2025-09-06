@@ -8,7 +8,7 @@ import icon_book from "../../../assets/images/icons/book.svg";
 import icon_calendar from "../../../assets/images/icons/calendar.svg";
 import Nav from "../../../components/dashboard/Nav/Nav.tsx";
 import Main from "../../../components/dashboard/Main/Main.tsx";
-import {NavLinkType} from "../../../types/components/NavLinkType.ts";
+import {NavLinkType} from "../../../interfaces/components/NavLinkType.ts";
 
 const links: NavLinkType[] =
     [

@@ -1,6 +1,6 @@
 import {JSX} from "react";
 
-type PageTitlePropsType = {
+interface PageTitlePropsType {
     title: string;
     element: JSX.Element;
 }

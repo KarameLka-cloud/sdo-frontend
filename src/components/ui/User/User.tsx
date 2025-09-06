@@ -1,11 +1,10 @@
 import {JSX} from "react";
 import style from "./User.module.css";
-import {UserType} from "../../../types/api/UserType.ts";
-import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
-import ButtonClose from "../ButtonClose/ButtonClose.tsx";
+import {UserType} from "../../../interfaces/api/UserType.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
+import IconButton from "../IconButton/IconButton.tsx";
 
-type UserPropsType = {
+interface UserPropsType {
     user: UserType;
     className?: string;
 }
@@ -22,8 +21,8 @@ function User({user, className}: UserPropsType): JSX.Element {
             {user.role && <div className={style.role}>{user.role_name}</div>}
             {value ? <>
                 <div className={style.input}>Edit</div>
-                <ButtonClose className={style.close} onClick={toggle}/>
-            </> : <ButtonEdit className={style.edit} onClick={toggle}/>
+                <IconButton type={"close"} onClick={toggle} className={style.close}/>
+            </> : <IconButton type={"edit"} onClick={toggle} className={style.edit}/>
             }
         </div>
     )

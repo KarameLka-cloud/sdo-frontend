@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import {EventType} from "../../../../types/api/EventType.ts";
+import {EventType} from "../../../../interfaces/api/EventType.ts";
 import style from "./Events.module.css";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../../components/ui/Loader/Loader.tsx";

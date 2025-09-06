@@ -1,19 +1,16 @@
 import {JSX} from "react";
 import style from "./CourseChange.module.css";
-import {CourseType} from "../../../types/api/CourseType.ts";
+import {CourseType} from "../../../interfaces/api/CourseType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import InputText from "../InputText/InputText.tsx";
 import InputDate from "../InputDate/InputDate.tsx";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
-import ButtonDelete from "../ButtonDelete/ButtonDelete.tsx";
-import ButtonEdit from "../ButtonEdit/ButtonEdit.tsx";
-import ButtonSave from "../ButtonSave/ButtonSave.tsx";
-import ButtonClose from "../ButtonClose/ButtonClose.tsx";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
+import IconButton from "../IconButton/IconButton.tsx";
 
-type CoursePropsType = {
+interface CoursePropsType {
     className?: string;
     course: CourseType;
     mutationUpdate: any;
@@ -48,12 +45,14 @@ function CourseChange({className, course, mutationUpdate, mutationDelete}: Cours
                 </div>
             }
             {edit ? <>
-                    <ButtonSave onClick={() => handleUpdate({id: course.id, ...formItems})} className={style.button_save}/>
-                    <ButtonClose onClick={handleEdit} className={style.button_close}/>
+                    <IconButton type={"save"} onClick={() => handleUpdate({id: course.id, ...formItems})}
+                                className={style.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
                 </> :
-                <ButtonEdit onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
             }
-            {!edit && <ButtonDelete onClick={() => handleDelete(course.id)} className={style.button_delete}/>}
+            {!edit &&
+                <IconButton type={"delete"} onClick={() => handleDelete(course.id)} className={style.button_delete}/>}
         </div>
     )
 }

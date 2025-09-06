@@ -3,11 +3,11 @@ import style from "./ButtonBack.module.css";
 import icon_back from "../../../assets/images/icons/back.svg";
 import {useNavigate} from "react-router-dom";
 
-type ButtonBackType = {
+interface ButtonBackType {
     className?: string;
 }
 
-function ButtonBack({className = ""}: ButtonBackType): JSX.Element {
+function ButtonBack({className}: ButtonBackType): JSX.Element {
     const navigate = useNavigate();
 
     return (

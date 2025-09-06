@@ -13,10 +13,10 @@ import {
     useGetEducationWebinarsQuery,
     useGetEducationTestsQuery
 } from "../../../services/store/features/education.ts";
-import {EventType} from "../../../types/api/EventType.ts";
-import {CourseType} from "../../../types/api/CourseType.ts";
-import {WebinarType} from "../../../types/api/WebinarType.ts";
-import {TestType} from "../../../types/api/TestType.ts";
+import {EventType} from "../../../interfaces/api/EventType.ts";
+import {CourseType} from "../../../interfaces/api/CourseType.ts";
+import {WebinarType} from "../../../interfaces/api/WebinarType.ts";
+import {TestType} from "../../../interfaces/api/TestType.ts";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
 
