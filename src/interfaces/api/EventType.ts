@@ -5,4 +5,4 @@ export interface EventType {
     department: string;
     time: string;
     date: string;
-};
+}
