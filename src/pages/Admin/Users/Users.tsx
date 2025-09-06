@@ -1,10 +1,10 @@
-import {JSX, useState} from "react";
+import React, {JSX, useState} from "react";
 import style from "./Users.module.css";
 import {UserType} from "../../../interfaces/api/UserType.ts";
 import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
-import InputText from "../../../components/ui/InputText/InputText.tsx";
+import Input from "../../../components/ui/Input/Input.tsx";
 import User from "../../../components/ui/User/User.tsx";
 import {useGetUsersQuery} from "../../../services/store/features/user.ts";
 import {useFiltered} from "../../../hooks/useFiltered.ts";
@@ -18,8 +18,8 @@ function Users(): JSX.Element {
         <>
             <HeaderPage>Пользователи</HeaderPage>
 
-            <InputText placeholder={'Поиск'} className={style.input} value={search}
-                       onChange={(e: any) => setSearch(e.target.value)}/>
+            <Input type={"text"} name={"search"} placeholder={'Поиск'} className={style.input} value={search}
+                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearch(e.target.value)}/>
 
             {error ? (
                 <ErrorData/>

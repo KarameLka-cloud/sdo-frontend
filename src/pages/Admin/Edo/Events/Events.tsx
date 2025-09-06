@@ -3,9 +3,7 @@ import {JSX} from "react";
 import style from "./Events.module.css";
 import {EventType} from "../../../../interfaces/api/EventType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
-import InputText from "../../../../components/ui/InputText/InputText.tsx";
-import InputTime from "../../../../components/ui/InputTime/InputTime.tsx";
+import Input from "../../../../components/ui/Input/Input.tsx";
 import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import EventChange from "../../../../components/ui/EventChange/EventChange.tsx";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
@@ -48,18 +46,18 @@ function Events(): JSX.Element {
         <>
             <ButtonBack/>
             <form onSubmit={handleAction} className={style.form}>
-                <InputText type="text" name="title" placeholder="Название" value={formItems.title}
-                           onChange={handleChange} className={style.form_input_text}/>
-                <InputText type="text" name="description" placeholder="Описание" value={formItems.description}
-                           onChange={handleChange} className={style.form_input_text}/>
-                <InputText type="text" name="department" placeholder="Отделения" value={formItems.department}
-                           onChange={handleChange} className={style.form_input_text}/>
+                <Input type="text" name="title" placeholder="Название" value={formItems.title}
+                       onChange={handleChange} className={style.form_input_text}/>
+                <Input type="text" name="description" placeholder="Описание" value={formItems.description}
+                       onChange={handleChange} className={style.form_input_text}/>
+                <Input type="text" name="department" placeholder="Отделения" value={formItems.department}
+                       onChange={handleChange} className={style.form_input_text}/>
                 <div className={style.form_date}>
-                    <InputDate type="date" name="date" placeholder="Дата" value={formItems.date} onChange={handleChange}
-                               className={style.form_input_date}/>
-                    <InputTime type="time" name="time" placeholder="Время" value={formItems.time}
-                               onChange={handleChange}
-                               className={style.form_input_time}/>
+                    <Input type="date" name="date" placeholder="Дата" value={formItems.date} onChange={handleChange}
+                           className={style.form_input_date}/>
+                    <Input type="time" name="time" placeholder="Время" value={formItems.time}
+                           onChange={handleChange}
+                           className={style.form_input_time}/>
                 </div>
                 <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
             </form>

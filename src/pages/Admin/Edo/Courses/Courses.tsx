@@ -3,8 +3,7 @@ import {JSX} from "react";
 import style from "./Courses.module.css";
 import {CourseType} from "../../../../interfaces/api/CourseType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import InputText from "../../../../components/ui/InputText/InputText.tsx";
-import InputDate from "../../../../components/ui/InputDate/InputDate.tsx";
+import Input from "../../../../components/ui/Input/Input.tsx";
 import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import CourseChange from "../../../../components/ui/CourseChange/CourseChange.tsx";
 import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
@@ -43,12 +42,12 @@ function Courses(): JSX.Element {
         <>
             <ButtonBack/>
             <form onSubmit={handleAction} className={style.form}>
-                <InputText type="text" name="title" placeholder="Название" value={formItems.title}
-                           onChange={handleChange} className={style.form_input_text}/>
-                <InputText type="text" name="url" placeholder="Ссылка на курс" value={formItems.url}
-                           onChange={handleChange} className={style.form_input_text}/>
-                <InputDate type="date" name="date_end" placeholder="Пройти до" value={formItems.date_end}
-                           onChange={handleChange} className={style.form_input_date_end}/>
+                <Input type="text" name="title" placeholder="Название" value={formItems.title}
+                       onChange={handleChange} className={style.form_input_text}/>
+                <Input type="text" name="url" placeholder="Ссылка на курс" value={formItems.url}
+                       onChange={handleChange} className={style.form_input_text}/>
+                <Input type="date" name="date_end" placeholder="Пройти до" value={formItems.date_end}
+                       onChange={handleChange} className={style.form_input_date_end}/>
                 <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
             </form>
             {addError && (<div>Error</div>)}

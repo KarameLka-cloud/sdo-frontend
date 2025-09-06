@@ -3,11 +3,10 @@ import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
 import style from "./TestChange.module.css";
-import InputText from "../InputText/InputText.tsx";
-import InputDate from "../InputDate/InputDate.tsx";
 import convertDate from "../../../utils/convertDate.ts";
 import {JSX} from "react";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
+import Input from "../Input/Input.tsx";
 import IconButton from "../IconButton/IconButton.tsx";
 
 
@@ -32,12 +31,12 @@ function TestChange({className, test, mutationUpdate, mutationDelete}: TestProps
         <div className={`${style.test} ${className}`}>
             {edit ?
                 <div className={style.form}>
-                    <InputText type="text" name="title" value={formItems.title} onChange={handleChange}
-                               className={style.input}/>
-                    <InputText type="text" name="url" value={formItems.url} onChange={handleChange}
-                               className={style.input}/>
-                    <InputDate type="date" name="date_end" value={formItems.date_end} onChange={handleChange}
-                               className={style.input}/>
+                    <Input type="text" name="title" value={formItems.title} onChange={handleChange}
+                           className={style.input}/>
+                    <Input type="text" name="url" value={formItems.url} onChange={handleChange}
+                           className={style.input}/>
+                    <Input type="date" name="date_end" value={formItems.date_end} onChange={handleChange}
+                           className={style.input}/>
                 </div> :
                 <div className={style.content}>
                     <div className={style.title}>{test.title}</div>

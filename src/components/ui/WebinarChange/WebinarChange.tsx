@@ -1,8 +1,5 @@
 import {JSX} from "react";
 import style from "./WebinarChange.module.css";
-import InputText from "../InputText/InputText.tsx";
-import InputDate from "../InputDate/InputDate.tsx";
-import InputTime from "../InputTime/InputTime.tsx";
 import {WebinarType} from "../../../interfaces/api/WebinarType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import {useForm} from "../../../hooks/useForm.ts";
@@ -10,6 +7,7 @@ import {useToggle} from "../../../hooks/useToggle.ts";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
 import {convertTime} from "../../../utils/convertTime.ts";
+import Input from "../Input/Input.tsx";
 import IconButton from "../IconButton/IconButton.tsx";
 
 interface EventPropsType {
@@ -34,12 +32,12 @@ function WebinarChange({className, webinar, mutationDelete, mutationUpdate}: Eve
         <div className={`${style.webinar} ${className}`}>
             {edit ?
                 <div className={style.form}>
-                    <InputText type="text" name="title" value={formItems.title} onChange={handleChange}
-                               className={style.input}/>
+                    <Input type="text" name="title" value={formItems.title} onChange={handleChange}
+                           className={style.input}/>
                     <div>
-                        <InputDate type="date" name="date" value={formItems.date} onChange={handleChange}/>
-                        <InputTime type="time" name="time_start" value={formItems.time_start} onChange={handleChange}/>
-                        <InputTime type="time" name="time_end" value={formItems.time_end} onChange={handleChange}/>
+                        <Input type="date" name="date" value={formItems.date} onChange={handleChange}/>
+                        <Input type="time" name="time_start" value={formItems.time_start} onChange={handleChange}/>
+                        <Input type="time" name="time_end" value={formItems.time_end} onChange={handleChange}/>
                     </div>
                 </div> :
                 <div className={style.content}>

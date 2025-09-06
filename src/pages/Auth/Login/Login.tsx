@@ -3,7 +3,7 @@ import {JSX} from "react";
 import style from "./Login.module.css";
 import image_login_background from "../../../assets/images/login_background.svg";
 import image_document from "../../../assets/images/document.svg";
-import InputText from "../../../components/ui/InputText/InputText.tsx";
+import Input from "../../../components/ui/Input/Input.tsx";
 import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import Error from "../../../components/ui/Error/Error.tsx";
 import {useForm} from "../../../hooks/useForm.ts";
@@ -34,7 +34,7 @@ function Login(): JSX.Element {
             <form onSubmit={handleLogin} className={style.form}>
                 {errorMessage ? <Error className={style.error}>{errorMessage}</Error> :
                     <div className={style.header}>Добро пожаловать!</div>}
-                <InputText
+                <Input
                     type="text"
                     name="login"
                     value={formItems.login}
@@ -43,7 +43,7 @@ function Login(): JSX.Element {
                     required
                     className={style.input}
                 />
-                <InputText
+                <Input
                     type="password"
                     name="password"
                     value={formItems.password}
