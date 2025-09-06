@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.70](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.69...v0.0.70) (2025-09-06)
+
+
+### Bug Fixes
+
+* Внедрение концепции DRY, типы теперь интерфейсы, кнопки с иконками перенесенны в один компонент ([7a68f47](https://github.com/KarameLka-cloud/sdo-frontend/commit/7a68f4791a92a24200ae3f50c889223b48e602fe))
+* Внедрение концепции DRY, типы теперь интерфейсы, кнопки с иконками перенесенны в один компонент ([cd0758e](https://github.com/KarameLka-cloud/sdo-frontend/commit/cd0758ed2ec269c1edd247031b5e2a984902285b))
+
 ### [0.0.69](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.68...v0.0.69) (2025-09-04)
 
 
