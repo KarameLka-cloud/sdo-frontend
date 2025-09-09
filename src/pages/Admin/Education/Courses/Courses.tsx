@@ -1,23 +1,21 @@
-import React from "react";
-import {JSX} from "react";
+import React, {JSX} from "react";
 import style from "./Courses.module.css";
 import {CourseType} from "../../../../interfaces/api/CourseType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import Input from "../../../../components/ui/Input/Input.tsx";
 import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import CourseChange from "../../../../components/ui/CourseChange/CourseChange.tsx";
-import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
-import Loader from "../../../../components/ui/Loader/Loader.tsx";
+import DataList from "../../../../components/ui/DataList/DataList.tsx";
+import {useForm} from "../../../../hooks/useForm.ts";
 import {
     useGetEducationCoursesQuery,
     useAddEducationCourseMutation,
     useUpdateEducationCourseMutation,
     useDeleteEducationCourseMutation,
 } from "../../../../services/store/features/education.ts";
-import {useForm} from "../../../../hooks/useForm.ts";
 
 function Courses(): JSX.Element {
-    const {data: listData, isLoading: listLoading, isError: listError} = useGetEducationCoursesQuery("");
+    const {data, error, isLoading} = useGetEducationCoursesQuery("");
     const [addCourse, {isLoading: addLoading, isError: addError}] = useAddEducationCourseMutation();
     const [updateCourse] = useUpdateEducationCourseMutation();
     const [deleteCourse] = useDeleteEducationCourseMutation();
@@ -52,20 +50,16 @@ function Courses(): JSX.Element {
             </form>
             {addError && (<div>Error</div>)}
             <hr/>
-            {listError ? (
-                <ErrorData/>
-            ) : listLoading ? (
-                <Loader/>
-            ) : listData && listData.length > 0 ? (
-                listData.map((item: CourseType) => {
-                    return (
-                        <CourseChange key={item.id} course={item} mutationUpdate={updateCourse}
-                                      mutationDelete={deleteCourse}
-                                      className={style.course}/>
-                    )
-                })
-            ) : <>Курсов нет</>
-            }
+            <DataList<CourseType>
+                data={data}
+                error={!!error}
+                isLoading={isLoading}
+                renderItem={(item: CourseType) => (
+                    <CourseChange key={item.id} course={item} mutationUpdate={updateCourse}
+                                  mutationDelete={deleteCourse}
+                                  className={style.course}/>
+                )}
+            />
         </>
     )
 }

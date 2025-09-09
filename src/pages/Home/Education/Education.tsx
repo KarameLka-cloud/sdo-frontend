@@ -1,12 +1,11 @@
 import {JSX} from "react";
 import style from "./Education.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
+import DataMessage from "../../../components/ui/DataMessage/DataMessage.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import WebinarItem from "../../../components/ui/Webinar/Webinar.tsx";
 import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
-import NoData from "../../../components/ui/NoData/NoData.tsx";
 import {
     useGetEducationEventsQuery,
     useGetEducationCoursesQuery,
@@ -33,7 +32,7 @@ function Education(): JSX.Element {
             <h3 className={style.header_services}>Мероприятия</h3>
             <div className={style.container}>
                 {eventError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : eventLoading ? (
                     <Loader/>
                 ) : eventData && eventData.length > 0 ? (
@@ -46,14 +45,14 @@ function Education(): JSX.Element {
                         <ButtonSeeAll to="events"/>
                     </>
                 ) : (
-                    <NoData>Мероприятий нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
 
             <h3 className={style.header_services}>Электронные курсы</h3>
             <div className={style.container}>
                 {courseError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : courseLoading ? (
                     <Loader/>
                 ) : courseData && courseData.length > 0 ? (
@@ -68,14 +67,14 @@ function Education(): JSX.Element {
                         <ButtonSeeAll to="courses"/>
                     </>
                 ) : (
-                    <NoData>Курсов нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
 
             <h3 className={style.header_services}>Вебинары</h3>
             <div className={style.container}>
                 {webinarError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : webinarLoading ? (
                     <Loader/>
                 ) : webinarData && webinarData.length > 0 ? (
@@ -88,14 +87,14 @@ function Education(): JSX.Element {
                         <ButtonSeeAll to="webinars"/>
                     </>
                 ) : (
-                    <NoData>Вебинаров нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
 
             <h3 className={style.header_services}>Назначенные тесты</h3>
             <div className={style.container}>
                 {testError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : testLoading ? (
                     <Loader/>
                 ) : testData && testData.length > 0 ? (
@@ -110,7 +109,7 @@ function Education(): JSX.Element {
                         <ButtonSeeAll to="tests"/>
                     </>
                 ) : (
-                    <NoData>Тестов нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
         </>

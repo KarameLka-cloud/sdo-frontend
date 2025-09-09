@@ -2,9 +2,8 @@ import {JSX} from "react";
 import style from "./Edo.module.css";
 import firstWednesdayData from "../../../utils/firstWednesday.ts";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import ErrorData from "../../../components/ui/ErrorData/ErrorData.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
-import NoData from "../../../components/ui/NoData/NoData.tsx";
+import DataMessage from "../../../components/ui/DataMessage/DataMessage.tsx";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import EventItem from "../../../components/ui/Event/Event.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
@@ -32,7 +31,7 @@ function Edo(): JSX.Element {
             <h3 className={style.header_services}>Мероприятия</h3>
             <div className={style.container}>
                 {eventError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : eventLoading ? (
                     <Loader/>
                 ) : eventData && eventData.length > 0 ? (
@@ -45,14 +44,14 @@ function Edo(): JSX.Element {
                         <ButtonSeeAll to="events"/>
                     </>
                 ) : (
-                    <NoData>Мероприятий нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
 
             <h3 className={style.header_services}>Электронные курсы</h3>
             <div className={style.container}>
                 {courseError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : courseLoading ? (
                     <Loader/>
                 ) : courseData && courseData.length > 0 ? (
@@ -67,14 +66,14 @@ function Edo(): JSX.Element {
                         <ButtonSeeAll to="courses"/>
                     </>
                 ) : (
-                    <NoData>Курсов нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
 
             <h3 className={style.header_services}>Назначенные тесты</h3>
             <div className={style.container}>
                 {testError ? (
-                    <ErrorData/>
+                    <DataMessage type={"error"}/>
                 ) : testLoading ? (
                     <Loader/>
                 ) : testData && testData.length > 0 ? (
@@ -89,7 +88,7 @@ function Edo(): JSX.Element {
                         <ButtonSeeAll to="tests"/>
                     </>
                 ) : (
-                    <NoData>Тестов нет</NoData>
+                    <DataMessage type={"no_data"}/>
                 )}
             </div>
         </>

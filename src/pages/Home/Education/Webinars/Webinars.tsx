@@ -1,12 +1,10 @@
 import {JSX} from "react";
-import {WebinarType} from "../../../../interfaces/api/WebinarType.ts";
 import style from "./Webinars.module.css";
-import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
-import Loader from "../../../../components/ui/Loader/Loader.tsx";
-import NoData from "../../../../components/ui/NoData/NoData.tsx";
+import {WebinarType} from "../../../../interfaces/api/WebinarType.ts";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
-import WebinarItem from "../../../../components/ui/Webinar/Webinar.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
+import DataList from "../../../../components/ui/DataList/DataList.tsx";
+import WebinarItem from "../../../../components/ui/Webinar/Webinar.tsx";
 import {useGetEducationWebinarsQuery} from "../../../../services/store/features/education.ts";
 
 function Events(): JSX.Element {
@@ -17,19 +15,14 @@ function Events(): JSX.Element {
             <HeaderPage>Мероприятия</HeaderPage>
             <ButtonBack/>
 
-            {error ? (
-                <ErrorData/>
-            ) : isLoading ? (
-                <Loader/>
-            ) : data != data.length ? (
-                data.map((item: WebinarType) => {
-                    return (
-                        <WebinarItem key={item.id} webinar={item} className={style.webinar}/>
-                    )
-                })
-            ) : (
-                <NoData>Вебинаров нет</NoData>
-            )}
+            <DataList<WebinarType>
+                data={data}
+                error={!!error}
+                isLoading={isLoading}
+                renderItem={(item: WebinarType) => (
+                    <WebinarItem key={item.id} webinar={item} className={style.webinar}/>
+                )}
+            />
         </>
     );
 }

@@ -1,23 +1,21 @@
-import React from "react";
-import {JSX} from "react";
+import React, {JSX} from "react";
 import style from "./Webinars.module.css";
 import {WebinarType} from "../../../../interfaces/api/WebinarType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import Input from "../../../../components/ui/Input/Input.tsx";
 import WebinarChange from "../../../../components/ui/WebinarChange/WebinarChange.tsx";
 import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
-import Loader from "../../../../components/ui/Loader/Loader.tsx";
+import DataList from "../../../../components/ui/DataList/DataList.tsx";
+import {useForm} from "../../../../hooks/useForm.ts";
 import {
     useGetEducationWebinarsQuery,
     useAddEducationWebinarMutation,
     useUpdateEducationWebinarMutation,
     useDeleteEducationWebinarMutation,
 } from "../../../../services/store/features/education.ts";
-import {useForm} from "../../../../hooks/useForm.ts";
 
 function Webinars(): JSX.Element {
-    const {data: listData, isLoading: listLoading, isError: listError} = useGetEducationWebinarsQuery("");
+    const {data, error, isLoading} = useGetEducationWebinarsQuery("");
     const [addWebinar, {isLoading: addLoading, isError: addError}] = useAddEducationWebinarMutation();
     const [updateWebinar] = useUpdateEducationWebinarMutation();
     const [deleteWebinar] = useDeleteEducationWebinarMutation();
@@ -60,22 +58,16 @@ function Webinars(): JSX.Element {
             </form>
             {addError && (<div>Error</div>)}
             <hr/>
-            <div>
-                {listError ? (
-                    <ErrorData/>
-                ) : listLoading ? (
-                    <Loader/>
-                ) : listData && listData.length > 0 ? (
-                    listData.map((item: WebinarType) => {
-                        return (
-                            <WebinarChange key={item.id} webinar={item} mutationUpdate={updateWebinar}
-                                           mutationDelete={deleteWebinar}
-                                           className={style.webinar}/>
-                        )
-                    })
-                ) : <>Мероприятий нет</>
-                }
-            </div>
+            <DataList<WebinarType>
+                data={data}
+                error={!!error}
+                isLoading={isLoading}
+                renderItem={(item: WebinarType) => (
+                    <WebinarChange key={item.id} webinar={item} mutationUpdate={updateWebinar}
+                                   mutationDelete={deleteWebinar}
+                                   className={style.webinar}/>
+                )}
+            />
         </>
     )
 }

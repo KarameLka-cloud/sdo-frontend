@@ -1,12 +1,10 @@
 import {JSX} from "react";
-import {EventType} from "../../../../interfaces/api/EventType.ts";
 import style from "./Events.module.css";
-import ErrorData from "../../../../components/ui/ErrorData/ErrorData.tsx";
-import Loader from "../../../../components/ui/Loader/Loader.tsx";
-import NoData from "../../../../components/ui/NoData/NoData.tsx";
+import {EventType} from "../../../../interfaces/api/EventType.ts";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
-import EventItem from "../../../../components/ui/Event/Event.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
+import DataList from "../../../../components/ui/DataList/DataList.tsx";
+import EventItem from "../../../../components/ui/Event/Event.tsx";
 import {useGetEdoEventsQuery} from "../../../../services/store/features/edo.ts";
 
 function Events(): JSX.Element {
@@ -17,19 +15,14 @@ function Events(): JSX.Element {
             <HeaderPage>Мероприятия</HeaderPage>
             <ButtonBack/>
 
-            {error ? (
-                <ErrorData/>
-            ) : isLoading ? (
-                <Loader/>
-            ) : data != data.length ? (
-                data.map((item: EventType) => {
-                    return (
-                        <EventItem key={item.id} event={item} className={style.event}/>
-                    )
-                })
-            ) : (
-                <NoData>Мероприятий нет</NoData>
-            )}
+            <DataList<EventType>
+                data={data}
+                error={!!error}
+                isLoading={isLoading}
+                renderItem={(item: EventType) => (
+                    <EventItem key={item.id} event={item} className={style.event}/>
+                )}
+            />
         </>
     );
 }
