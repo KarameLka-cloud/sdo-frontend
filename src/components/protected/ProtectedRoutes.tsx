@@ -1,9 +1,9 @@
 import {JSX} from "react";
 import Cookie from "js-cookie";
 import {Navigate} from "react-router-dom";
-import {useUser} from "../../hooks/useUser.ts";
-import {ROUTES} from "../../constants/routes.ts";
-import {COOKIE_NAMES} from "../../constants/api.ts";
+import {useUser} from "@hooks/useUser.ts";
+import {ROUTES} from "@constants/routes.ts";
+import {COOKIE_NAMES} from "@constants/api.ts";
 
 interface ProtectedRoutePropsType {
     elementLogin?: JSX.Element;

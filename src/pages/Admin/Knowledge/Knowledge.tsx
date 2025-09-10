@@ -1,6 +1,6 @@
 import {JSX} from "react";
-import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
-import Development from "../../../components/ui/Development/Development.tsx";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
+import Development from "@components/ui/Development/Development.tsx";
 
 function Knowledge(): JSX.Element {
     return (

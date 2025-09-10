@@ -1,8 +1,8 @@
 import {JSX} from "react";
 import styles from "./Edo.module.css";
-import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
-import LinkService from "../../../components/ui/LinkService/LinkService.tsx";
-import {ADMIN_NAV_EDO_LINKS} from "../../../constants/navigation.ts";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
+import LinkService from "@components/ui/LinkService/LinkService.tsx";
+import {ADMIN_NAV_EDO_LINKS} from "@constants/navigation.ts";
 
 function Edo(): JSX.Element {
     return (

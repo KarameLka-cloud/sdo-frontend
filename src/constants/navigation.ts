@@ -1,11 +1,11 @@
-import {ROUTES} from "./routes.ts";
-import homeIcon from '../assets/images/icons/home.svg';
-import personIcon from '../assets/images/icons/person.svg';
-import medalIcon from '../assets/images/icons/medal.svg';
-import libraryIcon from '../assets/images/icons/library.svg';
-import bookIcon from '../assets/images/icons/book.svg';
-import calendarIcon from '../assets/images/icons/calendar.svg';
-import peopleIcon from '../assets/images/icons/people.svg';
+import {ROUTES} from "@constants/routes";
+import homeIcon from '@assets/images/icons/home.svg';
+import personIcon from '@assets/images/icons/person.svg';
+import medalIcon from '@assets/images/icons/medal.svg';
+import libraryIcon from '@assets/images/icons/library.svg';
+import bookIcon from '@assets/images/icons/book.svg';
+import calendarIcon from '@assets/images/icons/calendar.svg';
+import peopleIcon from '@assets/images/icons/people.svg';
 
 export const HOME_NAV_LINKS = [
     {
@@ -23,7 +23,7 @@ export const HOME_NAV_LINKS = [
     {
         id: 3,
         name: "Достижения",
-        path: "achievements",
+        path: ROUTES.ACHIEVEMENTS,
         icon: medalIcon,
     },
     {
@@ -113,3 +113,5 @@ export const ADMIN_NAV_EDO_LINKS = [
         path: ROUTES.ADMIN_EDO_TESTS,
     },
 ] as const;
+
+

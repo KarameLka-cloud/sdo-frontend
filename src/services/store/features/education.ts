@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
-import {API_ENDPOINTS, COOKIE_NAMES} from "../../../constants/api.ts";
+import {API_ENDPOINTS, COOKIE_NAMES} from "@constants/api.ts";
 
 export const education = createApi({
     reducerPath: "education",

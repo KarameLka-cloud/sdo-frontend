@@ -1,7 +1,7 @@
 import {JSX} from "react";
 import styles from "./DashboardLayout.module.css";
 import {Outlet} from "react-router-dom";
-import Header from "../../components/dashboard/Header/Header.tsx";
+import Header from "@components/dashboard/Header/Header.tsx";
 
 function DashboardLayout(): JSX.Element {
     return (

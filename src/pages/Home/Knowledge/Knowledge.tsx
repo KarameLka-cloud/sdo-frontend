@@ -1,8 +1,8 @@
 import {JSX} from "react";
 import styles from "./Knowledge.module.css";
 import {Link} from "react-router-dom";
-import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import {EXTERNAL_LINKS} from "../../../constants/external.ts";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
+import {EXTERNAL_LINKS} from "@constants/external.ts";
 
 function Knowledge(): JSX.Element {
     return (

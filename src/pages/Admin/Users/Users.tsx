@@ -1,13 +1,13 @@
 import React, {JSX, useState} from "react";
 import styles from "./Users.module.css";
-import {UserType} from "../../../interfaces/api/UserType.ts";
-import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
-import Input from "../../../components/ui/Input/Input.tsx";
-import User from "../../../components/ui/User/User.tsx";
-import Loader from "../../../components/ui/Loader/Loader.tsx";
-import DataMessage from "../../../components/ui/DataMessage/DataMessage.tsx";
-import {useFiltered} from "../../../hooks/useFiltered.ts";
-import {useGetUsersQuery} from "../../../services/store/features/user.ts";
+import {UserType} from "@interfaces/api/UserType.ts";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
+import Input from "@components/ui/Input/Input.tsx";
+import User from "@components/ui/User/User.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
+import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import {useFiltered} from "@hooks/useFiltered.ts";
+import {useGetUsersQuery} from "@services/store/features/user.ts";
 
 function Users(): JSX.Element {
     const {data, error, isLoading} = useGetUsersQuery("");

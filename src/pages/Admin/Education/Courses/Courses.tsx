@@ -1,18 +1,18 @@
 import React, {JSX} from "react";
 import styles from "./Courses.module.css";
-import {CourseType} from "../../../../interfaces/api/CourseType.ts";
-import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import Input from "../../../../components/ui/Input/Input.tsx";
-import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import CourseChange from "../../../../components/ui/CourseChange/CourseChange.tsx";
-import DataList from "../../../../components/ui/DataList/DataList.tsx";
-import {useForm} from "../../../../hooks/useForm.ts";
+import {CourseType} from "@interfaces/api/CourseType.ts";
+import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
+import Input from "@components/ui/Input/Input.tsx";
+import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import CourseChange from "@components/ui/CourseChange/CourseChange.tsx";
+import DataList from "@components/ui/DataList/DataList.tsx";
+import {useForm} from "@hooks/useForm.ts";
 import {
     useGetEducationCoursesQuery,
     useAddEducationCourseMutation,
     useUpdateEducationCourseMutation,
     useDeleteEducationCourseMutation,
-} from "../../../../services/store/features/education.ts";
+} from "@services/store/features/education.ts";
 
 function Courses(): JSX.Element {
     const {data, error, isLoading} = useGetEducationCoursesQuery("");

@@ -1,24 +1,24 @@
 import {JSX} from "react";
 import styles from "./Education.module.css";
-import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import DataMessage from "../../../components/ui/DataMessage/DataMessage.tsx";
-import Loader from "../../../components/ui/Loader/Loader.tsx";
-import EventItem from "../../../components/ui/Event/Event.tsx";
-import WebinarItem from "../../../components/ui/Webinar/Webinar.tsx";
-import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
+import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
+import EventItem from "@components/ui/Event/Event.tsx";
+import WebinarItem from "@components/ui/Webinar/Webinar.tsx";
+import ButtonSeeAll from "@components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
 import {
     useGetEducationEventsQuery,
     useGetEducationCoursesQuery,
     useGetEducationWebinarsQuery,
     useGetEducationTestsQuery
-} from "../../../services/store/features/education.ts";
-import {EventType} from "../../../interfaces/api/EventType.ts";
-import {CourseType} from "../../../interfaces/api/CourseType.ts";
-import {WebinarType} from "../../../interfaces/api/WebinarType.ts";
-import {TestType} from "../../../interfaces/api/TestType.ts";
-import CourseItem from "../../../components/ui/Course/Course.tsx";
-import TestItem from "../../../components/ui/Test/Test.tsx";
-import {ROUTES} from "../../../constants/routes.ts";
+} from "@services/store/features/education.ts";
+import {EventType} from "@interfaces/api/EventType.ts";
+import {CourseType} from "@interfaces/api/CourseType.ts";
+import {WebinarType} from "@interfaces/api/WebinarType.ts";
+import {TestType} from "@interfaces/api/TestType.ts";
+import CourseItem from "@components/ui/Course/Course.tsx";
+import TestItem from "@components/ui/Test/Test.tsx";
+import {ROUTES} from "@constants/routes.ts";
 
 function Education(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEducationEventsQuery("");

@@ -1,11 +1,11 @@
 import {JSX} from "react";
 import styles from "./Tests.module.css";
-import {TestType} from "../../../../interfaces/api/TestType.ts";
-import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage.tsx";
-import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import DataList from "../../../../components/ui/DataList/DataList.tsx";
-import TestItem from "../../../../components/ui/Test/Test.tsx";
-import {useGetEdoTestsQuery} from "../../../../services/store/features/edo.ts";
+import {TestType} from "@interfaces/api/TestType.ts";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
+import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
+import DataList from "@components/ui/DataList/DataList.tsx";
+import TestItem from "@components/ui/Test/Test.tsx";
+import {useGetEdoTestsQuery} from "@services/store/features/edo.ts";
 
 function Tests(): JSX.Element {
     const {data, error, isLoading} = useGetEdoTestsQuery("");

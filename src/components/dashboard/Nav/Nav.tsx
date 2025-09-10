@@ -1,9 +1,9 @@
 import {JSX} from "react";
 import styles from "./Nav.module.css";
-import image_mfc_corp from "../../../assets/images/mfc_corp.png";
 import {NavLink, NavLinkRenderProps} from "react-router-dom";
-import {NavLinkType} from "../../../interfaces/components/NavLinkType.ts";
-import {EXTERNAL_LINKS} from "../../../constants/external.ts";
+import image_mfc_corp from "@assets/images/mfc_corp.png";
+import {NavLinkType} from "@interfaces/components/NavLinkType.ts";
+import {EXTERNAL_LINKS} from "@constants/external.ts";
 
 interface NavType {
     className?: string;
@@ -12,7 +12,7 @@ interface NavType {
 
 function Nav({className, links}: NavType): JSX.Element {
     return (
-        <nav className={`${styles.nav} + ${className}`}>
+        <nav className={`${styles.nav} ${className ?? ""}`}>
             {links.map(
                 ({id, name, path, icon}): JSX.Element => (
                     <NavLink

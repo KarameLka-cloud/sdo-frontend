@@ -1,21 +1,21 @@
 import {JSX} from "react";
 import styles from "./Edo.module.css";
-import firstWednesdayData from "../../../utils/firstWednesday.ts";
-import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
-import Loader from "../../../components/ui/Loader/Loader.tsx";
-import DataMessage from "../../../components/ui/DataMessage/DataMessage.tsx";
-import CourseItem from "../../../components/ui/Course/Course.tsx";
-import EventItem from "../../../components/ui/Event/Event.tsx";
-import TestItem from "../../../components/ui/Test/Test.tsx";
-import ButtonSeeAll from "../../../components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
-import {EventType} from "../../../interfaces/api/EventType.ts";
-import {CourseType} from "../../../interfaces/api/CourseType.ts";
+import firstWednesdayData from "@utils/firstWednesday.ts";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
+import Loader from "@components/ui/Loader/Loader.tsx";
+import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import CourseItem from "@components/ui/Course/Course.tsx";
+import EventItem from "@components/ui/Event/Event.tsx";
+import TestItem from "@components/ui/Test/Test.tsx";
+import ButtonSeeAll from "@components/ui/ButtonSeeAll/ButtonSeeAll.tsx";
+import {EventType} from "@interfaces/api/EventType.ts";
+import {CourseType} from "@interfaces/api/CourseType.ts";
 import {
     useGetEdoCoursesQuery,
     useGetEdoEventsQuery,
     useGetEdoTestsQuery
-} from "../../../services/store/features/edo.ts";
-import {ROUTES} from "../../../constants/routes.ts";
+} from "@services/store/features/edo.ts";
+import {ROUTES} from "@constants/routes.ts";
 
 function Edo(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEdoEventsQuery("");

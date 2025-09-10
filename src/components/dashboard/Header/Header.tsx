@@ -1,10 +1,10 @@
 import {JSX} from "react";
 import {NavLink} from "react-router-dom";
 import styles from "./Header.module.css";
-import {useUser} from "../../../hooks/useUser.ts";
-import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
-import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
-import {ROUTES} from "../../../constants/routes.ts";
+import {useUser} from "@hooks/useUser.ts";
+import LogoLink from "@components/ui/LogoLink/LogoLink.tsx";
+import LogoutButton from "@components/ui/LogoutButton/LogoutButton.tsx";
+import {ROUTES} from "@constants/routes.ts";
 
 interface HeaderType {
     className?: string;

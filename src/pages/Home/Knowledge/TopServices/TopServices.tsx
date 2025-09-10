@@ -1,8 +1,8 @@
 import {JSX} from "react";
 import styles from "./TopServices.module.css";
-import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
-import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import Development from "../../../../components/ui/Development/Development.tsx";
+import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
+import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
+import Development from "@components/ui/Development/Development.tsx";
 
 function TopServices(): JSX.Element {
     return (

@@ -1,18 +1,18 @@
 import React, {JSX} from "react";
 import styles from "./Tests.module.css";
-import {TestType} from "../../../../interfaces/api/TestType.ts";
-import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import Input from "../../../../components/ui/Input/Input.tsx";
-import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import TestChange from "../../../../components/ui/TestChange/TestChange.tsx";
-import DataList from "../../../../components/ui/DataList/DataList.tsx";
-import {useForm} from "../../../../hooks/useForm.ts";
+import {TestType} from "@interfaces/api/TestType.ts";
+import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
+import Input from "@components/ui/Input/Input.tsx";
+import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import TestChange from "@components/ui/TestChange/TestChange.tsx";
+import DataList from "@components/ui/DataList/DataList.tsx";
+import {useForm} from "@hooks/useForm.ts";
 import {
     useGetEducationTestsQuery,
     useAddEducationTestMutation,
     useUpdateEducationTestMutation,
     useDeleteEducationTestMutation,
-} from "../../../../services/store/features/education.ts";
+} from "@services/store/features/education.ts";
 
 function Tests(): JSX.Element {
     const {data, error, isLoading} = useGetEducationTestsQuery("");

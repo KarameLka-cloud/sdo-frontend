@@ -1,13 +1,13 @@
 import React from "react";
 import {JSX} from "react";
 import styles from "./Login.module.css";
-import image_login_background from "../../../assets/images/login_background.svg";
-import image_document from "../../../assets/images/document.svg";
-import Input from "../../../components/ui/Input/Input.tsx";
-import ButtonSubmit from "../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import Error from "../../../components/ui/Error/Error.tsx";
-import {useForm} from "../../../hooks/useForm.ts";
-import {useLogin} from "../../../hooks/useLogin.ts";
+import image_login_background from "@assets/images/login_background.svg";
+import image_document from "@assets/images/document.svg";
+import Input from "@components/ui/Input/Input.tsx";
+import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import Error from "@components/ui/Error/Error.tsx";
+import {useForm} from "@hooks/useForm.ts";
+import {useLogin} from "@hooks/useLogin.ts";
 
 function Login(): JSX.Element {
     const {loginUser, errorMessage, isLoading} = useLogin();

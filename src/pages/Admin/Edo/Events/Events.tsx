@@ -1,18 +1,18 @@
 import React, {JSX} from "react";
 import styles from "./Events.module.css";
-import {EventType} from "../../../../interfaces/api/EventType.ts";
-import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
-import Input from "../../../../components/ui/Input/Input.tsx";
-import ButtonSubmit from "../../../../components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import EventChange from "../../../../components/ui/EventChange/EventChange.tsx";
-import DataList from "../../../../components/ui/DataList/DataList.tsx";
-import {useForm} from "../../../../hooks/useForm.ts";
+import {EventType} from "@interfaces/api/EventType.ts";
+import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
+import Input from "@components/ui/Input/Input.tsx";
+import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import EventChange from "@components/ui/EventChange/EventChange.tsx";
+import DataList from "@components/ui/DataList/DataList.tsx";
+import {useForm} from "@hooks/useForm.ts";
 import {
     useGetEdoEventsQuery,
     useAddEdoEventMutation,
     useUpdateEdoEventMutation,
     useDeleteEdoEventMutation,
-} from "../../../../services/store/features/edo.ts";
+} from "@services/store/features/edo.ts";
 
 function Events(): JSX.Element {
     const {data, error, isLoading} = useGetEdoEventsQuery("");
