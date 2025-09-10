@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
-import {COOKIE_NAMES} from "../../../constants/api.ts";
+import {API_ENDPOINTS, COOKIE_NAMES} from "../../../constants/api.ts";
 
 export const education = createApi({
     reducerPath: "education",
@@ -18,7 +18,7 @@ export const education = createApi({
     endpoints: (builder) => ({
         // Education courses
         getEducationCourses: builder.query({
-            query: () => "api/education/courses",
+            query: () => API_ENDPOINTS.EDUCATION_COURSES,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Courses' as const, id})), 'Courses']
@@ -26,7 +26,7 @@ export const education = createApi({
         }),
         addEducationCourse: builder.mutation({
             query: (course) => ({
-                url: "api/education/courses",
+                url: API_ENDPOINTS.EDUCATION_COURSES,
                 method: "POST",
                 body: course,
             }),
@@ -34,7 +34,7 @@ export const education = createApi({
         }),
         updateEducationCourse: builder.mutation({
             query: ({id, ...course}) => ({
-                url: `api/education/courses/${id}`,
+                url: API_ENDPOINTS.EDUCATION_COURSES + id,
                 method: "PATCH",
                 body: course,
             }),
@@ -42,7 +42,7 @@ export const education = createApi({
         }),
         deleteEducationCourse: builder.mutation({
             query: (id) => ({
-                url: `api/education/courses/${id}`,
+                url: API_ENDPOINTS.EDUCATION_COURSES + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Courses'],
@@ -50,7 +50,7 @@ export const education = createApi({
 
         // Education events
         getEducationEvents: builder.query({
-            query: () => "api/education/events",
+            query: () => API_ENDPOINTS.EDUCATION_EVENTS,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Events' as const, id})), 'Events']
@@ -58,7 +58,7 @@ export const education = createApi({
         }),
         addEducationEvent: builder.mutation({
             query: (event) => ({
-                url: "api/education/events",
+                url: API_ENDPOINTS.EDUCATION_EVENTS,
                 method: "POST",
                 body: event,
             }),
@@ -66,7 +66,7 @@ export const education = createApi({
         }),
         updateEducationEvent: builder.mutation({
             query: ({id, ...event}) => ({
-                url: `api/education/events/${id}`,
+                url: API_ENDPOINTS.EDUCATION_EVENTS + id,
                 method: "PATCH",
                 body: event,
             }),
@@ -74,7 +74,7 @@ export const education = createApi({
         }),
         deleteEducationEvent: builder.mutation({
             query: (id) => ({
-                url: `api/education/events/${id}`,
+                url: API_ENDPOINTS.EDUCATION_EVENTS + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Events'],
@@ -82,7 +82,7 @@ export const education = createApi({
 
         // Education webinars
         getEducationWebinars: builder.query({
-            query: () => "api/education/webinars",
+            query: () => API_ENDPOINTS.EDUCATION_WEBINARS,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Webinars' as const, id})), 'Webinars']
@@ -90,7 +90,7 @@ export const education = createApi({
         }),
         addEducationWebinar: builder.mutation({
             query: (webinar) => ({
-                url: "api/education/webinars",
+                url: API_ENDPOINTS.EDUCATION_WEBINARS,
                 method: "POST",
                 body: webinar,
             }),
@@ -98,7 +98,7 @@ export const education = createApi({
         }),
         updateEducationWebinar: builder.mutation({
             query: ({id, ...webinar}) => ({
-                url: `api/education/webinars/${id}`,
+                url: API_ENDPOINTS.EDUCATION_WEBINARS + id,
                 method: "PATCH",
                 body: webinar,
             }),
@@ -106,7 +106,7 @@ export const education = createApi({
         }),
         deleteEducationWebinar: builder.mutation({
             query: (id) => ({
-                url: `api/education/webinars/${id}`,
+                url: API_ENDPOINTS.EDUCATION_WEBINARS + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Webinars'],
@@ -114,7 +114,7 @@ export const education = createApi({
 
         // Education tests
         getEducationTests: builder.query({
-            query: () => "api/education/tests",
+            query: () => API_ENDPOINTS.EDUCATION_TESTS,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Tests' as const, id})), 'Tests']
@@ -122,7 +122,7 @@ export const education = createApi({
         }),
         addEducationTest: builder.mutation({
             query: (test) => ({
-                url: "api/education/tests",
+                url: API_ENDPOINTS.EDUCATION_TESTS,
                 method: "POST",
                 body: test
             }),
@@ -130,7 +130,7 @@ export const education = createApi({
         }),
         updateEducationTest: builder.mutation({
             query: ({id, ...test}) => ({
-                url: `api/education/tests/${id}`,
+                url: API_ENDPOINTS.EDUCATION_TESTS + id,
                 method: "PATCH",
                 body: test,
             }),
@@ -138,7 +138,7 @@ export const education = createApi({
         }),
         deleteEducationTest: builder.mutation({
             query: (id) => ({
-                url: `api/education/tests/${id}`,
+                url: API_ENDPOINTS.EDUCATION_TESTS + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Tests'],

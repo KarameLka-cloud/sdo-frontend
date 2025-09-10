@@ -1,6 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
-import {COOKIE_NAMES} from "../../../constants/api.ts";
+import {API_ENDPOINTS, COOKIE_NAMES} from "../../../constants/api.ts";
 
 export const edo = createApi({
     reducerPath: "edo",
@@ -18,7 +18,7 @@ export const edo = createApi({
     endpoints: (builder) => ({
         // Edo courses
         getEdoCourses: builder.query({
-            query: () => "api/edo/courses",
+            query: () => API_ENDPOINTS.EDO_COURSES,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Courses' as const, id})), 'Courses']
@@ -26,7 +26,7 @@ export const edo = createApi({
         }),
         addEdoCourse: builder.mutation({
             query: (course) => ({
-                url: "api/edo/courses",
+                url: API_ENDPOINTS.EDO_COURSES,
                 method: "POST",
                 body: course,
             }),
@@ -34,7 +34,7 @@ export const edo = createApi({
         }),
         updateEdoCourse: builder.mutation({
             query: ({id, ...course}) => ({
-                url: `api/edo/courses/${id}`,
+                url: API_ENDPOINTS.EDO_COURSES + id,
                 method: "PATCH",
                 body: course,
             }),
@@ -42,7 +42,7 @@ export const edo = createApi({
         }),
         deleteEdoCourse: builder.mutation({
             query: (id) => ({
-                url: `api/edo/courses/${id}`,
+                url: API_ENDPOINTS.EDO_COURSES + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Courses'],
@@ -50,7 +50,7 @@ export const edo = createApi({
 
         // Edo events
         getEdoEvents: builder.query({
-            query: () => "api/edo/events",
+            query: () => API_ENDPOINTS.EDO_EVENTS,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Events' as const, id})), 'Events']
@@ -58,7 +58,7 @@ export const edo = createApi({
         }),
         addEdoEvent: builder.mutation({
             query: (event) => ({
-                url: "api/edo/events",
+                url: API_ENDPOINTS.EDO_EVENTS,
                 method: "POST",
                 body: event,
             }),
@@ -66,7 +66,7 @@ export const edo = createApi({
         }),
         updateEdoEvent: builder.mutation({
             query: ({id, ...event}) => ({
-                url: `api/edo/events/${id}`,
+                url: API_ENDPOINTS.EDO_EVENTS + id,
                 method: "PATCH",
                 body: event,
             }),
@@ -74,7 +74,7 @@ export const edo = createApi({
         }),
         deleteEdoEvent: builder.mutation({
             query: (id) => ({
-                url: `api/edo/events/${id}`,
+                url: API_ENDPOINTS.EDO_EVENTS + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Events'],
@@ -82,7 +82,7 @@ export const edo = createApi({
 
         // Edo tests
         getEdoTests: builder.query({
-            query: () => "api/edo/tests",
+            query: () => API_ENDPOINTS.EDO_TESTS,
             providesTags: (result) =>
                 result
                     ? [...result.map(({id}: { id: number }) => ({type: 'Tests' as const, id})), 'Tests']
@@ -90,7 +90,7 @@ export const edo = createApi({
         }),
         addEdoTest: builder.mutation({
             query: (test) => ({
-                url: "api/edo/tests",
+                url: API_ENDPOINTS.EDO_TESTS,
                 method: "POST",
                 body: test
             }),
@@ -98,7 +98,7 @@ export const edo = createApi({
         }),
         updateEdoTest: builder.mutation({
             query: ({id, ...test}) => ({
-                url: `api/edo/tests/${id}`,
+                url: API_ENDPOINTS.EDO_TESTS + id,
                 method: "PATCH",
                 body: test,
             }),
@@ -106,7 +106,7 @@ export const edo = createApi({
         }),
         deleteEdoTest: builder.mutation({
             query: (id) => ({
-                url: `api/edo/tests/${id}`,
+                url: API_ENDPOINTS.EDO_TESTS + id,
                 method: "DELETE",
             }),
             invalidatesTags: ['Tests'],
