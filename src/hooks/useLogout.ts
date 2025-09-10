@@ -1,6 +1,8 @@
 import {useLogoutMutation} from "../services/store/features/auth.ts";
 import Cookie from "js-cookie";
 import {useNavigate} from "react-router-dom";
+import {ROUTES} from "../constants/routes.ts";
+import {COOKIE_NAMES} from "../constants/api.ts";
 
 export const useLogout = () => {
     const navigate = useNavigate();
@@ -10,12 +12,12 @@ export const useLogout = () => {
         try {
             await logoutMutation("").unwrap();
             localStorage.clear();
-            Cookie.remove("auth_token");
-            navigate("login");
+            Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
+            navigate(ROUTES.LOGIN);
         } catch (error: any) {
             localStorage.clear();
-            Cookie.remove("auth_token");
-            navigate("login");
+            Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
+            navigate(ROUTES.LOGIN);
         }
     }
     return {logout};

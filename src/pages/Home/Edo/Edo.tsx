@@ -15,6 +15,7 @@ import {
     useGetEdoEventsQuery,
     useGetEdoTestsQuery
 } from "../../../services/store/features/edo.ts";
+import {ROUTES} from "../../../constants/routes.ts";
 
 function Edo(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEdoEventsQuery("");
@@ -41,7 +42,7 @@ function Edo(): JSX.Element {
                                 <EventItem key={item.id} event={item} className={style.event}/>
                             )
                         })}
-                        <ButtonSeeAll to="events"/>
+                        <ButtonSeeAll to={ROUTES.EDO_EVENTS}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>
@@ -63,7 +64,7 @@ function Edo(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <ButtonSeeAll to="courses"/>
+                        <ButtonSeeAll to={ROUTES.EDO_COURSES}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>
@@ -85,7 +86,7 @@ function Edo(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <ButtonSeeAll to="tests"/>
+                        <ButtonSeeAll to={ROUTES.EDO_TESTS}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>

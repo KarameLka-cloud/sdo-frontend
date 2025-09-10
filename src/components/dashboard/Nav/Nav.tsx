@@ -3,10 +3,11 @@ import style from "./Nav.module.css";
 import image_mfc_corp from "../../../assets/images/mfc_corp.png";
 import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import {NavLinkType} from "../../../interfaces/components/NavLinkType.ts";
+import {EXTERNAL_LINKS} from "../../../constants/external.ts";
 
 interface NavType {
     className?: string;
-    links: NavLinkType[];
+    links: readonly NavLinkType[];
 }
 
 function Nav({className, links}: NavType): JSX.Element {
@@ -28,7 +29,7 @@ function Nav({className, links}: NavType): JSX.Element {
             )}
 
             <a
-                href="http://mfc.corp/"
+                href={EXTERNAL_LINKS.MFC_CORP}
                 target="_blank"
                 className={style.main_corp_link}
             >

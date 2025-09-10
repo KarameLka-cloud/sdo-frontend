@@ -18,6 +18,7 @@ import {WebinarType} from "../../../interfaces/api/WebinarType.ts";
 import {TestType} from "../../../interfaces/api/TestType.ts";
 import CourseItem from "../../../components/ui/Course/Course.tsx";
 import TestItem from "../../../components/ui/Test/Test.tsx";
+import {ROUTES} from "../../../constants/routes.ts";
 
 function Education(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEducationEventsQuery("");
@@ -42,7 +43,7 @@ function Education(): JSX.Element {
                                 <EventItem key={item.id} event={item} className={style.event}/>
                             )
                         })}
-                        <ButtonSeeAll to="events"/>
+                        <ButtonSeeAll to={ROUTES.EDUCATION_EVENTS}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>
@@ -64,7 +65,7 @@ function Education(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <ButtonSeeAll to="courses"/>
+                        <ButtonSeeAll to={ROUTES.EDUCATION_COURSES}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>
@@ -84,7 +85,7 @@ function Education(): JSX.Element {
                                 <WebinarItem key={item.id} webinar={item} className={style.event}/>
                             )
                         })}
-                        <ButtonSeeAll to="webinars"/>
+                        <ButtonSeeAll to={ROUTES.EDUCATION_WEBINARS}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>
@@ -106,7 +107,7 @@ function Education(): JSX.Element {
                                 )
                             })}
                         </div>
-                        <ButtonSeeAll to="tests"/>
+                        <ButtonSeeAll to={ROUTES.EDUCATION_TESTS}/>
                     </>
                 ) : (
                     <DataMessage type={"no_data"}/>

@@ -1,9 +1,9 @@
 import {JSX} from "react";
 import styles from "./IconButton.module.css";
-import icon_edit from "../../../assets/images/icons/pencil.svg";
-import icon_delete from "../../../assets/images/icons/trash.svg";
-import icon_save from "../../../assets/images/icons/save.svg";
-import icon_close from "../../../assets/images/icons/close.svg";
+import editIcon from "../../../assets/images/icons/pencil.svg";
+import deleteIcon from "../../../assets/images/icons/trash.svg";
+import saveIcon from "../../../assets/images/icons/save.svg";
+import closeIcon from "../../../assets/images/icons/close.svg";
 
 interface IconButtonProps {
     type: "edit" | "delete" | "save" | "close";
@@ -14,22 +14,22 @@ interface IconButtonProps {
 function IconButton({type, onClick, className}: IconButtonProps): JSX.Element {
     const types = {
         edit: {
-            src: icon_edit,
+            src: editIcon,
             style: styles.edit,
             alt: "Кнопка редактировать"
         },
         delete: {
-            src: icon_delete,
+            src: deleteIcon,
             style: styles.delete,
             alt: "Кнопка удалить"
         },
         save: {
-            src: icon_save,
+            src: saveIcon,
             style: styles.save,
             alt: "Кнопка сохранить"
         },
         close: {
-            src: icon_close,
+            src: closeIcon,
             style: styles.close,
             alt: "Кнопка закрыть"
         }

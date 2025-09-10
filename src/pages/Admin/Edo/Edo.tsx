@@ -2,31 +2,14 @@ import {JSX} from "react";
 import style from "./Edo.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
 import LinkService from "../../../components/ui/LinkService/LinkService.tsx";
-
-const links = [
-    {
-        id: 1,
-        title: "Мероприятия",
-        path: "events",
-    },
-    {
-        id: 2,
-        title: "Электронные курсы",
-        path: "courses",
-    },
-    {
-        id: 3,
-        title: "Тесты",
-        path: "tests",
-    },
-]
+import {ADMIN_NAV_EDO_LINKS} from "../../../constants/navigation.ts";
 
 function Edo(): JSX.Element {
     return (
         <>
             <HeaderPage>Единый день обучения</HeaderPage>
             <div className={style.links}>
-                {links.map((link) => (
+                {ADMIN_NAV_EDO_LINKS.map((link) => (
                     <LinkService key={link.id} link={link}/>
                 ))}
             </div>

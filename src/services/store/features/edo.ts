@@ -1,5 +1,6 @@
 import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 import Cookie from "js-cookie";
+import {COOKIE_NAMES} from "../../../constants/api.ts";
 
 export const edo = createApi({
     reducerPath: "edo",
@@ -7,7 +8,7 @@ export const edo = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
-            const token = Cookie.get("auth_token");
+            const token = Cookie.get(COOKIE_NAMES.AUTH_TOKEN);
             if (token) {
                 headers.set("Authorization", `Bearer ${token}`);
             }

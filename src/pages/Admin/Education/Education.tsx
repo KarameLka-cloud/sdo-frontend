@@ -2,29 +2,7 @@ import {JSX} from "react";
 import style from "./Education.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
 import LinkService from "../../../components/ui/LinkService/LinkService.tsx";
-
-const links = [
-    {
-        id: 1,
-        title: "Мероприятия",
-        path: "events",
-    },
-    {
-        id: 2,
-        title: "Электронные курсы",
-        path: "courses",
-    },
-    {
-        id: 3,
-        title: "Вебинары",
-        path: "webinars",
-    },
-    {
-        id: 4,
-        title: "Тесты",
-        path: "tests",
-    },
-]
+import {ADMIN_NAV_EDUCATION_LINKS} from "../../../constants/navigation.ts";
 
 function EducationEducation(): JSX.Element {
     return (
@@ -32,7 +10,7 @@ function EducationEducation(): JSX.Element {
             <HeaderPage>Обучение</HeaderPage>
 
             <div className={style.links}>
-                {links.map((link) => (
+                {ADMIN_NAV_EDUCATION_LINKS.map((link) => (
                     <LinkService key={link.id} link={link}/>
                 ))}
             </div>

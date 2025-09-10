@@ -31,21 +31,22 @@ import EdoAdmin from "../pages/Admin/Edo/Edo.tsx";
 import EdoCoursesAdmin from "../pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "../pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "../pages/Admin/Edo/Tests/Tests.tsx";
+import {ROUTES} from "../constants/routes.ts";
 
 const AppRoutes = createBrowserRouter([
     {
-        path: "/",
-        element: <Navigate to="home"/>,
+        path: ROUTES.ROOT,
+        element: <Navigate to={ROUTES.HOME}/>,
     },
     {
-        path: "admin",
-        element: <Navigate to="users"/>,
+        path: ROUTES.ADMIN,
+        element: <Navigate to={ROUTES.ADMIN_USERS}/>,
     },
     {
         element: <ProtectedRoute elementLogin={<AuthLayout/>} route={"login"}/>,
         children: [
             {
-                path: "login",
+                path: ROUTES.LOGIN,
                 element: <PageTitle title={"Авторизация"} element={<Login/>}/>,
             },
         ],
@@ -57,60 +58,60 @@ const AppRoutes = createBrowserRouter([
                 element: <HomeLayout/>,
                 children: [
                     {
-                        path: "home",
+                        path: ROUTES.HOME,
                         element: <PageTitle title={"Главная"} element={<Home/>}/>,
                     },
                     {
-                        path: "career",
+                        path: ROUTES.CAREER,
                         element: <PageTitle title={"Карьера"} element={<Career/>}/>,
                     },
                     {
-                        path: "achievements",
+                        path: ROUTES.ACHIEVEMENTS,
                         element: <PageTitle title={"Достижения"} element={<Achievements/>}/>,
                     },
                     {
-                        path: "knowledge",
+                        path: ROUTES.KNOWLEDGE,
                         element: <PageTitle title={"База знаний"} element={<Knowledge/>}/>,
                     },
                     {
-                        path: "knowledge/top",
+                        path: ROUTES.KNOWLEDGE_TOP,
                         element: <PageTitle title={"ТОП 25"} element={<TopServices/>}/>,
                     },
                     {
-                        path: "education",
+                        path: ROUTES.EDUCATION,
                         element: <PageTitle title={"Обучение"} element={<Education/>}/>,
                     },
                     {
-                        path: "education/courses",
+                        path: ROUTES.EDUCATION_COURSES,
                         element: <PageTitle title={"Курсы"} element={<EducationCourses/>}/>,
                     },
                     {
-                        path: "education/events",
+                        path: ROUTES.EDUCATION_EVENTS,
                         element: <PageTitle title={"Мероприятия"} element={<EducationEvents/>}/>,
                     },
                     {
-                        path: "education/webinars",
+                        path: ROUTES.EDUCATION_WEBINARS,
                         element: <PageTitle title={"Вебинары"} element={<EducationWebinars/>}/>,
                     },
                     {
-                        path: "education/tests",
+                        path: ROUTES.EDUCATION_TESTS,
                         element: <PageTitle title={"Тесты"} element={<EducationTests/>}/>,
                     },
                     {
-                        path: "edo",
+                        path: ROUTES.EDO,
                         element: <PageTitle title={"ЕДО"} element={<Edo/>}/>,
                     },
                     {
-                        path: "edo/courses",
+                        path: ROUTES.EDO_COURSES,
                         element: <PageTitle title={""} element={<EdoCourses/>}/>,
 
                     },
                     {
-                        path: "edo/events",
+                        path: ROUTES.EDO_EVENTS,
                         element: <PageTitle title={"Мероприятия"} element={<EdoEvents/>}/>,
                     },
                     {
-                        path: "edo/tests",
+                        path: ROUTES.EDO_TESTS,
                         element: <PageTitle title={""} element={<EdoTests/>}/>
                     },
                 ]
@@ -119,47 +120,47 @@ const AppRoutes = createBrowserRouter([
                 element: <ProtectedRouteAdmin elementAdmin={<AdminLayout/>}/>,
                 children: [
                     {
-                        path: "admin/users",
+                        path: ROUTES.ADMIN_USERS,
                         element: <PageTitle title={"Пользователи"} element={<UsersAdmin/>}/>,
                     },
                     {
-                        path: "admin/knowledge",
+                        path: ROUTES.ADMIN_KNOWLEDGE,
                         element: <PageTitle title={"База знаний"} element={<KnowledgeAdmin/>}/>,
                     },
                     {
-                        path: "admin/education",
+                        path: ROUTES.ADMIN_EDUCATION,
                         element: <PageTitle title={"Обучение"} element={<EducationAdmin/>}/>,
                     },
                     {
-                        path: "admin/education/courses",
+                        path: ROUTES.ADMIN_EDUCATION_COURSE,
                         element: <PageTitle title={""} element={<EducationCoursesAdmin/>}/>,
                     },
                     {
-                        path: "admin/education/events",
+                        path: ROUTES.ADMIN_EDUCATION_EVENTS,
                         element: <PageTitle title={""} element={<EducationEventsAdmin/>}/>,
                     },
                     {
-                        path: "admin/education/webinars",
+                        path: ROUTES.ADMIN_EDUCATION_WEBINARS,
                         element: <PageTitle title={""} element={<EducationWebinarsAdmin/>}/>,
                     },
                     {
-                        path: "admin/education/tests",
+                        path: ROUTES.ADMIN_EDUCATION_TESTS,
                         element: <PageTitle title={""} element={<EducationTestsAdmin/>}/>,
                     },
                     {
-                        path: "admin/edo",
+                        path: ROUTES.ADMIN_EDO,
                         element: <PageTitle title={"ЕДО"} element={<EdoAdmin/>}/>,
                     },
                     {
-                        path: "admin/edo/courses",
+                        path: ROUTES.ADMIN_EDO_COURSES,
                         element: <PageTitle title={""} element={<EdoCoursesAdmin/>}/>,
                     },
                     {
-                        path: "admin/edo/events",
+                        path: ROUTES.ADMIN_EDO_EVENTS,
                         element: <PageTitle title={""} element={<EdoEventsAdmin/>}/>,
                     },
                     {
-                        path: "admin/edo/tests",
+                        path: ROUTES.ADMIN_EDO_TESTS,
                         element: <PageTitle title={""} element={<EdoTestsAdmin/>}/>,
                     },
                 ]

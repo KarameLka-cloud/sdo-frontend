@@ -1,0 +1,33 @@
+export const ROUTES = {
+    ROOT: '/',
+    HOME: '/home',
+    LOGIN: '/login',
+    CAREER: '/career',
+    ACHIEVEMENTS: '/achievements',
+    KNOWLEDGE: '/knowledge',
+    KNOWLEDGE_TOP: '/knowledge/top',
+    EDUCATION: '/education',
+    EDUCATION_COURSES: '/education/courses',
+    EDUCATION_EVENTS: '/education/events',
+    EDUCATION_WEBINARS: '/education/webinars',
+    EDUCATION_TESTS: '/education/tests',
+    EDO: '/edo',
+    EDO_COURSES: '/edo/courses',
+    EDO_EVENTS: '/edo/events',
+    EDO_TESTS: '/edo/tests',
+    ADMIN: '/admin',
+    ADMIN_USERS: '/admin/users',
+    ADMIN_KNOWLEDGE: '/admin/knowledge',
+    ADMIN_EDUCATION: '/admin/education',
+    ADMIN_EDUCATION_COURSE: '/admin/education/courses',
+    ADMIN_EDUCATION_EVENTS: '/admin/education/events',
+    ADMIN_EDUCATION_WEBINARS: '/admin/education/webinars',
+    ADMIN_EDUCATION_TESTS: '/admin/education/tests',
+    ADMIN_EDO: '/admin/edo',
+    ADMIN_EDO_COURSES: '/admin/edo/courses',
+    ADMIN_EDO_EVENTS: '/admin/edo/events',
+    ADMIN_EDO_TESTS: '/admin/edo/tests',
+} as const;
+
+// export type RouteKey = keyof typeof ROUTES;
+// export type RouteValue = typeof ROUTES[RouteKey];
