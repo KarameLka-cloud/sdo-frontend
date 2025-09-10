@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.77](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.76...v0.0.77) (2025-09-10)
+
+
+### Bug Fixes
+
+* Добавлены псевдонимы путей ([eccb298](https://github.com/KarameLka-cloud/sdo-frontend/commit/eccb2986ede281a596c75e8534ef76f97db639ed))
+
 ### [0.0.76](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.75...v0.0.76) (2025-09-10)
 
 
