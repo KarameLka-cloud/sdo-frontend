@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Edo.module.css";
+import styles from "./Edo.module.css";
 import firstWednesdayData from "../../../utils/firstWednesday.ts";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
@@ -26,11 +26,11 @@ function Edo(): JSX.Element {
     return (
         <>
             <HeaderPage>
-                Единый день обучения <span className={style.firstWednesday}>{firstWednesdayData}</span>
+                Единый день обучения <span className={styles.firstWednesday}>{firstWednesdayData}</span>
             </HeaderPage>
 
-            <h3 className={style.header_services}>Мероприятия</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Мероприятия</h3>
+            <div className={styles.container}>
                 {eventError ? (
                     <DataMessage type={"error"}/>
                 ) : eventLoading ? (
@@ -39,57 +39,57 @@ function Edo(): JSX.Element {
                     <>
                         {eventData.slice(0, 3).map((item: EventType): JSX.Element => {
                             return (
-                                <EventItem key={item.id} event={item} className={style.event}/>
+                                <EventItem key={item.id} event={item} className={styles.event}/>
                             )
                         })}
                         <ButtonSeeAll to={ROUTES.EDO_EVENTS}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
 
-            <h3 className={style.header_services}>Электронные курсы</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Электронные курсы</h3>
+            <div className={styles.container}>
                 {courseError ? (
                     <DataMessage type={"error"}/>
                 ) : courseLoading ? (
                     <Loader/>
                 ) : courseData && courseData.length > 0 ? (
                     <>
-                        <div className={style.courses_list}>
+                        <div className={styles.courses_list}>
                             {courseData.slice(0, 3).map((item: CourseType): JSX.Element => {
                                 return (
-                                    <CourseItem key={item.id} course={item} className={style.course}/>
+                                    <CourseItem key={item.id} course={item} className={styles.course}/>
                                 )
                             })}
                         </div>
                         <ButtonSeeAll to={ROUTES.EDO_COURSES}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
 
-            <h3 className={style.header_services}>Назначенные тесты</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Назначенные тесты</h3>
+            <div className={styles.container}>
                 {testError ? (
                     <DataMessage type={"error"}/>
                 ) : testLoading ? (
                     <Loader/>
                 ) : testData && testData.length > 0 ? (
                     <>
-                        <div className={style.courses_list}>
+                        <div className={styles.courses_list}>
                             {testData.slice(0, 4).map((item: CourseType): JSX.Element => {
                                 return (
-                                    <TestItem key={item.id} test={item} className={style.test}/>
+                                    <TestItem key={item.id} test={item} className={styles.test}/>
                                 )
                             })}
                         </div>
                         <ButtonSeeAll to={ROUTES.EDO_TESTS}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
         </>

@@ -2,7 +2,7 @@ import {TestType} from "../../../interfaces/api/TestType.ts";
 import {useForm} from "../../../hooks/useForm.ts";
 import {useToggle} from "../../../hooks/useToggle.ts";
 import {useDelete} from "../../../hooks/useDelete.ts";
-import style from "./TestChange.module.css";
+import styles from "./TestChange.module.css";
 import convertDate from "../../../utils/convertDate.ts";
 import {JSX} from "react";
 import {useUpdate} from "../../../hooks/useUpdate.ts";
@@ -28,31 +28,31 @@ function TestChange({className, test, mutationUpdate, mutationDelete}: TestProps
     const handleDelete = useDelete(mutationDelete, "Удалить тест?");
 
     return (
-        <div className={`${style.test} ${className}`}>
+        <div className={`${styles.test} ${className}`}>
             {edit ?
-                <div className={style.form}>
+                <div className={styles.form}>
                     <Input type="text" name="title" value={formItems.title} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <Input type="text" name="url" value={formItems.url} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <Input type="date" name="date_end" value={formItems.date_end} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                 </div> :
-                <div className={style.content}>
-                    <div className={style.title}>{test.title}</div>
-                    <div className={style.url}>{test.url}</div>
-                    <div className={style.date_end}>{convertDate(test.date_end)}</div>
+                <div className={styles.content}>
+                    <div className={styles.title}>{test.title}</div>
+                    <div className={styles.url}>{test.url}</div>
+                    <div className={styles.date_end}>{convertDate(test.date_end)}</div>
                 </div>
             }
             {edit ? <>
                     <IconButton type={"save"} onClick={() => handleUpdate({id: test.id, ...formItems})}
-                                className={style.button_save}/>
-                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
+                                className={styles.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={styles.button_close}/>
                 </> :
-                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={styles.button_edit}/>
             }
             {!edit &&
-                <IconButton type={"delete"} onClick={() => handleDelete(test.id)} className={style.button_delete}/>}
+                <IconButton type={"delete"} onClick={() => handleDelete(test.id)} className={styles.button_delete}/>}
         </div>
     )
 }

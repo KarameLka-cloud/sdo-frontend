@@ -1,6 +1,6 @@
 import React from "react";
 import {JSX} from "react";
-import style from "./Login.module.css";
+import styles from "./Login.module.css";
 import image_login_background from "../../../assets/images/login_background.svg";
 import image_document from "../../../assets/images/document.svg";
 import Input from "../../../components/ui/Input/Input.tsx";
@@ -30,10 +30,10 @@ function Login(): JSX.Element {
     };
 
     return (
-        <div className={style.container}>
-            <form onSubmit={handleLogin} className={style.form}>
-                {errorMessage ? <Error className={style.error}>{errorMessage}</Error> :
-                    <div className={style.header}>Добро пожаловать!</div>}
+        <div className={styles.container}>
+            <form onSubmit={handleLogin} className={styles.form}>
+                {errorMessage ? <Error className={styles.error}>{errorMessage}</Error> :
+                    <div className={styles.header}>Добро пожаловать!</div>}
                 <Input
                     type="text"
                     name="login"
@@ -41,7 +41,7 @@ function Login(): JSX.Element {
                     onChange={handleChange}
                     placeholder="Логин"
                     required
-                    className={style.input}
+                    className={styles.input}
                 />
                 <Input
                     type="password"
@@ -50,13 +50,13 @@ function Login(): JSX.Element {
                     onChange={handleChange}
                     placeholder="Пароль"
                     required
-                    className={style.input}
+                    className={styles.input}
                 />
-                <ButtonSubmit className={style.button} loading={isLoading}>Войти</ButtonSubmit>
-                <img src={image_document} alt="" className={style.document_image_1}/>
-                <img src={image_document} alt="" className={style.document_image_2}/>
+                <ButtonSubmit className={styles.button} loading={isLoading}>Войти</ButtonSubmit>
+                <img src={image_document} alt="" className={styles.document_image_1}/>
+                <img src={image_document} alt="" className={styles.document_image_2}/>
             </form>
-            <img src={image_login_background} alt="" className={style.image}/>
+            <img src={image_login_background} alt="" className={styles.image}/>
         </div>
     );
 }

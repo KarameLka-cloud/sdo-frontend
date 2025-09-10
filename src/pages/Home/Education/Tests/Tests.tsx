@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Tests.module.css";
+import styles from "./Tests.module.css";
 import {TestType} from "../../../../interfaces/api/TestType.ts";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage.tsx";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
@@ -20,7 +20,7 @@ function Tests(): JSX.Element {
                 error={!!error}
                 isLoading={isLoading}
                 renderItem={(item: TestType) => (
-                    <TestItem key={item.id} test={item} className={style.test}/>
+                    <TestItem key={item.id} test={item} className={styles.test}/>
                 )}
             />
         </>

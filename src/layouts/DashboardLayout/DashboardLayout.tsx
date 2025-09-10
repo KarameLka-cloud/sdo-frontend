@@ -1,13 +1,13 @@
 import {JSX} from "react";
+import styles from "./DashboardLayout.module.css";
 import {Outlet} from "react-router-dom";
-import style from "./DashboardLayout.module.css";
 import Header from "../../components/dashboard/Header/Header.tsx";
 
 function DashboardLayout(): JSX.Element {
     return (
-        <div className={style.dashboard_layout}>
-            <Header className={style.header}/>
-            <div className={style.content}>
+        <div className={styles.dashboard_layout}>
+            <Header className={styles.header}/>
+            <div className={styles.content}>
                 <Outlet/>
             </div>
         </div>

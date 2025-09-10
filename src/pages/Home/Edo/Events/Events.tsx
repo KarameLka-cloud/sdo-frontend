@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Events.module.css";
+import styles from "./Events.module.css";
 import {EventType} from "../../../../interfaces/api/EventType.ts";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
@@ -20,7 +20,7 @@ function Events(): JSX.Element {
                 error={!!error}
                 isLoading={isLoading}
                 renderItem={(item: EventType) => (
-                    <EventItem key={item.id} event={item} className={style.event}/>
+                    <EventItem key={item.id} event={item} className={styles.event}/>
                 )}
             />
         </>

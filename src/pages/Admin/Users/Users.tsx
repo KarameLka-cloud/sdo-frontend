@@ -1,5 +1,5 @@
 import React, {JSX, useState} from "react";
-import style from "./Users.module.css";
+import styles from "./Users.module.css";
 import {UserType} from "../../../interfaces/api/UserType.ts";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage.tsx";
 import Input from "../../../components/ui/Input/Input.tsx";
@@ -18,7 +18,7 @@ function Users(): JSX.Element {
         <>
             <HeaderPage>Пользователи</HeaderPage>
 
-            <Input type={"text"} name={"search"} placeholder={'Поиск'} className={style.input} value={search}
+            <Input type={"text"} name={"search"} placeholder={'Поиск'} className={styles.input} value={search}
                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearch(e.target.value)}/>
 
             {error ? (
@@ -28,7 +28,7 @@ function Users(): JSX.Element {
             ) : data ? (
                 data && filteredUsers.length > 0 ? (
                     filteredUsers.map((item: UserType) => (
-                        <User key={item.id} user={item} className={style.user}/>
+                        <User key={item.id} user={item} className={styles.user}/>
                     ))
                 ) : (
                     <p>Пользователь "{search}" не найден</p>

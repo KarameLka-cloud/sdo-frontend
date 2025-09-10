@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Main.module.css";
+import styles from "./Main.module.css";
 
 interface MainPropsType {
     children?: JSX.Element;
@@ -8,7 +8,7 @@ interface MainPropsType {
 
 function Main({children, className}: MainPropsType): JSX.Element {
     return (
-        <main className={`${style.main} + ${className}`}>{children}</main>
+        <main className={`${styles.main} + ${className}`}>{children}</main>
     );
 }
 

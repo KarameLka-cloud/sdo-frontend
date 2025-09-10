@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./EventChange.module.css";
+import styles from "./EventChange.module.css";
 import {EventType} from "../../../interfaces/api/EventType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import {useForm} from "../../../hooks/useForm.ts";
@@ -30,36 +30,36 @@ function EventChange({className, event, mutationDelete, mutationUpdate}: EventPr
     const handleDelete = useDelete(mutationDelete, "Удалить мероприятие?");
 
     return (
-        <div className={`${style.event} ${className}`}>
+        <div className={`${styles.event} ${className}`}>
             {edit ?
-                <div className={style.form}>
+                <div className={styles.form}>
                     <Input type="text" name="title" value={formItems.title} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <Input type="text" name="description" value={formItems.description} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <Input type="text" name="department" value={formItems.department} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <div>
                         <Input type="date" name="date" value={formItems.date} onChange={handleChange}/>
                         <Input type="time" name="time" value={formItems.time} onChange={handleChange}/>
                     </div>
                 </div> :
-                <div className={style.content}>
-                    <div className={style.title}>{event.title}</div>
-                    <div className={style.description}>{event.description}</div>
-                    <div className={style.department}>{event.department}</div>
-                    <div className={style.date_time}>{`${convertDate(event.date)} | ${convertTime(event.time)}`}</div>
+                <div className={styles.content}>
+                    <div className={styles.title}>{event.title}</div>
+                    <div className={styles.description}>{event.description}</div>
+                    <div className={styles.department}>{event.department}</div>
+                    <div className={styles.date_time}>{`${convertDate(event.date)} | ${convertTime(event.time)}`}</div>
                 </div>
             }
             {edit ? <>
                     <IconButton type={"save"} onClick={() => handleUpdate({id: event.id, ...formItems})}
-                                className={style.button_save}/>
-                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
+                                className={styles.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={styles.button_close}/>
                 </> :
-                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={styles.button_edit}/>
             }
             {!edit &&
-                <IconButton type={"delete"} onClick={() => handleDelete(event.id)} className={style.button_delete}/>}
+                <IconButton type={"delete"} onClick={() => handleDelete(event.id)} className={styles.button_delete}/>}
         </div>
     )
 }

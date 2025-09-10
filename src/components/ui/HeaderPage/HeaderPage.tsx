@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./HeaderPage.module.css";
+import styles from "./HeaderPage.module.css";
 import {ReactNode} from "react";
 
 interface HeaderPageType {
@@ -8,7 +8,7 @@ interface HeaderPageType {
 }
 
 function HeaderPage({children, className}: HeaderPageType): JSX.Element {
-    return <h2 className={`${style.header_page} + ${className}`}>{children}</h2>;
+    return <h2 className={`${styles.header_page} + ${className}`}>{children}</h2>;
 }
 
 export default HeaderPage;

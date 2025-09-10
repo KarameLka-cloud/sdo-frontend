@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Education.module.css";
+import styles from "./Education.module.css";
 import HeaderPage from "../../../components/ui/HeaderPage/HeaderPage";
 import DataMessage from "../../../components/ui/DataMessage/DataMessage.tsx";
 import Loader from "../../../components/ui/Loader/Loader.tsx";
@@ -30,8 +30,8 @@ function Education(): JSX.Element {
         <>
             <HeaderPage>Обучение</HeaderPage>
 
-            <h3 className={style.header_services}>Мероприятия</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Мероприятия</h3>
+            <div className={styles.container}>
                 {eventError ? (
                     <DataMessage type={"error"}/>
                 ) : eventLoading ? (
@@ -40,40 +40,40 @@ function Education(): JSX.Element {
                     <>
                         {eventData.slice(0, 3).map((item: EventType): JSX.Element => {
                             return (
-                                <EventItem key={item.id} event={item} className={style.event}/>
+                                <EventItem key={item.id} event={item} className={styles.event}/>
                             )
                         })}
                         <ButtonSeeAll to={ROUTES.EDUCATION_EVENTS}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
 
-            <h3 className={style.header_services}>Электронные курсы</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Электронные курсы</h3>
+            <div className={styles.container}>
                 {courseError ? (
                     <DataMessage type={"error"}/>
                 ) : courseLoading ? (
                     <Loader/>
                 ) : courseData && courseData.length > 0 ? (
                     <>
-                        <div className={style.courses_list}>
+                        <div className={styles.courses_list}>
                             {courseData.slice(0, 3).map((item: CourseType): JSX.Element => {
                                 return (
-                                    <CourseItem key={item.id} course={item} className={style.course}/>
+                                    <CourseItem key={item.id} course={item} className={styles.course}/>
                                 )
                             })}
                         </div>
                         <ButtonSeeAll to={ROUTES.EDUCATION_COURSES}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
 
-            <h3 className={style.header_services}>Вебинары</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Вебинары</h3>
+            <div className={styles.container}>
                 {webinarError ? (
                     <DataMessage type={"error"}/>
                 ) : webinarLoading ? (
@@ -82,35 +82,35 @@ function Education(): JSX.Element {
                     <>
                         {webinarData.slice(0, 3).map((item: WebinarType): JSX.Element => {
                             return (
-                                <WebinarItem key={item.id} webinar={item} className={style.event}/>
+                                <WebinarItem key={item.id} webinar={item} className={styles.event}/>
                             )
                         })}
                         <ButtonSeeAll to={ROUTES.EDUCATION_WEBINARS}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
 
-            <h3 className={style.header_services}>Назначенные тесты</h3>
-            <div className={style.container}>
+            <h3 className={styles.header_services}>Назначенные тесты</h3>
+            <div className={styles.container}>
                 {testError ? (
                     <DataMessage type={"error"}/>
                 ) : testLoading ? (
                     <Loader/>
                 ) : testData && testData.length > 0 ? (
                     <>
-                        <div className={style.courses_list}>
+                        <div className={styles.courses_list}>
                             {testData.slice(0, 4).map((item: TestType): JSX.Element => {
                                 return (
-                                    <TestItem key={item.id} test={item} className={style.test}/>
+                                    <TestItem key={item.id} test={item} className={styles.test}/>
                                 )
                             })}
                         </div>
                         <ButtonSeeAll to={ROUTES.EDUCATION_TESTS}/>
                     </>
                 ) : (
-                    <DataMessage type={"no_data"}/>
+                    <DataMessage type={"noData"}/>
                 )}
             </div>
         </>

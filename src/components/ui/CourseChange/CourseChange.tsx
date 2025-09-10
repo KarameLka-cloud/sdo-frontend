@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./CourseChange.module.css";
+import styles from "./CourseChange.module.css";
 import {CourseType} from "../../../interfaces/api/CourseType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import {useForm} from "../../../hooks/useForm.ts";
@@ -27,31 +27,31 @@ function CourseChange({className, course, mutationUpdate, mutationDelete}: Cours
     const handleDelete = useDelete(mutationDelete, "Удалить курс?");
 
     return (
-        <div className={`${style.course} ${className}`}>
+        <div className={`${styles.course} ${className}`}>
             {edit ?
-                <div className={style.form}>
+                <div className={styles.form}>
                     <Input type="text" name="title" value={formItems.title} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <Input type="text" name="url" value={formItems.url} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <Input type="date" name="date_end" value={formItems.date_end} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                 </div> :
-                <div className={style.content}>
-                    <div className={style.title}>{course.title}</div>
-                    <div className={style.url}>{course.url}</div>
-                    <div className={style.date_end}>{convertDate(course.date_end)}</div>
+                <div className={styles.content}>
+                    <div className={styles.title}>{course.title}</div>
+                    <div className={styles.url}>{course.url}</div>
+                    <div className={styles.date_end}>{convertDate(course.date_end)}</div>
                 </div>
             }
             {edit ? <>
                     <IconButton type={"save"} onClick={() => handleUpdate({id: course.id, ...formItems})}
-                                className={style.button_save}/>
-                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
+                                className={styles.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={styles.button_close}/>
                 </> :
-                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={styles.button_edit}/>
             }
             {!edit &&
-                <IconButton type={"delete"} onClick={() => handleDelete(course.id)} className={style.button_delete}/>}
+                <IconButton type={"delete"} onClick={() => handleDelete(course.id)} className={styles.button_delete}/>}
         </div>
     )
 }

@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Nav.module.css";
+import styles from "./Nav.module.css";
 import image_mfc_corp from "../../../assets/images/mfc_corp.png";
 import {NavLink, NavLinkRenderProps} from "react-router-dom";
 import {NavLinkType} from "../../../interfaces/components/NavLinkType.ts";
@@ -12,17 +12,17 @@ interface NavType {
 
 function Nav({className, links}: NavType): JSX.Element {
     return (
-        <nav className={`${style.nav} + ${className}`}>
+        <nav className={`${styles.nav} + ${className}`}>
             {links.map(
                 ({id, name, path, icon}): JSX.Element => (
                     <NavLink
                         key={id}
                         to={path}
                         className={({isActive}: NavLinkRenderProps): string =>
-                            isActive ? `${style.link} ${style.link_active}` : `${style.link} ${style.link_inactive}`
+                            isActive ? `${styles.link} ${styles.link_active}` : `${styles.link} ${styles.link_inactive}`
                         }
                     >
-                        <img src={icon} alt="" className={style.icon}/>
+                        <img src={icon} alt="" className={styles.icon}/>
                         {name}
                     </NavLink>
                 )
@@ -31,9 +31,9 @@ function Nav({className, links}: NavType): JSX.Element {
             <a
                 href={EXTERNAL_LINKS.MFC_CORP}
                 target="_blank"
-                className={style.main_corp_link}
+                className={styles.main_corp_link}
             >
-                <img src={image_mfc_corp} alt="Логотип МФЦ" className={style.main_corp_image}/>
+                <img src={image_mfc_corp} alt="Логотип МФЦ" className={styles.main_corp_image}/>
                 Корпоративный портал
             </a>
         </nav>

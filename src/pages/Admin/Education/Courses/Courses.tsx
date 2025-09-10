@@ -1,5 +1,5 @@
 import React, {JSX} from "react";
-import style from "./Courses.module.css";
+import styles from "./Courses.module.css";
 import {CourseType} from "../../../../interfaces/api/CourseType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import Input from "../../../../components/ui/Input/Input.tsx";
@@ -39,13 +39,13 @@ function Courses(): JSX.Element {
     return (
         <>
             <ButtonBack/>
-            <form onSubmit={handleAction} className={style.form}>
+            <form onSubmit={handleAction} className={styles.form}>
                 <Input type="text" name="title" placeholder="Название" value={formItems.title}
-                       onChange={handleChange} className={style.form_input_text}/>
+                       onChange={handleChange} className={styles.form_input_text}/>
                 <Input type="text" name="url" placeholder="Ссылка на курс" value={formItems.url}
-                       onChange={handleChange} className={style.form_input_text}/>
+                       onChange={handleChange} className={styles.form_input_text}/>
                 <Input type="date" name="date_end" placeholder="Пройти до" value={formItems.date_end}
-                       onChange={handleChange} className={style.form_input_date_end}/>
+                       onChange={handleChange} className={styles.form_input_date_end}/>
                 <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
             </form>
             {addError && (<div>Error</div>)}
@@ -57,7 +57,7 @@ function Courses(): JSX.Element {
                 renderItem={(item: CourseType) => (
                     <CourseChange key={item.id} course={item} mutationUpdate={updateCourse}
                                   mutationDelete={deleteCourse}
-                                  className={style.course}/>
+                                  className={styles.course}/>
                 )}
             />
         </>

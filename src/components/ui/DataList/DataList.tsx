@@ -19,7 +19,7 @@ export function DataList<T>({
                                 error,
                                 renderItem,
                                 className,
-                                emptyMessage = <DataMessage type="no_data"/>,
+                                emptyMessage = <DataMessage type="noData"/>,
                                 errorMessage = <DataMessage type="error"/>,
                                 loader = <Loader/>,
                             }: DataListProps<T>) {

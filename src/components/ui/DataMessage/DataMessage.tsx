@@ -2,13 +2,13 @@ import {JSX} from "react";
 import styles from "./DataMessage.module.css";
 
 interface DataMessageProps {
-    type: "no_data" | "error";
+    type: "noData" | "error";
     className?: string;
 }
 
 function DataMessage({type, className}: DataMessageProps): JSX.Element {
     const types = {
-        no_data: {
+        noData: {
             message: "Список пуст (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
         },
         error: {

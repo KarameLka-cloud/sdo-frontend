@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./WebinarChange.module.css";
+import styles from "./WebinarChange.module.css";
 import {WebinarType} from "../../../interfaces/api/WebinarType.ts";
 import convertDate from "../../../utils/convertDate.ts";
 import {useForm} from "../../../hooks/useForm.ts";
@@ -29,33 +29,33 @@ function WebinarChange({className, webinar, mutationDelete, mutationUpdate}: Eve
     const handleDelete = useDelete(mutationDelete, "Удалить вебинар?");
 
     return (
-        <div className={`${style.webinar} ${className}`}>
+        <div className={`${styles.webinar} ${className}`}>
             {edit ?
-                <div className={style.form}>
+                <div className={styles.form}>
                     <Input type="text" name="title" value={formItems.title} onChange={handleChange}
-                           className={style.input}/>
+                           className={styles.input}/>
                     <div>
                         <Input type="date" name="date" value={formItems.date} onChange={handleChange}/>
                         <Input type="time" name="time_start" value={formItems.time_start} onChange={handleChange}/>
                         <Input type="time" name="time_end" value={formItems.time_end} onChange={handleChange}/>
                     </div>
                 </div> :
-                <div className={style.content}>
-                    <div className={style.title}>{webinar.title}</div>
+                <div className={styles.content}>
+                    <div className={styles.title}>{webinar.title}</div>
                     <div
-                        className={style.date_time}>{`${convertDate(webinar.date)} | ${convertTime(webinar.time_start)}-${convertTime(webinar.time_end)}`}
+                        className={styles.date_time}>{`${convertDate(webinar.date)} | ${convertTime(webinar.time_start)}-${convertTime(webinar.time_end)}`}
                     </div>
                 </div>
             }
             {edit ? <>
                     <IconButton type={"save"} onClick={() => handleUpdate({id: webinar.id, ...formItems})}
-                                className={style.button_save}/>
-                    <IconButton type={"close"} onClick={handleEdit} className={style.button_close}/>
+                                className={styles.button_save}/>
+                    <IconButton type={"close"} onClick={handleEdit} className={styles.button_close}/>
                 </> :
-                <IconButton type={"edit"} onClick={handleEdit} className={style.button_edit}/>
+                <IconButton type={"edit"} onClick={handleEdit} className={styles.button_edit}/>
             }
             {!edit &&
-                <IconButton type={"delete"} onClick={() => handleDelete(webinar.id)} className={style.button_delete}/>}
+                <IconButton type={"delete"} onClick={() => handleDelete(webinar.id)} className={styles.button_delete}/>}
         </div>
     )
 }

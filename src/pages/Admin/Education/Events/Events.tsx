@@ -1,5 +1,5 @@
 import React, {JSX} from "react";
-import style from "./Events.module.css";
+import styles from "./Events.module.css";
 import {EventType} from "../../../../interfaces/api/EventType.ts";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
 import Input from "../../../../components/ui/Input/Input.tsx";
@@ -43,19 +43,19 @@ function Events(): JSX.Element {
     return (
         <>
             <ButtonBack/>
-            <form onSubmit={handleAction} className={style.form}>
+            <form onSubmit={handleAction} className={styles.form}>
                 <Input type="text" name="title" placeholder="Название" value={formItems.title}
-                       onChange={handleChange} className={style.form_input_text}/>
+                       onChange={handleChange} className={styles.form_input_text}/>
                 <Input type="text" name="description" placeholder="Описание" value={formItems.description}
-                       onChange={handleChange} className={style.form_input_text}/>
+                       onChange={handleChange} className={styles.form_input_text}/>
                 <Input type="text" name="department" placeholder="Отделения" value={formItems.department}
-                       onChange={handleChange} className={style.form_input_text}/>
-                <div className={style.form_date}>
+                       onChange={handleChange} className={styles.form_input_text}/>
+                <div className={styles.form_date}>
                     <Input type="date" name="date" placeholder="Дата" value={formItems.date} onChange={handleChange}
-                           className={style.form_input_date}/>
+                           className={styles.form_input_date}/>
                     <Input type="time" name="time" placeholder="Время" value={formItems.time}
                            onChange={handleChange}
-                           className={style.form_input_time}/>
+                           className={styles.form_input_time}/>
                 </div>
                 <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
             </form>
@@ -68,7 +68,7 @@ function Events(): JSX.Element {
                 renderItem={(item: EventType) => (
                     <EventChange key={item.id} event={item} mutationUpdate={updateEvent}
                                  mutationDelete={deleteEvent}
-                                 className={style.event}/>
+                                 className={styles.event}/>
                 )}
             />
         </>

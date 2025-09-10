@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Webinars.module.css";
+import styles from "./Webinars.module.css";
 import {WebinarType} from "../../../../interfaces/api/WebinarType.ts";
 import HeaderPage from "../../../../components/ui/HeaderPage/HeaderPage";
 import ButtonBack from "../../../../components/ui/ButtonBack/ButtonBack.tsx";
@@ -20,7 +20,7 @@ function Events(): JSX.Element {
                 error={!!error}
                 isLoading={isLoading}
                 renderItem={(item: WebinarType) => (
-                    <WebinarItem key={item.id} webinar={item} className={style.webinar}/>
+                    <WebinarItem key={item.id} webinar={item} className={styles.webinar}/>
                 )}
             />
         </>

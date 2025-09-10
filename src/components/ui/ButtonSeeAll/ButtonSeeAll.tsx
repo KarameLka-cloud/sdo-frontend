@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./ButtonSeeAll.module.css";
+import styles from "./ButtonSeeAll.module.css";
 import {Link} from "react-router-dom";
 
 interface ButtonSeeAllType {
@@ -8,7 +8,7 @@ interface ButtonSeeAllType {
 
 function ButtonSeeAll({to}: ButtonSeeAllType): JSX.Element {
     return (
-        <Link to={to} className={style.link}>Показать всё</Link>
+        <Link to={to} className={styles.link}>Показать всё</Link>
     )
 }
 

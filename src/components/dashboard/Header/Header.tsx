@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import {NavLink} from "react-router-dom";
-import style from "./Header.module.css";
+import styles from "./Header.module.css";
 import {useUser} from "../../../hooks/useUser.ts";
 import LogoLink from "../../ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "../../ui/LogoutButton/LogoutButton.tsx";
@@ -14,33 +14,33 @@ function Header({className}: HeaderType): JSX.Element {
     const {name, role} = useUser();
 
     return (
-        <header className={`${style.header} + ${className}`}>
-            <div className={style.content}>
-                <LogoLink to={ROUTES.ROOT} className={style.logo}/>
+        <header className={`${styles.header} + ${className}`}>
+            <div className={styles.content}>
+                <LogoLink to={ROUTES.ROOT} className={styles.logo}/>
                 {role.includes("ADMIN") &&
-                    <div className={style.links}>
+                    <div className={styles.links}>
                         <NavLink
                             to={ROUTES.HOME}
-                            className={style.link}
+                            className={styles.link}
                         >
                             Главная
                         </NavLink>
                         <NavLink
                             to={ROUTES.ADMIN}
-                            className={style.link}
+                            className={styles.link}
                         >
                             Администрирование
                         </NavLink>
                     </div>
                 }
 
-                <div className={style.right_content}>
+                <div className={styles.right_content}>
                     {name && (
-                        <div className={style.name}>
+                        <div className={styles.name}>
                             {`${name.split(" ")[1]} ${name.split(" ")[0][0]}.`}
                         </div>
                     )}
-                    <LogoutButton className={style.logout}/>
+                    <LogoutButton className={styles.logout}/>
                 </div>
             </div>
         </header>

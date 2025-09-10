@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./LogoutButton.module.css";
+import styles from "./LogoutButton.module.css";
 import exitIcon from "../../../assets/images/icons/exit.svg";
 import {useLogout} from "../../../hooks/useLogout.ts";
 
@@ -11,8 +11,8 @@ type LogoutButtonType = {
 function LogoutButton({className, ...props}: LogoutButtonType): JSX.Element {
     const {logout} = useLogout();
     return (
-        <div className={`${style.logout} + ${className}`} {...props} onClick={logout}>
-            <img src={exitIcon} alt="" className={style.img}/>
+        <div className={`${styles.logout} + ${className}`} {...props} onClick={logout}>
+            <img src={exitIcon} alt="" className={styles.img}/>
         </div>
     );
 }

@@ -1,5 +1,5 @@
 import {JSX} from "react";
-import style from "./Error.module.css";
+import styles from "./Error.module.css";
 
 interface ErrorType {
     children: string;
@@ -7,7 +7,7 @@ interface ErrorType {
 }
 
 function Error({children, className}: ErrorType): JSX.Element {
-    return <span className={`${style.error} + ${className}`}>{children}</span>;
+    return <span className={`${styles.error} + ${className}`}>{children}</span>;
 }
 
 export default Error;
