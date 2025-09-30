@@ -1,8 +1,8 @@
 import {JSX} from "react";
 import styles from "./Event.module.css";
-import convertDate from "../../../utils/convertDate.ts";
-import {EventType} from "../../../interfaces/api/EventType.ts";
-import {convertTime} from "../../../utils/convertTime.ts";
+import convertDate from "@utils/convertDate.ts";
+import {EventType} from "@interfaces/api/EventType.ts";
+import {convertTime} from "@utils/convertTime.ts";
 
 interface EventPropsType {
     className?: string;

@@ -1,11 +1,11 @@
-import {TestType} from "../../../interfaces/api/TestType.ts";
-import {useForm} from "../../../hooks/useForm.ts";
-import {useToggle} from "../../../hooks/useToggle.ts";
-import {useDelete} from "../../../hooks/useDelete.ts";
+import {TestType} from "@interfaces/api/TestType.ts";
+import {useForm} from "@hooks/useForm.ts";
+import {useToggle} from "@hooks/useToggle.ts";
+import {useDelete} from "@hooks/useDelete.ts";
 import styles from "./TestChange.module.css";
-import convertDate from "../../../utils/convertDate.ts";
+import convertDate from "@utils/convertDate.ts";
 import {JSX} from "react";
-import {useUpdate} from "../../../hooks/useUpdate.ts";
+import {useUpdate} from "@hooks/useUpdate.ts";
 import Input from "../Input/Input.tsx";
 import IconButton from "../IconButton/IconButton.tsx";
 

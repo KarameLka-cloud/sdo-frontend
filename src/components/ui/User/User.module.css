@@ -26,11 +26,7 @@
     text-transform: uppercase;
 }
 
-.edit {
-    margin-left: auto;
-}
-
-.input {
+.edit, .input, .switch {
     margin-left: auto;
 }
 

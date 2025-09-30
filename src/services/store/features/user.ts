@@ -4,6 +4,7 @@ import {API_ENDPOINTS, COOKIE_NAMES} from "@constants/api.ts";
 
 export const user = createApi({
     reducerPath: "user",
+    tagTypes: ["Users"],
     baseQuery: fetchBaseQuery({
         baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
         prepareHeaders: (headers) => {
@@ -20,8 +21,31 @@ export const user = createApi({
         }),
         getUsers: builder.query({
             query: (): string => API_ENDPOINTS.USERS,
-        })
+            providesTags: (result) =>
+                result
+                    ? [...result.map(({id}: { id: number }) => ({type: 'Users' as const, id})), 'Users']
+                    : ['Users'],
+        }),
+        assignAdminRole: builder.mutation({
+            query: (credentials) => ({
+                url: API_ENDPOINTS.ASSIGN_ADMIN_ROLE,
+                method: "POST",
+                body: credentials,
+            }),
+            invalidatesTags: ['Users'],
+        }),
+        revokeAdminRole: builder.mutation({
+            query: (credentials) => ({
+                url: API_ENDPOINTS.REVOKE_ADMIN_ROLE,
+                method: "POST",
+                body: credentials,
+            }),
+            invalidatesTags: ['Users'],
+        }),
+        // positions: builder.query({
+        //     query: () =>
+        // })
     }),
 });
 
-export const {useGetUserByDataQuery, useGetUsersQuery} = user;
+export const {useGetUserByDataQuery, useGetUsersQuery, useAssignAdminRoleMutation, useRevokeAdminRoleMutation} = user;

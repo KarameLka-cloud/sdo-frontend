@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import styles from "./Development.module.css";
-import image_development from "../../../assets/images/development.svg";
+import image_development from "@assets/images/development.svg";
 
 interface DevelopmentType {
     className?: string;

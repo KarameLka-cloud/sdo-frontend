@@ -1,11 +1,11 @@
 import {JSX} from "react";
 import styles from "./CourseChange.module.css";
-import {CourseType} from "../../../interfaces/api/CourseType.ts";
-import convertDate from "../../../utils/convertDate.ts";
-import {useForm} from "../../../hooks/useForm.ts";
-import {useToggle} from "../../../hooks/useToggle.ts";
-import {useDelete} from "../../../hooks/useDelete.ts";
-import {useUpdate} from "../../../hooks/useUpdate.ts";
+import {CourseType} from "@interfaces/api/CourseType.ts";
+import convertDate from "@utils/convertDate.ts";
+import {useForm} from "@hooks/useForm.ts";
+import {useToggle} from "@hooks/useToggle.ts";
+import {useDelete} from "@hooks/useDelete.ts";
+import {useUpdate} from "@hooks/useUpdate.ts";
 import Input from "../Input/Input.tsx";
 import IconButton from "../IconButton/IconButton.tsx";
 

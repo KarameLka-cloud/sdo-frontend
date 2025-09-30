@@ -1,7 +1,7 @@
 import {JSX} from "react";
 import styles from "./LogoutButton.module.css";
-import exitIcon from "../../../assets/images/icons/exit.svg";
-import {useLogout} from "../../../hooks/useLogout.ts";
+import exitIcon from "@assets/images/icons/exit.svg";
+import {useLogout} from "@hooks/useLogout.ts";
 
 type LogoutButtonType = {
     className?: string;

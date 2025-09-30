@@ -1,8 +1,8 @@
 import {JSX} from "react";
 import styles from "./ButtonBack.module.css";
-import icon_back from "../../../assets/images/icons/back.svg";
+import icon_back from "@assets/images/icons/back.svg";
 import {useNavigate} from "react-router-dom";
-import {ROUTES} from "../../../constants/routes.ts";
+import {ROUTES} from "@constants/routes.ts";
 
 interface ButtonBackType {
     className?: string;

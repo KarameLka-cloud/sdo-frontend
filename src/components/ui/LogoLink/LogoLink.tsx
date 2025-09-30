@@ -1,6 +1,6 @@
 import {JSX} from "react";
 import styles from "./LogoLink.module.css";
-import image_logo_mfc from "../../../assets/images/logo_mfc.svg";
+import image_logo_mfc from "@assets/images/logo_mfc.svg";
 import {Link} from "react-router-dom";
 
 interface LogoLinkType {
