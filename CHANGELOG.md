@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.79](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.78...v0.0.79) (2025-09-30)
+
+
+### Bug Fixes
+
+* Добавлена возможность раздачи права администратора, изменены импорты в компонентах ui ([3d5c027](https://github.com/KarameLka-cloud/sdo-frontend/commit/3d5c02738ca9f23ecb48d082c67837f38ef7a4a6))
+
 ### [0.0.78](https://github.com/KarameLka-cloud/sdo-frontend/compare/v0.0.77...v0.0.78) (2025-09-24)
 
 
