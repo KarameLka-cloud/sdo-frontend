@@ -1,14 +1,12 @@
 import {JSX} from "react";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
 import Development from "@components/ui/Development/Development.tsx";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Knowledge(): JSX.Element {
     return (
-        <>
-            <HeaderPage>База знаний</HeaderPage>
-
+        <OverflowScrollBlock header_name={'База знаний'}>
             <Development/>
-        </>
+        </OverflowScrollBlock>
     )
 }
 

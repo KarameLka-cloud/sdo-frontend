@@ -1,20 +1,16 @@
 import {JSX} from "react";
 import styles from "./Tests.module.css";
 import {TestType} from "@interfaces/api/TestType.ts";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
-import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
 import DataList from "@components/ui/DataList/DataList.tsx";
 import TestItem from "@components/ui/Test/Test.tsx";
 import {useGetEducationTestsQuery} from "@services/store/features/education.ts";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Tests(): JSX.Element {
     const {data, error, isLoading} = useGetEducationTestsQuery("");
 
     return (
-        <>
-            <HeaderPage>Назначенные тесты</HeaderPage>
-            <ButtonBack/>
-
+        <OverflowScrollBlock header_name={'Назначенные тесты'} button_back_visible={'enable'}>
             <DataList<TestType>
                 data={data}
                 error={!!error}
@@ -23,7 +19,7 @@ function Tests(): JSX.Element {
                     <TestItem key={item.id} test={item} className={styles.test}/>
                 )}
             />
-        </>
+        </OverflowScrollBlock>
     )
 }
 

@@ -48,7 +48,9 @@ function EventChange({className, event, mutationDelete, mutationUpdate}: EventPr
                     <div className={styles.title}>{event.title}</div>
                     <div className={styles.description}>{event.description}</div>
                     <div className={styles.department}>{event.department}</div>
-                    <div className={styles.date_time}>{`${convertDate(event.date)} | ${convertTime(event.time)}`}</div>
+                    <div
+                        className={styles.date_time}>{convertDate(event.date)} {event.time && `| ${convertTime(event.time)}`}
+                    </div>
                 </div>
             }
             {edit ? <>

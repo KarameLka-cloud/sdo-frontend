@@ -1,7 +1,6 @@
 import {JSX} from "react";
 import styles from "./Edo.module.css";
 import firstWednesdayData from "@utils/firstWednesday.ts";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
 import Loader from "@components/ui/Loader/Loader.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import CourseItem from "@components/ui/Course/Course.tsx";
@@ -16,21 +15,17 @@ import {
     useGetEdoTestsQuery
 } from "@services/store/features/edo.ts";
 import {ROUTES} from "@constants/routes.ts";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Edo(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEdoEventsQuery("");
     const {data: courseData, error: courseError, isLoading: courseLoading} = useGetEdoCoursesQuery("");
     const {data: testData, error: testError, isLoading: testLoading} = useGetEdoTestsQuery("");
 
-
     return (
-        <>
-            <HeaderPage>
-                Единый день обучения <span className={styles.firstWednesday}>{firstWednesdayData}</span>
-            </HeaderPage>
-
+        <OverflowScrollBlock header_name={`Единый день обучения | ${firstWednesdayData}`}>
             <h3 className={styles.header_services}>Мероприятия</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {eventError ? (
                     <DataMessage type={"error"}/>
                 ) : eventLoading ? (
@@ -50,7 +45,7 @@ function Edo(): JSX.Element {
             </div>
 
             <h3 className={styles.header_services}>Электронные курсы</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {courseError ? (
                     <DataMessage type={"error"}/>
                 ) : courseLoading ? (
@@ -72,7 +67,7 @@ function Edo(): JSX.Element {
             </div>
 
             <h3 className={styles.header_services}>Назначенные тесты</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {testError ? (
                     <DataMessage type={"error"}/>
                 ) : testLoading ? (
@@ -92,7 +87,7 @@ function Edo(): JSX.Element {
                     <DataMessage type={"noData"}/>
                 )}
             </div>
-        </>
+        </OverflowScrollBlock>
     );
 }
 

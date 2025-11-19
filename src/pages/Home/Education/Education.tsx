@@ -1,6 +1,5 @@
 import {JSX} from "react";
 import styles from "./Education.module.css";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import Loader from "@components/ui/Loader/Loader.tsx";
 import EventItem from "@components/ui/Event/Event.tsx";
@@ -19,6 +18,7 @@ import {TestType} from "@interfaces/api/TestType.ts";
 import CourseItem from "@components/ui/Course/Course.tsx";
 import TestItem from "@components/ui/Test/Test.tsx";
 import {ROUTES} from "@constants/routes.ts";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Education(): JSX.Element {
     const {data: eventData, error: eventError, isLoading: eventLoading} = useGetEducationEventsQuery("");
@@ -27,11 +27,9 @@ function Education(): JSX.Element {
     const {data: webinarData, error: webinarError, isLoading: webinarLoading} = useGetEducationWebinarsQuery("");
 
     return (
-        <>
-            <HeaderPage>Обучение</HeaderPage>
-
+        <OverflowScrollBlock header_name={'Обучение'}>
             <h3 className={styles.header_services}>Мероприятия</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {eventError ? (
                     <DataMessage type={"error"}/>
                 ) : eventLoading ? (
@@ -51,7 +49,7 @@ function Education(): JSX.Element {
             </div>
 
             <h3 className={styles.header_services}>Электронные курсы</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {courseError ? (
                     <DataMessage type={"error"}/>
                 ) : courseLoading ? (
@@ -73,7 +71,7 @@ function Education(): JSX.Element {
             </div>
 
             <h3 className={styles.header_services}>Вебинары</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {webinarError ? (
                     <DataMessage type={"error"}/>
                 ) : webinarLoading ? (
@@ -93,7 +91,7 @@ function Education(): JSX.Element {
             </div>
 
             <h3 className={styles.header_services}>Назначенные тесты</h3>
-            <div className={styles.container}>
+            <div className={styles.block}>
                 {testError ? (
                     <DataMessage type={"error"}/>
                 ) : testLoading ? (
@@ -113,7 +111,7 @@ function Education(): JSX.Element {
                     <DataMessage type={"noData"}/>
                 )}
             </div>
-        </>
+        </OverflowScrollBlock>
     )
 }
 

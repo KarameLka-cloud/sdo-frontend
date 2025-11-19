@@ -7,24 +7,36 @@
     background-color: var(--mfc-light-color);
 }
 
-.title {
+.event span {
     display: block;
+}
+
+.title {
     font-weight: 600;
 }
 
 .description {
-    display: block;
     color: gray;
 }
 
-.departments {
-    display: block;
+.department {
     font-style: italic;
 }
 
+.links {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+}
+
+.icon {
+    height: 1.4rem;
+    cursor: pointer;
+}
+
 .time {
-    margin-left: 1rem;
     padding: 0.4rem 1.4rem;
+    margin-left: 1rem;
     border-radius: 1rem;
     background-color: var(--mfc-white-color);
 }

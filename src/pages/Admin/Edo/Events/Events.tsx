@@ -3,6 +3,7 @@ import styles from "./Events.module.css";
 import {EventType} from "@interfaces/api/EventType.ts";
 import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
 import Input from "@components/ui/Input/Input.tsx";
+import Select from "@components/ui/Select/Select.tsx";
 import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
 import EventChange from "@components/ui/EventChange/EventChange.tsx";
 import DataList from "@components/ui/DataList/DataList.tsx";
@@ -13,17 +14,23 @@ import {
     useUpdateEdoEventMutation,
     useDeleteEdoEventMutation,
 } from "@services/store/features/edo.ts";
+import {
+    useGetDepartmentsQuery
+} from "@services/store/features/user.ts";
 
 function Events(): JSX.Element {
     const {data, error, isLoading} = useGetEdoEventsQuery("");
     const [addEvent, {isLoading: addLoading, isError: addError}] = useAddEdoEventMutation();
     const [updateEvent] = useUpdateEdoEventMutation();
     const [deleteEvent] = useDeleteEdoEventMutation();
+    const {data: departments} = useGetDepartmentsQuery("");
 
     const {formItems, setFormItems, handleChange} = useForm({
         title: "",
         description: "",
-        department: "",
+        link: "",
+        department_id: "",
+        note_department: "",
         time: "",
         date: ""
     });
@@ -34,7 +41,9 @@ function Events(): JSX.Element {
         setFormItems({
             title: "",
             description: "",
-            department: "",
+            link: "",
+            department_id: "",
+            note_department: "",
             time: "",
             date: ""
         });
@@ -48,8 +57,17 @@ function Events(): JSX.Element {
                        onChange={handleChange} className={styles.form_input_text}/>
                 <Input type="text" name="description" placeholder="Описание" value={formItems.description}
                        onChange={handleChange} className={styles.form_input_text}/>
-                <Input type="text" name="department" placeholder="Отделения" value={formItems.department}
+                <Input type="text" name="link" placeholder="Ссылка на доп. материалы (опционально)" value={formItems.link}
                        onChange={handleChange} className={styles.form_input_text}/>
+                <div className={styles.form_department}>
+                    {departments &&
+                        <Select name={"department_id"} value={formItems.department_id} onChange={handleChange}
+                                data={departments} className={styles.form_select}/>
+                    }
+                    <Input type="text" name="note_department" placeholder="Примечание по отделу (опционально)"
+                           value={formItems.note_department}
+                           onChange={handleChange} className={styles.form_note_department}/>
+                </div>
                 <div className={styles.form_date}>
                     <Input type="date" name="date" placeholder="Дата" value={formItems.date} onChange={handleChange}
                            className={styles.form_input_date}/>

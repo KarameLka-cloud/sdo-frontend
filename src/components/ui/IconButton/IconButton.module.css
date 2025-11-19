@@ -7,7 +7,7 @@
 }
 
 .edit {
-    background-color: var(--mfc-blue-color);
+    background-color: rgba(0, 128, 128, 0.8);
 }
 
 .edit:hover {
@@ -15,7 +15,7 @@
 }
 
 .delete {
-    background-color: var(--mfc-red-color);
+    background-color: rgba(224, 78, 57, 0.8);
 }
 
 .delete:hover {
@@ -23,7 +23,7 @@
 }
 
 .save {
-    background-color: var(--mfc-green-color);
+    background-color: rgba(34, 139, 34, 0.8);
 }
 
 .save:hover {
@@ -31,7 +31,7 @@
 }
 
 .close {
-    background-color: var(--mfc-red-color);
+    background-color: rgba(224, 78, 57, 0.8);
 }
 
 .close:hover {

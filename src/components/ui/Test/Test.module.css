@@ -1,11 +1,10 @@
 .test {
     display: flex;
-    align-items: center;
+    flex-direction: column;
     padding: 1rem;
     border-radius: 1rem;
     background-color: var(--mfc-light-color);
     color: #101828;
-    font-weight: 600;
     transform: scale(1);
     transition: transform 0.2s ease;
     cursor: pointer;
@@ -15,24 +14,22 @@
     transform: scale(1.03);
 }
 
-.content {
-    width: 100%;
+.test span {
+    display: block;
 }
 
 .title {
-    padding-bottom: 1rem;
-    font-size: 1rem;
+    font-weight: 600;
 }
 
-.url {
-    padding-bottom: 1rem;
-    color: gray;
-    font-size: 0.9rem;
+.position {
+    font-style: italic;
 }
 
 .date_end {
     padding-top: 0.4rem;
+    margin-top: 0.4rem;
+    border-top: 0.1rem solid var(--mfc-dark-color);
     color: gray;
     font-size: 0.8rem;
-    border-top: 0.1rem solid var(--mfc-dark-color);
 }

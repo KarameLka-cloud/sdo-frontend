@@ -42,10 +42,19 @@ export const user = createApi({
             }),
             invalidatesTags: ['Users'],
         }),
-        // positions: builder.query({
-        //     query: () =>
-        // })
+        getDepartments: builder.query({
+            query: () => API_ENDPOINTS.DEPARTMENTS,
+        }),
+        getPositions: builder.query({
+            query: () => API_ENDPOINTS.POSITIONS,
+        }),
     }),
 });
 
-export const {useGetUserByDataQuery, useGetUsersQuery, useAssignAdminRoleMutation, useRevokeAdminRoleMutation} = user;
+export const {
+    useGetUsersQuery,
+    useAssignAdminRoleMutation,
+    useRevokeAdminRoleMutation,
+    useGetDepartmentsQuery,
+    useGetPositionsQuery
+} = user;

@@ -1,13 +1,12 @@
 import {JSX} from "react";
 import styles from "./Knowledge.module.css";
 import {Link} from "react-router-dom";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
 import {EXTERNAL_LINKS} from "@constants/external.ts";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Knowledge(): JSX.Element {
     return (
-        <>
-            <HeaderPage>База знаний</HeaderPage>
+        <OverflowScrollBlock header_name={'База знаний'}>
             <Link to="top" className={`${styles.top_service_component} ${styles.button}`}>
                 <div className={styles.top_service_title}>
                     Услуги, изучаемых в период адаптации
@@ -24,7 +23,7 @@ function Knowledge(): JSX.Element {
                   className={`${styles.general_courses_component} ${styles.button}`}>
                 Общие курсы
             </Link>
-        </>
+        </OverflowScrollBlock>
     );
 }
 

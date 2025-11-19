@@ -103,7 +103,7 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: ROUTES.EDO_COURSES,
-                        element: <PageTitle title={""} element={<EdoCourses/>}/>,
+                        element: <PageTitle title={"Курсы"} element={<EdoCourses/>}/>,
 
                     },
                     {
@@ -112,7 +112,7 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: ROUTES.EDO_TESTS,
-                        element: <PageTitle title={""} element={<EdoTests/>}/>
+                        element: <PageTitle title={"Тесты"} element={<EdoTests/>}/>
                     },
                 ]
             },
@@ -133,19 +133,19 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: ROUTES.ADMIN_EDUCATION_COURSE,
-                        element: <PageTitle title={""} element={<EducationCoursesAdmin/>}/>,
+                        element: <PageTitle title={"Курсы"} element={<EducationCoursesAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDUCATION_EVENTS,
-                        element: <PageTitle title={""} element={<EducationEventsAdmin/>}/>,
+                        element: <PageTitle title={"Мероприятия"} element={<EducationEventsAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDUCATION_WEBINARS,
-                        element: <PageTitle title={""} element={<EducationWebinarsAdmin/>}/>,
+                        element: <PageTitle title={"Вебинары"} element={<EducationWebinarsAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDUCATION_TESTS,
-                        element: <PageTitle title={""} element={<EducationTestsAdmin/>}/>,
+                        element: <PageTitle title={"Тесты"} element={<EducationTestsAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDO,
@@ -153,15 +153,15 @@ const AppRoutes = createBrowserRouter([
                     },
                     {
                         path: ROUTES.ADMIN_EDO_COURSES,
-                        element: <PageTitle title={""} element={<EdoCoursesAdmin/>}/>,
+                        element: <PageTitle title={"Курсы"} element={<EdoCoursesAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDO_EVENTS,
-                        element: <PageTitle title={""} element={<EdoEventsAdmin/>}/>,
+                        element: <PageTitle title={"Мероприятия"} element={<EdoEventsAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDO_TESTS,
-                        element: <PageTitle title={""} element={<EdoTestsAdmin/>}/>,
+                        element: <PageTitle title={"Тесты"} element={<EdoTestsAdmin/>}/>,
                     },
                 ]
             },

@@ -12,10 +12,12 @@
 
 .date {
     width: fit-content;
+    height: 2.1rem;
 }
 
 .time {
     width: fit-content;
+    height: 2.1rem;
 }
 
 .email {

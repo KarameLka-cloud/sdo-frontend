@@ -13,16 +13,21 @@ import {
     useUpdateEdoCourseMutation,
     useDeleteEdoCourseMutation
 } from "@services/store/features/edo.ts";
+import Select from "@components/ui/Select/Select.tsx";
+import {useGetDepartmentsQuery} from "@services/store/features/user.ts";
 
 function Courses(): JSX.Element {
     const {data, error, isLoading} = useGetEdoCoursesQuery("");
     const [addCourse, {isLoading: addLoading, isError: addError}] = useAddEdoCourseMutation();
     const [updateCourse] = useUpdateEdoCourseMutation();
     const [deleteCourse] = useDeleteEdoCourseMutation();
+    const {data: departments} = useGetDepartmentsQuery("");
 
     const {formItems, setFormItems, handleChange} = useForm({
         title: "",
         url: "",
+        department_id: "",
+        note_department: "",
         date_end: "",
     });
 
@@ -32,6 +37,8 @@ function Courses(): JSX.Element {
         setFormItems({
             title: "",
             url: "",
+            department_id: "",
+            note_department: "",
             date_end: "",
         })
     };
@@ -42,8 +49,16 @@ function Courses(): JSX.Element {
             <form onSubmit={handleAction} className={styles.form}>
                 <Input type="text" name="title" placeholder="Название" value={formItems.title}
                        onChange={handleChange} className={styles.form_input_text}/>
-                <Input type="text" name="url" placeholder="Ссылка на курс" value={formItems.url}
+                <Input type="text" name="url" placeholder="Ссылка" value={formItems.url}
                        onChange={handleChange} className={styles.form_input_text}/>
+                <div className={styles.form_department}>
+                    {departments &&
+                        <Select name={"department_id"} value={formItems.department_id} onChange={handleChange}
+                                data={departments} className={styles.form_select}/>
+                    }
+                    <Input type="text" name="note_department" placeholder="Примечание по отделу (опционально)" value={formItems.note_department}
+                           onChange={handleChange} className={styles.form_note_department}/>
+                </div>
                 <Input type="date" name="date_end" placeholder="Пройти до" value={formItems.date_end}
                        onChange={handleChange} className={styles.form_input_date_end}/>
                 <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>

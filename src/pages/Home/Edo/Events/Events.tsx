@@ -1,20 +1,16 @@
 import {JSX} from "react";
 import styles from "./Events.module.css";
 import {EventType} from "@interfaces/api/EventType.ts";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
-import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
 import DataList from "@components/ui/DataList/DataList.tsx";
 import EventItem from "@components/ui/Event/Event.tsx";
 import {useGetEdoEventsQuery} from "@services/store/features/edo.ts";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Events(): JSX.Element {
     const {data, error, isLoading} = useGetEdoEventsQuery("");
 
     return (
-        <>
-            <HeaderPage>Мероприятия</HeaderPage>
-            <ButtonBack/>
-
+        <OverflowScrollBlock header_name={'Мероприятия'} button_back_visible={'enable'}>
             <DataList<EventType>
                 data={data}
                 error={!!error}
@@ -23,7 +19,7 @@ function Events(): JSX.Element {
                     <EventItem key={item.id} event={item} className={styles.event}/>
                 )}
             />
-        </>
+        </OverflowScrollBlock>
     );
 }
 

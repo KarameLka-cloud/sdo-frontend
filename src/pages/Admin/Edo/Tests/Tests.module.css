@@ -8,6 +8,20 @@
     margin-bottom: 0.4rem;
 }
 
+.form_select {
+    width: 30%;
+}
+
+.form_position {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+
+.form_note_position {
+    width: 69%;
+}
+
 .form_input_date_end {
     margin-bottom: 0.4rem;
 }

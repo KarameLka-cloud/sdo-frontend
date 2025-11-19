@@ -9,7 +9,7 @@ interface DataMessageProps {
 function DataMessage({type, className}: DataMessageProps): JSX.Element {
     const types = {
         noData: {
-            message: "Список пуст (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧",
+            message: "Список пуст (ﾉ◕ヮ◕)ﾉ",
         },
         error: {
             message: "Ошибка получения данных Σ(▼□▼メ)",

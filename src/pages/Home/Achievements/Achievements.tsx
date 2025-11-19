@@ -1,14 +1,12 @@
 import {JSX} from "react";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
 import Development from "@components/ui/Development/Development.tsx";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function Achievements(): JSX.Element {
     return (
-        <>
-            <HeaderPage>Достижения</HeaderPage>
-
+        <OverflowScrollBlock header_name={'Достижения'}>
             <Development/>
-        </>
+        </OverflowScrollBlock>
     );
 }
 

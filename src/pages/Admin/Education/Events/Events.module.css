@@ -8,12 +8,15 @@
     margin-bottom: 0.4rem;
 }
 
-.form_date {
+.form_select {
+    width: 74%;
     margin-bottom: 0.4rem;
 }
 
-.form_input_time {
-    margin-left: 0.6rem;
+.form_block {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
 }
 
 .event:not(:first-child) {

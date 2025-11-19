@@ -8,7 +8,9 @@ interface DevelopmentType {
 
 function Development({className}: DevelopmentType): JSX.Element {
     return (
-        <img src={image_development} alt="В разработке" className={`${styles.development} + ${className}`}/>
+        <div>
+            <img src={image_development} alt="В разработке" className={`${styles.development} + ${className}`}/>
+        </div>
     )
 }
 

@@ -1,13 +1,12 @@
 import {JSX} from "react";
-import styles from "./TopServices.module.css";
-import HeaderPage from "@components/ui/HeaderPage/HeaderPage";
+// import styles from "./TopServices.module.css";
 import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
 import Development from "@components/ui/Development/Development.tsx";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function TopServices(): JSX.Element {
     return (
-        <>
-            <HeaderPage className={styles.header}>ТОП 25</HeaderPage>
+        <OverflowScrollBlock header_name={'ТОП 25'}>
             <ButtonBack/>
 
             <Development/>
@@ -59,7 +58,7 @@ function TopServices(): JSX.Element {
             {/*>*/}
             {/*    Тестирование по длинным услугам*/}
             {/*</a>*/}
-        </>
+        </OverflowScrollBlock>
     );
 }
 

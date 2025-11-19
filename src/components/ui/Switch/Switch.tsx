@@ -3,9 +3,9 @@ import styles from "./Switch.module.css";
 
 function Switch({title, value, mutation, className}: {
     title?: string;
-    value: boolean,
-    mutation?: any,
-    className?: string
+    value: boolean;
+    mutation?: () => void;
+    className?: string;
 }): JSX.Element {
     return (
         <label className={`${styles.switch} ${className}`}>

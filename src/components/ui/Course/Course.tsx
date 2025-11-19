@@ -10,11 +10,12 @@ interface CoursePropsType {
 
 function Course({className, course}: CoursePropsType): JSX.Element {
     return (
-        <div className={`${styles.course} + ${className}`} onClick={() => window.open(course.url, "_blank")}>
-            <div className={styles.content}>
-                <div className={styles.title}>{course.title}</div>
-                <div className={styles.date_end}>{`Пройти до ${convertDate(course.date_end)}г.`}</div>
-            </div>
+        <div className={`${styles.course} ${className}`} onClick={() => window.open(course.url, "_blank")}>
+            <span className={styles.title}>{course.title}</span>
+            <span
+                className={styles.department}>{course.department} {course.note_department && `(${course.note_department})`}
+                </span>
+            <span className={styles.date_end}>{`Пройти до ${convertDate(course.date_end)}г.`}</span>
         </div>
     )
 }

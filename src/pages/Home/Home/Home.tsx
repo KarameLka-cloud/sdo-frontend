@@ -8,7 +8,7 @@ function Home(): JSX.Element {
     const {name, department, description} = useUser();
 
     return (
-        <>
+        <div className={styles.container}>
             <div className={styles.info_component}>
                 <div className={styles.info_date}>{dateNow}</div>
                 <div className={styles.info_name}>{`Привет, ${name.split(" ")[1]}`}</div>
@@ -20,7 +20,7 @@ function Home(): JSX.Element {
                     alt="Девушка"
                 />
             </div>
-        </>
+        </div>
     );
 }
 

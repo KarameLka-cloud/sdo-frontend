@@ -11,10 +11,9 @@ interface TestPropsType {
 function Test({className, test}: TestPropsType): JSX.Element {
     return (
         <div className={`${styles.test} + ${className}`} onClick={() => window.open(test.url, "_blank")}>
-            <div className={styles.content}>
-                <div className={styles.title}>{test.title}</div>
-                <div className={styles.date_end}>{`Пройти до ${convertDate(test.date_end)}г.`}</div>
-            </div>
+            <span className={styles.title}>{test.title}</span>
+            <span className={styles.position}>Сканировщик</span>
+            <span className={styles.date_end}>{`Пройти до ${convertDate(test.date_end)}г.`}</span>
         </div>
     )
 }
