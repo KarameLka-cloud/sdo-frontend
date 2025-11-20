@@ -19,3 +19,13 @@
 .webinar:not(:first-child) {
     margin-top: 1rem;
 }
+
+.create_search {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.input_search {
+    width: 40%;
+}

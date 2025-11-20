@@ -1,14 +1,11 @@
 import {JSX} from "react";
 // import styles from "./TopServices.module.css";
-import ButtonBack from "@components/ui/ButtonBack/ButtonBack.tsx";
 import Development from "@components/ui/Development/Development.tsx";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
 function TopServices(): JSX.Element {
     return (
-        <OverflowScrollBlock header_name={'ТОП 25'}>
-            <ButtonBack/>
-
+        <OverflowScrollBlock header_name={'ТОП 25'} button_back_visible={'enable'}>
             <Development/>
 
             {/*<h3 className={styles.header_services}>Короткие услуги</h3>*/}

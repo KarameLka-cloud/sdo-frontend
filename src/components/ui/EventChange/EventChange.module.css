@@ -28,8 +28,10 @@
 }
 
 .description,
+.link,
 .department,
 .date_time {
+    display: block;
     color: var(--mfc-gray-color);
     font-size: 0.9rem;
 }

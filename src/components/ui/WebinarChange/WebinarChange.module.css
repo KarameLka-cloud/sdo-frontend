@@ -1,3 +1,7 @@
+span {
+    display: block;
+}
+
 .webinar {
     display: flex;
     align-items: center;

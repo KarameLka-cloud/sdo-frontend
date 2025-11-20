@@ -7,10 +7,10 @@ type DataListProps<T> = {
     isLoading?: boolean;
     error?: boolean;
     renderItem: (item: T, index: number) => JSX.Element;
-    className?: string;
     emptyMessage?: JSX.Element;
     errorMessage?: JSX.Element;
     loader?: JSX.Element;
+    maxItems?: number;
 }
 
 export function DataList<T>({
@@ -18,10 +18,10 @@ export function DataList<T>({
                                 isLoading,
                                 error,
                                 renderItem,
-                                className,
                                 emptyMessage = <DataMessage type="noData"/>,
                                 errorMessage = <DataMessage type="error"/>,
                                 loader = <Loader/>,
+                                maxItems,
                             }: DataListProps<T>) {
     if (error) return errorMessage;
     if (isLoading) return loader;
@@ -30,10 +30,12 @@ export function DataList<T>({
         return emptyMessage;
     }
 
+    const items = maxItems ? data.slice(0, maxItems) : data;
+
     return (
-        <div className={className}>
-            {data.map((item, index) => renderItem(item, index))}
-        </div>
+        <>
+            {items.map((item, index) => renderItem(item, index))}
+        </>
     )
 }
 

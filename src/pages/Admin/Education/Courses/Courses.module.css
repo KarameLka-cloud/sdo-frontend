@@ -8,10 +8,34 @@
     margin-bottom: 0.4rem;
 }
 
+.form_select {
+    width: 30%;
+}
+
+.form_department {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.4rem;
+}
+
+.form_note_department {
+    width: 69%;
+}
+
 .form_input_date_end {
     margin-bottom: 0.4rem;
 }
 
 .course:not(:first-child) {
     margin-top: 1rem;
+}
+
+.create_search {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.input_search {
+    width: 40%;
 }

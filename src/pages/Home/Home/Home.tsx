@@ -11,7 +11,7 @@ function Home(): JSX.Element {
         <div className={styles.container}>
             <div className={styles.info_component}>
                 <div className={styles.info_date}>{dateNow}</div>
-                <div className={styles.info_name}>{`Привет, ${name.split(" ")[1]}`}</div>
+                <div className={styles.info_name}>{`Привет, ${name.split(" ")[1]}`} 👋</div>
                 <div className={styles.info_department}>{department}</div>
                 <div className={styles.info_description}>{description}</div>
                 <img

@@ -6,7 +6,7 @@ const firstWednesday: () => string = (): string => {
     while (firstWednesday.getDay() !== 3) {
         firstWednesday.setDate(firstWednesday.getDate() + 1);
     }
-    if (today > firstWednesday) {
+    if (today > firstWednesday && today.getDate() !== firstWednesday.getDate()) {
         month++;
         if (month > 11) {
             month = 0;

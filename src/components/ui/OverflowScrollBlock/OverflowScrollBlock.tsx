@@ -5,13 +5,13 @@ import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
 interface OverflowScrollBlockProps {
     header_name: string;
     button_back_visible?: 'enable' | 'disable';
-    children?: JSX.Element | JSX.Element[];
+    children?: any;
 }
 
 function OverflowScrollBlock({
                                  children,
-                                 button_back_visible = 'disable',
-                                 header_name
+                                 header_name,
+                                 button_back_visible = 'disable'
                              }: OverflowScrollBlockProps): JSX.Element {
     return (
         <div className={styles.container}>
