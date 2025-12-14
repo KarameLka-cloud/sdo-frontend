@@ -35,7 +35,7 @@ function Events(): JSX.Element {
         title: "",
         description: "",
         link: "",
-        department_id: "1",
+        department_id: "",
         note_department: "",
         time: "",
         date: ""
@@ -48,7 +48,7 @@ function Events(): JSX.Element {
             title: "",
             description: "",
             link: "",
-            department_id: "1",
+            department_id: "",
             note_department: "",
             time: "",
             date: ""

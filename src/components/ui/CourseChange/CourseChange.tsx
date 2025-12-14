@@ -31,6 +31,8 @@ function CourseChange({className, course, mutationDelete}: CoursePropsType): JSX
             <div className={styles.content}>
                 <span className={styles.title}>{course.title}</span>
                 <span className={styles.url}>{course.url}</span>
+                <span
+                    className={styles.department}>{course.department} {course.note_department && `(${course.note_department})`}</span>
                 <span className={styles.date_end}>{convertDate(course.date_end)}</span>
             </div>
             <IconButton type={"delete"} onClick={() => handleDelete(course.id)} className={styles.button_delete}/>

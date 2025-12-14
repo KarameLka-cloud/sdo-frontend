@@ -22,6 +22,9 @@ function Select({name, value, onChange, className, data}: SelectProps): JSX.Elem
             onChange={onChange}
             className={`${styles.form_select} ${className}`}
         >
+            <option value="" disabled>
+                Выбрать из списка
+            </option>
             {data.map((item: ItemProps) => (
                 <option key={item.id} value={item.id}>
                     {item.name}

@@ -31,10 +31,19 @@ span {
     font-size: 1rem;
 }
 
+.position {
+    font-style: italic;
+}
+
 .url,
+.position,
 .date_end {
     color: var(--mfc-gray-color);
     font-size: 0.9rem;
+}
+
+.date_end {
+    color: var(--mfc-black-color);
 }
 
 .button_edit,

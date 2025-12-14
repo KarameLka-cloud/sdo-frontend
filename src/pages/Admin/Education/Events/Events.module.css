@@ -23,6 +23,8 @@
 }
 
 .form_date {
+    display: flex;
+    align-items: center;
     margin-bottom: 0.4rem;
 }
 

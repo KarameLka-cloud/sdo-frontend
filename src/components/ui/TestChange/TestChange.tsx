@@ -32,6 +32,7 @@ function TestChange({className, test, mutationDelete}: TestPropsType): JSX.Eleme
             <div className={styles.content}>
                 <span className={styles.title}>{test.title}</span>
                 <span className={styles.url}>{test.url}</span>
+                <span className={styles.position}>{test.position} {test.note_position && `(${test.note_position})`}</span>
                 <span className={styles.date_end}>{convertDate(test.date_end)}</span>
             </div>
             <IconButton type={"delete"} onClick={() => handleDelete(test.id)} className={styles.button_delete}/>
