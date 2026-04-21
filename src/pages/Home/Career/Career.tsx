@@ -36,7 +36,8 @@ function Career(): JSX.Element {
             responsible: "Мария Сидорова",
             employeeComment: "Много информации, но интересно",
             internComment: "Начал изучать документацию",
-            mentorComment: "Хорошо усваивает материал"
+            mentorComment: "Хорошо усваивает материал",
+            departmentHeadComment: "Впечатление положительное"
         },
         {
             id: 3,
@@ -51,7 +52,8 @@ function Career(): JSX.Element {
             responsible: "Алексей Кузнецов",
             employeeComment: "",
             internComment: "Выполнил все задачи",
-            mentorComment: "Прогресс очевиден"
+            mentorComment: "Прогресс очевиден",
+            departmentHeadComment: "Впечатление положительное"
         }
     ]);
 
