@@ -5,6 +5,12 @@ import {useState} from "react";
 import {ROUTES} from "../constants/routes.ts";
 import {COOKIE_NAMES, LOCAL_STORAGE_NAMES} from "../constants/api.ts";
 
+interface ApiErrorResponse {
+    data?: {
+        message?: string;
+    };
+}
+
 export const useLogin = () => {
     const navigate: NavigateFunction = useNavigate();
     const [login, {isLoading}] = useLoginMutation();
@@ -16,9 +22,10 @@ export const useLogin = () => {
             localStorage.setItem(LOCAL_STORAGE_NAMES.USER, JSON.stringify(response.user));
             Cookie.set(COOKIE_NAMES.AUTH_TOKEN, response.auth_token);
             navigate(ROUTES.ROOT);
-        } catch (error: any) {
+        } catch (error: unknown) {
             console.log(error);
-            setErrorMessage(error.data.message);
+            const message = (error as ApiErrorResponse).data?.message ?? "Ошибка авторизации";
+            setErrorMessage(message);
         }
     }
     return {loginUser, errorMessage, isLoading};

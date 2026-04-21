@@ -1,11 +1,13 @@
 import {useCallback} from "react";
 
-export const useUpdate = <T extends (args: any) => any>(
-    mutation: T,
+type MutationWithUnwrap<Arg> = (arg: Arg) => { unwrap: () => Promise<unknown> };
+
+export const useUpdate = <Arg>(
+    mutation: MutationWithUnwrap<Arg>,
     message = "Вы хотите обновить запись?"
 ) => {
     return useCallback(
-        async (args: Parameters<T>[0]) => {
+        async (args: Arg) => {
             const isConfirm = confirm(message);
             if (!isConfirm) return;
             await mutation(args).unwrap();

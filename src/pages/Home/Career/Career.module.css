@@ -1,0 +1,11 @@
+.careerContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+@media (max-width: 768px) {
+    .careerContainer {
+        padding: 0;
+    }
+}

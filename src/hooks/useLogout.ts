@@ -14,7 +14,7 @@ export const useLogout = () => {
             localStorage.clear();
             Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
             navigate(ROUTES.LOGIN);
-        } catch (error: any) {
+        } catch {
             localStorage.clear();
             Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
             navigate(ROUTES.LOGIN);

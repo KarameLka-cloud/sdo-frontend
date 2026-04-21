@@ -1,11 +1,11 @@
-import {JSX} from "react";
+import {JSX, ReactNode} from "react";
 import styles from "./OverflowScrollBlock.module.css";
 import HeaderPage from "@components/ui/HeaderPage/HeaderPage.tsx";
 
 interface OverflowScrollBlockProps {
     header_name: string;
     button_back_visible?: 'enable' | 'disable';
-    children?: any;
+    children?: ReactNode;
 }
 
 function OverflowScrollBlock({

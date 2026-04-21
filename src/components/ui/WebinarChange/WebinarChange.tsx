@@ -13,7 +13,7 @@ import IconButton from "../IconButton/IconButton.tsx";
 interface EventPropsType {
     className?: string;
     webinar: WebinarType;
-    mutationDelete?: any;
+    mutationDelete: (id: number) => { unwrap: () => Promise<unknown> };
     // mutationUpdate?: any;
 }
 

@@ -4,7 +4,7 @@ type FormValues<T> = {
     [K in keyof T]: string;
 };
 
-export const useForm = <T extends Record<string, any>>(initialValues: FormValues<T>) => {
+export const useForm = <T extends Record<string, unknown>>(initialValues: FormValues<T>) => {
     const [formItems, setFormItems] = useState<FormValues<T>>(initialValues);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {

@@ -14,34 +14,37 @@ interface ProtectedRoutePropsType {
 
 const ProtectedRoute = ({elementDashboard, elementLogin, route}: ProtectedRoutePropsType) => {
     // const {isLoading, error} = useGetUserByDataQuery("me");
-    const isAuth = Boolean(Cookie.get(COOKIE_NAMES.AUTH_TOKEN));
-    if (isAuth) {
-        if (route === "login") {
-            return <Navigate to={ROUTES.HOME} replace/>;
-        }
-        // if (!isLoading) {
-        //     if (error) {
-        //         Cookie.remove("auth_token");
-        //         return <Navigate to="login" replace/>
-        //     }
-        // }
-        return elementDashboard;
-    } else {
-        if (route === "dashboard") {
-            return <Navigate to={ROUTES.LOGIN} replace/>;
-        }
-        return elementLogin;
-    }
+    // ВРЕМЕННО: отключена проверка авторизации
+    // const isAuth = Boolean(Cookie.get(COOKIE_NAMES.AUTH_TOKEN));
+    // if (isAuth) {
+    //     if (route === "login") {
+    //         return <Navigate to={ROUTES.HOME} replace/>;
+    //     }
+    //     // if (!isLoading) {
+    //     //     if (error) {
+    //     //         Cookie.remove("auth_token");
+    //     //         return <Navigate to="login" replace/>
+    //     //     }
+    //     // }
+    //     return elementDashboard;
+    // } else {
+    //     if (route === "dashboard") {
+    //         return <Navigate to={ROUTES.LOGIN} replace/>;
+    //     }
+    //     return elementLogin;
+    // }
+    return elementDashboard || elementLogin;
 }
 
 const ProtectedRouteAdmin = ({elementAdmin}: ProtectedRoutePropsType) => {
-    const {role} = useUser();
-    if (!role) {
-        return null;
-    }
-    if (!role.includes("ADMIN")) {
-        return <Navigate to={ROUTES.HOME} replace/>;
-    }
+    // ВРЕМЕННО: отключена проверка роли ADMIN
+    // const {role} = useUser();
+    // if (!role) {
+    //     return null;
+    // }
+    // if (!role.includes("ADMIN")) {
+    //     return <Navigate to={ROUTES.HOME} replace/>;
+    // }
     return elementAdmin;
 }
 

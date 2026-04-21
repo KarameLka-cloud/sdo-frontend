@@ -1,11 +1,12 @@
 import {useCallback} from "react";
 
-export const useDelete = <T extends (id: number) => any>(
-    mutation: T,
+type MutationWithUnwrap<Arg> = (arg: Arg) => { unwrap: () => Promise<unknown> };
+
+export const useDelete = <Arg>(mutation: MutationWithUnwrap<Arg>,
     message = "Вы хотите удалить запись?"
 ) => {
     return useCallback(
-        async (id: Parameters<T>[0]) => {
+        async (id: Arg) => {
             const isConfirm = confirm(message);
             if (!isConfirm) return;
             await mutation(id).unwrap();

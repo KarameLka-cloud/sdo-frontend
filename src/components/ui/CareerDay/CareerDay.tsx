@@ -1,0 +1,135 @@
+import {JSX, useEffect, useState} from "react";
+import styles from "./CareerDay.module.css";
+import {CareerDayType, TaskStatus} from "@interfaces/api/CareerDayType.ts";
+import TaskItem from "./TaskItem.tsx";
+
+interface CareerDayProps {
+    day: CareerDayType;
+    onUpdateInternComment?: (dayId: number | undefined, comment: string) => void;
+    onUpdateTaskStatus?: (dayId: number | undefined, taskId: number | undefined, status: TaskStatus) => void;
+}
+
+function CareerDay({day, onUpdateInternComment, onUpdateTaskStatus}: CareerDayProps): JSX.Element {
+    const [isEditingInternComment, setIsEditingInternComment] = useState(false);
+    const [editedInternComment, setEditedInternComment] = useState(day.internComment || "");
+
+    useEffect(() => {
+        setEditedInternComment(day.internComment || "");
+    }, [day.internComment]);
+
+    const handleSaveInternComment = () => {
+        onUpdateInternComment?.(day.id, editedInternComment);
+        setIsEditingInternComment(false);
+    };
+
+    const handleCancelInternComment = () => {
+        setEditedInternComment(day.internComment || "");
+        setIsEditingInternComment(false);
+    };
+
+    return (
+        <div className={styles.careerDay}>
+            <div className={styles.header}>
+                <div className={styles.headerItem}>
+                    <span className={styles.label}>День</span>
+                    <span className={styles.value}>{day.workDay}</span>
+                </div>
+                <div className={styles.headerItem}>
+                    <span className={styles.label}>Дата</span>
+                    <span className={styles.value}>{day.date}</span>
+                </div>
+                <div className={styles.headerItem}>
+                    <span className={styles.label}>Наставник</span>
+                    <span className={styles.value}>{day.responsible}</span>
+                </div>
+                <div className={`${styles.headerItem} ${styles.statusHeaderItem}`}>
+                    <span className={styles.label}>Статус дня</span>
+                    <span className={`${styles.statusBadge} ${styles[`status_${day.completion.replace(/ /g, '_')}` as keyof typeof styles]}`}>
+                        {day.completion}
+                    </span>
+                </div>
+            </div>
+
+            <div className={styles.content}>
+                <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Информация</h3>
+                    <div className={styles.tasksContainer}>
+                        {Array.isArray(day.tasks) && day.tasks.map((task, index) => (
+                            <TaskItem
+                                key={task.id || index}
+                                task={task}
+                                dayId={day.id}
+                                onUpdateTaskStatus={onUpdateTaskStatus}
+                            />
+                        ))}
+                    </div>
+                </div>
+
+                <div className={styles.section}>
+                    <h3 className={styles.sectionTitle}>Комментарии</h3>
+                    
+                    <div className={styles.commentItem}>
+                        <span className={styles.commentLabel}>Комментарий сотрудника УПиПК</span>
+                        <p className={styles.commentText}>{day.employeeComment || "Нет комментария"}</p>
+                    </div>
+
+                    {day.internComment !== undefined && (
+                        <div className={styles.commentItem}>
+                            <span className={styles.commentLabel}>Комментарий стажера</span>
+                            {isEditingInternComment ? (
+                                <div className={styles.editForm}>
+                                    <textarea
+                                        value={editedInternComment}
+                                        onChange={(e) => setEditedInternComment(e.target.value)}
+                                        className={styles.textarea}
+                                        placeholder="Введите комментарий..."
+                                    />
+                                    <div className={styles.buttonGroup}>
+                                        <button
+                                            onClick={handleSaveInternComment}
+                                            className={`${styles.button} ${styles.buttonPrimary}`}
+                                        >
+                                            Сохранить
+                                        </button>
+                                        <button
+                                            onClick={handleCancelInternComment}
+                                            className={`${styles.button} ${styles.buttonSecondary}`}
+                                        >
+                                            Отменить
+                                        </button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className={styles.commentContent}>
+                                    <p className={styles.commentText}>{editedInternComment || "Нет комментария"}</p>
+                                    <button
+                                        onClick={() => setIsEditingInternComment(true)}
+                                        className={styles.editButton}
+                                    >
+                                        Редактировать
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {day.mentorComment && (
+                        <div className={styles.commentItem}>
+                            <span className={styles.commentLabel}>Комментарий наставника</span>
+                            <p className={styles.commentText}>{day.mentorComment}</p>
+                        </div>
+                    )}
+
+                    {day.departmentHeadComment && (
+                        <div className={styles.commentItem}>
+                            <span className={styles.commentLabel}>Комментарий руководителя отдела</span>
+                            <p className={styles.commentText}>{day.departmentHeadComment}</p>
+                        </div>
+                    )}
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export default CareerDay;

@@ -12,7 +12,7 @@ import IconButton from "../IconButton/IconButton.tsx";
 interface CoursePropsType {
     className?: string;
     course: CourseType;
-    mutationDelete: any;
+    mutationDelete: (id: number) => { unwrap: () => Promise<unknown> };
     // mutationUpdate: any;
 }
 
