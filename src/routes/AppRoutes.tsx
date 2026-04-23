@@ -8,9 +8,6 @@ import AdminLayout from "@layouts/DashboardLayout/AdminLayout/AdminLayout.tsx";
 import Login from "@pages/Auth/Login/Login.tsx";
 import Home from "@pages/Home/Home/Home.tsx";
 import Career from "@pages/Home/Career/Career.tsx";
-import Achievements from "@pages/Home/Achievements/Achievements.tsx";
-import Knowledge from "@pages/Home/Knowledge/Knowledge.tsx";
-import TopServices from "@pages/Home/Knowledge/TopServices/TopServices.tsx";
 import Education from "@pages/Home/Education/Education.tsx";
 import EducationCourses from "@pages/Home/Education/Courses/Courses.tsx";
 import EducationEvents from "@pages/Home/Education/Events/Events.tsx";
@@ -21,7 +18,6 @@ import EdoCourses from "@pages/Home/Edo/Courses/Courses.tsx";
 import EdoEvents from "@pages/Home/Edo/Events/Events.tsx";
 import EdoTests from "@pages/Home/Edo/Tests/Tests.tsx";
 import UsersAdmin from "@pages/Admin/Users/Users.tsx";
-import KnowledgeAdmin from "@pages/Admin/Knowledge/Knowledge.tsx";
 import EducationAdmin from "@pages/Admin/Education/Education.tsx";
 import EducationCoursesAdmin from "@pages/Admin/Education/Courses/Courses.tsx";
 import EducationEventsAdmin from "@pages/Admin/Education/Events/Events.tsx";
@@ -64,18 +60,6 @@ const AppRoutes = createBrowserRouter([
                     {
                         path: ROUTES.CAREER,
                         element: <PageTitle title={"Карьера"} element={<Career/>}/>,
-                    },
-                    {
-                        path: ROUTES.ACHIEVEMENTS,
-                        element: <PageTitle title={"Достижения"} element={<Achievements/>}/>,
-                    },
-                    {
-                        path: ROUTES.KNOWLEDGE,
-                        element: <PageTitle title={"База знаний"} element={<Knowledge/>}/>,
-                    },
-                    {
-                        path: ROUTES.KNOWLEDGE_TOP,
-                        element: <PageTitle title={"ТОП 25"} element={<TopServices/>}/>,
                     },
                     {
                         path: ROUTES.EDUCATION,
@@ -122,10 +106,6 @@ const AppRoutes = createBrowserRouter([
                     {
                         path: ROUTES.ADMIN_USERS,
                         element: <PageTitle title={"Пользователи"} element={<UsersAdmin/>}/>,
-                    },
-                    {
-                        path: ROUTES.ADMIN_KNOWLEDGE,
-                        element: <PageTitle title={"База знаний"} element={<KnowledgeAdmin/>}/>,
                     },
                     {
                         path: ROUTES.ADMIN_EDUCATION,

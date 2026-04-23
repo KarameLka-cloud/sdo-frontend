@@ -13,10 +13,33 @@ function TaskItem({task, dayId, onUpdateTaskStatus}: TaskItemProps): JSX.Element
         onUpdateTaskStatus?.(dayId, task.id, newStatus);
     };
 
+    const getRoleColor = (role: string | undefined): string => {
+        switch (role) {
+            case "Руководитель отдела":
+                return styles.roleDepartmentHead;
+            case "Наставник":
+                return styles.roleMentor;
+            case "Сотрудник УПиПК":
+                return styles.roleEmployee;
+            case "Стажер":
+                return styles.roleIntern;
+            default:
+                return styles.roleDefault;
+        }
+    };
+
     return (
         <div className={styles.taskItem}>
             <div className={styles.taskContent}>
                 <p className={styles.taskDescription}>{task.description}</p>
+                {task.responsibleRole && (
+                    <div className={styles.responsibleInfo}>
+                        <span className={styles.responsibleLabel}>Ответственный:</span>
+                        <span className={`${styles.responsibleRole} ${getRoleColor(task.responsibleRole)}`}>
+                            {task.responsibleRole}
+                        </span>
+                    </div>
+                )}
                 <div className={styles.statusButtons}>
                     <button
                         onClick={() => handleStatusChange("выполнено")}

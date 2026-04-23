@@ -1,8 +1,6 @@
 import {ROUTES} from "@constants/routes";
 import homeIcon from '@assets/images/icons/home.svg';
 import personIcon from '@assets/images/icons/person.svg';
-import medalIcon from '@assets/images/icons/medal.svg';
-import libraryIcon from '@assets/images/icons/library.svg';
 import bookIcon from '@assets/images/icons/book.svg';
 import calendarIcon from '@assets/images/icons/calendar.svg';
 import peopleIcon from '@assets/images/icons/people.svg';
@@ -22,24 +20,12 @@ export const HOME_NAV_LINKS = [
     },
     {
         id: 3,
-        name: "Достижения",
-        path: ROUTES.ACHIEVEMENTS,
-        icon: medalIcon,
-    },
-    {
-        id: 4,
-        name: 'База знаний',
-        path: ROUTES.KNOWLEDGE,
-        icon: libraryIcon,
-    },
-    {
-        id: 5,
         name: 'Обучение',
         path: ROUTES.EDUCATION,
         icon: bookIcon,
     },
     {
-        id: 6,
+        id: 4,
         name: 'ЕДО',
         path: ROUTES.EDO,
         icon: calendarIcon,
@@ -55,18 +41,12 @@ export const ADMIN_NAV_LINKS = [
     },
     {
         id: 2,
-        name: 'База знаний',
-        path: ROUTES.ADMIN_KNOWLEDGE,
-        icon: libraryIcon,
-    },
-    {
-        id: 3,
         name: 'Обучение',
         path: ROUTES.ADMIN_EDUCATION,
         icon: bookIcon,
     },
     {
-        id: 4,
+        id: 3,
         name: 'ЕДО',
         path: ROUTES.ADMIN_EDO,
         icon: calendarIcon,

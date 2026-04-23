@@ -1,6 +1,6 @@
 .taskItem {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     justify-content: space-between;
     gap: 1rem;
     padding: 1rem;
@@ -29,6 +29,47 @@
     word-break: break-word;
 }
 
+.responsibleInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.8rem;
+    flex-wrap: wrap;
+}
+
+.responsibleLabel {
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.responsibleRole {
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.4rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: white;
+}
+
+.roleDepartmentHead {
+    background-color: #7c3aed;
+}
+
+.roleMentor {
+    background-color: #0ea5e9;
+}
+
+.roleEmployee {
+    background-color: #f59e0b;
+}
+
+.roleIntern {
+    background-color: #10b981;
+}
+
+.roleDefault {
+    background-color: #6b7280;
+}
+
 .statusButtons {
     display: flex;
     gap: 0.5rem;
@@ -55,7 +96,7 @@
 
 .statusButton.active {
     color: white;
-    border: none;
+    border: 0.1rem solid transparent;
 }
 
 .completed.active {

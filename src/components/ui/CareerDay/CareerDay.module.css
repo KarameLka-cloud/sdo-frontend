@@ -32,7 +32,7 @@
     min-height: 5rem;
     padding: 0.75rem;
     border-radius: 0.75rem;
-    background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%);
+    background-color: #fff;
     border: 0.05rem solid #dbe3ef;
 }
 
@@ -244,6 +244,37 @@
 .buttonSecondary:hover {
     background-color: #f3f4f6;
     border-color: #9ca3af;
+}
+
+.sectionToggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.75rem 1rem;
+    background-color: #f9fafb;
+    border: 0.05rem solid #e5e7eb;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+.sectionToggle:hover .sectionTitle {
+    color: #1976d2;
+}
+
+.toggleIcon {
+    font-size: 0.75rem;
+    color: #6b7280;
+    transition: transform 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.toggleIcon.expanded {
+    transform: rotate(180deg);
 }
 
 @media (max-width: 768px) {

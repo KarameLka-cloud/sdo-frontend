@@ -12,6 +12,7 @@ interface CareerDayProps {
 function CareerDay({day, onUpdateInternComment, onUpdateTaskStatus}: CareerDayProps): JSX.Element {
     const [isEditingInternComment, setIsEditingInternComment] = useState(false);
     const [editedInternComment, setEditedInternComment] = useState(day.internComment || "");
+    const [isCommentsExpanded, setIsCommentsExpanded] = useState(false);
 
     useEffect(() => {
         setEditedInternComment(day.internComment || "");
@@ -66,65 +67,77 @@ function CareerDay({day, onUpdateInternComment, onUpdateTaskStatus}: CareerDayPr
                 </div>
 
                 <div className={styles.section}>
-                    <h3 className={styles.sectionTitle}>Комментарии</h3>
+                    <button
+                        onClick={() => setIsCommentsExpanded(!isCommentsExpanded)}
+                        className={styles.sectionToggle}
+                    >
+                        <h3 className={styles.sectionTitle}>Комментарии</h3>
+                        <span className={`${styles.toggleIcon} ${isCommentsExpanded ? styles.expanded : ""}`}>
+                            ▼
+                        </span>
+                    </button>
                     
-                    <div className={styles.commentItem}>
-                        <span className={styles.commentLabel}>Комментарий сотрудника УПиПК</span>
-                        <p className={styles.commentText}>{day.employeeComment || "Нет комментария"}</p>
-                    </div>
+                    {isCommentsExpanded && (
+                        <>
+                            <div className={styles.commentItem}>
+                                <span className={styles.commentLabel}>Комментарий сотрудника УПиПК</span>
+                                <p className={styles.commentText}>{day.employeeComment || "Нет комментария"}</p>
+                            </div>
 
-                    {day.internComment !== undefined && (
-                        <div className={styles.commentItem}>
-                            <span className={styles.commentLabel}>Комментарий стажера</span>
-                            {isEditingInternComment ? (
-                                <div className={styles.editForm}>
-                                    <textarea
-                                        value={editedInternComment}
-                                        onChange={(e) => setEditedInternComment(e.target.value)}
-                                        className={styles.textarea}
-                                        placeholder="Введите комментарий..."
-                                    />
-                                    <div className={styles.buttonGroup}>
-                                        <button
-                                            onClick={handleSaveInternComment}
-                                            className={`${styles.button} ${styles.buttonPrimary}`}
-                                        >
-                                            Сохранить
-                                        </button>
-                                        <button
-                                            onClick={handleCancelInternComment}
-                                            className={`${styles.button} ${styles.buttonSecondary}`}
-                                        >
-                                            Отменить
-                                        </button>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className={styles.commentContent}>
-                                    <p className={styles.commentText}>{editedInternComment || "Нет комментария"}</p>
-                                    <button
-                                        onClick={() => setIsEditingInternComment(true)}
-                                        className={styles.editButton}
-                                    >
-                                        Редактировать
-                                    </button>
+                            {day.internComment !== undefined && (
+                                <div className={styles.commentItem}>
+                                    <span className={styles.commentLabel}>Комментарий стажера</span>
+                                    {isEditingInternComment ? (
+                                        <div className={styles.editForm}>
+                                            <textarea
+                                                value={editedInternComment}
+                                                onChange={(e) => setEditedInternComment(e.target.value)}
+                                                className={styles.textarea}
+                                                placeholder="Введите комментарий..."
+                                            />
+                                            <div className={styles.buttonGroup}>
+                                                <button
+                                                    onClick={handleSaveInternComment}
+                                                    className={`${styles.button} ${styles.buttonPrimary}`}
+                                                >
+                                                    Сохранить
+                                                </button>
+                                                <button
+                                                    onClick={handleCancelInternComment}
+                                                    className={`${styles.button} ${styles.buttonSecondary}`}
+                                                >
+                                                    Отменить
+                                                </button>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className={styles.commentContent}>
+                                            <p className={styles.commentText}>{editedInternComment || "Нет комментария"}</p>
+                                            <button
+                                                onClick={() => setIsEditingInternComment(true)}
+                                                className={styles.editButton}
+                                            >
+                                                Редактировать
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
-                        </div>
-                    )}
 
-                    {day.mentorComment && (
-                        <div className={styles.commentItem}>
-                            <span className={styles.commentLabel}>Комментарий наставника</span>
-                            <p className={styles.commentText}>{day.mentorComment}</p>
-                        </div>
-                    )}
+                            {day.mentorComment && (
+                                <div className={styles.commentItem}>
+                                    <span className={styles.commentLabel}>Комментарий наставника</span>
+                                    <p className={styles.commentText}>{day.mentorComment}</p>
+                                </div>
+                            )}
 
-                    {day.departmentHeadComment && (
-                        <div className={styles.commentItem}>
-                            <span className={styles.commentLabel}>Комментарий руководителя отдела</span>
-                            <p className={styles.commentText}>{day.departmentHeadComment}</p>
-                        </div>
+                            {day.departmentHeadComment && (
+                                <div className={styles.commentItem}>
+                                    <span className={styles.commentLabel}>Комментарий руководителя отдела</span>
+                                    <p className={styles.commentText}>{day.departmentHeadComment}</p>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

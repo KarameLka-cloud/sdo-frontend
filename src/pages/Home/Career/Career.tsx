@@ -12,9 +12,9 @@ function Career(): JSX.Element {
             workDay: 1,
             date: "2026-04-20",
             tasks: [
-                { id: 1, description: "Ознакомление с коллективом", status: "выполнено" },
-                { id: 2, description: "Изучение структуры отдела", status: "выполнено" },
-                { id: 3, description: "Получение инструментов и доступов", status: "выполнено" }
+                { id: 1, description: "Ознакомление с коллективом", status: "выполнено", responsibleRole: "Наставник" },
+                { id: 2, description: "Изучение структуры отдела", status: "выполнено", responsibleRole: "Руководитель отдела" },
+                { id: 3, description: "Получение инструментов и доступов", status: "выполнено", responsibleRole: "Сотрудник УПиПК" }
             ],
             completion: "выполнен",
             responsible: "Иван Петров",
@@ -28,9 +28,9 @@ function Career(): JSX.Element {
             workDay: 2,
             date: "2026-04-21",
             tasks: [
-                { id: 4, description: "Обучение системам", status: "выполнено" },
-                { id: 5, description: "Изучение документации", status: "не выполнено" },
-                { id: 6, description: "Первые практические упражнения", status: "не выполнено" }
+                { id: 4, description: "Обучение системам", status: "выполнено", responsibleRole: "Наставник" },
+                { id: 5, description: "Изучение документации", status: "не выполнено", responsibleRole: "Руководитель отдела" },
+                { id: 6, description: "Первые практические упражнения", status: "не выполнено", responsibleRole: "Наставник" }
             ],
             completion: "есть замечания",
             responsible: "Мария Сидорова",
@@ -44,9 +44,9 @@ function Career(): JSX.Element {
             workDay: 3,
             date: "2026-04-22",
             tasks: [
-                { id: 7, description: "Участие в проектных встречах", status: "не выполнено" },
-                { id: 8, description: "Выполнение простых задач", status: "не выполнено" },
-                { id: 9, description: "Подготовка отчета", status: "не выполнено" }
+                { id: 7, description: "Участие в проектных встречах", status: "не выполнено", responsibleRole: "Руководитель отдела" },
+                { id: 8, description: "Выполнение простых задач", status: "не выполнено", responsibleRole: "Наставник" },
+                { id: 9, description: "Подготовка отчета", status: "не выполнено", responsibleRole: "Сотрудник УПиПК" }
             ],
             completion: "в процессе",
             responsible: "Алексей Кузнецов",

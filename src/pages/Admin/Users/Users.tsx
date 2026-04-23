@@ -10,7 +10,7 @@ import {useFiltered} from "@hooks/useFiltered.ts";
 import {useGetUsersQuery} from "@services/store/features/user.ts";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
-type UsersTab = "users" | "admins" | "curators";
+type UsersTab = "users" | "admins" | "curators" | "heads";
 
 function Users(): JSX.Element {
     const {data, error, isLoading} = useGetUsersQuery("");
@@ -33,7 +33,14 @@ function Users(): JSX.Element {
                     className={`${styles.tabButton} ${activeTab === "admins" ? styles.activeTab : ""}`}
                     onClick={() => setActiveTab("admins")}
                 >
-                    Админы
+                    Администраторы
+                </button>
+                <button
+                    type="button"
+                    className={`${styles.tabButton} ${activeTab === "heads" ? styles.activeTab : ""}`}
+                    onClick={() => setActiveTab("heads")}
+                >
+                    Начальники отделов
                 </button>
                 <button
                     type="button"
@@ -68,6 +75,7 @@ function Users(): JSX.Element {
 
             {activeTab === "admins" && <Development/>}
             {activeTab === "curators" && <Development/>}
+            {activeTab === "heads" && <Development/>}
         </OverflowScrollBlock>
     )
 }
