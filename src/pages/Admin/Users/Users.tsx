@@ -18,6 +18,10 @@ function Users(): JSX.Element {
     const [activeTab, setActiveTab] = useState<UsersTab>("users");
     const filteredUsers = useFiltered<UserType>(data, search);
 
+    // Фильтруем администраторов
+    const admins = data?.filter((user: UserType) => user.role === "admin" || user.role_name?.toLowerCase().includes("администратор")) || [];
+    const filteredAdmins = useFiltered<UserType>(admins, search);
+
     return (
         <OverflowScrollBlock header_name={'Пользователи'}>
             <div className={styles.tabs}>
@@ -51,11 +55,14 @@ function Users(): JSX.Element {
                 </button>
             </div>
 
-            {activeTab === "users" && (
-                <>
-                    <Input type={"text"} name={"search"} placeholder={'Поиск'} className={styles.input} value={search}
-                           onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearch(e.target.value)}/>
-                    <div>
+            <div className={styles.searchContainer}>
+                <Input type={"text"} name={"search"} placeholder={'Поиск'} className={styles.input} value={search}
+                       onChange={(e: React.ChangeEvent<HTMLInputElement>): void => setSearch(e.target.value)}/>
+            </div>
+
+            <div className={styles.content}>
+                {activeTab === "users" && (
+                    <>
                         {error ? (
                             <DataMessage type={"error"}/>
                         ) : isLoading ? (
@@ -69,13 +76,30 @@ function Users(): JSX.Element {
                                 <p>Пользователь "{search}" не найден</p>
                             )
                         ) : null}
-                    </div>
-                </>
-            )}
+                    </>
+                )}
 
-            {activeTab === "admins" && <Development/>}
-            {activeTab === "curators" && <Development/>}
-            {activeTab === "heads" && <Development/>}
+                {activeTab === "admins" && (
+                    <>
+                        {error ? (
+                            <DataMessage type={"error"}/>
+                        ) : isLoading ? (
+                            <Loader/>
+                        ) : filteredAdmins ? (
+                            filteredAdmins.length > 0 ? (
+                                filteredAdmins.map((item: UserType) => (
+                                    <User key={item.id} user={item} className={styles.user}/>
+                                ))
+                            ) : (
+                                <p>Администратор "{search}" не найден</p>
+                            )
+                        ) : null}
+                    </>
+                )}
+
+                {activeTab === "curators" && <Development/>}
+                {activeTab === "heads" && <Development/>}
+            </div>
         </OverflowScrollBlock>
     )
 }
