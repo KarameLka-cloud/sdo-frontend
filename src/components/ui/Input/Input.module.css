@@ -1,29 +1,26 @@
 .input {
-    padding: 0.4rem;
-    border: 0.1rem solid #d1d5dc;
-    border-radius: 0.5rem;
-    color: #101828;
-    font-size: 0.875rem;
+  padding: 0.4rem;
+  border: 0.1rem solid #d1d5dc;
+  border-radius: 0.5rem;
+  color: #101828;
+  font-size: 0.875rem;
 }
 
 .text {
-
 }
 
 .date {
-    width: fit-content;
-    height: 2.1rem;
+  width: fit-content;
+  height: 2.1rem;
 }
 
 .time {
-    width: fit-content;
-    height: 2.1rem;
+  width: fit-content;
+  height: 2.1rem;
 }
 
 .email {
-
 }
 
 .password {
-
 }

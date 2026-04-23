@@ -1,55 +1,55 @@
 :root {
-    --mfc-black-color: #101828;
-    --mfc-gray-color: #808080FF;
-    --mfc-red-color: #e04e39;
-    --mfc-green-color: #228B22FF;
-    --mfc-blue-color: #008080FF;
-    --mfc-white-color: #ffffff;
-    --mfc-light-color: #f5eee7;
-    --mfc-middle-color: #e6d2c0;
-    --mfc-dark-color: #d2ae8e;
+  --mfc-black-color: #101828;
+  --mfc-gray-color: #808080ff;
+  --mfc-red-color: #e04e39;
+  --mfc-green-color: #228b22ff;
+  --mfc-blue-color: #008080ff;
+  --mfc-white-color: #ffffff;
+  --mfc-light-color: #f5eee7;
+  --mfc-middle-color: #e6d2c0;
+  --mfc-dark-color: #d2ae8e;
 
-    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-    font-weight: 400;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-weight: 400;
 
-    font-synthesis: none;
-    text-rendering: optimizeLegibility;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
 }
 
 /* Elegant Scrollbar Theme */
 :root {
-    --scrollbar-track: #f8f9fa;
-    --scrollbar-thumb: #dee2e6;
-    --scrollbar-thumb-hover: #adb5bd;
-    --scrollbar-thumb-active: #6c757d;
-    --scrollbar-width: 10px;
-    --scrollbar-radius: 8px;
+  --scrollbar-track: #f8f9fa;
+  --scrollbar-thumb: #dee2e6;
+  --scrollbar-thumb-hover: #adb5bd;
+  --scrollbar-thumb-active: #6c757d;
+  --scrollbar-width: 10px;
+  --scrollbar-radius: 8px;
 }
 
 /* Webkit browsers */
 ::-webkit-scrollbar {
-    width: var(--scrollbar-width);
-    height: var(--scrollbar-width);
+  width: var(--scrollbar-width);
+  height: var(--scrollbar-width);
 }
 
 ::-webkit-scrollbar-track {
-    background: var(--scrollbar-track);
-    border-radius: var(--scrollbar-radius);
+  background: var(--scrollbar-track);
+  border-radius: var(--scrollbar-radius);
 }
 
 ::-webkit-scrollbar-thumb {
-    background: var(--scrollbar-thumb);
-    border-radius: var(--scrollbar-radius);
-    border: 2px solid var(--scrollbar-track);
-    transition: all 0.3s ease;
+  background: var(--scrollbar-thumb);
+  border-radius: var(--scrollbar-radius);
+  border: 2px solid var(--scrollbar-track);
+  transition: all 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--scrollbar-thumb-hover);
+  background: var(--scrollbar-thumb-hover);
 }
 
 ::-webkit-scrollbar-thumb:active {
-    background: var(--scrollbar-thumb-active);
+  background: var(--scrollbar-thumb-active);
 }
 
 /*!* Firefox *!*/
@@ -64,14 +64,14 @@
 /*}*/
 
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    margin: 0;
-    background-color: var(--mfc-dark-color);
+  margin: 0;
+  background-color: var(--mfc-dark-color);
 }
 
 a {
-    text-decoration: none;
+  text-decoration: none;
 }

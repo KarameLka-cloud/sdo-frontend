@@ -4,7 +4,7 @@ import Nav from "@components/dashboard/Nav/Nav.tsx";
 import Main from "@components/dashboard/Main/Main.tsx";
 import { HOME_NAV_LINKS } from "@constants/navigation.ts";
 
-function HomeLayout(): JSX.Element {
+function MentorshipLayout(): JSX.Element {
   return (
     <>
       <Nav links={HOME_NAV_LINKS} />
@@ -15,4 +15,4 @@ function HomeLayout(): JSX.Element {
   );
 }
 
-export default HomeLayout;
+export default MentorshipLayout;

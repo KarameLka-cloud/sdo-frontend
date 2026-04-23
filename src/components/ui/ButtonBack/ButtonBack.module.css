@@ -1,16 +1,16 @@
 .button_back {
-    display: flex;
-    align-items: center;
-    width: fit-content;
-    cursor: pointer;
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  cursor: pointer;
 }
 
 .img_back {
-    height: 1.4rem;
-    transform: translateX(0);
-    transition: transform ease-in-out 0.2s;
+  height: 1.4rem;
+  transform: translateX(0);
+  transition: transform ease-in-out 0.2s;
 }
 
 .button_back:hover .img_back {
-    transform: translateX(-0.2rem);
+  transform: translateX(-0.2rem);
 }

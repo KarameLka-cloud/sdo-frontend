@@ -1,15 +1,15 @@
 .link {
-    width: 32%;
-    margin-top: 1rem;
-    padding: 1rem 1rem 6rem 1rem;
-    border-radius: 1rem;
-    background-color: var(--mfc-middle-color);
-    color: #101828;
-    font-size: 1.4rem;
-    font-weight: 600;
-    transition: background-color ease-in-out 0.2s;
+  width: 32%;
+  margin-top: 1rem;
+  padding: 1rem 1rem 6rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--mfc-middle-color);
+  color: #101828;
+  font-size: 1.4rem;
+  font-weight: 600;
+  transition: background-color ease-in-out 0.2s;
 }
 
 .link:hover {
-    background-color: var(--mfc-dark-color);
+  background-color: var(--mfc-dark-color);
 }

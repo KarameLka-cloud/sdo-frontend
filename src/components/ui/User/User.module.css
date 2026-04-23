@@ -1,35 +1,37 @@
 .user {
-    display: flex;
-    align-items: center;
-    padding: 0.6rem 1rem;
-    border-radius: 1rem;
-    background-color: var(--mfc-middle-color);
+  display: flex;
+  align-items: center;
+  padding: 0.6rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--mfc-middle-color);
 }
 
 .name {
-    font-size: 1rem;
+  font-size: 1rem;
 }
 
 .department {
-    color: gray;
-    font-size: 0.9rem;
+  color: gray;
+  font-size: 0.9rem;
 }
 
 .role {
-    margin-left: 1rem;
-    padding: 0.15rem 0.35rem;
-    background-color: var(--mfc-red-color);
-    border-radius: 0.6rem;
-    color: white;
-    font-size: 0.7rem;
-    font-weight: 600;
-    text-transform: uppercase;
+  margin-left: 1rem;
+  padding: 0.15rem 0.35rem;
+  background-color: var(--mfc-red-color);
+  border-radius: 0.6rem;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
 }
 
-.edit, .input, .switch {
-    margin-left: auto;
+.edit,
+.input,
+.switch {
+  margin-left: auto;
 }
 
 .close {
-    margin-left: 1rem;
+  margin-left: 1rem;
 }

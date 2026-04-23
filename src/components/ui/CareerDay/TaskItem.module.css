@@ -1,155 +1,155 @@
 .taskItem {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: white;
-    border: 0.05rem solid #e5e7eb;
-    border-radius: 0.5rem;
-    transition: box-shadow 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem;
+  background-color: white;
+  border: 0.05rem solid #e5e7eb;
+  border-radius: 0.5rem;
+  transition: box-shadow 0.2s ease;
 }
 
 .taskItem:hover {
-    box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.05);
+  box-shadow: 0 0.1rem 0.3rem rgba(0, 0, 0, 0.05);
 }
 
 .taskContent {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .taskDescription {
-    margin: 0;
-    font-size: 0.9rem;
-    color: #101828;
-    line-height: 1.5;
-    word-break: break-word;
+  margin: 0;
+  font-size: 0.9rem;
+  color: #101828;
+  line-height: 1.5;
+  word-break: break-word;
 }
 
 .responsibleInfo {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    font-size: 0.8rem;
-    flex-wrap: wrap;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  flex-wrap: wrap;
 }
 
 .responsibleLabel {
-    font-weight: 600;
-    color: #6b7280;
+  font-weight: 600;
+  color: #6b7280;
 }
 
 .responsibleRole {
-    padding: 0.35rem 0.75rem;
-    border-radius: 0.4rem;
-    font-size: 0.8rem;
-    font-weight: 600;
-    color: white;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: white;
 }
 
 .roleDepartmentHead {
-    background-color: #7c3aed;
+  background-color: #7c3aed;
 }
 
 .roleMentor {
-    background-color: #0ea5e9;
+  background-color: #0ea5e9;
 }
 
 .roleEmployee {
-    background-color: #f59e0b;
+  background-color: #f59e0b;
 }
 
 .roleIntern {
-    background-color: #10b981;
+  background-color: #10b981;
 }
 
 .roleDefault {
-    background-color: #6b7280;
+  background-color: #6b7280;
 }
 
 .statusButtons {
-    display: flex;
-    gap: 0.5rem;
-    flex-wrap: wrap;
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .statusButton {
-    padding: 0.35rem 0.75rem;
-    background-color: white;
-    border: 0.1rem solid #d1d5dc;
-    border-radius: 0.4rem;
-    font-size: 0.75rem;
-    font-weight: 500;
-    color: #6b7280;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    white-space: nowrap;
+  padding: 0.35rem 0.75rem;
+  background-color: white;
+  border: 0.1rem solid #d1d5dc;
+  border-radius: 0.4rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #6b7280;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
 }
 
 .statusButton:hover {
-    border-color: #9ca3af;
-    color: #374151;
+  border-color: #9ca3af;
+  color: #374151;
 }
 
 .statusButton.active {
-    color: white;
-    border: 0.1rem solid transparent;
+  color: white;
+  border: 0.1rem solid transparent;
 }
 
 .completed.active {
-    background-color: #10b981;
+  background-color: #10b981;
 }
 
 .inProgress.active {
-    background-color: #f59e0b;
+  background-color: #f59e0b;
 }
 
 .notCompleted.active {
-    background-color: #ef4444;
+  background-color: #ef4444;
 }
 
 .statusBadge {
-    padding: 0.4rem 0.75rem;
-    border-radius: 0.5rem;
-    font-size: 0.75rem;
-    font-weight: 600;
-    text-transform: capitalize;
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-    flex-shrink: 0;
+  padding: 0.4rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .status_выполнено {
-    background-color: #dcfce7;
-    color: #166534;
-    border: 0.05rem solid #bbf7d0;
+  background-color: #dcfce7;
+  color: #166534;
+  border: 0.05rem solid #bbf7d0;
 }
 
 .status_не_выполнено {
-    background-color: #fee2e2;
-    color: #991b1b;
-    border: 0.05rem solid #fecaca;
+  background-color: #fee2e2;
+  color: #991b1b;
+  border: 0.05rem solid #fecaca;
 }
 
 @media (max-width: 768px) {
-    .taskItem {
-        flex-direction: column;
-        gap: 0.75rem;
-    }
+  .taskItem {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
 
-    .statusButtons {
-        width: 100%;
-    }
+  .statusButtons {
+    width: 100%;
+  }
 
-    .statusButton {
-        flex: 1;
-        min-width: 0;
-    }
+  .statusButton {
+    flex: 1;
+    min-width: 0;
+  }
 
-    .statusBadge {
-        align-self: flex-start;
-    }
+  .statusBadge {
+    align-self: flex-start;
+  }
 }

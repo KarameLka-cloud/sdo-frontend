@@ -1,42 +1,42 @@
 .event {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0.6rem 1rem;
-    border-radius: 1rem;
-    background-color: var(--mfc-light-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  border-radius: 1rem;
+  background-color: var(--mfc-light-color);
 }
 
 .event span {
-    display: block;
+  display: block;
 }
 
 .title {
-    font-weight: 600;
+  font-weight: 600;
 }
 
 .description {
-    color: gray;
+  color: gray;
 }
 
 .department {
-    font-style: italic;
+  font-style: italic;
 }
 
 .links {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
 }
 
 .icon {
-    height: 1.4rem;
-    cursor: pointer;
+  height: 1.4rem;
+  cursor: pointer;
 }
 
 .time {
-    padding: 0.4rem 1.4rem;
-    margin-left: 1rem;
-    border-radius: 1rem;
-    background-color: var(--mfc-white-color);
+  padding: 0.4rem 1.4rem;
+  margin-left: 1rem;
+  border-radius: 1rem;
+  background-color: var(--mfc-white-color);
 }

@@ -296,7 +296,9 @@ function Career(): JSX.Element {
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Руководитель отдела:</span>
-          <span className={styles.planValue}>{trainingPlan.departmentHead}</span>
+          <span className={styles.planValue}>
+            {trainingPlan.departmentHead}
+          </span>
         </div>
       </div>
 

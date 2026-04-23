@@ -1,39 +1,39 @@
 .button {
-    height: 2rem;
-    width: 2rem;
-    padding: 0.2rem;
-    cursor: pointer;
-    border-radius: 0.2rem;
+  height: 2rem;
+  width: 2rem;
+  padding: 0.2rem;
+  cursor: pointer;
+  border-radius: 0.2rem;
 }
 
 .edit {
-    background-color: rgba(0, 128, 128, 0.8);
+  background-color: rgba(0, 128, 128, 0.8);
 }
 
 .edit:hover {
-    background-color: #30BCBCFF;
+  background-color: #30bcbcff;
 }
 
 .delete {
-    background-color: rgba(224, 78, 57, 0.8);
+  background-color: rgba(224, 78, 57, 0.8);
 }
 
 .delete:hover {
-    background-color: #ea7d4d;
+  background-color: #ea7d4d;
 }
 
 .save {
-    background-color: rgba(34, 139, 34, 0.8);
+  background-color: rgba(34, 139, 34, 0.8);
 }
 
 .save:hover {
-    background-color: #5bb85b;
+  background-color: #5bb85b;
 }
 
 .close {
-    background-color: rgba(224, 78, 57, 0.8);
+  background-color: rgba(224, 78, 57, 0.8);
 }
 
 .close:hover {
-    background-color: #ea7d4d;
+  background-color: #ea7d4d;
 }

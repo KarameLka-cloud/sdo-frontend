@@ -1,4 +1,4 @@
 export default function convertDate(inputDate: string): string {
-    const [year, month, day]: string[] = inputDate.split("-");
-    return `${day}.${month}.${year}`;
+  const [year, month, day]: string[] = inputDate.split("-");
+  return `${day}.${month}.${year}`;
 }

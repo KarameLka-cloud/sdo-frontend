@@ -1,22 +1,22 @@
 .header_page {
-    margin: 0;
-    padding: 1rem;
-    /*background-color: var(--mfc-white-color);*/
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 0;
+  padding: 1rem;
+  /*background-color: var(--mfc-white-color);*/
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .content {
-    position: relative;
+  position: relative;
 }
 
 .button_back {
-    position: absolute;
-    height: 2rem;
+  position: absolute;
+  height: 2rem;
 }
 
 .text_content {
-    font-size: 1.625rem;
-    font-weight: 600;
-    text-align: center;
-    text-transform: uppercase;
+  font-size: 1.625rem;
+  font-weight: 600;
+  text-align: center;
+  text-transform: uppercase;
 }
