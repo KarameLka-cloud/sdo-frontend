@@ -1,10 +1,10 @@
 import { JSX, useEffect, useState } from "react";
 import styles from "./CareerDay.module.css";
-import { CareerDayType, TaskStatus } from "@interfaces/api/CareerDayType.ts";
+import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
 import TaskItem from "./TaskItem.tsx";
 
 interface CareerDayProps {
-  day: CareerDayType;
+  day: AdaptationDayType;
   onUpdateInternComment?: (dayId: number | undefined, comment: string) => void;
   onUpdateTaskStatus?: (
     dayId: number | undefined,

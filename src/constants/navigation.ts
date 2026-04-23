@@ -14,8 +14,8 @@ export const HOME_NAV_LINKS = [
   },
   {
     id: 2,
-    name: "Карьера",
-    path: ROUTES.CAREER,
+    name: "Адаптация",
+    path: ROUTES.ADAPTATION,
     icon: personIcon,
   },
   {

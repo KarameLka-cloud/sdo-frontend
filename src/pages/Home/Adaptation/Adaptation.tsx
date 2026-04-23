@@ -2,16 +2,16 @@ import { JSX, useState } from "react";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import CareerDay from "@components/ui/CareerDay/CareerDay.tsx";
 import {
-  CareerDayType,
+  AdaptationDayType,
   TaskStatus,
   TrainingPlanType,
   WorkSchedule,
-} from "@interfaces/api/CareerDayType.ts";
-import styles from "./Career.module.css";
+} from "@interfaces/api/AdaptationDayType.ts";
+import styles from "./Adaptation.module.css";
 
-function Career(): JSX.Element {
+function Adaptation(): JSX.Element {
   // Mock данные - в реальном приложении это будет от API
-  const [careerDays, setCareerDays] = useState<CareerDayType[]>([
+  const [adaptationDays, setAdaptationDays] = useState<AdaptationDayType[]>([
     {
       id: 1,
       workDay: 1,
@@ -34,6 +34,7 @@ function Career(): JSX.Element {
           description: "Получение инструментов и доступов",
           status: "выполнено",
           responsibleRole: "Сотрудник УПиПК",
+          links: ["https://portal.company.com/tools", "https://docs.company.com/access"],
         },
       ],
       completion: "выполнен",
@@ -59,6 +60,7 @@ function Career(): JSX.Element {
           description: "Изучение документации",
           status: "не выполнено",
           responsibleRole: "Руководитель отдела",
+          links: ["https://docs.company.com/department-guide", "https://wiki.company.com/procedures"],
         },
         {
           id: 6,
@@ -142,7 +144,7 @@ function Career(): JSX.Element {
     comment: string,
   ) => {
     if (dayId !== undefined) {
-      setCareerDays((prevDays) =>
+      setAdaptationDays((prevDays) =>
         prevDays.map((day) =>
           day.id === dayId ? { ...day, internComment: comment } : day,
         ),
@@ -156,7 +158,7 @@ function Career(): JSX.Element {
     status: TaskStatus,
   ) => {
     if (dayId !== undefined && taskId !== undefined) {
-      setCareerDays((prevDays) =>
+      setAdaptationDays((prevDays) =>
         prevDays.map((day) =>
           day.id === dayId
             ? {
@@ -303,7 +305,7 @@ function Career(): JSX.Element {
       </div>
 
       <div className={styles.careerContainer}>
-        {careerDays.map((day) => (
+        {adaptationDays.map((day) => (
           <CareerDay
             key={day.id}
             day={day}
@@ -316,4 +318,4 @@ function Career(): JSX.Element {
   );
 }
 
-export default Career;
+export default Adaptation;

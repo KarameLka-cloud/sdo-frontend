@@ -11,6 +11,7 @@ export type ResponsibleRole =
   | "Наставник"
   | "Сотрудник УПиПК"
   | "Стажер";
+
 export type WorkSchedule = "5/2" | "2/2";
 
 export interface TaskType {
@@ -18,6 +19,7 @@ export interface TaskType {
   description: string;
   status: TaskStatus;
   responsibleRole?: ResponsibleRole;
+  links?: string[];
 }
 
 export interface TrainingPlanType {
@@ -28,7 +30,7 @@ export interface TrainingPlanType {
   departmentHead: string;
 }
 
-export interface CareerDayType {
+export interface AdaptationDayType {
   id?: number;
   workDay: number;
   date: string;

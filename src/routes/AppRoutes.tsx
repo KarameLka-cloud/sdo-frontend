@@ -11,7 +11,7 @@ import AdminLayout from "@layouts/DashboardLayout/AdminLayout/AdminLayout.tsx";
 import MentorshipLayout from "@layouts/DashboardLayout/MentorshipLayout/MentorshipLayout.tsx";
 import Login from "@pages/Auth/Login/Login.tsx";
 import Home from "@pages/Home/Home/Home.tsx";
-import Career from "@pages/Home/Career/Career.tsx";
+import Adaptation from "@pages/Home/Adaptation/Adaptation.tsx";
 import Education from "@pages/Home/Education/Education.tsx";
 import EducationCourses from "@pages/Home/Education/Courses/Courses.tsx";
 import EducationEvents from "@pages/Home/Education/Events/Events.tsx";
@@ -68,8 +68,8 @@ const AppRoutes = createBrowserRouter([
             element: <PageTitle title={"Главная"} element={<Home />} />,
           },
           {
-            path: ROUTES.CAREER,
-            element: <PageTitle title={"Карьера"} element={<Career />} />,
+            path: ROUTES.ADAPTATION,
+            element: <PageTitle title={"Адаптация"} element={<Adaptation />} />,
           },
           {
             path: ROUTES.EDUCATION,

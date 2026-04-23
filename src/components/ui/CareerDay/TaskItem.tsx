@@ -1,6 +1,6 @@
 import { JSX } from "react";
 import styles from "./TaskItem.module.css";
-import { TaskType, TaskStatus } from "@interfaces/api/CareerDayType.ts";
+import { TaskType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
 
 interface TaskItemProps {
   task: TaskType;
@@ -48,6 +48,24 @@ function TaskItem({
             >
               {task.responsibleRole}
             </span>
+          </div>
+        )}
+        {task.links && task.links.length > 0 && (
+          <div className={styles.linksInfo}>
+            <span className={styles.linksLabel}>Ссылки:</span>
+            <div className={styles.linksList}>
+              {task.links.map((link, index) => (
+                <a
+                  key={index}
+                  href={link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.link}
+                >
+                  Ссылка {index + 1}
+                </a>
+              ))}
+            </div>
           </div>
         )}
         <div className={styles.statusButtons}>
