@@ -13,6 +13,8 @@ export const ROUTES = {
   EDO_EVENTS: "/edo/events",
   EDO_TESTS: "/edo/tests",
   MENTORSHIP: "/mentorship",
+  MENTORSHIP_FORM: "/mentorship/form",
+  MENTORSHIP_INTERNS: "/mentorship/interns",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
   ADMIN_EDUCATION: "/admin/education",

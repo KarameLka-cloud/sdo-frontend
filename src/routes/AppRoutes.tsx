@@ -31,7 +31,8 @@ import EdoAdmin from "@pages/Admin/Edo/Edo.tsx";
 import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
-import Mentorship from "@pages/Home/Mentorship/Mentorship.tsx";
+import Form from "@/pages/Mentorship/Form/Form";
+import Interns from "@/pages/Mentorship/Interns/Interns";
 import { ROUTES } from "@constants/routes.ts";
 
 const AppRoutes = createBrowserRouter([
@@ -42,6 +43,10 @@ const AppRoutes = createBrowserRouter([
   {
     path: ROUTES.ADMIN,
     element: <Navigate to={ROUTES.ADMIN_USERS} />,
+  },
+  {
+    path: ROUTES.MENTORSHIP,
+    element: <Navigate to={ROUTES.MENTORSHIP_INTERNS} />,
   },
   {
     element: <ProtectedRoute elementLogin={<AuthLayout />} route={"login"} />,
@@ -188,10 +193,17 @@ const AppRoutes = createBrowserRouter([
         element: <ProtectedRouteAdmin elementAdmin={<MentorshipLayout />} />,
         children: [
           {
-            path: ROUTES.MENTORSHIP,
+            path: ROUTES.MENTORSHIP_FORM,
             element: (
-              <PageTitle title={"Наставничество"} element={<Mentorship />} />
+              <PageTitle
+                title={"Форма создания плана адаптации"}
+                element={<Form />}
+              />
             ),
+          },
+          {
+            path: ROUTES.MENTORSHIP_INTERNS,
+            element: <PageTitle title={"Стажеры"} element={<Interns />} />,
           },
         ],
       },
