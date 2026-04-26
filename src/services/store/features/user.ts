@@ -32,17 +32,36 @@ export const user = createApi({
             ]
           : ["Users"],
     }),
-    assignAdminRole: builder.mutation({
+    // assignAdminRole: builder.mutation({
+    //   query: (credentials) => ({
+    //     url: API_ENDPOINTS.ASSIGN_ADMIN_ROLE,
+    //     method: "POST",
+    //     body: credentials,
+    //   }),
+    //   invalidatesTags: ["Users"],
+    // }),
+    // revokeAdminRole: builder.mutation({
+    //   query: (credentials) => ({
+    //     url: API_ENDPOINTS.REVOKE_ADMIN_ROLE,
+    //     method: "POST",
+    //     body: credentials,
+    //   }),
+    //   invalidatesTags: ["Users"],
+    // }),
+    getRoles: builder.query({
+      query: () => API_ENDPOINTS.ROLES,
+    }),
+    assignRole: builder.mutation({
       query: (credentials) => ({
-        url: API_ENDPOINTS.ASSIGN_ADMIN_ROLE,
+        url: API_ENDPOINTS.ASSIGN_ROLE,
         method: "POST",
         body: credentials,
       }),
       invalidatesTags: ["Users"],
     }),
-    revokeAdminRole: builder.mutation({
+    revokeRole: builder.mutation({
       query: (credentials) => ({
-        url: API_ENDPOINTS.REVOKE_ADMIN_ROLE,
+        url: API_ENDPOINTS.REVOKE_ROLE,
         method: "POST",
         body: credentials,
       }),
@@ -59,8 +78,11 @@ export const user = createApi({
 
 export const {
   useGetUsersQuery,
-  useAssignAdminRoleMutation,
-  useRevokeAdminRoleMutation,
+  // useAssignAdminRoleMutation,
+  // useRevokeAdminRoleMutation,
+  useGetRolesQuery,
+  useAssignRoleMutation,
+  useRevokeRoleMutation,
   useGetDepartmentsQuery,
   useGetPositionsQuery,
 } = user;

@@ -1,31 +1,49 @@
-import { JSX, useCallback } from "react";
+import { JSX, useCallback, useState } from "react";
 import styles from "./User.module.css";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { useToggle } from "@hooks/useToggle.ts";
 import IconButton from "../IconButton/IconButton.tsx";
 import {
-  useAssignAdminRoleMutation,
-  useRevokeAdminRoleMutation,
+  useGetRolesQuery,
+  useAssignRoleMutation,
+  useRevokeRoleMutation,
 } from "@services/store/features/user.ts";
-import Switch from "@components/ui/Switch/Switch.tsx";
 
 interface UserPropsType {
   user: UserType;
   className?: string;
 }
 
+interface RoleItem {
+  name: string;
+  label: string;
+}
+
 function User({ user, className }: UserPropsType): JSX.Element {
   const { toggle, value } = useToggle();
-  const [assignAdminRole] = useAssignAdminRoleMutation();
-  const [revokeAdminRole] = useRevokeAdminRoleMutation();
+  const [selectedRole, setSelectedRole] = useState<string>("");
+  const { data: rolesData } = useGetRolesQuery("");
+  const [assignRole] = useAssignRoleMutation();
+  const [revokeRole] = useRevokeRoleMutation();
 
-  const handleRoleChange = useCallback(() => {
-    if (user.role) {
-      revokeAdminRole({ id: user.id });
-    } else {
-      assignAdminRole({ id: user.id });
+  const roles: RoleItem[] = rolesData?.data || [];
+
+  const handleRoleSelect = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedRole(event.target.value);
+  }, []);
+
+  const handleSaveRole = useCallback(() => {
+    if (selectedRole) {
+      assignRole({ user_id: user.id, role: selectedRole });
+      toggle();
     }
-  }, [user.role, user.id, revokeAdminRole, assignAdminRole]);
+  }, [selectedRole, user.id, assignRole, toggle]);
+
+  const handleRevokeRole = useCallback(() => {
+    if (user.role) {
+      revokeRole({ user_id: user.id, role: user.role });
+    }
+  }, [user.role, user.id, revokeRole]);
 
   return (
     <div className={`${styles.user} + ${className}`}>
@@ -36,12 +54,38 @@ function User({ user, className }: UserPropsType): JSX.Element {
       {user.role && <div className={styles.role}>{user.role_name}</div>}
       {value ? (
         <>
-          <Switch
-            title={"Админ"}
-            value={Boolean(user.role)}
-            mutation={handleRoleChange}
-            className={styles.switch}
-          />
+          <select
+            name="role"
+            value={selectedRole}
+            onChange={handleRoleSelect}
+            className={styles.select}
+          >
+            <option value="" disabled>
+              Выбрать роль
+            </option>
+            {roles.map((role: RoleItem) => (
+              <option key={role.name} value={role.name}>
+                {role.label}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={handleSaveRole}
+            className={styles.saveButton}
+            disabled={!selectedRole}
+          >
+            Сохранить
+          </button>
+          {user.role && (
+            <button
+              type="button"
+              onClick={handleRevokeRole}
+              className={styles.revokeButton}
+            >
+              Удалить роль
+            </button>
+          )}
           <IconButton
             type={"close"}
             onClick={toggle}

@@ -5,12 +5,11 @@ import Input from "@components/ui/Input/Input.tsx";
 import User from "@components/ui/User/User.tsx";
 import Loader from "@components/ui/Loader/Loader.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import Development from "@components/ui/Development/Development.tsx";
 import {useFiltered} from "@hooks/useFiltered.ts";
 import {useGetUsersQuery} from "@services/store/features/user.ts";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 
-type UsersTab = "users" | "admins" | "curators" | "heads";
+type UsersTab = "users" | "admins" | "mentors" | "department_heads";
 
 function Users(): JSX.Element {
     const {data, error, isLoading} = useGetUsersQuery("");
@@ -18,9 +17,17 @@ function Users(): JSX.Element {
     const [activeTab, setActiveTab] = useState<UsersTab>("users");
     const filteredUsers = useFiltered<UserType>(data, search);
 
-    // Фильтруем администраторов
-    const admins = data?.filter((user: UserType) => user.role === "admin" || user.role_name?.toLowerCase().includes("администратор")) || [];
+    // Фильтруем администраторов (ADMIN)
+    const admins = data?.filter((user: UserType) => user.role === "ADMIN") || [];
     const filteredAdmins = useFiltered<UserType>(admins, search);
+
+    // Фильтруем кураторов/наставников (MENTOR)
+    const curators = data?.filter((user: UserType) => user.role === "MENTOR") || [];
+    const filteredCurators = useFiltered<UserType>(curators, search);
+
+    // Фильтруем начальников отделов (DEPARTMENT_HEAD)
+    const heads = data?.filter((user: UserType) => user.role === "DEPARTMENT_HEAD") || [];
+    const filteredHeads = useFiltered<UserType>(heads, search);
 
     return (
         <OverflowScrollBlock header_name={'Пользователи'}>
@@ -41,17 +48,17 @@ function Users(): JSX.Element {
                 </button>
                 <button
                     type="button"
-                    className={`${styles.tabButton} ${activeTab === "heads" ? styles.activeTab : ""}`}
-                    onClick={() => setActiveTab("heads")}
+                    className={`${styles.tabButton} ${activeTab === "department_heads" ? styles.activeTab : ""}`}
+                    onClick={() => setActiveTab("department_heads")}
                 >
-                    Начальники отделов
+                    Руководители отделов
                 </button>
                 <button
                     type="button"
-                    className={`${styles.tabButton} ${activeTab === "curators" ? styles.activeTab : ""}`}
-                    onClick={() => setActiveTab("curators")}
+                    className={`${styles.tabButton} ${activeTab === "mentors" ? styles.activeTab : ""}`}
+                    onClick={() => setActiveTab("mentors")}
                 >
-                    Кураторы
+                    Наставники
                 </button>
             </div>
 
@@ -97,8 +104,41 @@ function Users(): JSX.Element {
                     </>
                 )}
 
-                {activeTab === "curators" && <Development/>}
-                {activeTab === "heads" && <Development/>}
+                {activeTab === "mentors" && (
+                    <>
+                        {error ? (
+                            <DataMessage type={"error"}/>
+                        ) : isLoading ? (
+                            <Loader/>
+                        ) : filteredCurators ? (
+                            filteredCurators.length > 0 ? (
+                                filteredCurators.map((item: UserType) => (
+                                    <User key={item.id} user={item} className={styles.user}/>
+                                ))
+                            ) : (
+                                <p>Наставник "{search}" не найден</p>
+                            )
+                        ) : null}
+                    </>
+                )}
+
+                {activeTab === "department_heads" && (
+                    <>
+                        {error ? (
+                            <DataMessage type={"error"}/>
+                        ) : isLoading ? (
+                            <Loader/>
+                        ) : filteredHeads ? (
+                            filteredHeads.length > 0 ? (
+                                filteredHeads.map((item: UserType) => (
+                                    <User key={item.id} user={item} className={styles.user}/>
+                                ))
+                            ) : (
+                                <p>Руководитель отдела "{search}" не найден</p>
+                            )
+                        ) : null}
+                    </>
+                )}
             </div>
         </OverflowScrollBlock>
     )
