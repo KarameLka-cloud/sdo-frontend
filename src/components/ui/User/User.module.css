@@ -37,7 +37,7 @@
 }
 
 .select {
-  margin-left: 1rem;
+  margin-left: auto;
   padding: 0.3rem 0.5rem;
   border-radius: 0.5rem;
   border: 1px solid var(--mfc-gray-color);
