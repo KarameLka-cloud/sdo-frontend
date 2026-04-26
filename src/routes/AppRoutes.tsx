@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import {
   ProtectedRoute,
   ProtectedRouteAdmin,
+  ProtectedRouteMentor,
 } from "@components/protected/ProtectedRoutes.tsx";
 import PageTitle from "@components/PageTitle.tsx";
 import AuthLayout from "@layouts/AuthLayout/AuthLayout.tsx";
@@ -190,7 +191,7 @@ const AppRoutes = createBrowserRouter([
         ],
       },
       {
-        element: <ProtectedRouteAdmin elementAdmin={<MentorshipLayout />} />,
+        element: <ProtectedRouteMentor elementMentor={<MentorshipLayout />} />,
         children: [
           {
             path: ROUTES.MENTORSHIP_FORM,

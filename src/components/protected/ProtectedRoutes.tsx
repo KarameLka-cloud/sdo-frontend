@@ -9,6 +9,7 @@ interface ProtectedRoutePropsType {
   elementLogin?: JSX.Element;
   elementDashboard?: JSX.Element;
   elementAdmin?: JSX.Element;
+  elementMentor?: JSX.Element;
   route?: "login" | "dashboard";
 }
 
@@ -41,15 +42,28 @@ const ProtectedRoute = ({
 };
 
 const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRoutePropsType) => {
-  // ВРЕМЕННО: отключена проверка роли ADMIN
   const { role } = useUser();
   if (!role) {
-    return null;
+    return <Navigate to={ROUTES.HOME} replace />;
   }
+  // Разрешаем доступ только для ADMIN
   if (!role.includes("ADMIN")) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
   return elementAdmin;
 };
 
-export { ProtectedRoute, ProtectedRouteAdmin };
+const ProtectedRouteMentor = ({ elementMentor }: ProtectedRoutePropsType) => {
+  const { role } = useUser();
+  if (!role) {
+    return <Navigate to={ROUTES.HOME} replace />;
+  }
+  // Разрешаем доступ для ADMIN, MENTOR и DEPARTMENT_HEAD
+  const hasAccess = role.includes("ADMIN") || role.includes("MENTOR") || role.includes("DEPARTMENT_HEAD");
+  if (!hasAccess) {
+    return <Navigate to={ROUTES.HOME} replace />;
+  }
+  return elementMentor;
+};
+
+export { ProtectedRoute, ProtectedRouteAdmin, ProtectedRouteMentor };

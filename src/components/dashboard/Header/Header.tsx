@@ -13,21 +13,31 @@ interface HeaderType {
 function Header({ className }: HeaderType): JSX.Element {
   const { name, role } = useUser();
 
+  // Определяем права доступа
+  const isAdmin = role?.includes("ADMIN");
+  const isMentor = role?.includes("MENTOR");
+  const isDepartmentHead = role?.includes("DEPARTMENT_HEAD");
+  const hasMentorAccess = isAdmin || isMentor || isDepartmentHead;
+
   return (
     <header className={`${styles.header} + ${className}`}>
       <div className={styles.content}>
         <LogoLink to={ROUTES.ROOT} className={styles.logo} />
-        {role.includes("ADMIN") && (
+        {(isAdmin || hasMentorAccess) && (
           <div className={styles.links}>
             <NavLink to={ROUTES.HOME} className={styles.link}>
               Главная
             </NavLink>
-            <NavLink to={ROUTES.MENTORSHIP} className={styles.link}>
-              Наставничество
-            </NavLink>
-            <NavLink to={ROUTES.ADMIN} className={styles.link}>
-              Администрирование
-            </NavLink>
+            {hasMentorAccess && (
+              <NavLink to={ROUTES.MENTORSHIP} className={styles.link}>
+                Наставничество
+              </NavLink>
+            )}
+            {isAdmin && (
+              <NavLink to={ROUTES.ADMIN} className={styles.link}>
+                Администрирование
+              </NavLink>
+            )}
           </div>
         )}
 
