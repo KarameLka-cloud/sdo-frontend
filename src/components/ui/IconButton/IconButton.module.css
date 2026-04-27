@@ -3,37 +3,47 @@
   width: 2rem;
   padding: 0.2rem;
   cursor: pointer;
-  border-radius: 0.2rem;
+  border: 0;
+  border-radius: var(--mfc-radius-sm);
+  transition: background-color var(--mfc-transition-fast), transform var(--mfc-transition-fast);
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.button:active {
+  transform: translateY(0);
 }
 
 .edit {
-  background-color: rgba(0, 128, 128, 0.8);
+  background-color: #219696;
 }
 
 .edit:hover {
-  background-color: #30bcbcff;
+  background-color: var(--mfc-blue-color);
 }
 
 .delete {
-  background-color: rgba(224, 78, 57, 0.8);
+  background-color: #e56b5b;
 }
 
 .delete:hover {
-  background-color: #ea7d4d;
+  background-color: var(--mfc-red-color);
 }
 
 .save {
-  background-color: rgba(34, 139, 34, 0.8);
+  background-color: #4f9f4f;
 }
 
 .save:hover {
-  background-color: #5bb85b;
+  background-color: var(--mfc-green-color);
 }
 
 .close {
-  background-color: rgba(224, 78, 57, 0.8);
+  background-color: #e56b5b;
 }
 
 .close:hover {
-  background-color: #ea7d4d;
+  background-color: var(--mfc-red-color);
 }

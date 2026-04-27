@@ -77,6 +77,7 @@ export const user = createApi({
 });
 
 export const {
+  useGetUserByDataQuery,
   useGetUsersQuery,
   // useAssignAdminRoleMutation,
   // useRevokeAdminRoleMutation,

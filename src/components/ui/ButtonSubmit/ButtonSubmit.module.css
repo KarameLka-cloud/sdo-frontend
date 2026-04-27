@@ -1,30 +1,41 @@
 .button_submit {
   display: flex;
   width: fit-content;
+  min-height: 2.25rem;
   align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
   padding: 0.625rem 1.25rem;
   border: 0;
-  border-radius: 0.5rem;
-  background-color: green;
-  color: white;
+  border-radius: var(--mfc-radius-md);
+  background-color: var(--mfc-green-color);
+  color: var(--mfc-white-color);
   font-size: 0.75rem;
   font-weight: 500;
   text-align: center;
   text-transform: uppercase;
+  letter-spacing: 0.02em;
   cursor: pointer;
+  transition: background-color var(--mfc-transition-fast), transform var(--mfc-transition-fast);
 }
 
 .button_submit:hover {
-  background-color: #5bb85b;
+  background-color: var(--mfc-dark-green-color);
+}
+
+.button_submit:active {
+  transform: translateY(1px);
 }
 
 .button_submit_loading {
   display: flex;
   width: fit-content;
+  min-height: 2.25rem;
+  justify-content: center;
   align-items: center;
-  padding: 0.7rem 1.25rem;
+  padding: 0.625rem 1.25rem;
   border: 0;
-  border-radius: 0.5rem;
+  border-radius: var(--mfc-radius-md);
   background-color: var(--mfc-gray-color);
   cursor: wait;
 }

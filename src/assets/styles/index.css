@@ -10,12 +10,22 @@
   --mfc-light-color: #f5eee7;
   --mfc-middle-color: #e6d2c0;
   --mfc-dark-color: #d2ae8e;
+  --mfc-border-color: #d1d5dc;
+  --mfc-surface-color: #f3f4f6;
+  --mfc-focus-ring-color: #2563eb;
+  --mfc-radius-sm: 0.375rem;
+  --mfc-radius-md: 0.5rem;
+  --mfc-shadow-sm: 0 1px 2px rgb(16 24 40 / 12%);
+  --mfc-shadow-md: 0 2px 8px rgb(16 24 40 / 12%);
+  --mfc-transition-fast: 0.2s ease;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
+  line-height: 1.5;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
+  color-scheme: light;
 }
 
 /* Elegant Scrollbar Theme */
@@ -70,10 +80,45 @@
 }
 
 body {
+  min-height: 100vh;
   margin: 0;
   background-color: var(--mfc-dark-color);
+  color: var(--mfc-black-color);
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
 a {
   text-decoration: none;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--mfc-focus-ring-color);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

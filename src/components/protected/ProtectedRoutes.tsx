@@ -42,7 +42,12 @@ const ProtectedRoute = ({
 };
 
 const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRoutePropsType) => {
-  const { role } = useUser();
+  const { role, isLoading } = useUser();
+
+  if (isLoading) {
+    return null;
+  }
+
   if (!role) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
@@ -54,7 +59,12 @@ const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRoutePropsType) => {
 };
 
 const ProtectedRouteMentor = ({ elementMentor }: ProtectedRoutePropsType) => {
-  const { role } = useUser();
+  const { role, isLoading } = useUser();
+
+  if (isLoading) {
+    return null;
+  }
+
   if (!role) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
