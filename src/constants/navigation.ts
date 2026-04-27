@@ -39,6 +39,12 @@ export const MENTOR_NAV_LINKS = [
     path: ROUTES.MENTORSHIP_INTERNS,
     icon: peopleIcon,
   },
+  {
+    id: 2,
+    name: "Мои стажеры",
+    path: ROUTES.MENTORSHIP_MY_INTERNS,
+    icon: peopleIcon,
+  },
 ] as const;
 
 export const ADMIN_NAV_LINKS = [

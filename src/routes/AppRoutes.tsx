@@ -196,6 +196,15 @@ const AppRoutes = createBrowserRouter([
             path: ROUTES.MENTORSHIP_INTERNS,
             element: <PageTitle title={"Стажеры"} element={<Interns />} />,
           },
+          {
+            path: ROUTES.MENTORSHIP_MY_INTERNS,
+            element: (
+              <PageTitle
+                title={"Мои стажеры"}
+                element={<Interns onlyMyInterns />}
+              />
+            ),
+          },
         ],
       },
     ],

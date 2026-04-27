@@ -16,6 +16,7 @@ export const useUser = () => {
   const user = (data as UserType | undefined) ?? {};
 
   return {
+    id: user.id,
     name: user.name || "",
     department: user.department || "",
     description: user.description || "",

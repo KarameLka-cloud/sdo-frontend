@@ -12,6 +12,7 @@ import {
   useGetUsersQuery,
   useUpdateAdaptationPlanMutation,
 } from "@services/store/features/user.ts";
+import { useUser } from "@hooks/useUser.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import styles from "./Interns.module.css";
 
@@ -43,7 +44,12 @@ interface ApiValidationError {
   };
 }
 
-function Interns(): JSX.Element {
+interface InternsProps {
+  onlyMyInterns?: boolean;
+}
+
+function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
+  const { id: currentUserId, role } = useUser();
   const [createAdaptationPlan, { isLoading: isCreatingPlan }] =
     useCreateAdaptationPlanMutation();
   const [updateAdaptationPlan, { isLoading: isUpdatingPlan }] =
@@ -87,14 +93,29 @@ function Interns(): JSX.Element {
     mentor: null as number | null,
     departmentHead: null as number | null,
   });
-  const hasSearch = search.trim().length > 0;
-  const filteredPlans = useMemo(() => {
-    if (!hasSearch) {
+  const isMentorOrDepartmentHead =
+    role.includes("MENTOR") || role.includes("DEPARTMENT_HEAD");
+  const visiblePlans = useMemo(() => {
+    if (!onlyMyInterns) {
       return adaptationPlans;
     }
 
+    if (!isMentorOrDepartmentHead || !currentUserId) {
+      return [];
+    }
+
+    return adaptationPlans.filter(
+      (plan) => plan.mentor === currentUserId || plan.department_head === currentUserId,
+    );
+  }, [adaptationPlans, currentUserId, isMentorOrDepartmentHead, onlyMyInterns]);
+  const hasSearch = search.trim().length > 0;
+  const filteredPlans = useMemo(() => {
+    if (!hasSearch) {
+      return visiblePlans;
+    }
+
     const searchLower = search.toLowerCase();
-    return adaptationPlans.filter((plan) => {
+    return visiblePlans.filter((plan) => {
       const userName = plan.user?.name?.toLowerCase() ?? "";
       const department = plan.user?.department?.toLowerCase() ?? "";
       const userId = String(plan.user_id);
@@ -105,7 +126,7 @@ function Interns(): JSX.Element {
         userId.includes(searchLower)
       );
     });
-  }, [adaptationPlans, hasSearch, search]);
+  }, [hasSearch, search, visiblePlans]);
 
   const handleCreatePlan = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -375,10 +396,10 @@ function Interns(): JSX.Element {
             </button>
           </form>
         )}
-        {!isLoading && !isError && adaptationPlans.length === 0 && (
+        {!isLoading && !isError && visiblePlans.length === 0 && (
           <DataMessage type={"noData"} />
         )}
-        {!isLoading && !isError && adaptationPlans.length > 0 && (
+        {!isLoading && !isError && visiblePlans.length > 0 && (
           <div className={styles.list}>
             {filteredPlans.map((plan) => (
               <div key={plan.id} className={styles.card}>
