@@ -9,7 +9,6 @@ export const useLogout = () => {
   const [logoutMutation] = useLogoutMutation();
 
   const clearSessionAndRedirect = () => {
-    localStorage.clear();
     Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
     navigate(ROUTES.LOGIN);
   };

@@ -3,7 +3,7 @@ import Cookie from "js-cookie";
 import { useLoginMutation } from "../services/store/features/auth.ts";
 import { useState } from "react";
 import { ROUTES } from "../constants/routes.ts";
-import { COOKIE_NAMES, LOCAL_STORAGE_NAMES } from "../constants/api.ts";
+import { COOKIE_NAMES } from "../constants/api.ts";
 
 interface ApiErrorResponse {
   data?: {
@@ -22,10 +22,6 @@ export const useLogin = () => {
   }) => {
     try {
       const response = await login(credentials).unwrap();
-      localStorage.setItem(
-        LOCAL_STORAGE_NAMES.USER,
-        JSON.stringify(response.user),
-      );
       Cookie.set(COOKIE_NAMES.AUTH_TOKEN, response.auth_token);
       navigate(ROUTES.ROOT);
     } catch (error: unknown) {

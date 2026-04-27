@@ -20,7 +20,3 @@ export const API_ENDPOINTS = {
 export const COOKIE_NAMES = {
   AUTH_TOKEN: "auth_token",
 } as const;
-
-export const LOCAL_STORAGE_NAMES = {
-  USER: "user",
-} as const;
