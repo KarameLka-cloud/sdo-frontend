@@ -32,7 +32,6 @@ import EdoAdmin from "@pages/Admin/Edo/Edo.tsx";
 import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
-import Form from "@/pages/Mentorship/Form/Form";
 import Interns from "@/pages/Mentorship/Interns/Interns";
 import { ROUTES } from "@constants/routes.ts";
 
@@ -193,15 +192,6 @@ const AppRoutes = createBrowserRouter([
       {
         element: <ProtectedRouteMentor elementMentor={<MentorshipLayout />} />,
         children: [
-          {
-            path: ROUTES.MENTORSHIP_FORM,
-            element: (
-              <PageTitle
-                title={"Форма создания плана адаптации"}
-                element={<Form />}
-              />
-            ),
-          },
           {
             path: ROUTES.MENTORSHIP_INTERNS,
             element: <PageTitle title={"Стажеры"} element={<Interns />} />,

@@ -62,6 +62,17 @@
     margin: 0 auto;
 }
 
+.searchEmpty {
+    margin: 1rem auto 0;
+    width: fit-content;
+    padding: 0.75rem 1rem;
+    border: 0.05rem solid #d0d5dd;
+    border-radius: 0.75rem;
+    background: #f8fafc;
+    color: #475467;
+    text-align: center;
+}
+
 @media (max-width: 768px) {
     .tabButton {
         padding: 0.75rem 0.5rem;

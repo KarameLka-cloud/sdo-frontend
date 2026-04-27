@@ -26,6 +26,64 @@
   color: #166534;
 }
 
+.searchContainer {
+  background: white;
+}
+
+.createSearch {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.searchInput {
+  width: 40%;
+}
+
+.createForm {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem;
+  border: 0.1rem solid #e5e7eb;
+  border-radius: 0.75rem;
+  background: #ffffff;
+}
+
+.formRow {
+  display: flex;
+  gap: 0.7rem;
+}
+
+.createButton {
+  align-self: flex-start;
+  border: none;
+  border-radius: 0.5rem;
+  background: #2f5cbf;
+  color: #ffffff;
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.6rem 1rem;
+  cursor: pointer;
+}
+
+.createButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.searchEmpty {
+  margin: 0.5rem auto 0;
+  width: fit-content;
+  padding: 0.75rem 1rem;
+  border: 0.05rem solid #d1d5dc;
+  border-radius: 0.75rem;
+  background: #f8fafc;
+  color: #4b5563;
+  text-align: center;
+}
+
 .list {
   display: grid;
   grid-template-columns: 1fr;
@@ -85,5 +143,20 @@
   border-radius: 0.5rem;
   padding: 0.55rem 0.7rem;
   font-size: 0.9rem;
+}
+
+@media (max-width: 900px) {
+  .createSearch {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .searchInput {
+    width: 100%;
+  }
+
+  .formRow {
+    flex-direction: column;
+  }
 }
 

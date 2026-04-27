@@ -81,7 +81,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                hasSearch ? <p>Пользователь "{search}" не найден</p> : <DataMessage type={"noData"}/>
+                                hasSearch ? <p className={styles.searchEmpty}>Пользователь "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>
@@ -99,7 +99,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                hasSearch ? <p>Администратор "{search}" не найден</p> : <DataMessage type={"noData"}/>
+                                hasSearch ? <p className={styles.searchEmpty}>Администратор "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>
@@ -117,7 +117,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                hasSearch ? <p>Наставник "{search}" не найден</p> : <DataMessage type={"noData"}/>
+                                hasSearch ? <p className={styles.searchEmpty}>Наставник "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>
@@ -135,7 +135,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                hasSearch ? <p>Руководитель отдела "{search}" не найден</p> : <DataMessage type={"noData"}/>
+                                hasSearch ? <p className={styles.searchEmpty}>Руководитель отдела "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>

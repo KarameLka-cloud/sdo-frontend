@@ -35,12 +35,6 @@ export const HOME_NAV_LINKS = [
 export const MENTOR_NAV_LINKS = [
   {
     id: 1,
-    name: "Форма создания плана адаптации",
-    path: ROUTES.MENTORSHIP_FORM,
-    icon: peopleIcon,
-  },
-  {
-    id: 2,
     name: "Стажеры",
     path: ROUTES.MENTORSHIP_INTERNS,
     icon: peopleIcon,

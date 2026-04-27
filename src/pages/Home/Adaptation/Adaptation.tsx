@@ -2,8 +2,9 @@ import { JSX, useState } from "react";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import CareerDay from "@components/ui/CareerDay/CareerDay.tsx";
 import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
-import { useGetAdaptationPlansQuery } from "@services/store/features/user.ts";
+import { useGetAdaptationPlansQuery, useGetUserByDataQuery } from "@services/store/features/user.ts";
 import styles from "./Adaptation.module.css";
+import convertDate from "@utils/convertDate.ts";
 
 interface AdaptationPlanResponse {
   id: number;
@@ -29,8 +30,11 @@ interface AdaptationPlanResponse {
 
 function Adaptation(): JSX.Element {
   const { data: adaptationPlansData = [] } = useGetAdaptationPlansQuery(undefined);
+  const { data: currentUser } = useGetUserByDataQuery(undefined);
   const adaptationPlans = adaptationPlansData as AdaptationPlanResponse[];
-  const adaptationPlan = adaptationPlans[0];
+  const adaptationPlan = adaptationPlans.find(
+    (plan) => plan.user_id === currentUser?.id,
+  );
 
   // Mock данные - в реальном приложении это будет от API
   const [adaptationDays, setAdaptationDays] = useState<AdaptationDayType[]>([
@@ -168,22 +172,22 @@ function Adaptation(): JSX.Element {
   };
 
   if (!adaptationPlan) {
-    return <OverflowScrollBlock header_name={"Адаптация"} />;
+    return <></>;
   }
 
   // Отображение плана обучения и задач для сотрудника
   return (
     <OverflowScrollBlock header_name={"Адаптация"}>
       <div className={styles.trainingPlanInfo}>
-        <div className={styles.planInfoItem}>
+        {/* <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Пользователь:</span>
           <span className={styles.planValue}>
             {adaptationPlan.user?.name || "—"} (ID: {adaptationPlan.user_id})
           </span>
-        </div>
+        </div> */}
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Начало стажировки:</span>
-          <span className={styles.planValue}>{adaptationPlan.start_date}</span>
+          <span className={styles.planValue}>{convertDate(adaptationPlan.start_date)}</span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>График:</span>
@@ -201,14 +205,14 @@ function Adaptation(): JSX.Element {
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Руководитель отдела:</span>
-          <span className={styles.planValue}>
-            {adaptationPlan.department_head_user?.name ??
+          <span className={styles.planValue}>{adaptationPlan.department_head_user?.name}</span>
+            {/* {adaptationPlan.department_head_user?.name ??
               `ID: ${adaptationPlan.department_head}`}
-          </span>
+          </span> */}
         </div>
       </div>
 
-      <div className={styles.careerContainer}>
+      {/* <div className={styles.careerContainer}>
         {adaptationDays.map((day) => (
           <CareerDay
             key={day.id}
@@ -217,7 +221,7 @@ function Adaptation(): JSX.Element {
             onUpdateTaskStatus={handleUpdateTaskStatus}
           />
         ))}
-      </div>
+      </div> */}
     </OverflowScrollBlock>
   );
 }
