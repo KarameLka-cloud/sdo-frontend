@@ -43,6 +43,17 @@
   font-weight: 500;
 }
 
+.successMessage {
+  background-color: #dcfce7;
+  border: 0.1rem solid #86efac;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 1.5rem;
+  color: #166534;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
 .formGroup {
   margin-bottom: 1.5rem;
 }
@@ -127,6 +138,11 @@
 
 .submitButton:active {
   opacity: 0.8;
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
 }
 
 .trainingPlanInfo {

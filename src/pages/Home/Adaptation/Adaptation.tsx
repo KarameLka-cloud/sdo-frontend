@@ -2,9 +2,28 @@ import { JSX, useState } from "react";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import CareerDay from "@components/ui/CareerDay/CareerDay.tsx";
 import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
+import { useGetAdaptationPlansQuery } from "@services/store/features/user.ts";
 import styles from "./Adaptation.module.css";
 
+interface AdaptationPlanResponse {
+  id: number;
+  user_id: number;
+  start_date: string;
+  work_schedule: string;
+  shift: number;
+  mentor: string;
+  department_head: string;
+  user?: {
+    id?: number;
+    name?: string;
+  };
+}
+
 function Adaptation(): JSX.Element {
+  const { data: adaptationPlansData = [] } = useGetAdaptationPlansQuery(undefined);
+  const adaptationPlans = adaptationPlansData as AdaptationPlanResponse[];
+  const adaptationPlan = adaptationPlans[0];
+
   // Mock данные - в реальном приложении это будет от API
   const [adaptationDays, setAdaptationDays] = useState<AdaptationDayType[]>([
     {
@@ -104,15 +123,6 @@ function Adaptation(): JSX.Element {
     },
   ]);
 
-  // Mock данные плана обучения - отображаем для сотрудника
-  const trainingPlan = {
-    startDate: "2026-04-20",
-    workSchedule: "5/2",
-    shift: 1,
-    mentor: "Мария Сидорова",
-    departmentHead: "Сергей Васильев",
-  };
-
   const handleUpdateInternComment = (
     dayId: number | undefined,
     comment: string,
@@ -149,31 +159,39 @@ function Adaptation(): JSX.Element {
     }
   };
 
+  if (!adaptationPlan) {
+    return <OverflowScrollBlock header_name={"Карьера"} />;
+  }
+
   // Отображение плана обучения и задач для сотрудника
   return (
     <OverflowScrollBlock header_name={"Карьера"}>
       <div className={styles.trainingPlanInfo}>
         <div className={styles.planInfoItem}>
+          <span className={styles.planLabel}>Пользователь:</span>
+          <span className={styles.planValue}>
+            {adaptationPlan.user?.name || "—"} (ID: {adaptationPlan.user_id})
+          </span>
+        </div>
+        <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Начало стажировки:</span>
-          <span className={styles.planValue}>{trainingPlan.startDate}</span>
+          <span className={styles.planValue}>{adaptationPlan.start_date}</span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>График:</span>
-          <span className={styles.planValue}>{trainingPlan.workSchedule}</span>
+          <span className={styles.planValue}>{adaptationPlan.work_schedule}</span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Смена:</span>
-          <span className={styles.planValue}>{trainingPlan.shift}</span>
+          <span className={styles.planValue}>{adaptationPlan.shift}</span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Наставник:</span>
-          <span className={styles.planValue}>{trainingPlan.mentor}</span>
+          <span className={styles.planValue}>{adaptationPlan.mentor}</span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Руководитель отдела:</span>
-          <span className={styles.planValue}>
-            {trainingPlan.departmentHead}
-          </span>
+          <span className={styles.planValue}>{adaptationPlan.department_head}</span>
         </div>
       </div>
 

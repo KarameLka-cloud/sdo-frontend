@@ -23,6 +23,8 @@ export interface TaskType {
 }
 
 export interface TrainingPlanType {
+  userId: number | null;
+  userName: string;
   startDate: string;
   workSchedule: WorkSchedule;
   shift: number;

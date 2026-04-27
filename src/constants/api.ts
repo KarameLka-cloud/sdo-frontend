@@ -15,6 +15,7 @@ export const API_ENDPOINTS = {
   EDO_COURSES: "api/edo/courses/",
   EDO_EVENTS: "api/edo/events/",
   EDO_TESTS: "api/edo/tests/",
+  ADAPTATION_PLANS: "api/mentorship/adaptation-plans/",
 } as const;
 
 export const COOKIE_NAMES = {

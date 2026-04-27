@@ -4,7 +4,7 @@ import { API_ENDPOINTS, COOKIE_NAMES } from "@constants/api.ts";
 
 export const user = createApi({
   reducerPath: "user",
-  tagTypes: ["Users"],
+  tagTypes: ["Users", "AdaptationPlans"],
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
     prepareHeaders: (headers) => {
@@ -73,6 +73,18 @@ export const user = createApi({
     getPositions: builder.query({
       query: () => API_ENDPOINTS.POSITIONS,
     }),
+    getAdaptationPlans: builder.query({
+      query: (): string => API_ENDPOINTS.ADAPTATION_PLANS,
+      providesTags: ["AdaptationPlans"],
+    }),
+    createAdaptationPlan: builder.mutation({
+      query: (credentials) => ({
+        url: API_ENDPOINTS.ADAPTATION_PLANS,
+        method: "POST",
+        body: credentials,
+      }),
+      invalidatesTags: ["AdaptationPlans"],
+    }),
   }),
 });
 
@@ -86,4 +98,6 @@ export const {
   useRevokeRoleMutation,
   useGetDepartmentsQuery,
   useGetPositionsQuery,
+  useGetAdaptationPlansQuery,
+  useCreateAdaptationPlanMutation,
 } = user;
