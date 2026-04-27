@@ -3,6 +3,8 @@ export const API_ENDPOINTS = {
   AUTH_LOGOUT: "api/auth/logout/",
   ME: "api/users/me/",
   USERS: "api/users/",
+  MENTORS: "api/users/mentors",
+  DEPARTMENT_HEADS: "api/users/department-heads",
   ROLES: "api/users/roles",
   ASSIGN_ROLE: "api/users/assign-role",
   REVOKE_ROLE: "api/users/revoke-role",

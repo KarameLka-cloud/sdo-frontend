@@ -32,6 +32,12 @@ export const user = createApi({
             ]
           : ["Users"],
     }),
+    getMentors: builder.query({
+      query: (): string => API_ENDPOINTS.MENTORS,
+    }),
+    getDepartmentHeads: builder.query({
+      query: (): string => API_ENDPOINTS.DEPARTMENT_HEADS,
+    }),
     // assignAdminRole: builder.mutation({
     //   query: (credentials) => ({
     //     url: API_ENDPOINTS.ASSIGN_ADMIN_ROLE,
@@ -85,12 +91,29 @@ export const user = createApi({
       }),
       invalidatesTags: ["AdaptationPlans"],
     }),
+    updateAdaptationPlan: builder.mutation({
+      query: ({ id, ...credentials }) => ({
+        url: `${API_ENDPOINTS.ADAPTATION_PLANS}${id}`,
+        method: "PUT",
+        body: credentials,
+      }),
+      invalidatesTags: ["AdaptationPlans"],
+    }),
+    deleteAdaptationPlan: builder.mutation({
+      query: (id: number) => ({
+        url: `${API_ENDPOINTS.ADAPTATION_PLANS}${id}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["AdaptationPlans"],
+    }),
   }),
 });
 
 export const {
   useGetUserByDataQuery,
   useGetUsersQuery,
+  useGetMentorsQuery,
+  useGetDepartmentHeadsQuery,
   // useAssignAdminRoleMutation,
   // useRevokeAdminRoleMutation,
   useGetRolesQuery,
@@ -100,4 +123,6 @@ export const {
   useGetPositionsQuery,
   useGetAdaptationPlansQuery,
   useCreateAdaptationPlanMutation,
+  useUpdateAdaptationPlanMutation,
+  useDeleteAdaptationPlanMutation,
 } = user;

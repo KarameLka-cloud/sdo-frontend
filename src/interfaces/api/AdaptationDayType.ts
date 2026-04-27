@@ -28,8 +28,8 @@ export interface TrainingPlanType {
   startDate: string;
   workSchedule: WorkSchedule;
   shift: number;
-  mentor: string;
-  departmentHead: string;
+  mentor: number | null;
+  departmentHead: number | null;
 }
 
 export interface AdaptationDayType {

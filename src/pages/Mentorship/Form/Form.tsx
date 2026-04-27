@@ -4,6 +4,8 @@ import { TrainingPlanType, WorkSchedule } from "@interfaces/api/AdaptationDayTyp
 import { UserType } from "@interfaces/api/UserType.ts";
 import {
   useCreateAdaptationPlanMutation,
+  useGetDepartmentHeadsQuery,
+  useGetMentorsQuery,
   useGetUsersQuery,
 } from "@services/store/features/user.ts";
 import styles from "./Form.module.css";
@@ -22,15 +24,32 @@ function Form(): JSX.Element {
   const { data: usersData = [], isLoading: isUsersLoading } = useGetUsersQuery(
     undefined,
   );
+  const { data: mentorsData = [], isLoading: isMentorsLoading } =
+    useGetMentorsQuery(undefined);
+  const { data: departmentHeadsData = [], isLoading: isDepartmentHeadsLoading } =
+    useGetDepartmentHeadsQuery(undefined);
   const users = usersData as UserType[];
+  const mentors = (mentorsData as UserType[]).length
+    ? (mentorsData as UserType[])
+    : users.filter(
+        (user) =>
+          user.role === "MENTOR" || user.role_name?.toLowerCase() === "наставник",
+      );
+  const departmentHeads = (departmentHeadsData as UserType[]).length
+    ? (departmentHeadsData as UserType[])
+    : users.filter(
+        (user) =>
+          user.role === "DEPARTMENT_HEAD" ||
+          user.role_name?.toLowerCase() === "руководитель отдела",
+      );
   const [formData, setFormData] = useState<TrainingPlanType>({
     userId: null,
     userName: "",
     startDate: "",
     workSchedule: "5/2",
     shift: 1,
-    mentor: "",
-    departmentHead: "",
+    mentor: null,
+    departmentHead: null,
   });
   const [error, setError] = useState<string>("");
   const [successMessage, setSuccessMessage] = useState<string>("");
@@ -71,8 +90,8 @@ function Form(): JSX.Element {
         startDate: "",
         workSchedule: "5/2",
         shift: 1,
-        mentor: "",
-        departmentHead: "",
+        mentor: null,
+        departmentHead: null,
       });
     } catch (error: unknown) {
       const apiError = error as ApiValidationError;
@@ -87,7 +106,7 @@ function Form(): JSX.Element {
     }
   };
   return (
-    <OverflowScrollBlock header_name={"Карьера"}>
+    <OverflowScrollBlock header_name={"Форма создания плана адаптации"}>
       <div className={styles.trainingPlanForm}>
         <h2 className={styles.formTitle}>Создание плана обучения</h2>
         <p className={styles.formDescription}>
@@ -181,15 +200,24 @@ function Form(): JSX.Element {
           <label className={styles.formLabel}>Наставник</label>
           <select
             className={styles.formSelect}
-            value={formData.mentor}
+            value={formData.mentor ?? ""}
             onChange={(e) =>
-              setFormData({ ...formData, mentor: e.target.value })
+              setFormData({
+                ...formData,
+                mentor: e.target.value ? Number(e.target.value) : null,
+              })
             }
           >
-            <option value="">Выберите наставника</option>
-            <option value="Мария Сидорова">Мария Сидорова</option>
-            <option value="Алексей Кузнецов">Алексей Кузнецов</option>
-            <option value="Олег Никитин">Олег Никитин</option>
+            <option value="">
+              {isMentorsLoading ? "Загрузка наставников..." : "Выберите наставника"}
+            </option>
+            {mentors
+              .filter((mentor) => mentor.id !== undefined)
+              .map((mentor) => (
+                <option key={mentor.id} value={mentor.id}>
+                  {mentor.name}
+                </option>
+              ))}
           </select>
         </div>
 
@@ -197,15 +225,26 @@ function Form(): JSX.Element {
           <label className={styles.formLabel}>Руководитель отдела</label>
           <select
             className={styles.formSelect}
-            value={formData.departmentHead}
+            value={formData.departmentHead ?? ""}
             onChange={(e) =>
-              setFormData({ ...formData, departmentHead: e.target.value })
+              setFormData({
+                ...formData,
+                departmentHead: e.target.value ? Number(e.target.value) : null,
+              })
             }
           >
-            <option value="">Выберите руководителя отдела</option>
-            <option value="Сергей Васильев">Сергей Васильев</option>
-            <option value="Елена Кузнецова">Елена Кузнецова</option>
-            <option value="Иван Петров">Иван Петров</option>
+            <option value="">
+              {isDepartmentHeadsLoading
+                ? "Загрузка руководителей..."
+                : "Выберите руководителя отдела"}
+            </option>
+            {departmentHeads
+              .filter((head) => head.id !== undefined)
+              .map((head) => (
+                <option key={head.id} value={head.id}>
+                  {head.name}
+                </option>
+              ))}
           </select>
         </div>
 

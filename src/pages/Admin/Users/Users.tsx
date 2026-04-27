@@ -15,6 +15,7 @@ function Users(): JSX.Element {
     const {data, error, isLoading} = useGetUsersQuery("");
     const [search, setSearch] = useState("");
     const [activeTab, setActiveTab] = useState<UsersTab>("users");
+    const hasSearch = search.trim().length > 0;
     const filteredUsers = useFiltered<UserType>(data, search);
 
     // Фильтруем администраторов (ADMIN)
@@ -80,7 +81,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                <p>Пользователь "{search}" не найден</p>
+                                hasSearch ? <p>Пользователь "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>
@@ -98,7 +99,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                <p>Администратор "{search}" не найден</p>
+                                hasSearch ? <p>Администратор "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>
@@ -116,7 +117,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                <p>Наставник "{search}" не найден</p>
+                                hasSearch ? <p>Наставник "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>
@@ -134,7 +135,7 @@ function Users(): JSX.Element {
                                     <User key={item.id} user={item} className={styles.user}/>
                                 ))
                             ) : (
-                                <p>Руководитель отдела "{search}" не найден</p>
+                                hasSearch ? <p>Руководитель отдела "{search}" не найден</p> : <DataMessage type={"noData"}/>
                             )
                         ) : null}
                     </>

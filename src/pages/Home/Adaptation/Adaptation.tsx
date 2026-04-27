@@ -11,8 +11,16 @@ interface AdaptationPlanResponse {
   start_date: string;
   work_schedule: string;
   shift: number;
-  mentor: string;
-  department_head: string;
+  mentor: number;
+  department_head: number;
+  mentor_user?: {
+    id?: number;
+    name?: string;
+  };
+  department_head_user?: {
+    id?: number;
+    name?: string;
+  };
   user?: {
     id?: number;
     name?: string;
@@ -160,12 +168,12 @@ function Adaptation(): JSX.Element {
   };
 
   if (!adaptationPlan) {
-    return <OverflowScrollBlock header_name={"Карьера"} />;
+    return <OverflowScrollBlock header_name={"Адаптация"} />;
   }
 
   // Отображение плана обучения и задач для сотрудника
   return (
-    <OverflowScrollBlock header_name={"Карьера"}>
+    <OverflowScrollBlock header_name={"Адаптация"}>
       <div className={styles.trainingPlanInfo}>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Пользователь:</span>
@@ -187,11 +195,16 @@ function Adaptation(): JSX.Element {
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Наставник:</span>
-          <span className={styles.planValue}>{adaptationPlan.mentor}</span>
+          <span className={styles.planValue}>
+            {adaptationPlan.mentor_user?.name ?? `ID: ${adaptationPlan.mentor}`}
+          </span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Руководитель отдела:</span>
-          <span className={styles.planValue}>{adaptationPlan.department_head}</span>
+          <span className={styles.planValue}>
+            {adaptationPlan.department_head_user?.name ??
+              `ID: ${adaptationPlan.department_head}`}
+          </span>
         </div>
       </div>
 
