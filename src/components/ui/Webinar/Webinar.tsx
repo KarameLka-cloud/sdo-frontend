@@ -11,7 +11,7 @@ interface EventPropsType {
 
 function Webinar({ className, webinar }: EventPropsType): JSX.Element {
   return (
-    <div className={`${styles.webinar} + ${className}`}>
+    <div className={`${styles.webinar} ${className ?? ""}`}>
       <div>
         <span className={styles.title}>{webinar.title}</span>
       </div>

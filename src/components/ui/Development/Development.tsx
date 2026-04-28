@@ -12,7 +12,7 @@ function Development({ className }: DevelopmentType): JSX.Element {
       <img
         src={image_development}
         alt="В разработке"
-        className={`${styles.development} + ${className}`}
+        className={`${styles.development} ${className ?? ""}`}
       />
     </div>
   );

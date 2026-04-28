@@ -12,7 +12,7 @@ function LogoutButton({ className, ...props }: LogoutButtonType): JSX.Element {
   const { logout } = useLogout();
   return (
     <div
-      className={`${styles.logout} + ${className}`}
+      className={`${styles.logout} ${className ?? ""}`}
       {...props}
       onClick={logout}
     >

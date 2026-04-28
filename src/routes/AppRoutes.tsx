@@ -1,43 +1,13 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
-import {
-  ProtectedRoute,
-  ProtectedRouteAdmin,
-  ProtectedRouteMentor,
-} from "@components/protected/ProtectedRoutes.tsx";
+import { ProtectedRoute } from "@components/protected/ProtectedRoutes.tsx";
 import PageTitle from "@components/PageTitle.tsx";
 import AuthLayout from "@layouts/AuthLayout/AuthLayout.tsx";
 import DashboardLayout from "@layouts/DashboardLayout/DashboardLayout.tsx";
-import HomeLayout from "@layouts/DashboardLayout/HomeLayout/HomeLayout.tsx";
-import AdminLayout from "@layouts/DashboardLayout/AdminLayout/AdminLayout.tsx";
-import MentorshipLayout from "@layouts/DashboardLayout/MentorshipLayout/MentorshipLayout.tsx";
 import Login from "@pages/Auth/Login/Login.tsx";
-import Home from "@pages/Home/Home/Home.tsx";
-import Adaptation from "@pages/Home/Adaptation/Adaptation.tsx";
-import Education from "@pages/Home/Education/Education.tsx";
-import EducationCourses from "@pages/Home/Education/Courses/Courses.tsx";
-import EducationEvents from "@pages/Home/Education/Events/Events.tsx";
-import EducationWebinars from "@pages/Home/Education/Webinars/Webinars.tsx";
-import EducationTests from "@pages/Home/Education/Tests/Tests.tsx";
-import Edo from "@pages/Home/Edo/Edo.tsx";
-import EdoCourses from "@pages/Home/Edo/Courses/Courses.tsx";
-import EdoEvents from "@pages/Home/Edo/Events/Events.tsx";
-import EdoTests from "@pages/Home/Edo/Tests/Tests.tsx";
-import UsersAdmin from "@pages/Admin/Users/Users.tsx";
-import EducationAdmin from "@pages/Admin/Education/Education.tsx";
-import EducationCoursesAdmin from "@pages/Admin/Education/Courses/Courses.tsx";
-import EducationEventsAdmin from "@pages/Admin/Education/Events/Events.tsx";
-import EducationWebinarsAdmin from "@pages/Admin/Education/Webinars/Webinars.tsx";
-import EducationTestsAdmin from "@pages/Admin/Education/Tests/Tests.tsx";
-import EdoAdmin from "@pages/Admin/Edo/Edo.tsx";
-import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
-import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
-import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
-import AdaptationTemplatesAdmin from "@pages/Admin/Adaptation/Templates/Templates.tsx";
-import AdaptationTemplateTasksAdmin from "@pages/Admin/Adaptation/Templates/TemplateTasks.tsx";
-import Interns from "@pages/Mentorship/Interns/Interns.tsx";
-import InternPlanEditor from "@pages/Mentorship/Interns/PlanEditor.tsx";
-import MyInterns from "@pages/Mentorship/MyInterns/MyInterns.tsx";
 import { ROUTES } from "@constants/routes.ts";
+import { homeRoutes } from "./homeRoutes.tsx";
+import { adminRoutes } from "./adminRoutes.tsx";
+import { mentorshipRoutes } from "./mentorshipRoutes.tsx";
 
 const AppRoutes = createBrowserRouter([
   {
@@ -73,170 +43,9 @@ const AppRoutes = createBrowserRouter([
       />
     ),
     children: [
-      {
-        element: <HomeLayout />,
-        children: [
-          {
-            path: ROUTES.HOME,
-            element: <PageTitle title={"Главная"} element={<Home />} />,
-          },
-          {
-            path: ROUTES.ADAPTATION,
-            element: <PageTitle title={"Адаптация"} element={<Adaptation />} />,
-          },
-          {
-            path: ROUTES.EDUCATION,
-            element: <PageTitle title={"Обучение"} element={<Education />} />,
-          },
-          {
-            path: ROUTES.EDUCATION_COURSES,
-            element: (
-              <PageTitle title={"Курсы"} element={<EducationCourses />} />
-            ),
-          },
-          {
-            path: ROUTES.EDUCATION_EVENTS,
-            element: (
-              <PageTitle title={"Мероприятия"} element={<EducationEvents />} />
-            ),
-          },
-          {
-            path: ROUTES.EDUCATION_WEBINARS,
-            element: (
-              <PageTitle title={"Вебинары"} element={<EducationWebinars />} />
-            ),
-          },
-          {
-            path: ROUTES.EDUCATION_TESTS,
-            element: <PageTitle title={"Тесты"} element={<EducationTests />} />,
-          },
-          {
-            path: ROUTES.EDO,
-            element: <PageTitle title={"ЕДО"} element={<Edo />} />,
-          },
-          {
-            path: ROUTES.EDO_COURSES,
-            element: <PageTitle title={"Курсы"} element={<EdoCourses />} />,
-          },
-          {
-            path: ROUTES.EDO_EVENTS,
-            element: (
-              <PageTitle title={"Мероприятия"} element={<EdoEvents />} />
-            ),
-          },
-          {
-            path: ROUTES.EDO_TESTS,
-            element: <PageTitle title={"Тесты"} element={<EdoTests />} />,
-          },
-        ],
-      },
-      {
-        element: <ProtectedRouteAdmin elementAdmin={<AdminLayout />} />,
-        children: [
-          {
-            path: ROUTES.ADMIN_USERS,
-            element: (
-              <PageTitle title={"Пользователи"} element={<UsersAdmin />} />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDUCATION,
-            element: (
-              <PageTitle title={"Обучение"} element={<EducationAdmin />} />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDUCATION_COURSE,
-            element: (
-              <PageTitle title={"Курсы"} element={<EducationCoursesAdmin />} />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDUCATION_EVENTS,
-            element: (
-              <PageTitle
-                title={"Мероприятия"}
-                element={<EducationEventsAdmin />}
-              />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDUCATION_WEBINARS,
-            element: (
-              <PageTitle
-                title={"Вебинары"}
-                element={<EducationWebinarsAdmin />}
-              />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDUCATION_TESTS,
-            element: (
-              <PageTitle title={"Тесты"} element={<EducationTestsAdmin />} />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDO,
-            element: <PageTitle title={"ЕДО"} element={<EdoAdmin />} />,
-          },
-          {
-            path: ROUTES.ADMIN_EDO_COURSES,
-            element: (
-              <PageTitle title={"Курсы"} element={<EdoCoursesAdmin />} />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDO_EVENTS,
-            element: (
-              <PageTitle title={"Мероприятия"} element={<EdoEventsAdmin />} />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_EDO_TESTS,
-            element: <PageTitle title={"Тесты"} element={<EdoTestsAdmin />} />,
-          },
-          {
-            path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
-            element: (
-              <PageTitle
-                title={"Шаблоны адаптации"}
-                element={<AdaptationTemplatesAdmin />}
-              />
-            ),
-          },
-          {
-            path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
-            element: (
-              <PageTitle
-                title={"Задачи шаблона"}
-                element={<AdaptationTemplateTasksAdmin />}
-              />
-            ),
-          },
-        ],
-      },
-      {
-        element: <ProtectedRouteMentor elementMentor={<MentorshipLayout />} />,
-        children: [
-          {
-            path: ROUTES.MENTORSHIP_INTERNS,
-            element: <PageTitle title={"Стажеры"} element={<Interns />} />,
-          },
-          {
-            path: ROUTES.MENTORSHIP_MY_INTERNS,
-            element: <PageTitle title={"Мои стажеры"} element={<MyInterns />} />,
-          },
-          {
-            path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
-            element: (
-              <PageTitle
-                title={"Редактирование плана стажера"}
-                element={<InternPlanEditor />}
-              />
-            ),
-          },
-        ],
-      },
+      homeRoutes,
+      adminRoutes,
+      mentorshipRoutes,
     ],
   },
 ]);

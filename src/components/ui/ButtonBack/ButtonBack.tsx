@@ -26,7 +26,7 @@ function ButtonBack({
 
   return (
     <div
-      className={`${styles.button_back} + ${className}`}
+      className={`${styles.button_back} ${className ?? ""}`}
       onClick={handleBack}
     >
       <img className={styles.img_back} src={icon_back} alt="Назад" />

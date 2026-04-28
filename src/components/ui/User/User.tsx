@@ -46,7 +46,7 @@ function User({ user, className }: UserPropsType): JSX.Element {
   }, [user.role, user.id, revokeRole]);
 
   return (
-    <div className={`${styles.user} + ${className}`}>
+    <div className={`${styles.user} ${className ?? ""}`}>
       <div className={styles.content}>
         <div className={styles.name}>{user.name}</div>
         <div className={styles.department}>{user.department}</div>

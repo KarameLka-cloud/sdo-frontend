@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX, useEffect } from "react";
 
 interface PageTitlePropsType {
   title: string;
@@ -6,7 +6,15 @@ interface PageTitlePropsType {
 }
 
 function PageTitle({ title, element }: PageTitlePropsType): JSX.Element {
-  document.title = title + " - " + "СДО";
+  useEffect(() => {
+    const previousTitle = document.title;
+    document.title = `${title} - СДО`;
+
+    return () => {
+      document.title = previousTitle;
+    };
+  }, [title]);
+
   return element;
 }
 

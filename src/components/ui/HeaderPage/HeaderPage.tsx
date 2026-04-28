@@ -15,7 +15,7 @@ function HeaderPage({
   className,
 }: HeaderPageType): JSX.Element {
   return (
-    <div className={`${styles.header_page} ${className}`}>
+    <div className={`${styles.header_page} ${className ?? ""}`}>
       <div className={styles.content}>
         {button_back_visible === "enable" && (
           <ButtonBack className={styles.button_back} />

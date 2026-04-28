@@ -7,7 +7,7 @@ interface MainPropsType {
 }
 
 function Main({ children, className }: MainPropsType): JSX.Element {
-  return <main className={`${styles.main} + ${className}`}>{children}</main>;
+  return <main className={`${styles.main} ${className ?? ""}`}>{children}</main>;
 }
 
 export default Main;

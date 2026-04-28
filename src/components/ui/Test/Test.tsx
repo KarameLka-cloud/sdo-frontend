@@ -11,7 +11,7 @@ interface TestPropsType {
 function Test({ className, test }: TestPropsType): JSX.Element {
   return (
     <div
-      className={`${styles.test} + ${className}`}
+      className={`${styles.test} ${className ?? ""}`}
       onClick={() => window.open(test.url, "_blank")}
     >
       <span className={styles.title}>{test.title}</span>
