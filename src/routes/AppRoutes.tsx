@@ -33,6 +33,7 @@ import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
 import Interns from "@/pages/Mentorship/Interns/Interns";
+import MyInterns from "@pages/Mentorship/MyInterns/MyInterns.tsx";
 import { ROUTES } from "@constants/routes.ts";
 
 const AppRoutes = createBrowserRouter([
@@ -198,12 +199,7 @@ const AppRoutes = createBrowserRouter([
           },
           {
             path: ROUTES.MENTORSHIP_MY_INTERNS,
-            element: (
-              <PageTitle
-                title={"Мои стажеры"}
-                element={<Interns onlyMyInterns />}
-              />
-            ),
+            element: <PageTitle title={"Мои стажеры"} element={<MyInterns />} />,
           },
         ],
       },

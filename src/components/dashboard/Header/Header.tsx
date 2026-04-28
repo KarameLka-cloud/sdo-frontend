@@ -5,6 +5,7 @@ import { useUser } from "@hooks/useUser.ts";
 import LogoLink from "@components/ui/LogoLink/LogoLink.tsx";
 import LogoutButton from "@components/ui/LogoutButton/LogoutButton.tsx";
 import { ROUTES } from "@constants/routes.ts";
+import { hasAnyRole, USER_ROLES } from "@constants/roles.ts";
 
 interface HeaderType {
   className?: string;
@@ -13,10 +14,9 @@ interface HeaderType {
 function Header({ className }: HeaderType): JSX.Element {
   const { name, role } = useUser();
 
-  // Определяем права доступа
-  const isAdmin = role?.includes("ADMIN");
-  const isMentor = role?.includes("MENTOR");
-  const isDepartmentHead = role?.includes("DEPARTMENT_HEAD");
+  const isAdmin = hasAnyRole(role, [USER_ROLES.ADMIN]);
+  const isMentor = hasAnyRole(role, [USER_ROLES.MENTOR]);
+  const isDepartmentHead = hasAnyRole(role, [USER_ROLES.DEPARTMENT_HEAD]);
   const hasMentorAccess = isAdmin || isMentor || isDepartmentHead;
 
   return (

@@ -6,13 +6,12 @@ import Input from "@components/ui/Input/Input.tsx";
 import {
   useCreateAdaptationPlanMutation,
   useDeleteAdaptationPlanMutation,
-  useGetAdaptationPlansQuery,
+  useGetAllAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
   useUpdateAdaptationPlanMutation,
 } from "@services/store/features/user.ts";
-import { useUser } from "@hooks/useUser.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import styles from "./Interns.module.css";
 
@@ -44,26 +43,28 @@ interface ApiValidationError {
   };
 }
 
-interface InternsProps {
-  onlyMyInterns?: boolean;
-}
+type CreateStatusType = "idle" | "loading" | "success" | "error";
 
-function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
-  const { id: currentUserId, role } = useUser();
+function Interns(): JSX.Element {
   const [createAdaptationPlan, { isLoading: isCreatingPlan }] =
     useCreateAdaptationPlanMutation();
   const [updateAdaptationPlan, { isLoading: isUpdatingPlan }] =
     useUpdateAdaptationPlanMutation();
   const [deleteAdaptationPlan, { isLoading: isDeletingPlan }] =
     useDeleteAdaptationPlanMutation();
-  const { data: adaptationPlansData = [], isLoading, isError } =
-    useGetAdaptationPlansQuery(undefined);
+  const {
+    data: allAdaptationPlansData = [],
+    isLoading: isAllPlansLoading,
+    isError: isAllPlansError,
+  } = useGetAllAdaptationPlansQuery(undefined);
   const { data: usersData = [] } = useGetUsersQuery(undefined);
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: departmentHeadsData = [] } = useGetDepartmentHeadsQuery(
     undefined,
   );
-  const adaptationPlans = adaptationPlansData as AdaptationPlanResponse[];
+  const adaptationPlans = allAdaptationPlansData as AdaptationPlanResponse[];
+  const isLoading = isAllPlansLoading;
+  const isError = isAllPlansError;
   const users = usersData as UserType[];
   const mentors = (mentorsData as UserType[]).length
     ? (mentorsData as UserType[])
@@ -78,8 +79,6 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
           user.role === "DEPARTMENT_HEAD" ||
           user.role_name?.toLowerCase() === "руководитель отдела",
       );
-  const [errorMessage, setErrorMessage] = useState<string>("");
-  const [successMessage, setSuccessMessage] = useState<string>("");
   const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
   const [editingPlanId, setEditingPlanId] = useState<number | null>(null);
   const [editMentor, setEditMentor] = useState<number | null>(null);
@@ -93,21 +92,10 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
     mentor: null as number | null,
     departmentHead: null as number | null,
   });
-  const isMentorOrDepartmentHead =
-    role.includes("MENTOR") || role.includes("DEPARTMENT_HEAD");
-  const visiblePlans = useMemo(() => {
-    if (!onlyMyInterns) {
-      return adaptationPlans;
-    }
-
-    if (!isMentorOrDepartmentHead || !currentUserId) {
-      return [];
-    }
-
-    return adaptationPlans.filter(
-      (plan) => plan.mentor === currentUserId || plan.department_head === currentUserId,
-    );
-  }, [adaptationPlans, currentUserId, isMentorOrDepartmentHead, onlyMyInterns]);
+  const [createStatusType, setCreateStatusType] =
+    useState<CreateStatusType>("idle");
+  const [createStatusMessage, setCreateStatusMessage] = useState("");
+  const visiblePlans = adaptationPlans;
   const hasSearch = search.trim().length > 0;
   const filteredPlans = useMemo(() => {
     if (!hasSearch) {
@@ -130,23 +118,27 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
 
   const handleCreatePlan = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    setErrorMessage("");
-    setSuccessMessage("");
+    setCreateStatusType("loading");
+    setCreateStatusMessage("Создание...");
 
     if (!newPlan.userId) {
-      setErrorMessage("Пожалуйста, выберите пользователя");
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите пользователя");
       return;
     }
     if (!newPlan.startDate) {
-      setErrorMessage("Пожалуйста, укажите дату начала стажировки");
+      setCreateStatusType("error");
+      setCreateStatusMessage("Укажите дату начала стажировки");
       return;
     }
     if (!newPlan.mentor) {
-      setErrorMessage("Пожалуйста, выберите наставника");
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите наставника");
       return;
     }
     if (!newPlan.departmentHead) {
-      setErrorMessage("Пожалуйста, выберите руководителя отдела");
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите руководителя отдела");
       return;
     }
 
@@ -159,7 +151,6 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
         mentor: newPlan.mentor,
         department_head: newPlan.departmentHead,
       }).unwrap();
-      setSuccessMessage("План адаптации успешно создан.");
       setNewPlan({
         userId: null,
         startDate: "",
@@ -169,13 +160,16 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
         departmentHead: null,
       });
       setIsCreateFormVisible(false);
+      setCreateStatusType("success");
+      setCreateStatusMessage("План создан");
     } catch (error: unknown) {
       const apiError = error as ApiValidationError;
       const duplicatePlanMessage = apiError.data?.errors?.user_id?.[0];
-      setErrorMessage(
+      const message =
         duplicatePlanMessage ||
-          "Не удалось сохранить план адаптации. Попробуйте снова.",
-      );
+        "Не удалось сохранить план адаптации. Попробуйте снова.";
+      setCreateStatusType("error");
+      setCreateStatusMessage(message);
     }
   };
 
@@ -184,19 +178,14 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
     mentor: number,
     departmentHead: number,
   ) => {
-    setErrorMessage("");
-    setSuccessMessage("");
     try {
       await updateAdaptationPlan({
         id,
         mentor,
         department_head: departmentHead,
       }).unwrap();
-      setSuccessMessage("Данные стажера обновлены.");
       setEditingPlanId(null);
-    } catch {
-      setErrorMessage("Не удалось обновить данные стажера.");
-    }
+    } catch {}
   };
 
   const startEdit = (plan: AdaptationPlanResponse) => {
@@ -220,24 +209,17 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
       return;
     }
 
-    setErrorMessage("");
-    setSuccessMessage("");
     try {
       await deleteAdaptationPlan(plan.id).unwrap();
-      setSuccessMessage("Стажер удален из списка.");
       if (editingPlanId === plan.id) {
         closeEdit();
       }
-    } catch {
-      setErrorMessage("Не удалось удалить стажера.");
-    }
+    } catch {}
   };
 
   return (
     <OverflowScrollBlock header_name={"Список стажеров"}>
       <div className={styles.container}>
-        {errorMessage && <p className={styles.error}>{errorMessage}</p>}
-        {successMessage && <p className={styles.success}>{successMessage}</p>}
         {isLoading && <p className={styles.info}>Загрузка...</p>}
         {isError && <DataMessage type={"error"} />}
         {!isLoading && !isError && (
@@ -248,10 +230,7 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
                 onClick={() => setIsCreateFormVisible(false)}
               />
             ) : (
-              <IconButton
-                type="edit"
-                onClick={() => setIsCreateFormVisible(true)}
-              />
+              <IconButton type="edit" onClick={() => setIsCreateFormVisible(true)} />
             )}
             <Input
               type={"text"}
@@ -387,13 +366,28 @@ function Interns({ onlyMyInterns = false }: InternsProps): JSX.Element {
                 </select>
               </label>
             </div>
-            <button
-              type="submit"
-              className={styles.createButton}
-              disabled={isCreatingPlan}
-            >
-              {isCreatingPlan ? "Сохранение..." : "Создать план"}
-            </button>
+            <div className={styles.formActions}>
+              <button
+                type="submit"
+                className={styles.createButton}
+                disabled={isCreatingPlan}
+              >
+                {isCreatingPlan ? "Сохранение..." : "Создать план"}
+              </button>
+              {createStatusType !== "idle" && (
+                <span
+                  className={`${styles.createStatus} ${
+                    createStatusType === "error"
+                      ? styles.createStatusError
+                      : createStatusType === "success"
+                        ? styles.createStatusSuccess
+                        : styles.createStatusLoading
+                  }`}
+                >
+                  {createStatusMessage}
+                </span>
+              )}
+            </div>
           </form>
         )}
         {!isLoading && !isError && visiblePlans.length === 0 && (

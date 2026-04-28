@@ -3,6 +3,7 @@ import Cookie from "js-cookie";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@hooks/useUser.ts";
 import { ROUTES } from "@constants/routes.ts";
+import { hasAnyRole, USER_ROLES } from "@constants/roles.ts";
 import { COOKIE_NAMES } from "@constants/api.ts";
 
 interface ProtectedRoutePropsType {
@@ -51,8 +52,7 @@ const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRoutePropsType) => {
   if (!role) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
-  // Разрешаем доступ только для ADMIN
-  if (!role.includes("ADMIN")) {
+  if (!hasAnyRole(role, [USER_ROLES.ADMIN])) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
   return elementAdmin;
@@ -68,8 +68,11 @@ const ProtectedRouteMentor = ({ elementMentor }: ProtectedRoutePropsType) => {
   if (!role) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
-  // Разрешаем доступ для ADMIN, MENTOR и DEPARTMENT_HEAD
-  const hasAccess = role.includes("ADMIN") || role.includes("MENTOR") || role.includes("DEPARTMENT_HEAD");
+  const hasAccess = hasAnyRole(role, [
+    USER_ROLES.ADMIN,
+    USER_ROLES.MENTOR,
+    USER_ROLES.DEPARTMENT_HEAD,
+  ]);
   if (!hasAccess) {
     return <Navigate to={ROUTES.HOME} replace />;
   }

@@ -8,14 +8,6 @@
   transition: background-color var(--mfc-transition-fast), transform var(--mfc-transition-fast);
 }
 
-.button:hover {
-  transform: translateY(-1px);
-}
-
-.button:active {
-  transform: translateY(0);
-}
-
 .edit {
   background-color: #219696;
 }
