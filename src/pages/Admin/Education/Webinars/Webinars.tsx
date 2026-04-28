@@ -17,14 +17,23 @@ import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import { useFiltered } from "@hooks/useFiltered.ts";
 import { useToggle } from "@hooks/useToggle.ts";
 
+type CreateStatusType = "idle" | "loading" | "success" | "error";
+
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
+
 function Webinars(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationWebinarsQuery("");
-  const [addWebinar, { isLoading: addLoading, isError: addError }] =
-    useAddEducationWebinarMutation();
+  const [addWebinar, { isLoading: addLoading }] = useAddEducationWebinarMutation();
   // const [updateWebinar] = useUpdateEducationWebinarMutation();
   const [deleteWebinar] = useDeleteEducationWebinarMutation();
   const [search, setSearch] = useState("");
+  const [createStatusType, setCreateStatusType] = useState<CreateStatusType>("idle");
+  const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<WebinarType>(data, search);
 
   const { formItems, setFormItems, handleChange } = useForm({
@@ -36,13 +45,26 @@ function Webinars(): JSX.Element {
 
   const handleAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addWebinar(formItems).unwrap();
-    setFormItems({
-      title: "",
-      time_start: "",
-      time_end: "",
-      date: "",
-    });
+    setCreateStatusType("loading");
+    setCreateStatusMessage("Создание...");
+
+    try {
+      await addWebinar(formItems).unwrap();
+      setFormItems({
+        title: "",
+        time_start: "",
+        time_end: "",
+        date: "",
+      });
+      setCreateStatusType("success");
+      setCreateStatusMessage("Создано");
+    } catch (createError: unknown) {
+      const apiError = createError as ApiError;
+      setCreateStatusType("error");
+      setCreateStatusMessage(
+        apiError.data?.message ?? "Не удалось создать запись. Попробуйте снова.",
+      );
+    }
   };
 
   return (
@@ -104,10 +126,23 @@ function Webinars(): JSX.Element {
                 className={styles.form_input_time}
               />
             </div>
-            <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+            <div className={styles.form_actions}>
+              <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+              {createStatusType !== "idle" && (
+                <span
+                  className={`${styles.create_status} ${
+                    createStatusType === "error"
+                      ? styles.create_status_error
+                      : createStatusType === "success"
+                        ? styles.create_status_success
+                        : styles.create_status_loading
+                  }`}
+                >
+                  {createStatusMessage}
+                </span>
+              )}
+            </div>
           </form>
-          {addError && <div>Error</div>}
-          <hr />
         </>
       ) : null}
       <DataList<WebinarType>

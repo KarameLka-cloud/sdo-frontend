@@ -28,6 +28,12 @@ interface AdaptationPlanResponse {
   };
 }
 
+function hasAdaptationPlan(
+  plan: AdaptationPlanResponse | null | undefined,
+): plan is AdaptationPlanResponse {
+  return Boolean(plan && typeof plan.id === "number" && plan.id > 0 && plan.start_date);
+}
+
 function Adaptation(): JSX.Element {
   const {
     data: adaptationPlan,
@@ -50,8 +56,12 @@ function Adaptation(): JSX.Element {
     );
   }
 
-  if (!myAdaptationPlan) {
-    return <Development />;
+  if (!hasAdaptationPlan(myAdaptationPlan)) {
+    return (
+      <OverflowScrollBlock header_name={"Адаптация"}>
+        <Development />
+      </OverflowScrollBlock>
+    );
   }
 
   // Отображение плана обучения и задач для сотрудника

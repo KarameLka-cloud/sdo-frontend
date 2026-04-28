@@ -11,6 +11,19 @@ interface HeaderType {
   className?: string;
 }
 
+const getShortUserName = (name: string): string => {
+  const [lastName = "", firstName = ""] = name.trim().split(/\s+/);
+
+  if (!lastName) {
+    return "";
+  }
+  if (!firstName) {
+    return lastName;
+  }
+
+  return `${firstName} ${lastName[0]}.`;
+};
+
 function Header({ className }: HeaderType): JSX.Element {
   const { name, role } = useUser();
 
@@ -20,7 +33,7 @@ function Header({ className }: HeaderType): JSX.Element {
   const hasMentorAccess = isAdmin || isMentor || isDepartmentHead;
 
   return (
-    <header className={`${styles.header} + ${className}`}>
+    <header className={[styles.header, className].filter(Boolean).join(" ")}>
       <div className={styles.content}>
         <LogoLink to={ROUTES.ROOT} className={styles.logo} />
         {(isAdmin || hasMentorAccess) && (
@@ -44,7 +57,7 @@ function Header({ className }: HeaderType): JSX.Element {
         <div className={styles.right_content}>
           {name && (
             <div className={styles.name}>
-              {`${name.split(" ")[1]} ${name.split(" ")[0][0]}.`}
+              {getShortUserName(name)}
             </div>
           )}
           <LogoutButton className={styles.logout} />

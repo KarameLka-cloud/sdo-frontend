@@ -10,7 +10,7 @@ import {
 } from "@services/store/features/user.ts";
 import { useUser } from "@hooks/useUser.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
-import { hasAnyRole, USER_ROLES } from "@constants/roles.ts";
+import { hasRole, isUserInRole, USER_ROLES } from "@constants/roles.ts";
 import styles from "./MyInterns.module.css";
 
 interface AdaptationPlanResponse {
@@ -34,7 +34,7 @@ interface AdaptationPlanResponse {
 }
 
 function MyInterns(): JSX.Element {
-  const { id: currentUserId, role } = useUser();
+  const { id: currentUserId, role, role_name: roleName } = useUser();
   const [search, setSearch] = useState("");
   const {
     data: adaptationPlansData = [],
@@ -49,23 +49,15 @@ function MyInterns(): JSX.Element {
   const users = usersData as UserType[];
   const mentors = (mentorsData as UserType[]).length
     ? (mentorsData as UserType[])
-    : users.filter(
-        (user) =>
-          user.role === "MENTOR" || user.role_name?.toLowerCase() === "наставник",
-      );
+    : users.filter((user) => isUserInRole(user, USER_ROLES.MENTOR));
   const departmentHeads = (departmentHeadsData as UserType[]).length
     ? (departmentHeadsData as UserType[])
-    : users.filter(
-        (user) =>
-          user.role === "DEPARTMENT_HEAD" ||
-          user.role_name?.toLowerCase() === "руководитель отдела",
-      );
+    : users.filter((user) => isUserInRole(user, USER_ROLES.DEPARTMENT_HEAD));
 
-  const hasMyInternsAccess = hasAnyRole(role, [
-    USER_ROLES.ADMIN,
-    USER_ROLES.MENTOR,
-    USER_ROLES.DEPARTMENT_HEAD,
-  ]);
+  const hasMyInternsAccess =
+    hasRole(role, roleName, USER_ROLES.ADMIN) ||
+    hasRole(role, roleName, USER_ROLES.MENTOR) ||
+    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
 
   const visiblePlans = useMemo(() => {
     if (!hasMyInternsAccess || !currentUserId) {

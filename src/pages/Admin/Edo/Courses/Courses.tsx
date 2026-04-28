@@ -19,15 +19,24 @@ import { useToggle } from "@hooks/useToggle.ts";
 import { useFiltered } from "@hooks/useFiltered.ts";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 
+type CreateStatusType = "idle" | "loading" | "success" | "error";
+
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
+
 function Courses(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEdoCoursesQuery("");
-  const [addCourse, { isLoading: addLoading, isError: addError }] =
-    useAddEdoCourseMutation();
+  const [addCourse, { isLoading: addLoading }] = useAddEdoCourseMutation();
   // const [updateCourse] = useUpdateEdoCourseMutation();
   const [deleteCourse] = useDeleteEdoCourseMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");
+  const [createStatusType, setCreateStatusType] = useState<CreateStatusType>("idle");
+  const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<CourseType>(data, search);
 
   const { formItems, setFormItems, handleChange } = useForm({
@@ -40,14 +49,27 @@ function Courses(): JSX.Element {
 
   const handleAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addCourse(formItems).unwrap();
-    setFormItems({
-      title: "",
-      url: "",
-      department_id: "",
-      note_department: "",
-      date_end: "",
-    });
+    setCreateStatusType("loading");
+    setCreateStatusMessage("Создание...");
+
+    try {
+      await addCourse(formItems).unwrap();
+      setFormItems({
+        title: "",
+        url: "",
+        department_id: "",
+        note_department: "",
+        date_end: "",
+      });
+      setCreateStatusType("success");
+      setCreateStatusMessage("Создано");
+    } catch (createError: unknown) {
+      const apiError = createError as ApiError;
+      setCreateStatusType("error");
+      setCreateStatusMessage(
+        apiError.data?.message ?? "Не удалось создать запись. Попробуйте снова.",
+      );
+    }
   };
 
   return (
@@ -118,10 +140,23 @@ function Courses(): JSX.Element {
               onChange={handleChange}
               className={styles.form_input_date_end}
             />
-            <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+            <div className={styles.form_actions}>
+              <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+              {createStatusType !== "idle" && (
+                <span
+                  className={`${styles.create_status} ${
+                    createStatusType === "error"
+                      ? styles.create_status_error
+                      : createStatusType === "success"
+                        ? styles.create_status_success
+                        : styles.create_status_loading
+                  }`}
+                >
+                  {createStatusMessage}
+                </span>
+              )}
+            </div>
           </form>
-          {addError && <div>Error</div>}
-          <hr />
         </>
       ) : null}
 

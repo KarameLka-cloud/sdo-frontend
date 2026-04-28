@@ -19,15 +19,24 @@ import { useFiltered } from "@hooks/useFiltered.ts";
 import { useToggle } from "@hooks/useToggle.ts";
 import { useGetPositionsQuery } from "@services/store/features/user.ts";
 
+type CreateStatusType = "idle" | "loading" | "success" | "error";
+
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
+
 function Tests(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationTestsQuery("");
-  const [addTest, { isLoading: addLoading, isError: addError }] =
-    useAddEducationTestMutation();
+  const [addTest, { isLoading: addLoading }] = useAddEducationTestMutation();
   // const [updateTest] = useUpdateEducationTestMutation();
   const [deleteTest] = useDeleteEducationTestMutation();
   const { data: positions } = useGetPositionsQuery("");
   const [search, setSearch] = useState("");
+  const [createStatusType, setCreateStatusType] = useState<CreateStatusType>("idle");
+  const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<TestType>(data, search);
 
   const { formItems, setFormItems, handleChange } = useForm({
@@ -40,14 +49,27 @@ function Tests(): JSX.Element {
 
   const handleAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addTest(formItems).unwrap();
-    setFormItems({
-      title: "",
-      url: "",
-      position_id: "",
-      note_position: "",
-      date_end: "",
-    });
+    setCreateStatusType("loading");
+    setCreateStatusMessage("Создание...");
+
+    try {
+      await addTest(formItems).unwrap();
+      setFormItems({
+        title: "",
+        url: "",
+        position_id: "",
+        note_position: "",
+        date_end: "",
+      });
+      setCreateStatusType("success");
+      setCreateStatusMessage("Создано");
+    } catch (createError: unknown) {
+      const apiError = createError as ApiError;
+      setCreateStatusType("error");
+      setCreateStatusMessage(
+        apiError.data?.message ?? "Не удалось создать запись. Попробуйте снова.",
+      );
+    }
   };
 
   return (
@@ -118,10 +140,23 @@ function Tests(): JSX.Element {
               onChange={handleChange}
               className={styles.form_input_date_end}
             />
-            <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+            <div className={styles.form_actions}>
+              <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+              {createStatusType !== "idle" && (
+                <span
+                  className={`${styles.create_status} ${
+                    createStatusType === "error"
+                      ? styles.create_status_error
+                      : createStatusType === "success"
+                        ? styles.create_status_success
+                        : styles.create_status_loading
+                  }`}
+                >
+                  {createStatusMessage}
+                </span>
+              )}
+            </div>
           </form>
-          <div>{addError && `Error`}</div>
-          <hr />
         </>
       )}
 

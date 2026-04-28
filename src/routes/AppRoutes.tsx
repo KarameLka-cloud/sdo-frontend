@@ -32,7 +32,7 @@ import EdoAdmin from "@pages/Admin/Edo/Edo.tsx";
 import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
-import Interns from "@/pages/Mentorship/Interns/Interns";
+import Interns from "@pages/Mentorship/Interns/Interns.tsx";
 import MyInterns from "@pages/Mentorship/MyInterns/MyInterns.tsx";
 import { ROUTES } from "@constants/routes.ts";
 
@@ -48,6 +48,10 @@ const AppRoutes = createBrowserRouter([
   {
     path: ROUTES.MENTORSHIP,
     element: <Navigate to={ROUTES.MENTORSHIP_INTERNS} />,
+  },
+  {
+    path: "*",
+    element: <Navigate to={ROUTES.HOME} replace />,
   },
   {
     element: <ProtectedRoute elementLogin={<AuthLayout />} route={"login"} />,

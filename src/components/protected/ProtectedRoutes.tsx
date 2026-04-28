@@ -1,17 +1,17 @@
-import { JSX } from "react";
+import { ReactElement } from "react";
 import Cookie from "js-cookie";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@hooks/useUser.ts";
 import { ROUTES } from "@constants/routes.ts";
-import { hasAnyRole, USER_ROLES } from "@constants/roles.ts";
+import { hasRole, USER_ROLES } from "@constants/roles.ts";
 import { COOKIE_NAMES } from "@constants/api.ts";
 
+type GuardRouteType = "login" | "dashboard";
+
 interface ProtectedRoutePropsType {
-  elementLogin?: JSX.Element;
-  elementDashboard?: JSX.Element;
-  elementAdmin?: JSX.Element;
-  elementMentor?: JSX.Element;
-  route?: "login" | "dashboard";
+  elementLogin?: ReactElement;
+  elementDashboard?: ReactElement;
+  route?: GuardRouteType;
 }
 
 const ProtectedRoute = ({
@@ -42,40 +42,45 @@ const ProtectedRoute = ({
   // return elementDashboard || elementLogin;
 };
 
-const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRoutePropsType) => {
-  const { role, isLoading } = useUser();
+interface ProtectedRouteAdminProps {
+  elementAdmin?: ReactElement;
+}
+
+interface ProtectedRouteMentorProps {
+  elementMentor?: ReactElement;
+}
+
+const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRouteAdminProps) => {
+  const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
     return null;
   }
 
-  if (!role) {
+  const hasAdminAccess = hasRole(role, roleName, USER_ROLES.ADMIN);
+  if (!hasAdminAccess) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
-  if (!hasAnyRole(role, [USER_ROLES.ADMIN])) {
-    return <Navigate to={ROUTES.HOME} replace />;
-  }
+
   return elementAdmin;
 };
 
-const ProtectedRouteMentor = ({ elementMentor }: ProtectedRoutePropsType) => {
-  const { role, isLoading } = useUser();
+const ProtectedRouteMentor = ({ elementMentor }: ProtectedRouteMentorProps) => {
+  const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
     return null;
   }
 
-  if (!role) {
-    return <Navigate to={ROUTES.HOME} replace />;
-  }
-  const hasAccess = hasAnyRole(role, [
-    USER_ROLES.ADMIN,
-    USER_ROLES.MENTOR,
-    USER_ROLES.DEPARTMENT_HEAD,
-  ]);
+  const hasAccess =
+    hasRole(role, roleName, USER_ROLES.ADMIN) ||
+    hasRole(role, roleName, USER_ROLES.MENTOR) ||
+    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
+
   if (!hasAccess) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
+
   return elementMentor;
 };
 

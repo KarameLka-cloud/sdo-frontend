@@ -13,6 +13,7 @@ import {
   useUpdateAdaptationPlanMutation,
 } from "@services/store/features/user.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
+import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
 import styles from "./Interns.module.css";
 
 interface AdaptationPlanResponse {
@@ -37,13 +38,44 @@ interface AdaptationPlanResponse {
 
 interface ApiValidationError {
   data?: {
+    message?: string;
     errors?: {
       user_id?: string[];
+      [key: string]: string[] | undefined;
     };
   };
+  status?: number;
 }
 
 type CreateStatusType = "idle" | "loading" | "success" | "error";
+
+const FALLBACK_ACTION_ERROR = "Не удалось выполнить действие. Попробуйте снова.";
+
+function getErrorMessage(error: unknown, fallback = FALLBACK_ACTION_ERROR): string {
+  if (typeof error === "object" && error !== null && "data" in error) {
+    const apiError = error as ApiValidationError;
+    const duplicatePlanMessage = apiError.data?.errors?.user_id?.[0];
+    if (duplicatePlanMessage) {
+      return duplicatePlanMessage;
+    }
+
+    const firstValidationError = Object.values(apiError.data?.errors ?? {}).find(
+      (messages) => Array.isArray(messages) && messages.length > 0,
+    )?.[0];
+    if (firstValidationError) {
+      return firstValidationError;
+    }
+
+    if (apiError.status === 403) {
+      return "Недостаточно прав для этого действия.";
+    }
+
+    if (apiError.data?.message) {
+      return apiError.data.message;
+    }
+  }
+  return fallback;
+}
 
 function Interns(): JSX.Element {
   const [createAdaptationPlan, { isLoading: isCreatingPlan }] =
@@ -68,17 +100,10 @@ function Interns(): JSX.Element {
   const users = usersData as UserType[];
   const mentors = (mentorsData as UserType[]).length
     ? (mentorsData as UserType[])
-    : users.filter(
-        (user) =>
-          user.role === "MENTOR" || user.role_name?.toLowerCase() === "наставник",
-      );
+    : users.filter((user) => isUserInRole(user, USER_ROLES.MENTOR));
   const departmentHeads = (departmentHeadsData as UserType[]).length
     ? (departmentHeadsData as UserType[])
-    : users.filter(
-        (user) =>
-          user.role === "DEPARTMENT_HEAD" ||
-          user.role_name?.toLowerCase() === "руководитель отдела",
-      );
+    : users.filter((user) => isUserInRole(user, USER_ROLES.DEPARTMENT_HEAD));
   const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
   const [editingPlanId, setEditingPlanId] = useState<number | null>(null);
   const [editMentor, setEditMentor] = useState<number | null>(null);
@@ -159,17 +184,13 @@ function Interns(): JSX.Element {
         mentor: null,
         departmentHead: null,
       });
-      setIsCreateFormVisible(false);
       setCreateStatusType("success");
       setCreateStatusMessage("План создан");
     } catch (error: unknown) {
-      const apiError = error as ApiValidationError;
-      const duplicatePlanMessage = apiError.data?.errors?.user_id?.[0];
-      const message =
-        duplicatePlanMessage ||
-        "Не удалось сохранить план адаптации. Попробуйте снова.";
       setCreateStatusType("error");
-      setCreateStatusMessage(message);
+      setCreateStatusMessage(
+        getErrorMessage(error, "Не удалось сохранить план адаптации. Попробуйте снова."),
+      );
     }
   };
 
@@ -185,7 +206,10 @@ function Interns(): JSX.Element {
         department_head: departmentHead,
       }).unwrap();
       setEditingPlanId(null);
-    } catch {}
+    } catch (error: unknown) {
+      setCreateStatusType("error");
+      setCreateStatusMessage(getErrorMessage(error));
+    }
   };
 
   const startEdit = (plan: AdaptationPlanResponse) => {
@@ -214,7 +238,10 @@ function Interns(): JSX.Element {
       if (editingPlanId === plan.id) {
         closeEdit();
       }
-    } catch {}
+    } catch (error: unknown) {
+      setCreateStatusType("error");
+      setCreateStatusMessage(getErrorMessage(error));
+    }
   };
 
   return (

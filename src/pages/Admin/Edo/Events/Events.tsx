@@ -19,15 +19,24 @@ import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import { useToggle } from "@hooks/useToggle.ts";
 import { useFiltered } from "@hooks/useFiltered.ts";
 
+type CreateStatusType = "idle" | "loading" | "success" | "error";
+
+interface ApiError {
+  data?: {
+    message?: string;
+  };
+}
+
 function Events(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEdoEventsQuery("");
-  const [addEvent, { isLoading: addLoading, isError: addError }] =
-    useAddEdoEventMutation();
+  const [addEvent, { isLoading: addLoading }] = useAddEdoEventMutation();
   // const [updateEvent] = useUpdateEdoEventMutation();
   const [deleteEvent] = useDeleteEdoEventMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");
+  const [createStatusType, setCreateStatusType] = useState<CreateStatusType>("idle");
+  const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<EventType>(data, search);
 
   const { formItems, setFormItems, handleChange } = useForm({
@@ -42,16 +51,29 @@ function Events(): JSX.Element {
 
   const handleAction = async (e: React.FormEvent) => {
     e.preventDefault();
-    await addEvent(formItems).unwrap();
-    setFormItems({
-      title: "",
-      description: "",
-      link: "",
-      department_id: "",
-      note_department: "",
-      time: "",
-      date: "",
-    });
+    setCreateStatusType("loading");
+    setCreateStatusMessage("Создание...");
+
+    try {
+      await addEvent(formItems).unwrap();
+      setFormItems({
+        title: "",
+        description: "",
+        link: "",
+        department_id: "",
+        note_department: "",
+        time: "",
+        date: "",
+      });
+      setCreateStatusType("success");
+      setCreateStatusMessage("Создано");
+    } catch (createError: unknown) {
+      const apiError = createError as ApiError;
+      setCreateStatusType("error");
+      setCreateStatusMessage(
+        apiError.data?.message ?? "Не удалось создать запись. Попробуйте снова.",
+      );
+    }
   };
 
   return (
@@ -143,10 +165,23 @@ function Events(): JSX.Element {
                 &nbsp;Время (опционально)
               </span>
             </div>
-            <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+            <div className={styles.form_actions}>
+              <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
+              {createStatusType !== "idle" && (
+                <span
+                  className={`${styles.create_status} ${
+                    createStatusType === "error"
+                      ? styles.create_status_error
+                      : createStatusType === "success"
+                        ? styles.create_status_success
+                        : styles.create_status_loading
+                  }`}
+                >
+                  {createStatusMessage}
+                </span>
+              )}
+            </div>
           </form>
-          <div>{addError && `Error`}</div>
-          <hr />
         </>
       ) : null}
 
