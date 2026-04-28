@@ -1,0 +1,386 @@
+import { JSX, useEffect, useMemo, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
+import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import {
+  useDeleteAdaptationPlanMutation,
+  useGetAdaptationPlanByIdQuery,
+  useGetAdaptationPlanTemplatesQuery,
+  useGetDepartmentHeadsQuery,
+  useGetMentorsQuery,
+  useUpdateAdaptationPlanDayMutation,
+  useUpdateAdaptationPlanMutation,
+  useUpdateAdaptationPlanTaskStatusMutation,
+} from "@services/store/features/user.ts";
+import { UserType } from "@interfaces/api/UserType.ts";
+import { ROUTES } from "@constants/routes.ts";
+import styles from "./PlanEditor.module.css";
+
+interface PlanType {
+  id: number;
+  user_id: number;
+  start_date: string;
+  adaptation_plan_template_id?: number | null;
+  shift: number;
+  mentor: number;
+  department_head: number;
+  user?: { name?: string };
+  template?: { id: number; name: string; work_schedule: string; shifts: number[] };
+  days?: Array<{
+    id: number;
+    work_day: number;
+    date: string;
+    completion: "в процессе" | "выполнен" | "есть замечания";
+    tasks?: Array<{ id: number; description: string; status: "выполнено" | "не выполнено" }>;
+  }>;
+}
+
+function PlanEditor(): JSX.Element {
+  const navigate = useNavigate();
+  const { planId } = useParams();
+  const numericPlanId = Number(planId);
+
+  const { data, isLoading, isError } = useGetAdaptationPlanByIdQuery(numericPlanId, {
+    skip: !numericPlanId,
+  });
+  const { data: templates = [] } = useGetAdaptationPlanTemplatesQuery(undefined);
+  const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
+  const { data: headsData = [] } = useGetDepartmentHeadsQuery(undefined);
+
+  const [updatePlan, { isLoading: isSavingPlan }] = useUpdateAdaptationPlanMutation();
+  const [updateDay] = useUpdateAdaptationPlanDayMutation();
+  const [updateTask] = useUpdateAdaptationPlanTaskStatusMutation();
+  const [deletePlan, { isLoading: isDeleting }] = useDeleteAdaptationPlanMutation();
+
+  const plan = data as PlanType | undefined;
+  const mentors = mentorsData as UserType[];
+  const heads = headsData as UserType[];
+  const adaptationTemplates = templates as Array<{
+    id: number;
+    name: string;
+    work_schedule: string;
+    shifts: number[];
+  }>;
+
+  const [form, setForm] = useState({
+    startDate: "",
+    templateId: null as number | null,
+    shift: 1,
+    mentor: null as number | null,
+    departmentHead: null as number | null,
+  });
+  const [days, setDays] = useState<
+    Array<{
+      id: number;
+      work_day: number;
+      date: string;
+      completion: "в процессе" | "выполнен" | "есть замечания";
+      tasks: Array<{ id: number; description: string; status: "выполнено" | "не выполнено" }>;
+    }>
+  >([]);
+  const [initialDays, setInitialDays] = useState<typeof days>([]);
+  const [status, setStatus] = useState("");
+
+  useEffect(() => {
+    if (!plan) {
+      return;
+    }
+
+    setForm({
+      startDate: plan.start_date ?? "",
+      templateId: plan.adaptation_plan_template_id ?? plan.template?.id ?? null,
+      shift: plan.shift ?? 1,
+      mentor: plan.mentor ?? null,
+      departmentHead: plan.department_head ?? null,
+    });
+
+    const mappedDays = (plan.days ?? []).map((day) => ({
+      id: day.id,
+      work_day: day.work_day,
+      date: day.date,
+      completion: day.completion,
+      tasks: (day.tasks ?? []).map((task) => ({
+        id: task.id,
+        description: task.description,
+        status: task.status,
+      })),
+    }));
+
+    setDays(mappedDays);
+    setInitialDays(mappedDays);
+  }, [plan]);
+
+  const availableShifts = useMemo(() => {
+    const template = adaptationTemplates.find((item) => item.id === form.templateId);
+    return template?.shifts?.length ? template.shifts : [1, 2, 3, 4, 5, 6];
+  }, [adaptationTemplates, form.templateId]);
+
+  const handleSaveAll = async () => {
+    if (!plan) {
+      return;
+    }
+    if (!form.templateId || !form.mentor || !form.departmentHead || !form.startDate) {
+      setStatus("Заполните все обязательные поля.");
+      return;
+    }
+
+    try {
+      await updatePlan({
+        id: plan.id,
+        start_date: form.startDate,
+        adaptation_plan_template_id: form.templateId,
+        shift: form.shift,
+        mentor: form.mentor,
+        department_head: form.departmentHead,
+      }).unwrap();
+
+      const dayRequests = days.map((day) =>
+        updateDay({
+          planId: plan.id,
+          dayId: day.id,
+          date: day.date,
+          completion: day.completion,
+        }).unwrap(),
+      );
+
+      const taskRequests: Array<Promise<unknown>> = [];
+      days.forEach((day, dayIndex) => {
+        day.tasks.forEach((task, taskIndex) => {
+          const initialTask = initialDays[dayIndex]?.tasks?.[taskIndex];
+          if (!initialTask || initialTask.status !== task.status) {
+            taskRequests.push(
+              updateTask({
+                planId: plan.id,
+                dayId: day.id,
+                taskId: task.id,
+                status: task.status,
+              }).unwrap(),
+            );
+          }
+        });
+      });
+
+      await Promise.all([...dayRequests, ...taskRequests]);
+      setInitialDays(days);
+      setStatus("План сохранен.");
+    } catch {
+      setStatus("Не удалось сохранить план.");
+    }
+  };
+
+  const handleDelete = async () => {
+    if (!plan) {
+      return;
+    }
+    const confirmed = window.confirm("Удалить план стажера?");
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deletePlan(plan.id).unwrap();
+      navigate(ROUTES.MENTORSHIP_INTERNS);
+    } catch {
+      setStatus("Не удалось удалить план.");
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <OverflowScrollBlock header_name={"Редактирование плана"}>
+        <p className={styles.info}>Загрузка...</p>
+      </OverflowScrollBlock>
+    );
+  }
+
+  if (isError || !plan) {
+    return (
+      <OverflowScrollBlock header_name={"Редактирование плана"}>
+        <DataMessage type="error" />
+      </OverflowScrollBlock>
+    );
+  }
+
+  return (
+    <OverflowScrollBlock header_name={"Редактирование плана стажера"}>
+      <div className={styles.container}>
+        <h3 className={styles.name}>{plan.user?.name ?? `ID пользователя: ${plan.user_id}`}</h3>
+        <div className={styles.actionsTop}>
+          <button className={styles.buttonPrimary} onClick={handleSaveAll} disabled={isSavingPlan}>
+            Сохранить
+          </button>
+          <button className={styles.buttonDanger} onClick={handleDelete} disabled={isDeleting}>
+            Удалить
+          </button>
+          <button className={styles.buttonGhost} onClick={() => navigate(ROUTES.MENTORSHIP_INTERNS)}>
+            Закрыть
+          </button>
+        </div>
+
+        <div className={styles.formRow}>
+          <label className={styles.label}>
+            Дата начала
+            <input
+              type="date"
+              className={styles.input}
+              value={form.startDate}
+              onChange={(event) => setForm({ ...form, startDate: event.target.value })}
+            />
+          </label>
+          <label className={styles.label}>
+            Шаблон адаптации
+            <select
+              className={styles.input}
+              value={form.templateId ?? ""}
+              onChange={(event) => {
+                const templateId = event.target.value ? Number(event.target.value) : null;
+                const template = adaptationTemplates.find((item) => item.id === templateId);
+                setForm({
+                  ...form,
+                  templateId,
+                  shift: template?.shifts?.[0] ?? 1,
+                });
+              }}
+            >
+              <option value="">Выберите шаблон</option>
+              {adaptationTemplates.map((template) => (
+                <option key={template.id} value={template.id}>
+                  {template.name} ({template.work_schedule})
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.label}>
+            Смена
+            <select
+              className={styles.input}
+              value={form.shift}
+              onChange={(event) => setForm({ ...form, shift: Number(event.target.value) })}
+            >
+              {availableShifts.map((shift) => (
+                <option key={shift} value={shift}>
+                  Смена {shift}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        <div className={styles.formRow}>
+          <label className={styles.label}>
+            Наставник
+            <select
+              className={styles.input}
+              value={form.mentor ?? ""}
+              onChange={(event) =>
+                setForm({ ...form, mentor: event.target.value ? Number(event.target.value) : null })
+              }
+            >
+              <option value="">Выберите наставника</option>
+              {mentors.map((mentor) => (
+                <option key={mentor.id} value={mentor.id}>
+                  {mentor.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className={styles.label}>
+            Руководитель отдела
+            <select
+              className={styles.input}
+              value={form.departmentHead ?? ""}
+              onChange={(event) =>
+                setForm({
+                  ...form,
+                  departmentHead: event.target.value ? Number(event.target.value) : null,
+                })
+              }
+            >
+              <option value="">Выберите руководителя отдела</option>
+              {heads.map((head) => (
+                <option key={head.id} value={head.id}>
+                  {head.name}
+                </option>
+              ))}
+            </select>
+          </label>
+        </div>
+
+        {days.map((day, dayIndex) => (
+          <div key={day.id} className={styles.dayCard}>
+            <div className={styles.dayHeader}>День {day.work_day}</div>
+            <div className={styles.formRow}>
+              <label className={styles.label}>
+                Дата
+                <input
+                  type="date"
+                  className={styles.input}
+                  value={day.date}
+                  onChange={(event) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = { ...next[dayIndex], date: event.target.value };
+                      return next;
+                    })
+                  }
+                />
+              </label>
+              <label className={styles.label}>
+                Статус дня
+                <select
+                  className={styles.input}
+                  value={day.completion}
+                  onChange={(event) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        completion: event.target.value as "в процессе" | "выполнен" | "есть замечания",
+                      };
+                      return next;
+                    })
+                  }
+                >
+                  <option value="в процессе">В процессе</option>
+                  <option value="выполнен">Выполнен</option>
+                  <option value="есть замечания">Есть замечания</option>
+                </select>
+              </label>
+            </div>
+
+            <div className={styles.taskList}>
+              {day.tasks.map((task, taskIndex) => (
+                <div key={task.id} className={styles.taskRow}>
+                  <span className={styles.taskName}>{task.description}</span>
+                  <select
+                    className={styles.input}
+                    value={task.status}
+                    onChange={(event) =>
+                      setDays((previous) => {
+                        const next = [...previous];
+                        const tasks = [...next[dayIndex].tasks];
+                        tasks[taskIndex] = {
+                          ...tasks[taskIndex],
+                          status: event.target.value as "выполнено" | "не выполнено",
+                        };
+                        next[dayIndex] = { ...next[dayIndex], tasks };
+                        return next;
+                      })
+                    }
+                  >
+                    <option value="не выполнено">Не выполнено</option>
+                    <option value="выполнено">Выполнено</option>
+                  </select>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+
+        {status && <p className={styles.status}>{status}</p>}
+      </div>
+    </OverflowScrollBlock>
+  );
+}
+
+export default PlanEditor;

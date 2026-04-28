@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { JSX, useState } from "react";
 import styles from "./TaskItem.module.css";
 import { TaskType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
 
@@ -9,7 +9,7 @@ interface TaskItemProps {
     dayId: number | undefined,
     taskId: number | undefined,
     status: TaskStatus,
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 function TaskItem({
@@ -17,8 +17,15 @@ function TaskItem({
   dayId,
   onUpdateTaskStatus,
 }: TaskItemProps): JSX.Element {
-  const handleStatusChange = (newStatus: TaskStatus) => {
-    onUpdateTaskStatus?.(dayId, task.id, newStatus);
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleStatusChange = async (newStatus: TaskStatus) => {
+    setIsSaving(true);
+    try {
+      await onUpdateTaskStatus?.(dayId, task.id, newStatus);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   const getRoleColor = (role: string | undefined): string => {
@@ -73,6 +80,7 @@ function TaskItem({
             onClick={() => handleStatusChange("выполнено")}
             className={`${styles.statusButton} ${task.status === "выполнено" ? styles.active : ""} ${styles.completed}`}
             title="Отметить как выполнено"
+            disabled={isSaving}
           >
             ✓ Выполнено
           </button>
@@ -80,6 +88,7 @@ function TaskItem({
             onClick={() => handleStatusChange("не выполнено")}
             className={`${styles.statusButton} ${task.status === "не выполнено" ? styles.active : ""} ${styles.notCompleted}`}
             title="Отметить как не выполнено"
+            disabled={isSaving}
           >
             ✕ Не выполнено
           </button>

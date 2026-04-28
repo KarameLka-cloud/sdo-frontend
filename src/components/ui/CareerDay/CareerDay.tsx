@@ -5,12 +5,15 @@ import TaskItem from "./TaskItem.tsx";
 
 interface CareerDayProps {
   day: AdaptationDayType;
-  onUpdateInternComment?: (dayId: number | undefined, comment: string) => void;
+  onUpdateInternComment?: (
+    dayId: number | undefined,
+    comment: string,
+  ) => Promise<void> | void;
   onUpdateTaskStatus?: (
     dayId: number | undefined,
     taskId: number | undefined,
     status: TaskStatus,
-  ) => void;
+  ) => Promise<void> | void;
 }
 
 function CareerDay({
@@ -28,9 +31,13 @@ function CareerDay({
     setEditedInternComment(day.internComment || "");
   }, [day.internComment]);
 
-  const handleSaveInternComment = () => {
-    onUpdateInternComment?.(day.id, editedInternComment);
-    setIsEditingInternComment(false);
+  const handleSaveInternComment = async () => {
+    try {
+      await onUpdateInternComment?.(day.id, editedInternComment);
+      setIsEditingInternComment(false);
+    } catch {
+      // Status shown at Adaptation page level.
+    }
   };
 
   const handleCancelInternComment = () => {
@@ -147,25 +154,17 @@ function CareerDay({
                 </div>
               )}
 
-              {day.mentorComment && (
-                <div className={styles.commentItem}>
-                  <span className={styles.commentLabel}>
-                    Комментарий наставника
-                  </span>
-                  <p className={styles.commentText}>{day.mentorComment}</p>
-                </div>
-              )}
+              <div className={styles.commentItem}>
+                <span className={styles.commentLabel}>Комментарий наставника</span>
+                <p className={styles.commentText}>{day.mentorComment || "Нет комментария"}</p>
+              </div>
 
-              {day.departmentHeadComment && (
-                <div className={styles.commentItem}>
-                  <span className={styles.commentLabel}>
-                    Комментарий руководителя отдела
-                  </span>
-                  <p className={styles.commentText}>
-                    {day.departmentHeadComment}
-                  </p>
-                </div>
-              )}
+              <div className={styles.commentItem}>
+                <span className={styles.commentLabel}>Комментарий руководителя отдела</span>
+                <p className={styles.commentText}>
+                  {day.departmentHeadComment || "Нет комментария"}
+                </p>
+              </div>
             </>
           )}
         </div>

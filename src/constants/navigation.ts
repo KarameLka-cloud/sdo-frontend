@@ -66,6 +66,12 @@ export const ADMIN_NAV_LINKS = [
     path: ROUTES.ADMIN_EDO,
     icon: calendarIcon,
   },
+  {
+    id: 4,
+    name: "Адаптация",
+    path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
+    icon: personIcon,
+  },
 ] as const;
 
 export const ADMIN_NAV_EDUCATION_LINKS = [

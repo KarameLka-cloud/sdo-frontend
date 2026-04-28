@@ -32,7 +32,10 @@ import EdoAdmin from "@pages/Admin/Edo/Edo.tsx";
 import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
+import AdaptationTemplatesAdmin from "@pages/Admin/Adaptation/Templates/Templates.tsx";
+import AdaptationTemplateTasksAdmin from "@pages/Admin/Adaptation/Templates/TemplateTasks.tsx";
 import Interns from "@pages/Mentorship/Interns/Interns.tsx";
+import InternPlanEditor from "@pages/Mentorship/Interns/PlanEditor.tsx";
 import MyInterns from "@pages/Mentorship/MyInterns/MyInterns.tsx";
 import { ROUTES } from "@constants/routes.ts";
 
@@ -192,6 +195,24 @@ const AppRoutes = createBrowserRouter([
             path: ROUTES.ADMIN_EDO_TESTS,
             element: <PageTitle title={"Тесты"} element={<EdoTestsAdmin />} />,
           },
+          {
+            path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
+            element: (
+              <PageTitle
+                title={"Шаблоны адаптации"}
+                element={<AdaptationTemplatesAdmin />}
+              />
+            ),
+          },
+          {
+            path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
+            element: (
+              <PageTitle
+                title={"Задачи шаблона"}
+                element={<AdaptationTemplateTasksAdmin />}
+              />
+            ),
+          },
         ],
       },
       {
@@ -204,6 +225,15 @@ const AppRoutes = createBrowserRouter([
           {
             path: ROUTES.MENTORSHIP_MY_INTERNS,
             element: <PageTitle title={"Мои стажеры"} element={<MyInterns />} />,
+          },
+          {
+            path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
+            element: (
+              <PageTitle
+                title={"Редактирование плана стажера"}
+                element={<InternPlanEditor />}
+              />
+            ),
           },
         ],
       },

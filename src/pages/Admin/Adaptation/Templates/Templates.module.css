@@ -1,0 +1,126 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0.9rem;
+  border: 0.1rem solid #e5e7eb;
+  border-radius: 0.75rem;
+}
+
+.input {
+  border: 0.1rem solid #d1d5dc;
+  border-radius: 0.5rem;
+  padding: 0.55rem 0.7rem;
+  font-size: 0.9rem;
+}
+
+.fieldLabel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.85rem;
+  color: #334155;
+}
+
+.button {
+  border: none;
+  border-radius: 0.5rem;
+  background: #2f5cbf;
+  color: #fff;
+  font-size: 0.9rem;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+}
+
+.buttonGhost {
+  border: 0.1rem solid #d1d5dc;
+  border-radius: 0.5rem;
+  background: #fff;
+  color: #334155;
+  font-size: 0.9rem;
+  padding: 0.55rem 1rem;
+  cursor: pointer;
+}
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.card {
+  border: 0.1rem solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 0.9rem;
+}
+
+.templateButton {
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.title {
+  margin: 0 0 0.3rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.meta {
+  margin: 0 0 0.2rem;
+  color: #4b5563;
+}
+
+.actions {
+  margin-top: 0.7rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.status {
+  margin: 0;
+  color: #334155;
+}
+
+.taskBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  border: 0.05rem solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.6rem;
+}
+
+.taskBlockHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.taskRow {
+  display: grid;
+  grid-template-columns: 2fr 0.8fr 0.8fr 1fr 1.5fr;
+  gap: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  .taskRow {
+    grid-template-columns: 1fr;
+  }
+}

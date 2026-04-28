@@ -1,4 +1,5 @@
 import React, { JSX, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
@@ -6,12 +7,14 @@ import Input from "@components/ui/Input/Input.tsx";
 import {
   useCreateAdaptationPlanMutation,
   useDeleteAdaptationPlanMutation,
+  useGetAdaptationPlanTemplatesQuery,
   useGetAllAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
   useUpdateAdaptationPlanMutation,
 } from "@services/store/features/user.ts";
+import { ROUTES } from "@constants/routes.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
 import styles from "./Interns.module.css";
@@ -19,8 +22,18 @@ import styles from "./Interns.module.css";
 interface AdaptationPlanResponse {
   id: number;
   user_id: number;
+  start_date?: string;
+  adaptation_plan_template_id?: number | null;
   mentor: number;
   department_head: number;
+  work_schedule?: string;
+  shift?: number;
+  template?: {
+    id: number;
+    name: string;
+    work_schedule: string;
+    shifts: number[];
+  };
   mentor_user?: {
     id?: number;
     name?: string;
@@ -34,6 +47,17 @@ interface AdaptationPlanResponse {
     name?: string;
     department?: string;
   };
+  days?: Array<{
+    id: number;
+    work_day: number;
+    date: string;
+    completion: "в процессе" | "выполнен" | "есть замечания";
+    tasks?: Array<{
+      id: number;
+      description: string;
+      status: "выполнено" | "не выполнено";
+    }>;
+  }>;
 }
 
 interface ApiValidationError {
@@ -78,6 +102,7 @@ function getErrorMessage(error: unknown, fallback = FALLBACK_ACTION_ERROR): stri
 }
 
 function Interns(): JSX.Element {
+  const navigate = useNavigate();
   const [createAdaptationPlan, { isLoading: isCreatingPlan }] =
     useCreateAdaptationPlanMutation();
   const [updateAdaptationPlan, { isLoading: isUpdatingPlan }] =
@@ -90,6 +115,7 @@ function Interns(): JSX.Element {
     isError: isAllPlansError,
   } = useGetAllAdaptationPlansQuery(undefined);
   const { data: usersData = [] } = useGetUsersQuery(undefined);
+  const { data: templatesData = [] } = useGetAdaptationPlanTemplatesQuery(undefined);
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: departmentHeadsData = [] } = useGetDepartmentHeadsQuery(
     undefined,
@@ -98,6 +124,12 @@ function Interns(): JSX.Element {
   const isLoading = isAllPlansLoading;
   const isError = isAllPlansError;
   const users = usersData as UserType[];
+  const adaptationTemplates = templatesData as {
+    id: number;
+    name: string;
+    work_schedule: string;
+    shifts: number[];
+  }[];
   const mentors = (mentorsData as UserType[]).length
     ? (mentorsData as UserType[])
     : users.filter((user) => isUserInRole(user, USER_ROLES.MENTOR));
@@ -108,11 +140,14 @@ function Interns(): JSX.Element {
   const [editingPlanId, setEditingPlanId] = useState<number | null>(null);
   const [editMentor, setEditMentor] = useState<number | null>(null);
   const [editDepartmentHead, setEditDepartmentHead] = useState<number | null>(null);
+  const [editTemplateId, setEditTemplateId] = useState<number | null>(null);
+  const [editShift, setEditShift] = useState<number>(1);
+  const [editStartDate, setEditStartDate] = useState<string>("");
   const [search, setSearch] = useState("");
   const [newPlan, setNewPlan] = useState({
     userId: null as number | null,
     startDate: "",
-    workSchedule: "5/2",
+    adaptationPlanTemplateId: null as number | null,
     shift: 1,
     mentor: null as number | null,
     departmentHead: null as number | null,
@@ -156,6 +191,24 @@ function Interns(): JSX.Element {
       setCreateStatusMessage("Укажите дату начала стажировки");
       return;
     }
+    if (!newPlan.adaptationPlanTemplateId) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите шаблон адаптации");
+      return;
+    }
+    const template = adaptationTemplates.find(
+      (item) => item.id === newPlan.adaptationPlanTemplateId,
+    );
+    if (!template) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выбранный шаблон не найден");
+      return;
+    }
+    if (!template.shifts.includes(newPlan.shift)) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите корректную смену из шаблона");
+      return;
+    }
     if (!newPlan.mentor) {
       setCreateStatusType("error");
       setCreateStatusMessage("Выберите наставника");
@@ -171,7 +224,7 @@ function Interns(): JSX.Element {
       await createAdaptationPlan({
         user_id: newPlan.userId,
         start_date: newPlan.startDate,
-        work_schedule: newPlan.workSchedule,
+        adaptation_plan_template_id: newPlan.adaptationPlanTemplateId,
         shift: newPlan.shift,
         mentor: newPlan.mentor,
         department_head: newPlan.departmentHead,
@@ -179,7 +232,7 @@ function Interns(): JSX.Element {
       setNewPlan({
         userId: null,
         startDate: "",
-        workSchedule: "5/2",
+        adaptationPlanTemplateId: null,
         shift: 1,
         mentor: null,
         departmentHead: null,
@@ -198,10 +251,28 @@ function Interns(): JSX.Element {
     id: number,
     mentor: number,
     departmentHead: number,
+    adaptationPlanTemplateId: number,
+    shift: number,
+    startDate: string,
   ) => {
+    const template = adaptationTemplates.find((item) => item.id === adaptationPlanTemplateId);
+    if (!template) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выбранный шаблон не найден");
+      return;
+    }
+    if (!template.shifts.includes(shift)) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите корректную смену из шаблона");
+      return;
+    }
+
     try {
       await updateAdaptationPlan({
         id,
+        start_date: startDate,
+        adaptation_plan_template_id: adaptationPlanTemplateId,
+        shift,
         mentor,
         department_head: departmentHead,
       }).unwrap();
@@ -216,12 +287,18 @@ function Interns(): JSX.Element {
     setEditingPlanId(plan.id);
     setEditMentor(plan.mentor);
     setEditDepartmentHead(plan.department_head);
+    setEditTemplateId(plan.adaptation_plan_template_id ?? plan.template?.id ?? null);
+    setEditShift(plan.shift ?? 1);
+    setEditStartDate(plan.start_date ?? "");
   };
 
   const closeEdit = () => {
     setEditingPlanId(null);
     setEditMentor(null);
     setEditDepartmentHead(null);
+    setEditTemplateId(null);
+    setEditShift(1);
+    setEditStartDate("");
   };
 
   const handleDeletePlan = async (plan: AdaptationPlanResponse) => {
@@ -243,6 +320,22 @@ function Interns(): JSX.Element {
       setCreateStatusMessage(getErrorMessage(error));
     }
   };
+
+  const selectedCreateTemplate = adaptationTemplates.find(
+    (template) => template.id === newPlan.adaptationPlanTemplateId,
+  );
+
+  const availableCreateShifts = selectedCreateTemplate?.shifts?.length
+    ? selectedCreateTemplate.shifts
+    : [1, 2, 3, 4, 5, 6];
+
+  const selectedEditTemplate = adaptationTemplates.find(
+    (template) => template.id === editTemplateId,
+  );
+
+  const availableEditShifts = selectedEditTemplate?.shifts?.length
+    ? selectedEditTemplate.shifts
+    : [1, 2, 3, 4, 5, 6];
 
   return (
     <OverflowScrollBlock header_name={"Список стажеров"}>
@@ -311,19 +404,28 @@ function Interns(): JSX.Element {
                 />
               </label>
               <label className={styles.label}>
-                График
+                Шаблон адаптации
                 <select
                   className={styles.select}
-                  value={newPlan.workSchedule}
-                  onChange={(e) =>
+                  value={newPlan.adaptationPlanTemplateId ?? ""}
+                  onChange={(e) => {
+                    const templateId = e.target.value ? Number(e.target.value) : null;
+                    const template = adaptationTemplates.find(
+                      (item) => item.id === templateId,
+                    );
                     setNewPlan({
                       ...newPlan,
-                      workSchedule: e.target.value,
-                    })
-                  }
+                      adaptationPlanTemplateId: templateId,
+                      shift: template?.shifts?.[0] ?? 1,
+                    });
+                  }}
                 >
-                  <option value="5/2">5/2</option>
-                  <option value="2/2">2/2</option>
+                  <option value="">Выберите шаблон</option>
+                  {adaptationTemplates.map((template) => (
+                    <option key={template.id} value={template.id}>
+                      {template.name} ({template.work_schedule})
+                    </option>
+                  ))}
                 </select>
               </label>
               <label className={styles.label}>
@@ -338,12 +440,11 @@ function Interns(): JSX.Element {
                     })
                   }
                 >
-                  <option value={1}>Смена 1</option>
-                  <option value={2}>Смена 2</option>
-                  <option value={3}>Смена 3</option>
-                  <option value={4}>Смена 4</option>
-                  <option value={5}>Смена 5</option>
-                  <option value={6}>Смена 6</option>
+                  {availableCreateShifts.map((shift) => (
+                    <option key={shift} value={shift}>
+                      Смена {shift}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
@@ -434,8 +535,20 @@ function Interns(): JSX.Element {
                         <IconButton
                           type="save"
                           onClick={() => {
-                            if (editMentor && editDepartmentHead) {
-                              handleUpdatePlan(plan.id, editMentor, editDepartmentHead);
+                            if (
+                              editMentor &&
+                              editDepartmentHead &&
+                              editTemplateId &&
+                              editStartDate
+                            ) {
+                              handleUpdatePlan(
+                                plan.id,
+                                editMentor,
+                                editDepartmentHead,
+                                editTemplateId,
+                                editShift,
+                                editStartDate,
+                              );
                             }
                           }}
                         />
@@ -451,8 +564,61 @@ function Interns(): JSX.Element {
                   </div>
                 </div>
                 <div className={styles.meta}>ID пользователя: {plan.user_id}</div>
+                {plan.template && (
+                  <div className={styles.meta}>
+                    Шаблон: {plan.template.name} ({plan.template.work_schedule})
+                  </div>
+                )}
                 {editingPlanId === plan.id ? (
                   <div className={styles.actions}>
+                    <label className={styles.label}>
+                      Дата начала
+                      <input
+                        type="date"
+                        className={styles.select}
+                        value={editStartDate}
+                        onChange={(e) => setEditStartDate(e.target.value)}
+                        disabled={isUpdatingPlan || isDeletingPlan}
+                      />
+                    </label>
+                    <label className={styles.label}>
+                      Шаблон адаптации
+                      <select
+                        className={styles.select}
+                        value={editTemplateId ?? ""}
+                        onChange={(e) => {
+                          const templateId = e.target.value ? Number(e.target.value) : null;
+                          const template = adaptationTemplates.find(
+                            (item) => item.id === templateId,
+                          );
+                          setEditTemplateId(templateId);
+                          setEditShift(template?.shifts?.[0] ?? 1);
+                        }}
+                        disabled={isUpdatingPlan || isDeletingPlan}
+                      >
+                        <option value="">Выберите шаблон</option>
+                        {adaptationTemplates.map((template) => (
+                          <option key={template.id} value={template.id}>
+                            {template.name} ({template.work_schedule})
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className={styles.label}>
+                      Смена
+                      <select
+                        className={styles.select}
+                        value={editShift}
+                        onChange={(e) => setEditShift(Number(e.target.value))}
+                        disabled={isUpdatingPlan || isDeletingPlan}
+                      >
+                        {availableEditShifts.map((shift) => (
+                          <option key={shift} value={shift}>
+                            Смена {shift}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
                     <label className={styles.label}>
                       Наставник
                       <select
@@ -495,6 +661,20 @@ function Interns(): JSX.Element {
                           ))}
                       </select>
                     </label>
+                    <button
+                      type="button"
+                      className={styles.openEditorButton}
+                      onClick={() =>
+                        navigate(
+                          ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
+                            ":planId",
+                            String(plan.id),
+                          ),
+                        )
+                      }
+                    >
+                      Редактировать план подробно
+                    </button>
                   </div>
                 ) : (
                   <div className={styles.actions}>

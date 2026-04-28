@@ -19,7 +19,9 @@ export const API_ENDPOINTS = {
   EDO_TESTS: "api/edo/tests/",
   ADAPTATION_PLANS: "api/mentorship/adaptation-plans/",
   ADAPTATION_MY_PLAN: "api/mentorship/adaptation-plans/my",
+  ADAPTATION_MY_PLAN_DAYS: "api/mentorship/adaptation-plans/my/days/",
   ADAPTATION_ALL_PLANS: "api/mentorship/adaptation-plans/all",
+  ADAPTATION_PLAN_TEMPLATES: "api/mentorship/adaptation-plan-templates/",
 } as const;
 
 export const COOKIE_NAMES = {

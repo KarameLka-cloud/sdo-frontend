@@ -15,6 +15,7 @@ export const ROUTES = {
   MENTORSHIP: "/mentorship",
   MENTORSHIP_INTERNS: "/mentorship/interns",
   MENTORSHIP_MY_INTERNS: "/mentorship/my-interns",
+  MENTORSHIP_INTERNS_PLAN_EDIT: "/mentorship/interns/:planId/edit",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
   ADMIN_EDUCATION: "/admin/education",
@@ -26,6 +27,8 @@ export const ROUTES = {
   ADMIN_EDO_COURSES: "/admin/edo/courses",
   ADMIN_EDO_EVENTS: "/admin/edo/events",
   ADMIN_EDO_TESTS: "/admin/edo/tests",
+  ADMIN_ADAPTATION_TEMPLATES: "/admin/adaptation/templates",
+  ADMIN_ADAPTATION_TEMPLATE_TASKS: "/admin/adaptation/templates/:templateId",
 } as const;
 
 // export type RouteKey = keyof typeof ROUTES;
