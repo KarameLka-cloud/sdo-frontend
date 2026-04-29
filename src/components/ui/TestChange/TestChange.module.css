@@ -12,16 +12,6 @@ span {
   font-weight: 600;
 }
 
-.form {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
-}
-
-.input:not(:last-child) {
-  margin-bottom: 0.2rem;
-}
-
 .content {
   width: 100%;
   margin-right: auto;
@@ -46,19 +36,7 @@ span {
   color: var(--mfc-black-color);
 }
 
-.button_edit,
-.button_close,
-.button_save,
 .button_delete {
   margin-left: 0.5rem;
 }
 
-.create_search {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-}
-
-.input_search {
-  width: 40%;
-}

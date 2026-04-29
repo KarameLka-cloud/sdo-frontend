@@ -68,14 +68,18 @@
 .meta {
   font-size: 0.9rem;
   color: #4b5563;
-  margin-bottom: 0.3rem;
+  margin: 0;
 }
 
 .actions {
-  margin-top: 0.8rem;
+  margin-top: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: 0.3rem;
+}
+
+.actions .meta {
+  margin: 0;
 }
 
 @media (max-width: 900px) {

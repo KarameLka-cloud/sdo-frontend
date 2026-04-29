@@ -1,4 +1,4 @@
-import { JSX, useCallback, useState } from "react";
+import { ChangeEvent, JSX, useCallback, useState } from "react";
 import styles from "./User.module.css";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { useToggle } from "@hooks/useToggle.ts";
@@ -28,7 +28,7 @@ function User({ user, className }: UserPropsType): JSX.Element {
 
   const roles: RoleItem[] = rolesData?.data || [];
 
-  const handleRoleSelect = useCallback((event: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleRoleSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
     setSelectedRole(event.target.value);
   }, []);
 

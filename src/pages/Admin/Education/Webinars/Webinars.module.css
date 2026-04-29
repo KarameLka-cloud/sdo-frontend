@@ -30,6 +30,8 @@
 .create_search {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
   margin-bottom: 0.4rem;
   position: sticky;
   top: 0;

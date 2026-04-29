@@ -156,9 +156,11 @@
 
 .linksInfo {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   gap: 0.5rem;
   font-size: 0.8rem;
+  min-width: 0;
 }
 
 .linksLabel {
@@ -167,9 +169,11 @@
 }
 
 .linksList {
-  display: flex;
-  flex-wrap: wrap;
+  display: inline-flex;
+  flex-wrap: nowrap;
   gap: 0.5rem;
+  min-width: 0;
+  overflow-x: auto;
 }
 
 .link {

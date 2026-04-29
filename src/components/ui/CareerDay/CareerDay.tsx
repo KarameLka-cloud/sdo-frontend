@@ -74,24 +74,29 @@ function CareerDay({
         <div className={styles.section}>
           <h3 className={styles.sectionTitle}>Информация</h3>
           <div className={styles.tasksContainer}>
-            {Array.isArray(day.tasks) &&
+            {Array.isArray(day.tasks) && day.tasks.length > 0 ? (
               day.tasks.map((task, index) => (
                 <TaskItem
-                  key={task.id || index}
+                  key={task.id ?? index}
                   task={task}
                   dayId={day.id}
                   onUpdateTaskStatus={onUpdateTaskStatus}
                 />
-              ))}
+              ))
+            ) : (
+              <p className={styles.emptyTasks}>На этот день задачи не назначены</p>
+            )}
           </div>
         </div>
 
         <div className={styles.section}>
           <button
+            type="button"
             onClick={() => setIsCommentsExpanded(!isCommentsExpanded)}
             className={styles.sectionToggle}
+            aria-expanded={isCommentsExpanded}
           >
-            <h3 className={styles.sectionTitle}>Комментарии</h3>
+            <span className={styles.sectionTitle}>Комментарии</span>
             <span
               className={`${styles.toggleIcon} ${isCommentsExpanded ? styles.expanded : ""}`}
             >
@@ -125,12 +130,14 @@ function CareerDay({
                       />
                       <div className={styles.buttonGroup}>
                         <button
+                          type="button"
                           onClick={handleSaveInternComment}
                           className={`${styles.button} ${styles.buttonPrimary}`}
                         >
                           Сохранить
                         </button>
                         <button
+                          type="button"
                           onClick={handleCancelInternComment}
                           className={`${styles.button} ${styles.buttonSecondary}`}
                         >
@@ -144,6 +151,7 @@ function CareerDay({
                         {editedInternComment || "Нет комментария"}
                       </p>
                       <button
+                        type="button"
                         onClick={() => setIsEditingInternComment(true)}
                         className={styles.editButton}
                       >

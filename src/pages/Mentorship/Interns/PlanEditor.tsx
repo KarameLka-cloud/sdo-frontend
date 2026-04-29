@@ -2,6 +2,7 @@ import { JSX, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
@@ -187,7 +188,7 @@ function PlanEditor(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock header_name={"Редактирование плана"}>
+      <OverflowScrollBlock header_name={"Редактирование плана"} button_back_visible={"enable"}>
         <p className={styles.info}>Загрузка...</p>
       </OverflowScrollBlock>
     );
@@ -195,26 +196,30 @@ function PlanEditor(): JSX.Element {
 
   if (isError || !plan) {
     return (
-      <OverflowScrollBlock header_name={"Редактирование плана"}>
+      <OverflowScrollBlock header_name={"Редактирование плана"} button_back_visible={"enable"}>
         <DataMessage type="error" />
       </OverflowScrollBlock>
     );
   }
 
   return (
-    <OverflowScrollBlock header_name={"Редактирование плана стажера"}>
+    <OverflowScrollBlock
+      header_name={"Редактирование плана стажера"}
+      button_back_visible={"enable"}
+    >
       <div className={styles.container}>
         <h3 className={styles.name}>{plan.user?.name ?? `ID пользователя: ${plan.user_id}`}</h3>
         <div className={styles.actionsTop}>
-          <button className={styles.buttonPrimary} onClick={handleSaveAll} disabled={isSavingPlan}>
-            Сохранить
-          </button>
-          <button className={styles.buttonDanger} onClick={handleDelete} disabled={isDeleting}>
-            Удалить
-          </button>
-          <button className={styles.buttonGhost} onClick={() => navigate(ROUTES.MENTORSHIP_INTERNS)}>
-            Закрыть
-          </button>
+          <IconButton
+            type="save"
+            onClick={isSavingPlan ? undefined : handleSaveAll}
+            className={isSavingPlan ? styles.iconDisabled : ""}
+          />
+          <IconButton
+            type="delete"
+            onClick={isDeleting ? undefined : handleDelete}
+            className={isDeleting ? styles.iconDisabled : ""}
+          />
         </div>
 
         <div className={styles.formRow}>

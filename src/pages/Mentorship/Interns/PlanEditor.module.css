@@ -17,30 +17,9 @@
   flex-wrap: wrap;
 }
 
-.buttonPrimary,
-.buttonDanger,
-.buttonGhost {
-  border: none;
-  border-radius: 0.5rem;
-  padding: 0.55rem 0.9rem;
-  font-size: 0.88rem;
-  cursor: pointer;
-}
-
-.buttonPrimary {
-  background: #2f5cbf;
-  color: #fff;
-}
-
-.buttonDanger {
-  background: #dc2626;
-  color: #fff;
-}
-
-.buttonGhost {
-  background: #fff;
-  color: #334155;
-  border: 0.05rem solid #d1d5dc;
+.iconDisabled {
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 .formRow {

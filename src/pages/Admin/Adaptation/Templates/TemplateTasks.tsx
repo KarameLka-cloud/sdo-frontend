@@ -1,5 +1,5 @@
 import { JSX, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
@@ -76,7 +76,6 @@ function toPayloadRule(rule: TaskRuleForm): TaskRule {
 }
 
 function TemplateTasks(): JSX.Element {
-  const navigate = useNavigate();
   const params = useParams();
   const templateId = Number(params.templateId);
   const { data = [], isLoading, isError } = useGetAdaptationPlanTemplatesQuery(undefined);
@@ -260,7 +259,10 @@ function TemplateTasks(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock header_name={"Настройка задач шаблона"}>
+      <OverflowScrollBlock
+        header_name={"Настройка задач шаблона"}
+        button_back_visible={"enable"}
+      >
         <p className={styles.info}>Загрузка...</p>
       </OverflowScrollBlock>
     );
@@ -268,23 +270,22 @@ function TemplateTasks(): JSX.Element {
 
   if (isError || !template) {
     return (
-      <OverflowScrollBlock header_name={"Настройка задач шаблона"}>
+      <OverflowScrollBlock
+        header_name={"Настройка задач шаблона"}
+        button_back_visible={"enable"}
+      >
         <DataMessage type="error" />
       </OverflowScrollBlock>
     );
   }
 
   return (
-    <OverflowScrollBlock header_name={`Шаблон: ${template.name}`}>
+    <OverflowScrollBlock
+      header_name={"Настройка задач шаблона"}
+      button_back_visible={"enable"}
+    >
       <div className={styles.container}>
         <div className={styles.topBar}>
-          <button
-            type="button"
-            className={styles.backButton}
-            onClick={() => navigate("/admin/adaptation/templates")}
-          >
-            Назад к шаблонам
-          </button>
           {isCreateVisible ? (
             <IconButton
               type="close"
@@ -301,25 +302,21 @@ function TemplateTasks(): JSX.Element {
               className={styles.createButton}
               onClick={() => setIsCreateVisible(true)}
             >
-              Создать запись по дням
+              Добавить день
             </button>
           )}
         </div>
 
         <div className={styles.metaBlock}>
+          <p className={styles.meta}>План: {template.name}</p>
           <p className={styles.meta}>График: {template.work_schedule}</p>
           <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
         </div>
 
         {isCreateVisible && (
           <div className={styles.ruleCard}>
-            <div className={styles.taskHeader}>
-              <p className={styles.title}>Новые задачи</p>
-              <button type="button" className={styles.ghostButton} onClick={addCreateRule}>
-                + Задача
-              </button>
-            </div>
-            <div className={styles.row}>
+            <p className={styles.title}>Новые задачи</p>
+            <div className={`${styles.row} ${styles.dayRangeRow}`}>
               <label className={styles.label}>
                 День
                 <input
@@ -331,7 +328,7 @@ function TemplateTasks(): JSX.Element {
                 />
               </label>
               <label className={styles.label}>
-                До дня (период)
+                До дня (опционально)
                 <input
                   className={styles.input}
                   type="number"
@@ -341,8 +338,15 @@ function TemplateTasks(): JSX.Element {
                 />
               </label>
             </div>
+            <button
+              type="button"
+              className={`${styles.ghostButton} ${styles.addTaskButton}`}
+              onClick={addCreateRule}
+            >
+              + Задача
+            </button>
             {createRules.map((rule, index) => (
-              <div key={`create-rule-${index}`} className={styles.row}>
+              <div key={`create-rule-${index}`} className={`${styles.row} ${styles.taskRow}`}>
                 <label className={styles.label}>
                   Описание задачи
                   <input
@@ -385,14 +389,28 @@ function TemplateTasks(): JSX.Element {
                 </div>
               </div>
             ))}
-            <button
-              type="button"
-              className={styles.createButton}
-              onClick={saveCreateRules}
-              disabled={isSaving}
-            >
-              {isSaving ? "Сохранение..." : "Сохранить все"}
-            </button>
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.createButton}
+                onClick={saveCreateRules}
+                disabled={isSaving}
+              >
+                {isSaving ? "Сохранение..." : "Сохранить"}
+              </button>
+              <button
+                type="button"
+                className={styles.ghostButton}
+                onClick={() => {
+                  setIsCreateVisible(false);
+                  setCreateRules([{ ...EMPTY_RULE }]);
+                  setCreateDayFrom("");
+                  setCreateDayTo("");
+                }}
+              >
+                Отмена
+              </button>
+            </div>
           </div>
         )}
 
@@ -406,7 +424,7 @@ function TemplateTasks(): JSX.Element {
                 <p className={styles.title}>{group.title}</p>
                 {editingGroupKey === group.key ? (
                   <>
-                    <div className={styles.row}>
+                    <div className={`${styles.row} ${styles.dayRangeRow}`}>
                       <label className={styles.label}>
                         День
                         <input
@@ -418,7 +436,7 @@ function TemplateTasks(): JSX.Element {
                         />
                       </label>
                       <label className={styles.label}>
-                        До дня
+                        До дня (опционально)
                         <input
                           className={styles.input}
                           type="number"
@@ -430,13 +448,13 @@ function TemplateTasks(): JSX.Element {
                     </div>
                     <button
                       type="button"
-                      className={styles.ghostButton}
+                      className={`${styles.ghostButton} ${styles.addTaskButton}`}
                       onClick={addEditingGroupRule}
                     >
                       + Задача
                     </button>
                     {editingGroupRules.map((rule, index) => (
-                    <div className={styles.row}>
+                    <div key={`edit-rule-${index}`} className={`${styles.row} ${styles.taskRow}`}>
                       <label className={styles.label}>
                         Описание задачи
                         <input

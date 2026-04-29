@@ -11,17 +11,20 @@
   gap: 0.8rem;
 }
 
-.backButton,
 .createButton,
 .ghostButton {
   border: none;
   border-radius: 0.5rem;
-  padding: 0.55rem 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2rem;
+  padding: 0 0.9rem;
   font-size: 0.9rem;
+  line-height: 1;
   cursor: pointer;
 }
 
-.backButton,
 .ghostButton {
   border: 0.1rem solid #d1d5dc;
   background: #fff;
@@ -72,8 +75,18 @@
 
 .row {
   display: grid;
-  grid-template-columns: 2fr 0.8fr 0.8fr 1fr 1.5fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.5rem;
+}
+
+.dayRangeRow {
+  grid-template-columns: minmax(7rem, 10rem) minmax(9rem, 12rem);
+  justify-content: flex-start;
+}
+
+.taskRow {
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.65fr) minmax(12rem, 0.75fr) auto;
+  align-items: end;
 }
 
 .label {
@@ -85,10 +98,13 @@
 }
 
 .input {
+  height: 2.25rem;
+  box-sizing: border-box;
   border: 0.1rem solid #d1d5dc;
   border-radius: 0.5rem;
   padding: 0.55rem 0.7rem;
   font-size: 0.9rem;
+  line-height: 1.2;
 }
 
 .actions {
@@ -97,16 +113,15 @@
   align-items: center;
 }
 
-.taskHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 0.5rem;
+.addTaskButton {
+  width: fit-content;
 }
 
 .inlineActions {
   display: flex;
   align-items: flex-end;
+  justify-content: flex-end;
+  align-self: end;
 }
 
 .info {
@@ -117,5 +132,9 @@
 @media (max-width: 1000px) {
   .row {
     grid-template-columns: 1fr;
+  }
+
+  .taskRow {
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.6fr) minmax(8rem, 0.7fr) auto;
   }
 }

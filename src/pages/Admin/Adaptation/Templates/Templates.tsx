@@ -1,7 +1,8 @@
-import React, { JSX, useState } from "react";
+import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import Input from "@components/ui/Input/Input.tsx";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateAdaptationPlanTemplateMutation,
@@ -27,14 +28,34 @@ function Templates(): JSX.Element {
   const templates = data as AdaptationPlanTemplateType[];
 
   const [isCreateVisible, setIsCreateVisible] = useState(false);
+  const [openedActionsId, setOpenedActionsId] = useState<number | null>(null);
   const [status, setStatus] = useState("");
+  const [search, setSearch] = useState("");
   const [form, setForm] = useState({
     name: "",
     workSchedule: "5/2",
     shift: 1,
   });
+  const hasSearch = search.trim().length > 0;
+  const filteredTemplates = useMemo(() => {
+    if (!hasSearch) {
+      return templates;
+    }
 
-  const handleCreate = async (event: React.FormEvent<HTMLFormElement>) => {
+    const searchLower = search.toLowerCase();
+    return templates.filter((template) => {
+      const templateName = template.name.toLowerCase();
+      const workSchedule = template.work_schedule.toLowerCase();
+      const shifts = template.shifts.join(",");
+      return (
+        templateName.includes(searchLower) ||
+        workSchedule.includes(searchLower) ||
+        shifts.includes(searchLower)
+      );
+    });
+  }, [hasSearch, search, templates]);
+
+  const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!form.name.trim()) {
       setStatus("Укажите название шаблона.");
@@ -64,6 +85,7 @@ function Templates(): JSX.Element {
   const handleDelete = async (id: number) => {
     try {
       await deleteTemplate(id).unwrap();
+      setOpenedActionsId((previous) => (previous === id ? null : previous));
       setStatus("Шаблон удален.");
     } catch {
       setStatus("Не удалось удалить шаблон.");
@@ -79,6 +101,16 @@ function Templates(): JSX.Element {
           ) : (
             <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
           )}
+          <Input
+            type={"text"}
+            name={"search"}
+            placeholder={"🔎"}
+            className={styles.searchInput}
+            value={search}
+            onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+              setSearch(event.target.value)
+            }
+          />
         </div>
         {isCreateVisible && (
           <form className={styles.form} onSubmit={handleCreate}>
@@ -114,8 +146,8 @@ function Templates(): JSX.Element {
                 }
               />
             </label>
-            <button className={styles.button} type="submit" disabled={isCreating}>
-              {isCreating ? "Создание..." : "Создать"}
+            <button className={styles.createButton} type="submit" disabled={isCreating}>
+              {isCreating ? "Создание..." : "Создать план"}
             </button>
           </form>
         )}
@@ -125,7 +157,7 @@ function Templates(): JSX.Element {
         {!isLoading && !isError && templates.length === 0 && <DataMessage type="noData" />}
         {!isLoading && !isError && templates.length > 0 && (
           <div className={styles.list}>
-            {templates.map((template) => (
+            {filteredTemplates.map((template) => (
               <div key={template.id} className={styles.card}>
                 <button
                   type="button"
@@ -136,11 +168,21 @@ function Templates(): JSX.Element {
                   <p className={styles.meta}>График: {template.work_schedule}</p>
                   <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
                 </button>
-                <div className={styles.actions}>
-                  <IconButton type="delete" onClick={() => handleDelete(template.id)} />
+                <div className={styles.iconActions}>
+                  {openedActionsId === template.id ? (
+                    <>
+                      <IconButton type="delete" onClick={() => handleDelete(template.id)} />
+                      <IconButton type="close" onClick={() => setOpenedActionsId(null)} />
+                    </>
+                  ) : (
+                    <IconButton type="edit" onClick={() => setOpenedActionsId(template.id)} />
+                  )}
                 </div>
               </div>
             ))}
+            {hasSearch && filteredTemplates.length === 0 && (
+              <p className={styles.searchEmpty}>Шаблон "{search}" не найден</p>
+            )}
           </div>
         )}
       </div>

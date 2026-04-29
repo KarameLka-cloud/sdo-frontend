@@ -19,6 +19,16 @@ function TaskItem({
 }: TaskItemProps): JSX.Element {
   const [isSaving, setIsSaving] = useState(false);
 
+  const toExternalUrl = (link: string): string => {
+    const trimmedLink = link.trim();
+
+    if (/^https?:\/\//i.test(trimmedLink)) {
+      return trimmedLink;
+    }
+
+    return `https://${trimmedLink}`;
+  };
+
   const handleStatusChange = async (newStatus: TaskStatus) => {
     setIsSaving(true);
     try {
@@ -63,8 +73,8 @@ function TaskItem({
             <div className={styles.linksList}>
               {task.links.map((link, index) => (
                 <a
-                  key={index}
-                  href={link}
+                  key={`${link}-${index}`}
+                  href={toExternalUrl(link)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.link}
@@ -77,6 +87,7 @@ function TaskItem({
         )}
         <div className={styles.statusButtons}>
           <button
+            type="button"
             onClick={() => handleStatusChange("выполнено")}
             className={`${styles.statusButton} ${task.status === "выполнено" ? styles.active : ""} ${styles.completed}`}
             title="Отметить как выполнено"
@@ -85,6 +96,7 @@ function TaskItem({
             ✓ Выполнено
           </button>
           <button
+            type="button"
             onClick={() => handleStatusChange("не выполнено")}
             className={`${styles.statusButton} ${task.status === "не выполнено" ? styles.active : ""} ${styles.notCompleted}`}
             title="Отметить как не выполнено"

@@ -3,6 +3,7 @@ import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScro
 import Development from "@components/ui/Development/Development.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import CareerDay from "@components/ui/CareerDay/CareerDay.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import {
   useGetMyAdaptationPlanQuery,
   useUpdateMyAdaptationInternCommentMutation,
@@ -137,7 +138,11 @@ function Adaptation(): JSX.Element {
   };
 
   if (isLoading) {
-    return <></>;
+    return (
+      <OverflowScrollBlock header_name={"Адаптация"}>
+        <Loader />
+      </OverflowScrollBlock>
+    );
   }
 
   if (isError) {
@@ -160,12 +165,6 @@ function Adaptation(): JSX.Element {
   return (
     <OverflowScrollBlock header_name={"Адаптация"}>
       <div className={styles.trainingPlanInfo}>
-        {/* <div className={styles.planInfoItem}>
-          <span className={styles.planLabel}>Пользователь:</span>
-          <span className={styles.planValue}>
-            {adaptationPlan.user?.name || "—"} (ID: {adaptationPlan.user_id})
-          </span>
-        </div> */}
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Начало стажировки:</span>
           <span className={styles.planValue}>{convertDate(myAdaptationPlan.start_date)}</span>
@@ -186,10 +185,9 @@ function Adaptation(): JSX.Element {
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Руководитель отдела:</span>
-          <span className={styles.planValue}>{myAdaptationPlan.department_head_user?.name}</span>
-            {/* {adaptationPlan.department_head_user?.name ??
-              `ID: ${adaptationPlan.department_head}`}
-          </span> */}
+          <span className={styles.planValue}>
+            {myAdaptationPlan.department_head_user?.name ?? `ID: ${myAdaptationPlan.department_head}`}
+          </span>
         </div>
       </div>
       {saveStatus.type !== "idle" && (
