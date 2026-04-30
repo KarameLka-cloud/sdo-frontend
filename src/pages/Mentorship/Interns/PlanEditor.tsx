@@ -17,6 +17,7 @@ import {
 } from "@services/store/features/user.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { ROUTES } from "@constants/routes.ts";
+import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import styles from "./PlanEditor.module.css";
 
 interface PlanType {
@@ -34,9 +35,15 @@ interface PlanType {
     work_day: number;
     date: string;
     completion: "в процессе" | "выполнен" | "есть замечания";
+    employee_comment?: string | null;
+    intern_comment?: string | null;
+    mentor_comment?: string | null;
+    department_head_comment?: string | null;
     tasks?: Array<{ id: number; description: string; status: "выполнено" | "не выполнено" }>;
   }>;
 }
+
+type StatusType = "idle" | "loading" | "success" | "error";
 
 function PlanEditor(): JSX.Element {
   const navigate = useNavigate();
@@ -78,11 +85,16 @@ function PlanEditor(): JSX.Element {
       work_day: number;
       date: string;
       completion: "в процессе" | "выполнен" | "есть замечания";
+      employee_comment: string;
+      intern_comment: string;
+      mentor_comment: string;
+      department_head_comment: string;
       tasks: Array<{ id: number; description: string; status: "выполнено" | "не выполнено" }>;
     }>
   >([]);
   const [initialDays, setInitialDays] = useState<typeof days>([]);
   const [status, setStatus] = useState("");
+  const [statusType, setStatusType] = useState<StatusType>("idle");
 
   const loadErrorMessage = useMemo(() => {
     if (!error || typeof error !== "object" || !("status" in error)) {
@@ -121,6 +133,10 @@ function PlanEditor(): JSX.Element {
       work_day: day.work_day,
       date: day.date,
       completion: day.completion,
+      employee_comment: day.employee_comment ?? "",
+      intern_comment: day.intern_comment ?? "",
+      mentor_comment: day.mentor_comment ?? "",
+      department_head_comment: day.department_head_comment ?? "",
       tasks: (day.tasks ?? []).map((task) => ({
         id: task.id,
         description: task.description,
@@ -142,11 +158,14 @@ function PlanEditor(): JSX.Element {
       return;
     }
     if (!form.templateId || !form.mentor || !form.departmentHead || !form.startDate) {
+      setStatusType("error");
       setStatus("Заполните все обязательные поля.");
       return;
     }
 
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.saveLoading);
       await updatePlan({
         id: plan.id,
         start_date: form.startDate,
@@ -162,6 +181,10 @@ function PlanEditor(): JSX.Element {
           dayId: day.id,
           date: day.date,
           completion: day.completion,
+          employee_comment: day.employee_comment || null,
+          intern_comment: day.intern_comment || null,
+          mentor_comment: day.mentor_comment || null,
+          department_head_comment: day.department_head_comment || null,
         }).unwrap(),
       );
 
@@ -184,9 +207,11 @@ function PlanEditor(): JSX.Element {
 
       await Promise.all([...dayRequests, ...taskRequests]);
       setInitialDays(days);
-      setStatus("План сохранен.");
+      setStatusType("success");
+      setStatus(FORM_STATUS_MESSAGES.saveSuccess);
     } catch {
-      setStatus("Не удалось сохранить план.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.saveError);
     }
   };
 
@@ -200,10 +225,13 @@ function PlanEditor(): JSX.Element {
     }
 
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.deleteLoading);
       await deletePlan(plan.id).unwrap();
       navigate(ROUTES.MENTORSHIP_INTERNS);
     } catch {
-      setStatus("Не удалось удалить план.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.deleteError);
     }
   };
 
@@ -259,40 +287,13 @@ function PlanEditor(): JSX.Element {
           </label>
           <label className={styles.label}>
             Шаблон адаптации
-            <select
-              className={styles.input}
-              value={form.templateId ?? ""}
-              onChange={(event) => {
-                const templateId = event.target.value ? Number(event.target.value) : null;
-                const template = adaptationTemplates.find((item) => item.id === templateId);
-                setForm({
-                  ...form,
-                  templateId,
-                  shift: template?.shifts?.[0] ?? 1,
-                });
-              }}
-            >
-              <option value="">Выберите шаблон</option>
-              {adaptationTemplates.map((template) => (
-                <option key={template.id} value={template.id}>
-                  {template.name} ({template.work_schedule})
-                </option>
-              ))}
-            </select>
+            <span className={styles.info}>
+              {plan.template ? `${plan.template.name} (${plan.template.work_schedule})` : "—"}
+            </span>
           </label>
           <label className={styles.label}>
             Смена
-            <select
-              className={styles.input}
-              value={form.shift}
-              onChange={(event) => setForm({ ...form, shift: Number(event.target.value) })}
-            >
-              {availableShifts.map((shift) => (
-                <option key={shift} value={shift}>
-                  Смена {shift}
-                </option>
-              ))}
-            </select>
+            <span className={styles.info}>Смена {form.shift}</span>
           </label>
         </div>
 
@@ -379,6 +380,68 @@ function PlanEditor(): JSX.Element {
               </label>
             </div>
 
+            <div className={styles.commentGrid}>
+              <label className={styles.label}>
+                Комментарий УПиПК
+                <textarea
+                  className={`${styles.input} ${styles.commentInput}`}
+                  value={day.employee_comment}
+                  onChange={(event) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = { ...next[dayIndex], employee_comment: event.target.value };
+                      return next;
+                    })
+                  }
+                />
+              </label>
+              <label className={styles.label}>
+                Комментарий стажера
+                <textarea
+                  className={`${styles.input} ${styles.commentInput}`}
+                  value={day.intern_comment}
+                  onChange={(event) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = { ...next[dayIndex], intern_comment: event.target.value };
+                      return next;
+                    })
+                  }
+                />
+              </label>
+              <label className={styles.label}>
+                Комментарий наставника
+                <textarea
+                  className={`${styles.input} ${styles.commentInput}`}
+                  value={day.mentor_comment}
+                  onChange={(event) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = { ...next[dayIndex], mentor_comment: event.target.value };
+                      return next;
+                    })
+                  }
+                />
+              </label>
+              <label className={styles.label}>
+                Комментарий руководителя
+                <textarea
+                  className={`${styles.input} ${styles.commentInput}`}
+                  value={day.department_head_comment}
+                  onChange={(event) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        department_head_comment: event.target.value,
+                      };
+                      return next;
+                    })
+                  }
+                />
+              </label>
+            </div>
+
             <div className={styles.taskList}>
               {day.tasks.map((task, taskIndex) => (
                 <div key={task.id} className={styles.taskRow}>
@@ -408,7 +471,7 @@ function PlanEditor(): JSX.Element {
           </div>
         ))}
 
-        {status && <p className={styles.status}>{status}</p>}
+        {statusType !== "idle" && status && <p className={styles.status}>{status}</p>}
       </div>
     </OverflowScrollBlock>
   );

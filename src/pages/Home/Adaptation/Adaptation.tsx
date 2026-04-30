@@ -9,6 +9,7 @@ import {
   useUpdateMyAdaptationInternCommentMutation,
   useUpdateMyAdaptationTaskStatusMutation,
 } from "@services/store/features/user.ts";
+import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import styles from "./Adaptation.module.css";
 import convertDate from "@utils/convertDate.ts";
 import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
@@ -101,15 +102,15 @@ function Adaptation(): JSX.Element {
       return;
     }
 
-    setSaveStatus({ type: "saving", message: "Сохранение комментария..." });
+    setSaveStatus({ type: "saving", message: FORM_STATUS_MESSAGES.saveLoading });
     try {
       await updateInternComment({
         dayId,
         intern_comment: comment,
       }).unwrap();
-      setSaveStatus({ type: "success", message: "Комментарий сохранен" });
+      setSaveStatus({ type: "success", message: FORM_STATUS_MESSAGES.saveSuccess });
     } catch {
-      setSaveStatus({ type: "error", message: "Не удалось сохранить комментарий" });
+      setSaveStatus({ type: "error", message: FORM_STATUS_MESSAGES.saveError });
       throw new Error("Intern comment update failed");
     }
   };
@@ -123,16 +124,16 @@ function Adaptation(): JSX.Element {
       return;
     }
 
-    setSaveStatus({ type: "saving", message: "Сохранение статуса задачи..." });
+    setSaveStatus({ type: "saving", message: FORM_STATUS_MESSAGES.saveLoading });
     try {
       await updateTaskStatus({
         dayId,
         taskId,
         status,
       }).unwrap();
-      setSaveStatus({ type: "success", message: "Статус задачи сохранен" });
+      setSaveStatus({ type: "success", message: FORM_STATUS_MESSAGES.saveSuccess });
     } catch {
-      setSaveStatus({ type: "error", message: "Не удалось сохранить статус задачи" });
+      setSaveStatus({ type: "error", message: FORM_STATUS_MESSAGES.saveError });
       throw new Error("Task status update failed");
     }
   };

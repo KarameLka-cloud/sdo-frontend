@@ -10,6 +10,7 @@ import {
   useCreateAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
 } from "@services/store/features/user.ts";
+import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import styles from "./Templates.module.css";
 
 interface AdaptationPlanTemplateType {
@@ -18,6 +19,8 @@ interface AdaptationPlanTemplateType {
   work_schedule: string;
   shifts: number[];
 }
+
+type StatusType = "idle" | "loading" | "success" | "error";
 
 function Templates(): JSX.Element {
   const navigate = useNavigate();
@@ -29,6 +32,7 @@ function Templates(): JSX.Element {
 
   const [isCreateVisible, setIsCreateVisible] = useState(false);
   const [status, setStatus] = useState("");
+  const [statusType, setStatusType] = useState<StatusType>("idle");
   const [search, setSearch] = useState("");
   const [form, setForm] = useState({
     name: "",
@@ -57,18 +61,23 @@ function Templates(): JSX.Element {
   const handleCreate = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!form.name.trim()) {
+      setStatusType("error");
       setStatus("Укажите название шаблона.");
       return;
     }
     if (!form.workSchedule) {
+      setStatusType("error");
       setStatus("Выберите график работы.");
       return;
     }
     if (!form.shift) {
+      setStatusType("error");
       setStatus("Укажите корректный номер смены.");
       return;
     }
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.createLoading);
       await createTemplate({
         name: form.name.trim(),
         work_schedule: form.workSchedule,
@@ -79,75 +88,93 @@ function Templates(): JSX.Element {
         workSchedule: "",
         shift: "",
       });
-      setStatus("Шаблон создан.");
+      setStatusType("success");
+      setStatus(FORM_STATUS_MESSAGES.createSuccess);
     } catch {
-      setStatus("Не удалось создать шаблон.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.createError);
     }
   };
 
   return (
     <OverflowScrollBlock header_name={"Шаблоны адаптации"}>
       <div className={styles.container}>
-        <div className={styles.toolbar}>
-          {isCreateVisible ? (
-            <IconButton type="close" onClick={() => setIsCreateVisible(false)} />
-          ) : (
-            <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
+        <div className={styles.stickyControls}>
+          <div className={styles.toolbar}>
+            <div className={styles.toolbarActions}>
+              {isCreateVisible ? (
+                <IconButton type="close" onClick={() => setIsCreateVisible(false)} />
+              ) : (
+                <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
+              )}
+              {statusType !== "idle" && status ? (
+                <span
+                  className={`${styles.createStatus} ${
+                    statusType === "error"
+                      ? styles.createStatusError
+                      : statusType === "success"
+                        ? styles.createStatusSuccess
+                        : styles.createStatusLoading
+                  }`}
+                >
+                  {status}
+                </span>
+              ) : null}
+            </div>
+            <Input
+              type={"text"}
+              name={"search"}
+              placeholder={"🔎"}
+              className={styles.searchInput}
+              value={search}
+              onChange={(event: ChangeEvent<HTMLInputElement>): void =>
+                setSearch(event.target.value)
+              }
+            />
+          </div>
+          {isCreateVisible && (
+            <form className={styles.form} onSubmit={handleCreate}>
+              <div className={styles.field}>
+                <Input
+                  type="text"
+                  name="name"
+                  className={styles.input}
+                  placeholder="Название шаблона"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                />
+              </div>
+              <div className={styles.field}>
+                <select
+                  className={styles.input}
+                  value={form.workSchedule}
+                  onChange={(e) => setForm({ ...form, workSchedule: e.target.value })}
+                >
+                  <option value="" disabled>
+                    График работы
+                  </option>
+                  <option value="5/2">5/2</option>
+                  <option value="2/2">2/2</option>
+                </select>
+              </div>
+              <div className={styles.field}>
+                <Input
+                  type="number"
+                  name="shift"
+                  min={1}
+                  step={1}
+                  className={styles.input}
+                  placeholder="Смена"
+                  value={form.shift}
+                  onChange={(e) => setForm({ ...form, shift: e.target.value })}
+                />
+              </div>
+              <ButtonSubmit loading={isCreating} className={styles.submitButton}>
+                Создать
+              </ButtonSubmit>
+            </form>
           )}
-          <Input
-            type={"text"}
-            name={"search"}
-            placeholder={"🔎"}
-            className={styles.searchInput}
-            value={search}
-            onChange={(event: ChangeEvent<HTMLInputElement>): void =>
-              setSearch(event.target.value)
-            }
-          />
         </div>
-        {isCreateVisible && (
-          <form className={styles.form} onSubmit={handleCreate}>
-            <div className={styles.field}>
-              <Input
-                type="text"
-                name="name"
-                className={styles.input}
-                placeholder="Название шаблона"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-              />
-            </div>
-            <div className={styles.field}>
-              <select
-                className={styles.input}
-                value={form.workSchedule}
-                onChange={(e) => setForm({ ...form, workSchedule: e.target.value })}
-              >
-                <option value="" disabled>
-                  График работы
-                </option>
-                <option value="5/2">5/2</option>
-                <option value="2/2">2/2</option>
-              </select>
-            </div>
-            <div className={styles.field}>
-              <Input
-                type="number"
-                name="shift"
-                min={1}
-                step={1}
-                className={styles.input}
-                placeholder="Смена"
-                value={form.shift}
-                onChange={(e) => setForm({ ...form, shift: e.target.value })}
-              />
-            </div>
-            <ButtonSubmit loading={isCreating} className={styles.submitButton}>
-              Создать
-            </ButtonSubmit>
-          </form>
-        )}
-        {status && <p className={styles.status}>{status}</p>}
         {isLoading && <Loader />}
         {isError && <DataMessage type="error" />}
         {!isLoading && !isError && templates.length === 0 && <DataMessage type="noData" />}

@@ -18,14 +18,9 @@ import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScro
 import { useToggle } from "@hooks/useToggle.ts";
 import { useFiltered } from "@hooks/useFiltered.ts";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
+import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 
 type CreateStatusType = "idle" | "loading" | "success" | "error";
-
-interface ApiError {
-  data?: {
-    message?: string;
-  };
-}
 
 function Courses(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
@@ -50,7 +45,7 @@ function Courses(): JSX.Element {
   const handleAction = async (e: React.FormEvent) => {
     e.preventDefault();
     setCreateStatusType("loading");
-    setCreateStatusMessage("Создание...");
+    setCreateStatusMessage(FORM_STATUS_MESSAGES.createLoading);
 
     try {
       await addCourse(formItems).unwrap();
@@ -62,13 +57,10 @@ function Courses(): JSX.Element {
         date_end: "",
       });
       setCreateStatusType("success");
-      setCreateStatusMessage("Создано");
-    } catch (createError: unknown) {
-      const apiError = createError as ApiError;
+      setCreateStatusMessage(FORM_STATUS_MESSAGES.createSuccess);
+    } catch {
       setCreateStatusType("error");
-      setCreateStatusMessage(
-        apiError.data?.message ?? "Не удалось создать запись. Попробуйте снова.",
-      );
+      setCreateStatusMessage(FORM_STATUS_MESSAGES.createError);
     }
   };
 
@@ -77,25 +69,25 @@ function Courses(): JSX.Element {
       header_name={"Редактирование эл. курсов"}
       button_back_visible={"enable"}
     >
-      <div className={styles.create_search}>
+      <div className={styles.stickyControls}>
+        <div className={styles.create_search}>
+          {formShow ? (
+            <IconButton type={"close"} onClick={handleFormShow} />
+          ) : (
+            <IconButton type={"edit"} onClick={handleFormShow} />
+          )}
+          <Input
+            type={"text"}
+            name={"search"}
+            placeholder={"🔎"}
+            className={styles.input_search}
+            value={search}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+              setSearch(e.target.value)
+            }
+          />
+        </div>
         {formShow ? (
-          <IconButton type={"close"} onClick={handleFormShow} />
-        ) : (
-          <IconButton type={"edit"} onClick={handleFormShow} />
-        )}
-        <Input
-          type={"text"}
-          name={"search"}
-          placeholder={"🔎"}
-          className={styles.input_search}
-          value={search}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-            setSearch(e.target.value)
-          }
-        />
-      </div>
-      {formShow ? (
-        <>
           <form onSubmit={handleAction} className={styles.form}>
             <Input
               type="text"
@@ -157,8 +149,8 @@ function Courses(): JSX.Element {
               )}
             </div>
           </form>
-        </>
-      ) : null}
+        ) : null}
+      </div>
 
       <div className={styles.list}>
         <DataList<CourseType>

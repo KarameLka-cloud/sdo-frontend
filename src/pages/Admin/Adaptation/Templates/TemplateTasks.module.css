@@ -2,11 +2,25 @@
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.stickyHeader {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  background: var(--mfc-create-form-bg);
+  padding-bottom: 0.15rem;
 }
 
 .topBar {
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
   gap: 0.8rem;
 }
@@ -39,14 +53,53 @@
   background: var(--mfc-create-form-bg);
 }
 
+.templateMetaBlock {
+  border: 0.1rem solid var(--mfc-create-form-border);
+  border-radius: 0.75rem;
+  padding: 0.75rem;
+  background: var(--mfc-create-form-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.metaActions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+}
+
 .meta {
   margin: 0 0 0.25rem;
   color: var(--mfc-gray-color);
 }
 
-.status {
+.topBarStatus {
   margin: 0;
-  color: var(--mfc-black-color);
+  font-size: 0.85rem;
+  font-weight: 500;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+}
+
+.topBarStatusLoading {
+  color: var(--mfc-create-status-loading-text);
+  border: 0.05rem solid var(--mfc-create-status-loading-border);
+  background: var(--mfc-create-status-loading-bg);
+}
+
+.topBarStatusSuccess {
+  color: var(--mfc-create-status-success-text);
+  border: 0.05rem solid var(--mfc-create-status-success-border);
+  background: var(--mfc-create-status-success-bg);
+}
+
+.topBarStatusError {
+  color: var(--mfc-create-status-error-text);
+  border: 0.05rem solid var(--mfc-create-status-error-border);
+  background: var(--mfc-create-status-error-bg);
 }
 
 .list {
@@ -121,9 +174,10 @@
 
 .inlineActions {
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: flex-end;
   align-self: end;
+  padding-bottom: 0.125rem;
 }
 
 .info {
@@ -132,6 +186,15 @@
 }
 
 @media (max-width: 1000px) {
+  .templateMetaBlock {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .metaActions {
+    align-self: flex-start;
+  }
+
   .row {
     grid-template-columns: 1fr;
   }

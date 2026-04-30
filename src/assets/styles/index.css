@@ -30,6 +30,15 @@
   --mfc-create-status-error-text: #b91c1c;
   --mfc-create-status-error-bg: #fef2f2;
   --mfc-create-status-error-border: #fecaca;
+  --mfc-sticky-panel-top: 0;
+  --mfc-sticky-panel-z-index: 5;
+  --mfc-sticky-panel-padding: 0.75rem;
+  --mfc-sticky-panel-margin-bottom: 1rem;
+  --mfc-sticky-panel-border: 0.1rem solid var(--mfc-create-form-border);
+  --mfc-sticky-panel-radius: 0.75rem;
+  --mfc-sticky-panel-bg: var(--mfc-create-form-bg);
+  --mfc-sticky-subpanel-top: 4.75rem;
+  --mfc-sticky-subpanel-z-index: 4;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;

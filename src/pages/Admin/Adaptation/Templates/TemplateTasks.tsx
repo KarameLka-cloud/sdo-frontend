@@ -10,6 +10,7 @@ import {
   useGetAdaptationPlanTemplatesQuery,
   useUpdateAdaptationPlanTemplateMutation,
 } from "@services/store/features/user.ts";
+import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import styles from "./TemplateTasks.module.css";
 
 type ResponsibleRole =
@@ -48,6 +49,8 @@ interface GroupedRuleBlock {
   dayTo: string;
   items: Array<{ rule: TaskRuleForm; index: number }>;
 }
+
+type StatusType = "idle" | "loading" | "success" | "error";
 
 const EMPTY_RULE: TaskRuleForm = {
   description: "",
@@ -96,6 +99,7 @@ function TemplateTasks(): JSX.Element {
   const [editingGroupDayFrom, setEditingGroupDayFrom] = useState<string>("");
   const [editingGroupDayTo, setEditingGroupDayTo] = useState<string>("");
   const [status, setStatus] = useState("");
+  const [statusType, setStatusType] = useState<StatusType>("idle");
 
   const templates = data as AdaptationPlanTemplateType[];
   const template = useMemo(
@@ -171,6 +175,7 @@ function TemplateTasks(): JSX.Element {
   const saveCreateRules = async () => {
     const preparedRules = createRules.filter((rule) => rule.description.trim().length > 0);
     if (!preparedRules.length) {
+      setStatusType("error");
       setStatus("Добавьте хотя бы одну задачу с описанием.");
       return;
     }
@@ -182,14 +187,18 @@ function TemplateTasks(): JSX.Element {
     }));
 
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.saveLoading);
       await saveRules([...rules, ...normalized]);
       setCreateRules([{ ...EMPTY_RULE }]);
       setCreateDayFrom("");
       setCreateDayTo("");
       setIsCreateVisible(false);
-      setStatus("Записи добавлены.");
+      setStatusType("success");
+      setStatus(FORM_STATUS_MESSAGES.createSuccess);
     } catch {
-      setStatus("Не удалось добавить записи.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.saveError);
     }
   };
 
@@ -223,6 +232,7 @@ function TemplateTasks(): JSX.Element {
   const saveEditGroup = async () => {
     const prepared = editingGroupRules.filter((rule) => rule.description.trim().length > 0);
     if (!prepared.length) {
+      setStatusType("error");
       setStatus("Добавьте хотя бы одну задачу с описанием.");
       return;
     }
@@ -237,13 +247,17 @@ function TemplateTasks(): JSX.Element {
     nextRules.push(...normalized);
 
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.saveLoading);
       await saveRules(nextRules);
       setEditingGroupKey(null);
       setEditingGroupRules([]);
       setEditingGroupIndexes([]);
-      setStatus("Блок обновлен.");
+      setStatusType("success");
+      setStatus(FORM_STATUS_MESSAGES.saveSuccess);
     } catch {
-      setStatus("Не удалось обновить блок.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.saveError);
     }
   };
 
@@ -251,15 +265,19 @@ function TemplateTasks(): JSX.Element {
     const nextRules = rules.filter((_, currentIndex) => !indexes.includes(currentIndex));
 
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.deleteLoading);
       await saveRules(nextRules);
       if (editingGroupKey !== null) {
         setEditingGroupKey(null);
         setEditingGroupRules([]);
         setEditingGroupIndexes([]);
       }
-      setStatus("Блок удален.");
+      setStatusType("success");
+      setStatus(FORM_STATUS_MESSAGES.deleteSuccess);
     } catch {
-      setStatus("Не удалось удалить блок.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.deleteError);
     }
   };
 
@@ -274,10 +292,13 @@ function TemplateTasks(): JSX.Element {
     }
 
     try {
+      setStatusType("loading");
+      setStatus(FORM_STATUS_MESSAGES.deleteLoading);
       await deleteTemplate(template.id).unwrap();
       navigate("/admin/adaptation/templates");
     } catch {
-      setStatus("Не удалось удалить шаблон.");
+      setStatusType("error");
+      setStatus(FORM_STATUS_MESSAGES.deleteError);
     }
   };
 
@@ -309,32 +330,51 @@ function TemplateTasks(): JSX.Element {
       button_back_visible={"enable"}
     >
       <div className={styles.container}>
-        <div className={styles.metaBlock}>
-          <p className={styles.meta}>План: {template.name}</p>
-          <p className={styles.meta}>График: {template.work_schedule}</p>
-          <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
-        </div>
-
-        <div className={styles.topBar}>
-          <div className={styles.topBarActions}>
-            {isCreateVisible ? (
+        <div className={styles.stickyHeader}>
+          <div className={styles.templateMetaBlock}>
+            <div>
+              <p className={styles.meta}>План: {template.name}</p>
+              <p className={styles.meta}>График: {template.work_schedule}</p>
+              <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
+            </div>
+            <div className={styles.metaActions}>
               <IconButton
-                type="close"
-                onClick={() => {
-                  setIsCreateVisible(false);
-                  setCreateRules([{ ...EMPTY_RULE }]);
-                  setCreateDayFrom("");
-                  setCreateDayTo("");
-                }}
+                type="delete"
+                onClick={handleDeleteTemplate}
+                disabled={isDeletingTemplate}
               />
-            ) : (
-              <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
-            )}
-            <IconButton
-              type="delete"
-              onClick={handleDeleteTemplate}
-              disabled={isDeletingTemplate}
-            />
+            </div>
+          </div>
+
+          <div className={styles.topBar}>
+            <div className={styles.topBarActions}>
+              {isCreateVisible ? (
+                <IconButton
+                  type="close"
+                  onClick={() => {
+                    setIsCreateVisible(false);
+                    setCreateRules([{ ...EMPTY_RULE }]);
+                    setCreateDayFrom("");
+                    setCreateDayTo("");
+                  }}
+                />
+              ) : (
+                <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
+              )}
+            </div>
+            {statusType !== "idle" && status ? (
+              <span
+                className={`${styles.topBarStatus} ${
+                  statusType === "error"
+                    ? styles.topBarStatusError
+                    : statusType === "success"
+                      ? styles.topBarStatusSuccess
+                      : styles.topBarStatusLoading
+                }`}
+              >
+                {status}
+              </span>
+            ) : null}
           </div>
         </div>
 
@@ -438,8 +478,6 @@ function TemplateTasks(): JSX.Element {
             </div>
           </div>
         )}
-
-        {status && <p className={styles.status}>{status}</p>}
 
         {rules.length === 0 && <DataMessage type="noData" />}
         {rules.length > 0 && (

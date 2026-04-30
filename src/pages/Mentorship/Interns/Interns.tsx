@@ -17,6 +17,7 @@ import {
 import { ROUTES } from "@constants/routes.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
+import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import styles from "./Interns.module.css";
 
 interface AdaptationPlanResponse {
@@ -60,46 +61,7 @@ interface AdaptationPlanResponse {
   }>;
 }
 
-interface ApiValidationError {
-  data?: {
-    message?: string;
-    errors?: {
-      user_id?: string[];
-      [key: string]: string[] | undefined;
-    };
-  };
-  status?: number;
-}
-
 type CreateStatusType = "idle" | "loading" | "success" | "error";
-
-const FALLBACK_ACTION_ERROR = "Не удалось выполнить действие. Попробуйте снова.";
-
-function getErrorMessage(error: unknown, fallback = FALLBACK_ACTION_ERROR): string {
-  if (typeof error === "object" && error !== null && "data" in error) {
-    const apiError = error as ApiValidationError;
-    const duplicatePlanMessage = apiError.data?.errors?.user_id?.[0];
-    if (duplicatePlanMessage) {
-      return duplicatePlanMessage;
-    }
-
-    const firstValidationError = Object.values(apiError.data?.errors ?? {}).find(
-      (messages) => Array.isArray(messages) && messages.length > 0,
-    )?.[0];
-    if (firstValidationError) {
-      return firstValidationError;
-    }
-
-    if (apiError.status === 403) {
-      return "Недостаточно прав для этого действия.";
-    }
-
-    if (apiError.data?.message) {
-      return apiError.data.message;
-    }
-  }
-  return fallback;
-}
 
 function Interns(): JSX.Element {
   const navigate = useNavigate();
@@ -169,7 +131,7 @@ function Interns(): JSX.Element {
   const handleCreatePlan = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setCreateStatusType("loading");
-    setCreateStatusMessage("Создание...");
+    setCreateStatusMessage(FORM_STATUS_MESSAGES.createLoading);
 
     if (!newPlan.userId) {
       setCreateStatusType("error");
@@ -239,12 +201,10 @@ function Interns(): JSX.Element {
         departmentHead: null,
       });
       setCreateStatusType("success");
-      setCreateStatusMessage("План создан");
-    } catch (error: unknown) {
+      setCreateStatusMessage(FORM_STATUS_MESSAGES.createSuccess);
+    } catch {
       setCreateStatusType("error");
-      setCreateStatusMessage(
-        getErrorMessage(error, "Не удалось сохранить план адаптации. Попробуйте снова."),
-      );
+      setCreateStatusMessage(FORM_STATUS_MESSAGES.createError);
     }
   };
 
@@ -271,181 +231,183 @@ function Interns(): JSX.Element {
         {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}
         {!isLoading && !isError && (
-          <div className={styles.createSearch}>
-            {isCreateFormVisible ? (
-              <IconButton
-                type="close"
-                onClick={() => setIsCreateFormVisible(false)}
-              />
-            ) : (
-              <IconButton type="edit" onClick={() => setIsCreateFormVisible(true)} />
-            )}
-            <Input
-              type={"text"}
-              name={"search"}
-              placeholder={"🔎"}
-              className={styles.searchInput}
-              value={search}
-              onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                setSearch(e.target.value)
-              }
-            />
-          </div>
-        )}
-        {!isLoading && !isError && isCreateFormVisible && (
-          <form className={styles.createForm} onSubmit={handleCreatePlan}>
-            <div className={styles.field}>
-              <select
-                className={styles.select}
-                value={newPlan.userId ?? ""}
-                onChange={(e) =>
-                  setNewPlan({
-                    ...newPlan,
-                    userId: e.target.value ? Number(e.target.value) : null,
-                  })
-                }
-              >
-                <option value="" disabled>
-                  Пользователь
-                </option>
-                {users
-                  .filter((user) => user.id !== undefined)
-                  .map((user) => (
-                    <option key={user.id} value={user.id}>
-                      {user.name}
-                    </option>
-                  ))}
-              </select>
-            </div>
-            <div className={styles.formRow}>
-              <div className={styles.field}>
-                <Input
-                  type="date"
-                  name="startDate"
-                  className={styles.dateInput}
-                  placeholder="Дата начала"
-                  value={newPlan.startDate}
-                  onChange={(e) =>
-                    setNewPlan({
-                      ...newPlan,
-                      startDate: e.target.value,
-                    })
-                  }
+          <div className={styles.stickyControls}>
+            <div className={styles.createSearch}>
+              {isCreateFormVisible ? (
+                <IconButton
+                  type="close"
+                  onClick={() => setIsCreateFormVisible(false)}
                 />
-              </div>
-              <div className={styles.field}>
-                <select
-                  className={styles.select}
-                  value={newPlan.workSchedule}
-                  onChange={(e) =>
-                    setNewPlan({
-                      ...newPlan,
-                      workSchedule: e.target.value,
-                      adaptationPlanTemplateId: null,
-                    })
-                  }
-                >
-                  <option value="" disabled>
-                    Режим работы
-                  </option>
-                  {availableWorkSchedules.map((schedule) => (
-                    <option key={schedule} value={schedule}>
-                      {schedule}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className={styles.field}>
-                <select
-                  className={styles.select}
-                  value={newPlan.adaptationPlanTemplateId ?? ""}
-                  onChange={(e) => {
-                    const templateId = e.target.value ? Number(e.target.value) : null;
-                    setNewPlan({
-                      ...newPlan,
-                      adaptationPlanTemplateId: templateId,
-                    });
-                  }}
-                  disabled={!newPlan.workSchedule}
-                >
-                  <option value="" disabled>
-                    Шаблон адаптации
-                  </option>
-                  {filteredCreateTemplates.map((template) => (
-                    <option key={template.id} value={template.id}>
-                      {template.name} (смены: {[...template.shifts].sort((a, b) => a - b).join(", ")})
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className={styles.formRow}>
-              <div className={styles.field}>
-                <select
-                  className={styles.select}
-                  value={newPlan.mentor ?? ""}
-                  onChange={(e) =>
-                    setNewPlan({
-                      ...newPlan,
-                      mentor: e.target.value ? Number(e.target.value) : null,
-                    })
-                  }
-                >
-                  <option value="" disabled>
-                    Наставник
-                  </option>
-                  {mentors
-                    .filter((mentor) => mentor.id !== undefined)
-                    .map((mentor) => (
-                      <option key={mentor.id} value={mentor.id}>
-                        {mentor.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-              <div className={styles.field}>
-                <select
-                  className={styles.select}
-                  value={newPlan.departmentHead ?? ""}
-                  onChange={(e) =>
-                    setNewPlan({
-                      ...newPlan,
-                      departmentHead: e.target.value ? Number(e.target.value) : null,
-                    })
-                  }
-                >
-                  <option value="" disabled>
-                    Руководитель отдела
-                  </option>
-                  {departmentHeads
-                    .filter((head) => head.id !== undefined)
-                    .map((head) => (
-                      <option key={head.id} value={head.id}>
-                        {head.name}
-                      </option>
-                    ))}
-                </select>
-              </div>
-            </div>
-            <div className={styles.formActions}>
-              <ButtonSubmit loading={isCreatingPlan} className={styles.submitButton}>
-                Создать
-              </ButtonSubmit>
-              {createStatusType !== "idle" && (
-                <span
-                  className={`${styles.createStatus} ${
-                    createStatusType === "error"
-                      ? styles.createStatusError
-                      : createStatusType === "success"
-                        ? styles.createStatusSuccess
-                        : styles.createStatusLoading
-                  }`}
-                >
-                  {createStatusMessage}
-                </span>
+              ) : (
+                <IconButton type="edit" onClick={() => setIsCreateFormVisible(true)} />
               )}
+              <Input
+                type={"text"}
+                name={"search"}
+                placeholder={"🔎"}
+                className={styles.searchInput}
+                value={search}
+                onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                  setSearch(e.target.value)
+                }
+              />
             </div>
-          </form>
+            {isCreateFormVisible && (
+              <form className={styles.createForm} onSubmit={handleCreatePlan}>
+                <div className={styles.field}>
+                  <select
+                    className={styles.select}
+                    value={newPlan.userId ?? ""}
+                    onChange={(e) =>
+                      setNewPlan({
+                        ...newPlan,
+                        userId: e.target.value ? Number(e.target.value) : null,
+                      })
+                    }
+                  >
+                    <option value="" disabled>
+                      Пользователь
+                    </option>
+                    {users
+                      .filter((user) => user.id !== undefined)
+                      .map((user) => (
+                        <option key={user.id} value={user.id}>
+                          {user.name}
+                        </option>
+                      ))}
+                  </select>
+                </div>
+                <div className={styles.formRow}>
+                  <div className={styles.field}>
+                    <Input
+                      type="date"
+                      name="startDate"
+                      className={styles.dateInput}
+                      placeholder="Дата начала"
+                      value={newPlan.startDate}
+                      onChange={(e) =>
+                        setNewPlan({
+                          ...newPlan,
+                          startDate: e.target.value,
+                        })
+                      }
+                    />
+                  </div>
+                  <div className={styles.field}>
+                    <select
+                      className={styles.select}
+                      value={newPlan.workSchedule}
+                      onChange={(e) =>
+                        setNewPlan({
+                          ...newPlan,
+                          workSchedule: e.target.value,
+                          adaptationPlanTemplateId: null,
+                        })
+                      }
+                    >
+                      <option value="" disabled>
+                        Режим работы
+                      </option>
+                      {availableWorkSchedules.map((schedule) => (
+                        <option key={schedule} value={schedule}>
+                          {schedule}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className={styles.field}>
+                    <select
+                      className={styles.select}
+                      value={newPlan.adaptationPlanTemplateId ?? ""}
+                      onChange={(e) => {
+                        const templateId = e.target.value ? Number(e.target.value) : null;
+                        setNewPlan({
+                          ...newPlan,
+                          adaptationPlanTemplateId: templateId,
+                        });
+                      }}
+                      disabled={!newPlan.workSchedule}
+                    >
+                      <option value="" disabled>
+                        Шаблон адаптации
+                      </option>
+                      {filteredCreateTemplates.map((template) => (
+                        <option key={template.id} value={template.id}>
+                          {template.name} (смены: {[...template.shifts].sort((a, b) => a - b).join(", ")})
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className={styles.formRow}>
+                  <div className={styles.field}>
+                    <select
+                      className={styles.select}
+                      value={newPlan.mentor ?? ""}
+                      onChange={(e) =>
+                        setNewPlan({
+                          ...newPlan,
+                          mentor: e.target.value ? Number(e.target.value) : null,
+                        })
+                      }
+                    >
+                      <option value="" disabled>
+                        Наставник
+                      </option>
+                      {mentors
+                        .filter((mentor) => mentor.id !== undefined)
+                        .map((mentor) => (
+                          <option key={mentor.id} value={mentor.id}>
+                            {mentor.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                  <div className={styles.field}>
+                    <select
+                      className={styles.select}
+                      value={newPlan.departmentHead ?? ""}
+                      onChange={(e) =>
+                        setNewPlan({
+                          ...newPlan,
+                          departmentHead: e.target.value ? Number(e.target.value) : null,
+                        })
+                      }
+                    >
+                      <option value="" disabled>
+                        Руководитель отдела
+                      </option>
+                      {departmentHeads
+                        .filter((head) => head.id !== undefined)
+                        .map((head) => (
+                          <option key={head.id} value={head.id}>
+                            {head.name}
+                          </option>
+                        ))}
+                    </select>
+                  </div>
+                </div>
+                <div className={styles.formActions}>
+                  <ButtonSubmit loading={isCreatingPlan} className={styles.submitButton}>
+                    Создать
+                  </ButtonSubmit>
+                  {createStatusType !== "idle" && (
+                    <span
+                      className={`${styles.createStatus} ${
+                        createStatusType === "error"
+                          ? styles.createStatusError
+                          : createStatusType === "success"
+                            ? styles.createStatusSuccess
+                            : styles.createStatusLoading
+                      }`}
+                    >
+                      {createStatusMessage}
+                    </span>
+                  )}
+                </div>
+              </form>
+            )}
+          </div>
         )}
         {!isLoading && !isError && visiblePlans.length === 0 && (
           <DataMessage type={"noData"} />
