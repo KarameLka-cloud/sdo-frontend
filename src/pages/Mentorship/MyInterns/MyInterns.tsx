@@ -1,13 +1,17 @@
 import { JSX, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import Input from "@components/ui/Input/Input.tsx";
+import IconButton from "@components/ui/IconButton/IconButton.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import {
   useGetAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
 } from "@services/store/features/user.ts";
+import { ROUTES } from "@constants/routes.ts";
 import { useUser } from "@hooks/useUser.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { hasRole, isUserInRole, USER_ROLES } from "@constants/roles.ts";
@@ -34,6 +38,7 @@ interface AdaptationPlanResponse {
 }
 
 function MyInterns(): JSX.Element {
+  const navigate = useNavigate();
   const { id: currentUserId, role, role_name: roleName } = useUser();
   const [search, setSearch] = useState("");
   const {
@@ -92,7 +97,7 @@ function MyInterns(): JSX.Element {
   return (
     <OverflowScrollBlock header_name={"Список стажеров"}>
       <div className={styles.container}>
-        {isLoading && <p className={styles.info}>Загрузка...</p>}
+        {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}
         {!isLoading && !isError && (
           <div className={styles.createSearch}>
@@ -118,6 +123,19 @@ function MyInterns(): JSX.Element {
                 <div className={styles.cardHeader}>
                   <div className={styles.name}>
                     {plan.user?.name || "Пользователь без имени"}
+                  </div>
+                  <div className={styles.iconActions}>
+                    <IconButton
+                      type="edit"
+                      onClick={() =>
+                        navigate(
+                          ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
+                            ":planId",
+                            String(plan.id),
+                          ),
+                        )
+                      }
+                    />
                   </div>
                 </div>
                 <div className={styles.meta}>ID пользователя: {plan.user_id}</div>

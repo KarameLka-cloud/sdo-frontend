@@ -160,19 +160,21 @@ function Courses(): JSX.Element {
         </>
       ) : null}
 
-      <DataList<CourseType>
-        data={filteredData}
-        error={!!error}
-        isLoading={isLoading}
-        renderItem={(item: CourseType) => (
-          <CourseChange
-            key={item.id}
-            course={item}
-            mutationDelete={deleteCourse}
-            className={styles.course}
-          />
-        )}
-      />
+      <div className={styles.list}>
+        <DataList<CourseType>
+          data={filteredData}
+          error={!!error}
+          isLoading={isLoading}
+          renderItem={(item: CourseType) => (
+            <CourseChange
+              key={item.id}
+              course={item}
+              mutationDelete={deleteCourse}
+              className={styles.course}
+            />
+          )}
+        />
+      </div>
     </OverflowScrollBlock>
   );
 }

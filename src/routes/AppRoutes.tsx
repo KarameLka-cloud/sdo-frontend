@@ -4,10 +4,34 @@ import PageTitle from "@components/PageTitle.tsx";
 import AuthLayout from "@layouts/AuthLayout/AuthLayout.tsx";
 import DashboardLayout from "@layouts/DashboardLayout/DashboardLayout.tsx";
 import Login from "@pages/Auth/Login/Login.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import { ROUTES } from "@constants/routes.ts";
+import { useUser } from "@hooks/useUser.ts";
+import { hasRole, USER_ROLES } from "@constants/roles.ts";
 import { homeRoutes } from "./homeRoutes.tsx";
 import { adminRoutes } from "./adminRoutes.tsx";
 import { mentorshipRoutes } from "./mentorshipRoutes.tsx";
+
+function MentorshipRedirect() {
+  const { role, role_name: roleName, isLoading } = useUser();
+
+  if (isLoading) {
+    return <Loader />;
+  }
+
+  if (hasRole(role, roleName, USER_ROLES.ADMIN)) {
+    return <Navigate to={ROUTES.MENTORSHIP_INTERNS} replace />;
+  }
+
+  if (
+    hasRole(role, roleName, USER_ROLES.MENTOR) ||
+    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD)
+  ) {
+    return <Navigate to={ROUTES.MENTORSHIP_MY_INTERNS} replace />;
+  }
+
+  return <Navigate to={ROUTES.HOME} replace />;
+}
 
 const AppRoutes = createBrowserRouter([
   {
@@ -20,7 +44,7 @@ const AppRoutes = createBrowserRouter([
   },
   {
     path: ROUTES.MENTORSHIP,
-    element: <Navigate to={ROUTES.MENTORSHIP_INTERNS} />,
+    element: <MentorshipRedirect />,
   },
   {
     path: "*",

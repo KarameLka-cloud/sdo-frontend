@@ -160,19 +160,21 @@ function Tests(): JSX.Element {
         </>
       )}
 
-      <DataList<TestType>
-        data={filteredData}
-        error={!!error}
-        isLoading={isLoading}
-        renderItem={(item: TestType) => (
-          <TestChange
-            key={item.id}
-            test={item}
-            mutationDelete={deleteTest}
-            className={styles.test}
-          />
-        )}
-      />
+      <div className={styles.list}>
+        <DataList<TestType>
+          data={filteredData}
+          error={!!error}
+          isLoading={isLoading}
+          renderItem={(item: TestType) => (
+            <TestChange
+              key={item.id}
+              test={item}
+              mutationDelete={deleteTest}
+              className={styles.test}
+            />
+          )}
+        />
+      </div>
     </OverflowScrollBlock>
   );
 }

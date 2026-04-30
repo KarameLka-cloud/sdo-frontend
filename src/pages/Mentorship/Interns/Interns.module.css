@@ -6,7 +6,7 @@
 
 .info {
   margin: 0;
-  color: #6b7280;
+  color: var(--mfc-gray-color);
 }
 
 .createSearch {
@@ -28,30 +28,8 @@
   max-width: 28rem;
 }
 
-.addInternButton {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 2rem;
-  border: none;
-  border-radius: 0.5rem;
-  background: #2f5cbf;
-  color: #ffffff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0 1rem;
-  line-height: 1;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.addInternButton:hover {
-  background: #244a9b;
-}
-
-.addInternButton:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
+.submitButton {
+  align-self: flex-start;
 }
 
 .createForm {
@@ -104,10 +82,10 @@
   margin: 0.5rem auto 0;
   width: fit-content;
   padding: 0.75rem 1rem;
-  border: 0.05rem solid #d1d5dc;
+  border: 0.05rem solid var(--mfc-create-field-border);
   border-radius: 0.75rem;
-  background: #f8fafc;
-  color: #4b5563;
+  background: var(--mfc-surface-color);
+  color: var(--mfc-gray-color);
   text-align: center;
 }
 
@@ -115,13 +93,17 @@
   display: grid;
   grid-template-columns: 1fr;
   gap: 1rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .card {
-  border: 0.1rem solid #e5e7eb;
+  border: 0.1rem solid var(--mfc-create-form-border);
   border-radius: 0.75rem;
   padding: 1rem;
-  background-color: #ffffff;
+  background-color: var(--mfc-create-form-bg);
 }
 
 .cardHeader {
@@ -134,12 +116,12 @@
 .name {
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--mfc-black-color);
 }
 
 .meta {
   font-size: 0.9rem;
-  color: #4b5563;
+  color: var(--mfc-gray-color);
   margin: 0;
 }
 
@@ -160,20 +142,24 @@
   margin-left: auto;
 }
 
-.label {
+.field {
   display: flex;
   flex-direction: column;
-  gap: 0.3rem;
-  font-size: 0.85rem;
-  color: #374151;
 }
 
 .select {
   width: 100%;
+  min-height: 2.25rem;
+  box-sizing: border-box;
   border: 0.1rem solid var(--mfc-create-field-border);
   border-radius: 0.5rem;
   padding: 0.55rem 0.7rem;
   font-size: 0.9rem;
+  line-height: 1.2;
+}
+
+.dateInput {
+  width: fit-content;
 }
 
 @media (max-width: 900px) {

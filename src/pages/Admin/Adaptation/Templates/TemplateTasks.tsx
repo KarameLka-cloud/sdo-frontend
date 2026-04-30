@@ -1,9 +1,12 @@
 import { JSX, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
+import Input from "@components/ui/Input/Input.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import {
+  useDeleteAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
   useUpdateAdaptationPlanTemplateMutation,
 } from "@services/store/features/user.ts";
@@ -76,10 +79,13 @@ function toPayloadRule(rule: TaskRuleForm): TaskRule {
 }
 
 function TemplateTasks(): JSX.Element {
+  const navigate = useNavigate();
   const params = useParams();
   const templateId = Number(params.templateId);
   const { data = [], isLoading, isError } = useGetAdaptationPlanTemplatesQuery(undefined);
   const [updateTemplate, { isLoading: isSaving }] = useUpdateAdaptationPlanTemplateMutation();
+  const [deleteTemplate, { isLoading: isDeletingTemplate }] =
+    useDeleteAdaptationPlanTemplateMutation();
   const [isCreateVisible, setIsCreateVisible] = useState(false);
   const [createRules, setCreateRules] = useState<TaskRuleForm[]>([{ ...EMPTY_RULE }]);
   const [createDayFrom, setCreateDayFrom] = useState<string>("");
@@ -257,13 +263,31 @@ function TemplateTasks(): JSX.Element {
     }
   };
 
+  const handleDeleteTemplate = async () => {
+    if (!template) {
+      return;
+    }
+
+    const confirmed = window.confirm("Удалить шаблон адаптации?");
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      await deleteTemplate(template.id).unwrap();
+      navigate("/admin/adaptation/templates");
+    } catch {
+      setStatus("Не удалось удалить шаблон.");
+    }
+  };
+
   if (isLoading) {
     return (
       <OverflowScrollBlock
         header_name={"Настройка задач шаблона"}
         button_back_visible={"enable"}
       >
-        <p className={styles.info}>Загрузка...</p>
+        <Loader />
       </OverflowScrollBlock>
     );
   }
@@ -285,32 +309,33 @@ function TemplateTasks(): JSX.Element {
       button_back_visible={"enable"}
     >
       <div className={styles.container}>
-        <div className={styles.topBar}>
-          {isCreateVisible ? (
-            <IconButton
-              type="close"
-              onClick={() => {
-                setIsCreateVisible(false);
-                setCreateRules([{ ...EMPTY_RULE }]);
-                setCreateDayFrom("");
-                setCreateDayTo("");
-              }}
-            />
-          ) : (
-            <button
-              type="button"
-              className={styles.createButton}
-              onClick={() => setIsCreateVisible(true)}
-            >
-              Добавить день
-            </button>
-          )}
-        </div>
-
         <div className={styles.metaBlock}>
           <p className={styles.meta}>План: {template.name}</p>
           <p className={styles.meta}>График: {template.work_schedule}</p>
           <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
+        </div>
+
+        <div className={styles.topBar}>
+          <div className={styles.topBarActions}>
+            {isCreateVisible ? (
+              <IconButton
+                type="close"
+                onClick={() => {
+                  setIsCreateVisible(false);
+                  setCreateRules([{ ...EMPTY_RULE }]);
+                  setCreateDayFrom("");
+                  setCreateDayTo("");
+                }}
+              />
+            ) : (
+              <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
+            )}
+            <IconButton
+              type="delete"
+              onClick={handleDeleteTemplate}
+              disabled={isDeletingTemplate}
+            />
+          </div>
         </div>
 
         {isCreateVisible && (
@@ -319,7 +344,8 @@ function TemplateTasks(): JSX.Element {
             <div className={`${styles.row} ${styles.dayRangeRow}`}>
               <label className={styles.label}>
                 День
-                <input
+                <Input
+                  name="createDayFrom"
                   className={styles.input}
                   type="number"
                   min={1}
@@ -329,7 +355,8 @@ function TemplateTasks(): JSX.Element {
               </label>
               <label className={styles.label}>
                 До дня (опционально)
-                <input
+                <Input
+                  name="createDayTo"
                   className={styles.input}
                   type="number"
                   min={1}
@@ -340,7 +367,7 @@ function TemplateTasks(): JSX.Element {
             </div>
             <button
               type="button"
-              className={`${styles.ghostButton} ${styles.addTaskButton}`}
+              className={`${styles.secondaryButton} ${styles.addTaskButton}`}
               onClick={addCreateRule}
             >
               + Задача
@@ -349,7 +376,9 @@ function TemplateTasks(): JSX.Element {
               <div key={`create-rule-${index}`} className={`${styles.row} ${styles.taskRow}`}>
                 <label className={styles.label}>
                   Описание задачи
-                  <input
+                  <Input
+                    name={`createDescription-${index}`}
+                    type="text"
                     className={styles.input}
                     value={rule.description}
                     onChange={(event) =>
@@ -376,7 +405,9 @@ function TemplateTasks(): JSX.Element {
                 </label>
                 <label className={styles.label}>
                   Ссылки
-                  <input
+                  <Input
+                    name={`createLinks-${index}`}
+                    type="text"
                     className={styles.input}
                     value={rule.links}
                     onChange={(event) =>
@@ -390,26 +421,20 @@ function TemplateTasks(): JSX.Element {
               </div>
             ))}
             <div className={styles.actions}>
-              <button
-                type="button"
-                className={styles.createButton}
+              <IconButton
+                type="save"
                 onClick={saveCreateRules}
                 disabled={isSaving}
-              >
-                {isSaving ? "Сохранение..." : "Сохранить"}
-              </button>
-              <button
-                type="button"
-                className={styles.ghostButton}
+              />
+              <IconButton
+                type="close"
                 onClick={() => {
                   setIsCreateVisible(false);
                   setCreateRules([{ ...EMPTY_RULE }]);
                   setCreateDayFrom("");
                   setCreateDayTo("");
                 }}
-              >
-                Отмена
-              </button>
+              />
             </div>
           </div>
         )}
@@ -427,7 +452,8 @@ function TemplateTasks(): JSX.Element {
                     <div className={`${styles.row} ${styles.dayRangeRow}`}>
                       <label className={styles.label}>
                         День
-                        <input
+                        <Input
+                          name="editDayFrom"
                           className={styles.input}
                           type="number"
                           min={1}
@@ -437,7 +463,8 @@ function TemplateTasks(): JSX.Element {
                       </label>
                       <label className={styles.label}>
                         До дня (опционально)
-                        <input
+                        <Input
+                          name="editDayTo"
                           className={styles.input}
                           type="number"
                           min={1}
@@ -448,7 +475,7 @@ function TemplateTasks(): JSX.Element {
                     </div>
                     <button
                       type="button"
-                      className={`${styles.ghostButton} ${styles.addTaskButton}`}
+                      className={`${styles.secondaryButton} ${styles.addTaskButton}`}
                       onClick={addEditingGroupRule}
                     >
                       + Задача
@@ -457,7 +484,9 @@ function TemplateTasks(): JSX.Element {
                     <div key={`edit-rule-${index}`} className={`${styles.row} ${styles.taskRow}`}>
                       <label className={styles.label}>
                         Описание задачи
-                        <input
+                        <Input
+                          name={`editDescription-${index}`}
+                          type="text"
                           className={styles.input}
                           value={rule.description}
                           onChange={(event) =>
@@ -487,7 +516,9 @@ function TemplateTasks(): JSX.Element {
                       </label>
                       <label className={styles.label}>
                         Ссылки
-                        <input
+                        <Input
+                          name={`editLinks-${index}`}
+                          type="text"
                           className={styles.input}
                           value={rule.links}
                           onChange={(event) =>
@@ -501,25 +532,24 @@ function TemplateTasks(): JSX.Element {
                     </div>
                     ))}
                     <div className={styles.actions}>
-                      <button
-                        type="button"
-                        className={styles.createButton}
+                      <IconButton
+                        type="save"
                         onClick={saveEditGroup}
                         disabled={isSaving}
-                      >
-                        Сохранить
-                      </button>
-                      <button
-                        type="button"
-                        className={styles.ghostButton}
+                      />
+                      <IconButton
+                        type="delete"
+                        onClick={() => deleteGroup(editingGroupIndexes)}
+                        disabled={isSaving}
+                      />
+                      <IconButton
+                        type="close"
                         onClick={() => {
                           setEditingGroupKey(null);
                           setEditingGroupRules([]);
                           setEditingGroupIndexes([]);
                         }}
-                      >
-                        Отмена
-                      </button>
+                      />
                     </div>
                   </>
                 ) : (
@@ -533,7 +563,6 @@ function TemplateTasks(): JSX.Element {
                     ))}
                     <div className={styles.actions}>
                       <IconButton type="edit" onClick={() => startEditGroup(group)} />
-                      <IconButton type="delete" onClick={() => deleteGroup(group.items.map((item) => item.index))} />
                     </div>
                   </>
                 )}

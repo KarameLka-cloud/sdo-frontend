@@ -1,4 +1,7 @@
 .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   height: 2rem;
   width: 2rem;
   padding: 0.2rem;
@@ -8,34 +11,54 @@
   transition: background-color var(--mfc-transition-fast), transform var(--mfc-transition-fast);
 }
 
-.edit {
-  background-color: #219696;
+.button img {
+  width: 100%;
+  height: 100%;
 }
 
-.edit:hover {
+.button:active {
+  transform: translateY(1px);
+}
+
+.button:focus-visible {
+  outline: 2px solid var(--mfc-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.edit {
   background-color: var(--mfc-blue-color);
 }
 
+.edit:hover {
+  background-color: #007171;
+}
+
 .delete {
-  background-color: #e56b5b;
+  background-color: var(--mfc-red-color);
 }
 
 .delete:hover {
-  background-color: var(--mfc-red-color);
+  background-color: var(--mfc-dark-red-color);
 }
 
 .save {
-  background-color: #4f9f4f;
-}
-
-.save:hover {
   background-color: var(--mfc-green-color);
 }
 
+.save:hover {
+  background-color: var(--mfc-dark-green-color);
+}
+
 .close {
-  background-color: #e56b5b;
+  background-color: var(--mfc-red-color);
 }
 
 .close:hover {
-  background-color: var(--mfc-red-color);
+  background-color: var(--mfc-dark-red-color);
 }

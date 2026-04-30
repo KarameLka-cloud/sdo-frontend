@@ -3,10 +3,11 @@ import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScro
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import Input from "@components/ui/Input/Input.tsx";
+import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateAdaptationPlanTemplateMutation,
-  useDeleteAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
 } from "@services/store/features/user.ts";
 import styles from "./Templates.module.css";
@@ -23,18 +24,16 @@ function Templates(): JSX.Element {
   const { data = [], isLoading, isError } = useGetAdaptationPlanTemplatesQuery(undefined);
   const [createTemplate, { isLoading: isCreating }] =
     useCreateAdaptationPlanTemplateMutation();
-  const [deleteTemplate] = useDeleteAdaptationPlanTemplateMutation();
 
   const templates = data as AdaptationPlanTemplateType[];
 
   const [isCreateVisible, setIsCreateVisible] = useState(false);
-  const [openedActionsId, setOpenedActionsId] = useState<number | null>(null);
   const [status, setStatus] = useState("");
   const [search, setSearch] = useState("");
   const [form, setForm] = useState({
     name: "",
-    workSchedule: "5/2",
-    shift: 1,
+    workSchedule: "",
+    shift: "",
   });
   const hasSearch = search.trim().length > 0;
   const filteredTemplates = useMemo(() => {
@@ -61,7 +60,11 @@ function Templates(): JSX.Element {
       setStatus("Укажите название шаблона.");
       return;
     }
-    if (!Number.isInteger(form.shift) || form.shift < 1) {
+    if (!form.workSchedule) {
+      setStatus("Выберите график работы.");
+      return;
+    }
+    if (!form.shift) {
       setStatus("Укажите корректный номер смены.");
       return;
     }
@@ -69,26 +72,16 @@ function Templates(): JSX.Element {
       await createTemplate({
         name: form.name.trim(),
         work_schedule: form.workSchedule,
-        shifts: [form.shift],
+        shifts: [Number(form.shift)],
       }).unwrap();
       setForm({
         name: "",
-        workSchedule: "5/2",
-        shift: 1,
+        workSchedule: "",
+        shift: "",
       });
       setStatus("Шаблон создан.");
     } catch {
       setStatus("Не удалось создать шаблон.");
-    }
-  };
-
-  const handleDelete = async (id: number) => {
-    try {
-      await deleteTemplate(id).unwrap();
-      setOpenedActionsId((previous) => (previous === id ? null : previous));
-      setStatus("Шаблон удален.");
-    } catch {
-      setStatus("Не удалось удалить шаблон.");
     }
   };
 
@@ -114,70 +107,64 @@ function Templates(): JSX.Element {
         </div>
         {isCreateVisible && (
           <form className={styles.form} onSubmit={handleCreate}>
-            <label className={styles.fieldLabel}>
-              Название шаблона
-              <input
+            <div className={styles.field}>
+              <Input
+                type="text"
+                name="name"
                 className={styles.input}
-                placeholder="Например: Базовый план магазина"
+                placeholder="Название шаблона"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
               />
-            </label>
-            <label className={styles.fieldLabel}>
-              График работы
+            </div>
+            <div className={styles.field}>
               <select
                 className={styles.input}
                 value={form.workSchedule}
                 onChange={(e) => setForm({ ...form, workSchedule: e.target.value })}
               >
+                <option value="" disabled>
+                  График работы
+                </option>
                 <option value="5/2">5/2</option>
                 <option value="2/2">2/2</option>
               </select>
-            </label>
-            <label className={styles.fieldLabel}>
-              Смена
-              <input
-                className={styles.input}
+            </div>
+            <div className={styles.field}>
+              <Input
                 type="number"
+                name="shift"
                 min={1}
+                step={1}
+                className={styles.input}
+                placeholder="Смена"
                 value={form.shift}
-                onChange={(e) =>
-                  setForm({ ...form, shift: Number(e.target.value) || 1 })
-                }
+                onChange={(e) => setForm({ ...form, shift: e.target.value })}
               />
-            </label>
-            <button className={styles.createButton} type="submit" disabled={isCreating}>
-              {isCreating ? "Создание..." : "Создать план"}
-            </button>
+            </div>
+            <ButtonSubmit loading={isCreating} className={styles.submitButton}>
+              Создать
+            </ButtonSubmit>
           </form>
         )}
         {status && <p className={styles.status}>{status}</p>}
-        {isLoading && <p>Загрузка...</p>}
+        {isLoading && <Loader />}
         {isError && <DataMessage type="error" />}
         {!isLoading && !isError && templates.length === 0 && <DataMessage type="noData" />}
         {!isLoading && !isError && templates.length > 0 && (
           <div className={styles.list}>
             {filteredTemplates.map((template) => (
               <div key={template.id} className={styles.card}>
-                <button
-                  type="button"
-                  className={styles.templateButton}
-                  onClick={() => navigate(`/admin/adaptation/templates/${template.id}`)}
-                >
+                <div className={styles.templateInfo}>
                   <p className={styles.title}>{template.name}</p>
                   <p className={styles.meta}>График: {template.work_schedule}</p>
                   <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
-                </button>
-                <div className={styles.iconActions}>
-                  {openedActionsId === template.id ? (
-                    <>
-                      <IconButton type="delete" onClick={() => handleDelete(template.id)} />
-                      <IconButton type="close" onClick={() => setOpenedActionsId(null)} />
-                    </>
-                  ) : (
-                    <IconButton type="edit" onClick={() => setOpenedActionsId(template.id)} />
-                  )}
                 </div>
+                <IconButton
+                  type="edit"
+                  onClick={() => navigate(`/admin/adaptation/templates/${template.id}`)}
+                  className={styles.editButton}
+                />
               </div>
             ))}
             {hasSearch && filteredTemplates.length === 0 && (

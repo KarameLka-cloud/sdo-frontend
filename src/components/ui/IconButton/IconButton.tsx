@@ -9,12 +9,14 @@ interface IconButtonProps {
   type: "edit" | "delete" | "save" | "close";
   onClick?: () => void;
   className?: string;
+  disabled?: boolean;
 }
 
 function IconButton({
   type,
   onClick,
   className,
+  disabled,
 }: IconButtonProps): JSX.Element {
   const types = {
     edit: {
@@ -42,9 +44,15 @@ function IconButton({
   const { src, style, alt } = types[type];
 
   return (
-    <div className={`${styles.button} ${className} ${style}`} onClick={onClick}>
+    <button
+      type="button"
+      className={`${styles.button} ${className} ${style}`}
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={alt}
+    >
       <img src={src} alt={alt} />
-    </div>
+    </button>
   );
 }
 

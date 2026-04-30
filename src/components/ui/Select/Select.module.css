@@ -8,3 +8,18 @@
   font-size: 0.875rem;
   transition: border-color var(--mfc-transition-fast), box-shadow var(--mfc-transition-fast);
 }
+
+.form_select:hover {
+  border-color: var(--mfc-focus-ring-color);
+}
+
+.form_select:focus-visible {
+  border-color: var(--mfc-focus-ring-color);
+  box-shadow: 0 0 0 0.15rem rgb(37 99 235 / 18%);
+}
+
+.form_select:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background-color: var(--mfc-surface-color);
+}

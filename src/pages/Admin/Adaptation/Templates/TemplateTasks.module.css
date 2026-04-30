@@ -6,14 +6,19 @@
 
 .topBar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
   gap: 0.8rem;
 }
 
-.createButton,
-.ghostButton {
-  border: none;
+.topBarActions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.secondaryButton {
+  border: 0.1rem solid var(--mfc-create-field-border);
   border-radius: 0.5rem;
   display: inline-flex;
   align-items: center;
@@ -23,48 +28,45 @@
   font-size: 0.9rem;
   line-height: 1;
   cursor: pointer;
-}
-
-.ghostButton {
-  border: 0.1rem solid #d1d5dc;
-  background: #fff;
-  color: #334155;
-}
-
-.createButton {
-  background: #2f5cbf;
-  color: #fff;
+  background: var(--mfc-create-form-bg);
+  color: var(--mfc-black-color);
 }
 
 .metaBlock {
-  border: 0.1rem solid #e5e7eb;
+  border: 0.1rem solid var(--mfc-create-form-border);
   border-radius: 0.75rem;
   padding: 0.75rem;
+  background: var(--mfc-create-form-bg);
 }
 
 .meta {
   margin: 0 0 0.25rem;
-  color: #4b5563;
+  color: var(--mfc-gray-color);
 }
 
 .status {
   margin: 0;
-  color: #334155;
+  color: var(--mfc-black-color);
 }
 
 .list {
   display: flex;
   flex-direction: column;
   gap: 0.8rem;
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 .ruleCard {
-  border: 0.1rem solid #e5e7eb;
+  border: 0.1rem solid var(--mfc-create-form-border);
   border-radius: 0.75rem;
   padding: 0.9rem;
   display: flex;
   flex-direction: column;
   gap: 0.7rem;
+  background: var(--mfc-create-form-bg);
 }
 
 .title {
@@ -94,13 +96,13 @@
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.85rem;
-  color: #334155;
+  color: var(--mfc-black-color);
 }
 
 .input {
   height: 2.25rem;
   box-sizing: border-box;
-  border: 0.1rem solid #d1d5dc;
+  border: 0.1rem solid var(--mfc-create-field-border);
   border-radius: 0.5rem;
   padding: 0.55rem 0.7rem;
   font-size: 0.9rem;
@@ -126,7 +128,7 @@
 
 .info {
   margin: 0;
-  color: #64748b;
+  color: var(--mfc-gray-color);
 }
 
 @media (max-width: 1000px) {

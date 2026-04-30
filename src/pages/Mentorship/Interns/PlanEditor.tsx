@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
+import Input from "@components/ui/Input/Input.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
@@ -41,7 +43,7 @@ function PlanEditor(): JSX.Element {
   const { planId } = useParams();
   const numericPlanId = Number(planId);
 
-  const { data, isLoading, isError } = useGetAdaptationPlanByIdQuery(numericPlanId, {
+  const { data, isLoading, isError, error } = useGetAdaptationPlanByIdQuery(numericPlanId, {
     skip: !numericPlanId,
   });
   const { data: templates = [] } = useGetAdaptationPlanTemplatesQuery(undefined);
@@ -81,6 +83,25 @@ function PlanEditor(): JSX.Element {
   >([]);
   const [initialDays, setInitialDays] = useState<typeof days>([]);
   const [status, setStatus] = useState("");
+
+  const loadErrorMessage = useMemo(() => {
+    if (!error || typeof error !== "object" || !("status" in error)) {
+      return "";
+    }
+
+    if (error.status === 403) {
+      return "Недостаточно прав для просмотра или редактирования этого плана.";
+    }
+
+    if ("data" in error && typeof error.data === "object" && error.data !== null) {
+      const message = (error.data as { message?: string }).message;
+      if (message) {
+        return message;
+      }
+    }
+
+    return "Не удалось загрузить план.";
+  }, [error]);
 
   useEffect(() => {
     if (!plan) {
@@ -189,7 +210,7 @@ function PlanEditor(): JSX.Element {
   if (isLoading) {
     return (
       <OverflowScrollBlock header_name={"Редактирование плана"} button_back_visible={"enable"}>
-        <p className={styles.info}>Загрузка...</p>
+        <Loader />
       </OverflowScrollBlock>
     );
   }
@@ -198,6 +219,7 @@ function PlanEditor(): JSX.Element {
     return (
       <OverflowScrollBlock header_name={"Редактирование плана"} button_back_visible={"enable"}>
         <DataMessage type="error" />
+        {loadErrorMessage && <p className={styles.status}>{loadErrorMessage}</p>}
       </OverflowScrollBlock>
     );
   }
@@ -212,12 +234,14 @@ function PlanEditor(): JSX.Element {
         <div className={styles.actionsTop}>
           <IconButton
             type="save"
-            onClick={isSavingPlan ? undefined : handleSaveAll}
+            onClick={handleSaveAll}
+            disabled={isSavingPlan}
             className={isSavingPlan ? styles.iconDisabled : ""}
           />
           <IconButton
             type="delete"
-            onClick={isDeleting ? undefined : handleDelete}
+            onClick={handleDelete}
+            disabled={isDeleting}
             className={isDeleting ? styles.iconDisabled : ""}
           />
         </div>
@@ -225,9 +249,10 @@ function PlanEditor(): JSX.Element {
         <div className={styles.formRow}>
           <label className={styles.label}>
             Дата начала
-            <input
+            <Input
               type="date"
-              className={styles.input}
+              name="startDate"
+              className={styles.dateInput}
               value={form.startDate}
               onChange={(event) => setForm({ ...form, startDate: event.target.value })}
             />
@@ -317,9 +342,10 @@ function PlanEditor(): JSX.Element {
             <div className={styles.formRow}>
               <label className={styles.label}>
                 Дата
-                <input
+                <Input
                   type="date"
-                  className={styles.input}
+                  name={`dayDate-${day.id}`}
+                  className={styles.dateInput}
                   value={day.date}
                   onChange={(event) =>
                     setDays((previous) => {

@@ -145,19 +145,21 @@ function Webinars(): JSX.Element {
           </form>
         </>
       ) : null}
-      <DataList<WebinarType>
-        data={filteredData}
-        error={!!error}
-        isLoading={isLoading}
-        renderItem={(item: WebinarType) => (
-          <WebinarChange
-            key={item.id}
-            webinar={item}
-            mutationDelete={deleteWebinar}
-            className={styles.webinar}
-          />
-        )}
-      />
+      <div className={styles.list}>
+        <DataList<WebinarType>
+          data={filteredData}
+          error={!!error}
+          isLoading={isLoading}
+          renderItem={(item: WebinarType) => (
+            <WebinarChange
+              key={item.id}
+              webinar={item}
+              mutationDelete={deleteWebinar}
+              className={styles.webinar}
+            />
+          )}
+        />
+      </div>
     </OverflowScrollBlock>
   );
 }

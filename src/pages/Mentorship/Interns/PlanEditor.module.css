@@ -8,7 +8,7 @@
   margin: 0;
   font-size: 1rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--mfc-black-color);
 }
 
 .actionsTop {
@@ -33,29 +33,33 @@
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.84rem;
-  color: #334155;
+  color: var(--mfc-black-color);
 }
 
 .input {
   width: 100%;
-  border: 0.1rem solid #d1d5dc;
+  border: 0.1rem solid var(--mfc-create-field-border);
   border-radius: 0.5rem;
   padding: 0.55rem 0.7rem;
   font-size: 0.9rem;
 }
 
+.dateInput {
+  width: fit-content;
+}
+
 .dayCard {
-  border: 0.1rem solid #e5e7eb;
+  border: 0.1rem solid var(--mfc-create-form-border);
   border-radius: 0.75rem;
   padding: 0.8rem;
-  background: #fff;
+  background: var(--mfc-create-form-bg);
 }
 
 .dayHeader {
   margin-bottom: 0.6rem;
   font-size: 0.9rem;
   font-weight: 600;
-  color: #0f172a;
+  color: var(--mfc-black-color);
 }
 
 .taskList {
@@ -74,18 +78,18 @@
 
 .taskName {
   font-size: 0.88rem;
-  color: #1f2937;
+  color: var(--mfc-black-color);
 }
 
 .status {
   margin: 0.3rem 0 0;
   font-size: 0.86rem;
-  color: #334155;
+  color: var(--mfc-black-color);
 }
 
 .info {
   margin: 0;
-  color: #64748b;
+  color: var(--mfc-gray-color);
 }
 
 @media (max-width: 900px) {

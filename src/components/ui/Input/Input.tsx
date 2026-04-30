@@ -2,13 +2,16 @@ import React from "react";
 import styles from "./Input.module.css";
 
 interface InputProps {
-  type: "text" | "date" | "time" | "email" | "password";
+  type: "text" | "date" | "time" | "email" | "password" | "number";
   name: string;
   value: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   placeholder?: string;
   required?: boolean;
   className?: string;
+  min?: number;
+  step?: number;
+  disabled?: boolean;
 }
 
 function Input({
@@ -19,6 +22,9 @@ function Input({
   placeholder,
   className,
   required,
+  min,
+  step,
+  disabled,
 }: InputProps) {
   const types = {
     text: {
@@ -36,6 +42,9 @@ function Input({
     password: {
       style: styles.password,
     },
+    number: {
+      style: styles.number,
+    },
   };
 
   const { style } = types[type];
@@ -49,6 +58,9 @@ function Input({
       placeholder={placeholder}
       className={`${styles.input} ${style} ${className}`}
       required={required}
+      min={min}
+      step={step}
+      disabled={disabled}
     />
   );
 }

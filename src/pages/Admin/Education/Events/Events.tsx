@@ -185,19 +185,21 @@ function Events(): JSX.Element {
         </>
       ) : null}
 
-      <DataList<EventType>
-        data={filteredData}
-        error={!!error}
-        isLoading={isLoading}
-        renderItem={(item: EventType) => (
-          <EventChange
-            key={item.id}
-            event={item}
-            mutationDelete={deleteEvent}
-            className={styles.event}
-          />
-        )}
-      />
+      <div className={styles.list}>
+        <DataList<EventType>
+          data={filteredData}
+          error={!!error}
+          isLoading={isLoading}
+          renderItem={(item: EventType) => (
+            <EventChange
+              key={item.id}
+              event={item}
+              mutationDelete={deleteEvent}
+              className={styles.event}
+            />
+          )}
+        />
+      </div>
     </OverflowScrollBlock>
   );
 }

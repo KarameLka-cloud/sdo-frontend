@@ -30,7 +30,7 @@
 }
 
 .form_input_date_end {
-  width: 100%;
+  width: fit-content;
 }
 
 .test:not(:first-child) {
@@ -60,6 +60,13 @@
   display: flex;
   align-items: center;
   gap: 0.75rem;
+}
+
+.list {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding-right: 0.25rem;
 }
 
 @media (max-width: 900px) {

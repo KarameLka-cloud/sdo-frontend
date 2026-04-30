@@ -4,10 +4,12 @@ import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScro
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
 import Input from "@components/ui/Input/Input.tsx";
+import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
+import Loader from "@components/ui/Loader/Loader.tsx";
 import {
   useCreateAdaptationPlanMutation,
   useGetAdaptationPlanTemplatesQuery,
-  useGetAllAdaptationPlansQuery,
+  useGetAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
@@ -107,7 +109,7 @@ function Interns(): JSX.Element {
     data: allAdaptationPlansData = [],
     isLoading: isAllPlansLoading,
     isError: isAllPlansError,
-  } = useGetAllAdaptationPlansQuery(undefined);
+  } = useGetAdaptationPlansQuery(undefined);
   const { data: usersData = [] } = useGetUsersQuery(undefined);
   const { data: templatesData = [] } = useGetAdaptationPlanTemplatesQuery(undefined);
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
@@ -135,8 +137,8 @@ function Interns(): JSX.Element {
   const [newPlan, setNewPlan] = useState({
     userId: null as number | null,
     startDate: "",
+    workSchedule: "",
     adaptationPlanTemplateId: null as number | null,
-    shift: 1,
     mentor: null as number | null,
     departmentHead: null as number | null,
   });
@@ -179,6 +181,11 @@ function Interns(): JSX.Element {
       setCreateStatusMessage("Укажите дату начала стажировки");
       return;
     }
+    if (!newPlan.workSchedule) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("Выберите режим работы");
+      return;
+    }
     if (!newPlan.adaptationPlanTemplateId) {
       setCreateStatusType("error");
       setCreateStatusMessage("Выберите шаблон адаптации");
@@ -192,9 +199,15 @@ function Interns(): JSX.Element {
       setCreateStatusMessage("Выбранный шаблон не найден");
       return;
     }
-    if (!template.shifts.includes(newPlan.shift)) {
+    if (template.work_schedule !== newPlan.workSchedule) {
       setCreateStatusType("error");
-      setCreateStatusMessage("Выберите корректную смену из шаблона");
+      setCreateStatusMessage("Выберите шаблон с подходящим режимом работы");
+      return;
+    }
+    const selectedShift = [...template.shifts].sort((a, b) => a - b)[0];
+    if (!selectedShift) {
+      setCreateStatusType("error");
+      setCreateStatusMessage("У выбранного шаблона не найдены смены");
       return;
     }
     if (!newPlan.mentor) {
@@ -213,15 +226,15 @@ function Interns(): JSX.Element {
         user_id: newPlan.userId,
         start_date: newPlan.startDate,
         adaptation_plan_template_id: newPlan.adaptationPlanTemplateId,
-        shift: newPlan.shift,
+        shift: selectedShift,
         mentor: newPlan.mentor,
         department_head: newPlan.departmentHead,
       }).unwrap();
       setNewPlan({
         userId: null,
         startDate: "",
+        workSchedule: "",
         adaptationPlanTemplateId: null,
-        shift: 1,
         mentor: null,
         departmentHead: null,
       });
@@ -235,18 +248,27 @@ function Interns(): JSX.Element {
     }
   };
 
-  const selectedCreateTemplate = adaptationTemplates.find(
-    (template) => template.id === newPlan.adaptationPlanTemplateId,
+  const availableWorkSchedules = Array.from(
+    new Set(adaptationTemplates.map((template) => template.work_schedule)),
   );
 
-  const availableCreateShifts = selectedCreateTemplate?.shifts?.length
-    ? selectedCreateTemplate.shifts
+  const filteredCreateTemplates = newPlan.workSchedule
+    ? adaptationTemplates
+        .filter((template) => template.work_schedule === newPlan.workSchedule)
+        .sort((a, b) => {
+          const firstShiftA = Math.min(...a.shifts);
+          const firstShiftB = Math.min(...b.shifts);
+          if (firstShiftA !== firstShiftB) {
+            return firstShiftA - firstShiftB;
+          }
+          return a.name.localeCompare(b.name, "ru");
+        })
     : [];
 
   return (
     <OverflowScrollBlock header_name={"Список стажеров"}>
       <div className={styles.container}>
-        {isLoading && <p className={styles.info}>Загрузка...</p>}
+        {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}
         {!isLoading && !isError && (
           <div className={styles.createSearch}>
@@ -272,8 +294,7 @@ function Interns(): JSX.Element {
         )}
         {!isLoading && !isError && isCreateFormVisible && (
           <form className={styles.createForm} onSubmit={handleCreatePlan}>
-            <label className={styles.label}>
-              Пользователь
+            <div className={styles.field}>
               <select
                 className={styles.select}
                 value={newPlan.userId ?? ""}
@@ -284,7 +305,9 @@ function Interns(): JSX.Element {
                   })
                 }
               >
-                <option value="">Выберите пользователя</option>
+                <option value="" disabled>
+                  Пользователь
+                </option>
                 {users
                   .filter((user) => user.id !== undefined)
                   .map((user) => (
@@ -293,13 +316,14 @@ function Interns(): JSX.Element {
                     </option>
                   ))}
               </select>
-            </label>
+            </div>
             <div className={styles.formRow}>
-              <label className={styles.label}>
-                Дата начала
-                <input
+              <div className={styles.field}>
+                <Input
                   type="date"
-                  className={styles.select}
+                  name="startDate"
+                  className={styles.dateInput}
+                  placeholder="Дата начала"
                   value={newPlan.startDate}
                   onChange={(e) =>
                     setNewPlan({
@@ -308,59 +332,55 @@ function Interns(): JSX.Element {
                     })
                   }
                 />
-              </label>
-              <label className={styles.label}>
-                Шаблон адаптации
+              </div>
+              <div className={styles.field}>
+                <select
+                  className={styles.select}
+                  value={newPlan.workSchedule}
+                  onChange={(e) =>
+                    setNewPlan({
+                      ...newPlan,
+                      workSchedule: e.target.value,
+                      adaptationPlanTemplateId: null,
+                    })
+                  }
+                >
+                  <option value="" disabled>
+                    Режим работы
+                  </option>
+                  {availableWorkSchedules.map((schedule) => (
+                    <option key={schedule} value={schedule}>
+                      {schedule}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className={styles.field}>
                 <select
                   className={styles.select}
                   value={newPlan.adaptationPlanTemplateId ?? ""}
                   onChange={(e) => {
                     const templateId = e.target.value ? Number(e.target.value) : null;
-                    const template = adaptationTemplates.find(
-                      (item) => item.id === templateId,
-                    );
                     setNewPlan({
                       ...newPlan,
                       adaptationPlanTemplateId: templateId,
-                      shift: template?.shifts?.[0] ?? 1,
                     });
                   }}
+                  disabled={!newPlan.workSchedule}
                 >
-                  <option value="">Выберите шаблон</option>
-                  {adaptationTemplates.map((template) => (
+                  <option value="" disabled>
+                    Шаблон адаптации
+                  </option>
+                  {filteredCreateTemplates.map((template) => (
                     <option key={template.id} value={template.id}>
-                      {template.name} ({template.work_schedule})
+                      {template.name} (смены: {[...template.shifts].sort((a, b) => a - b).join(", ")})
                     </option>
                   ))}
                 </select>
-              </label>
-              <label className={styles.label}>
-                Смена
-                <select
-                  className={styles.select}
-                  value={newPlan.adaptationPlanTemplateId ? newPlan.shift : ""}
-                  onChange={(e) =>
-                    setNewPlan({
-                      ...newPlan,
-                      shift: Number(e.target.value),
-                    })
-                  }
-                  disabled={!newPlan.adaptationPlanTemplateId}
-                >
-                  {!newPlan.adaptationPlanTemplateId && (
-                    <option value="">Сначала выберите шаблон</option>
-                  )}
-                  {availableCreateShifts.map((shift) => (
-                    <option key={shift} value={shift}>
-                      Смена {shift}
-                    </option>
-                  ))}
-                </select>
-              </label>
+              </div>
             </div>
             <div className={styles.formRow}>
-              <label className={styles.label}>
-                Наставник
+              <div className={styles.field}>
                 <select
                   className={styles.select}
                   value={newPlan.mentor ?? ""}
@@ -371,7 +391,9 @@ function Interns(): JSX.Element {
                     })
                   }
                 >
-                  <option value="">Выберите наставника</option>
+                  <option value="" disabled>
+                    Наставник
+                  </option>
                   {mentors
                     .filter((mentor) => mentor.id !== undefined)
                     .map((mentor) => (
@@ -380,9 +402,8 @@ function Interns(): JSX.Element {
                       </option>
                     ))}
                 </select>
-              </label>
-              <label className={styles.label}>
-                Руководитель отдела
+              </div>
+              <div className={styles.field}>
                 <select
                   className={styles.select}
                   value={newPlan.departmentHead ?? ""}
@@ -393,7 +414,9 @@ function Interns(): JSX.Element {
                     })
                   }
                 >
-                  <option value="">Выберите руководителя отдела</option>
+                  <option value="" disabled>
+                    Руководитель отдела
+                  </option>
                   {departmentHeads
                     .filter((head) => head.id !== undefined)
                     .map((head) => (
@@ -402,16 +425,12 @@ function Interns(): JSX.Element {
                       </option>
                     ))}
                 </select>
-              </label>
+              </div>
             </div>
             <div className={styles.formActions}>
-              <button
-                type="submit"
-                className={styles.addInternButton}
-                disabled={isCreatingPlan}
-              >
-                {isCreatingPlan ? "Добавление..." : "Добавить стажера"}
-              </button>
+              <ButtonSubmit loading={isCreatingPlan} className={styles.submitButton}>
+                Создать
+              </ButtonSubmit>
               {createStatusType !== "idle" && (
                 <span
                   className={`${styles.createStatus} ${
