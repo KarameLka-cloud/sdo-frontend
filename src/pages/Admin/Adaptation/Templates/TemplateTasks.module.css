@@ -180,11 +180,6 @@
   padding-bottom: 0.125rem;
 }
 
-.info {
-  margin: 0;
-  color: var(--mfc-gray-color);
-}
-
 @media (max-width: 1000px) {
   .templateMetaBlock {
     flex-direction: column;

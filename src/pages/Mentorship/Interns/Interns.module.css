@@ -14,11 +14,6 @@
   margin-bottom: var(--mfc-sticky-panel-margin-bottom);
 }
 
-.info {
-  margin: 0;
-  color: var(--mfc-gray-color);
-}
-
 .createSearch {
   display: flex;
   justify-content: space-between;

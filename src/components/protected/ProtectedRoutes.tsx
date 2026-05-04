@@ -122,8 +122,11 @@ const ProtectedRouteMentorshipInternsAdmin = ({
     return <Loader />;
   }
 
-  const hasAdminAccess = hasRole(role, roleName, USER_ROLES.ADMIN);
-  if (!hasAdminAccess) {
+  const hasAccess =
+    hasRole(role, roleName, USER_ROLES.ADMIN) ||
+    hasRole(role, roleName, USER_ROLES.MENTOR) ||
+    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
+  if (!hasAccess) {
     return <Navigate to={ROUTES.HOME} replace />;
   }
 

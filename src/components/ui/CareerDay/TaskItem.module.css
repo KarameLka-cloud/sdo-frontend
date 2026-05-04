@@ -94,6 +94,11 @@
   color: #374151;
 }
 
+.statusButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
 .statusButton.active {
   color: white;
   border: 0.1rem solid transparent;

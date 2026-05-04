@@ -107,15 +107,14 @@ function Interns(): JSX.Element {
   const [createStatusType, setCreateStatusType] =
     useState<CreateStatusType>("idle");
   const [createStatusMessage, setCreateStatusMessage] = useState("");
-  const visiblePlans = adaptationPlans;
   const hasSearch = search.trim().length > 0;
   const filteredPlans = useMemo(() => {
     if (!hasSearch) {
-      return visiblePlans;
+      return adaptationPlans;
     }
 
     const searchLower = search.toLowerCase();
-    return visiblePlans.filter((plan) => {
+    return adaptationPlans.filter((plan) => {
       const userName = plan.user?.name?.toLowerCase() ?? "";
       const department = plan.user?.department?.toLowerCase() ?? "";
       const userId = String(plan.user_id);
@@ -126,7 +125,7 @@ function Interns(): JSX.Element {
         userId.includes(searchLower)
       );
     });
-  }, [hasSearch, search, visiblePlans]);
+  }, [adaptationPlans, hasSearch, search]);
 
   const handleCreatePlan = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -409,10 +408,10 @@ function Interns(): JSX.Element {
             )}
           </div>
         )}
-        {!isLoading && !isError && visiblePlans.length === 0 && (
+        {!isLoading && !isError && adaptationPlans.length === 0 && (
           <DataMessage type={"noData"} />
         )}
-        {!isLoading && !isError && visiblePlans.length > 0 && (
+        {!isLoading && !isError && adaptationPlans.length > 0 && (
           <div className={styles.list}>
             {filteredPlans.map((plan) => (
               <div key={plan.id} className={styles.card}>
