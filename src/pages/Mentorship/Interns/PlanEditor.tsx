@@ -8,7 +8,6 @@ import Loader from "@components/ui/Loader/Loader.tsx";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
-  useGetAdaptationPlanTemplatesQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useUpdateAdaptationPlanDayMutation,
@@ -18,6 +17,8 @@ import {
 import { UserType } from "@interfaces/api/UserType.ts";
 import { ROUTES } from "@constants/routes.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+import { USER_ROLES, hasRole } from "@constants/roles.ts";
+import { useUser } from "@hooks/useUser.ts";
 import styles from "./PlanEditor.module.css";
 
 interface PlanType {
@@ -45,6 +46,17 @@ interface PlanType {
 
 type StatusType = "idle" | "loading" | "success" | "error";
 
+function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
+  const trimmed = (text ?? "").trim();
+  return (
+    <div
+      className={`${styles.commentText} ${!trimmed ? styles.commentTextPlaceholder : ""}`}
+    >
+      {trimmed || "—"}
+    </div>
+  );
+}
+
 function PlanEditor(): JSX.Element {
   const navigate = useNavigate();
   const { planId } = useParams();
@@ -53,7 +65,6 @@ function PlanEditor(): JSX.Element {
   const { data, isLoading, isError, error } = useGetAdaptationPlanByIdQuery(numericPlanId, {
     skip: !numericPlanId,
   });
-  const { data: templates = [] } = useGetAdaptationPlanTemplatesQuery(undefined);
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: headsData = [] } = useGetDepartmentHeadsQuery(undefined);
 
@@ -62,15 +73,10 @@ function PlanEditor(): JSX.Element {
   const [updateTask] = useUpdateAdaptationPlanTaskStatusMutation();
   const [deletePlan, { isLoading: isDeleting }] = useDeleteAdaptationPlanMutation();
 
+  const { role, role_name: roleName } = useUser();
   const plan = data as PlanType | undefined;
   const mentors = mentorsData as UserType[];
   const heads = headsData as UserType[];
-  const adaptationTemplates = templates as Array<{
-    id: number;
-    name: string;
-    work_schedule: string;
-    shifts: number[];
-  }>;
 
   const [form, setForm] = useState({
     startDate: "",
@@ -148,10 +154,17 @@ function PlanEditor(): JSX.Element {
     setInitialDays(mappedDays);
   }, [plan]);
 
-  const availableShifts = useMemo(() => {
-    const template = adaptationTemplates.find((item) => item.id === form.templateId);
-    return template?.shifts?.length ? template.shifts : [1, 2, 3, 4, 5, 6];
-  }, [adaptationTemplates, form.templateId]);
+  const commentPermissions = useMemo(() => {
+    const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
+    const isDepartmentHead = hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
+    const isMentor = hasRole(role, roleName, USER_ROLES.MENTOR);
+
+    return {
+      canEditEmployee: isAdmin,
+      canEditDepartmentHead: !isAdmin && isDepartmentHead,
+      canEditMentor: !isAdmin && !isDepartmentHead && isMentor,
+    };
+  }, [role, roleName]);
 
   const handleSaveAll = async () => {
     if (!plan) {
@@ -175,18 +188,29 @@ function PlanEditor(): JSX.Element {
         department_head: form.departmentHead,
       }).unwrap();
 
-      const dayRequests = days.map((day) =>
-        updateDay({
+      const dayRequests = days.map((day, dayIndex) => {
+        const initial = initialDays[dayIndex];
+        const employee_comment = commentPermissions.canEditEmployee
+          ? day.employee_comment
+          : (initial?.employee_comment ?? "");
+        const mentor_comment = commentPermissions.canEditMentor
+          ? day.mentor_comment
+          : (initial?.mentor_comment ?? "");
+        const department_head_comment = commentPermissions.canEditDepartmentHead
+          ? day.department_head_comment
+          : (initial?.department_head_comment ?? "");
+
+        return updateDay({
           planId: plan.id,
           dayId: day.id,
           date: day.date,
           completion: day.completion,
-          employee_comment: day.employee_comment || null,
+          employee_comment: employee_comment || null,
           intern_comment: day.intern_comment || null,
-          mentor_comment: day.mentor_comment || null,
-          department_head_comment: day.department_head_comment || null,
-        }).unwrap(),
-      );
+          mentor_comment: mentor_comment || null,
+          department_head_comment: department_head_comment || null,
+        }).unwrap();
+      });
 
       const taskRequests: Array<Promise<unknown>> = [];
       days.forEach((day, dayIndex) => {
@@ -258,83 +282,94 @@ function PlanEditor(): JSX.Element {
       button_back_visible={"enable"}
     >
       <div className={styles.container}>
-        <h3 className={styles.name}>{plan.user?.name ?? `ID пользователя: ${plan.user_id}`}</h3>
-        <div className={styles.actionsTop}>
-          <IconButton
-            type="save"
-            onClick={handleSaveAll}
-            disabled={isSavingPlan}
-            className={isSavingPlan ? styles.iconDisabled : ""}
-          />
-          <IconButton
-            type="delete"
-            onClick={handleDelete}
-            disabled={isDeleting}
-            className={isDeleting ? styles.iconDisabled : ""}
-          />
-        </div>
+        <div className={styles.planSummaryCard}>
+          <div className={styles.internSection}>
+            <span className={styles.internCardLabel}>Стажер</span>
+            <div className={styles.internName}>
+              {plan.user?.name ?? `ID пользователя: ${plan.user_id}`}
+            </div>
+          </div>
 
-        <div className={styles.formRow}>
-          <label className={styles.label}>
-            Дата начала
-            <Input
-              type="date"
-              name="startDate"
-              className={styles.dateInput}
-              value={form.startDate}
-              onChange={(event) => setForm({ ...form, startDate: event.target.value })}
+          <div className={styles.formRow}>
+            <label className={styles.label}>
+              Дата начала
+              <Input
+                type="date"
+                name="startDate"
+                className={styles.dateInput}
+                value={form.startDate}
+                onChange={(event) => setForm({ ...form, startDate: event.target.value })}
+              />
+            </label>
+            <label className={styles.label}>
+              Шаблон адаптации
+              <span className={styles.info}>
+                {plan.template ? `${plan.template.name} (${plan.template.work_schedule})` : "—"}
+              </span>
+            </label>
+            <label className={styles.label}>
+              Смена
+              <span className={styles.info}>Смена {form.shift}</span>
+            </label>
+          </div>
+
+          <div className={styles.formRow}>
+            <label className={styles.label}>
+              Наставник
+              <select
+                className={styles.input}
+                value={form.mentor ?? ""}
+                onChange={(event) =>
+                  setForm({ ...form, mentor: event.target.value ? Number(event.target.value) : null })
+                }
+              >
+                <option value="">Выберите наставника</option>
+                {mentors.map((mentor) => (
+                  <option key={mentor.id} value={mentor.id}>
+                    {mentor.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className={styles.label}>
+              Руководитель отдела
+              <select
+                className={styles.input}
+                value={form.departmentHead ?? ""}
+                onChange={(event) =>
+                  setForm({
+                    ...form,
+                    departmentHead: event.target.value ? Number(event.target.value) : null,
+                  })
+                }
+              >
+                <option value="">Выберите руководителя отдела</option>
+                {heads.map((head) => (
+                  <option key={head.id} value={head.id}>
+                    {head.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+
+          <div className={styles.actionsBottom}>
+            <IconButton
+              type="save"
+              onClick={handleSaveAll}
+              disabled={isSavingPlan}
+              className={isSavingPlan ? styles.iconDisabled : ""}
             />
-          </label>
-          <label className={styles.label}>
-            Шаблон адаптации
-            <span className={styles.info}>
-              {plan.template ? `${plan.template.name} (${plan.template.work_schedule})` : "—"}
-            </span>
-          </label>
-          <label className={styles.label}>
-            Смена
-            <span className={styles.info}>Смена {form.shift}</span>
-          </label>
-        </div>
-
-        <div className={styles.formRow}>
-          <label className={styles.label}>
-            Наставник
-            <select
-              className={styles.input}
-              value={form.mentor ?? ""}
-              onChange={(event) =>
-                setForm({ ...form, mentor: event.target.value ? Number(event.target.value) : null })
-              }
-            >
-              <option value="">Выберите наставника</option>
-              {mentors.map((mentor) => (
-                <option key={mentor.id} value={mentor.id}>
-                  {mentor.name}
-                </option>
-              ))}
-            </select>
-          </label>
-          <label className={styles.label}>
-            Руководитель отдела
-            <select
-              className={styles.input}
-              value={form.departmentHead ?? ""}
-              onChange={(event) =>
-                setForm({
-                  ...form,
-                  departmentHead: event.target.value ? Number(event.target.value) : null,
-                })
-              }
-            >
-              <option value="">Выберите руководителя отдела</option>
-              {heads.map((head) => (
-                <option key={head.id} value={head.id}>
-                  {head.name}
-                </option>
-              ))}
-            </select>
-          </label>
+            <IconButton
+              type="delete"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className={isDeleting ? styles.iconDisabled : ""}
+            />
+            {statusType !== "idle" && status && (
+              <p className={styles.saveStatus}>{status}</p>
+            )}
+          </div>
         </div>
 
         {days.map((day, dayIndex) => (
@@ -380,65 +415,67 @@ function PlanEditor(): JSX.Element {
               </label>
             </div>
 
-            <div className={styles.commentGrid}>
+            <div className={styles.commentStack}>
               <label className={styles.label}>
                 Комментарий УПиПК
-                <textarea
-                  className={`${styles.input} ${styles.commentInput}`}
-                  value={day.employee_comment}
-                  onChange={(event) =>
-                    setDays((previous) => {
-                      const next = [...previous];
-                      next[dayIndex] = { ...next[dayIndex], employee_comment: event.target.value };
-                      return next;
-                    })
-                  }
-                />
+                {commentPermissions.canEditEmployee ? (
+                  <textarea
+                    className={`${styles.input} ${styles.commentInput}`}
+                    value={day.employee_comment}
+                    onChange={(event) =>
+                      setDays((previous) => {
+                        const next = [...previous];
+                        next[dayIndex] = { ...next[dayIndex], employee_comment: event.target.value };
+                        return next;
+                      })
+                    }
+                  />
+                ) : (
+                  <ReadonlyCommentBlock text={day.employee_comment} />
+                )}
               </label>
               <label className={styles.label}>
                 Комментарий стажера
-                <textarea
-                  className={`${styles.input} ${styles.commentInput}`}
-                  value={day.intern_comment}
-                  onChange={(event) =>
-                    setDays((previous) => {
-                      const next = [...previous];
-                      next[dayIndex] = { ...next[dayIndex], intern_comment: event.target.value };
-                      return next;
-                    })
-                  }
-                />
+                <ReadonlyCommentBlock text={day.intern_comment} />
               </label>
               <label className={styles.label}>
                 Комментарий наставника
-                <textarea
-                  className={`${styles.input} ${styles.commentInput}`}
-                  value={day.mentor_comment}
-                  onChange={(event) =>
-                    setDays((previous) => {
-                      const next = [...previous];
-                      next[dayIndex] = { ...next[dayIndex], mentor_comment: event.target.value };
-                      return next;
-                    })
-                  }
-                />
+                {commentPermissions.canEditMentor ? (
+                  <textarea
+                    className={`${styles.input} ${styles.commentInput}`}
+                    value={day.mentor_comment}
+                    onChange={(event) =>
+                      setDays((previous) => {
+                        const next = [...previous];
+                        next[dayIndex] = { ...next[dayIndex], mentor_comment: event.target.value };
+                        return next;
+                      })
+                    }
+                  />
+                ) : (
+                  <ReadonlyCommentBlock text={day.mentor_comment} />
+                )}
               </label>
               <label className={styles.label}>
                 Комментарий руководителя
-                <textarea
-                  className={`${styles.input} ${styles.commentInput}`}
-                  value={day.department_head_comment}
-                  onChange={(event) =>
-                    setDays((previous) => {
-                      const next = [...previous];
-                      next[dayIndex] = {
-                        ...next[dayIndex],
-                        department_head_comment: event.target.value,
-                      };
-                      return next;
-                    })
-                  }
-                />
+                {commentPermissions.canEditDepartmentHead ? (
+                  <textarea
+                    className={`${styles.input} ${styles.commentInput}`}
+                    value={day.department_head_comment}
+                    onChange={(event) =>
+                      setDays((previous) => {
+                        const next = [...previous];
+                        next[dayIndex] = {
+                          ...next[dayIndex],
+                          department_head_comment: event.target.value,
+                        };
+                        return next;
+                      })
+                    }
+                  />
+                ) : (
+                  <ReadonlyCommentBlock text={day.department_head_comment} />
+                )}
               </label>
             </div>
 
@@ -470,8 +507,6 @@ function PlanEditor(): JSX.Element {
             </div>
           </div>
         ))}
-
-        {statusType !== "idle" && status && <p className={styles.status}>{status}</p>}
       </div>
     </OverflowScrollBlock>
   );

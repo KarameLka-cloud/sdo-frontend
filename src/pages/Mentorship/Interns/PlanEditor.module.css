@@ -4,17 +4,54 @@
   gap: 0.9rem;
 }
 
-.name {
-  margin: 0;
-  font-size: 1rem;
+.planSummaryCard {
+  border: 0.1rem solid var(--mfc-create-form-border);
+  border-radius: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--mfc-create-form-bg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.internSection {
+  padding-bottom: 0.5rem;
+  border-bottom: 0.05rem solid var(--mfc-create-form-border);
+}
+
+.internCardLabel {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-size: 0.84rem;
   font-weight: 600;
+  color: var(--mfc-gray-color);
+}
+
+.internName {
+  font-size: 1.05rem;
+  font-weight: 600;
+  line-height: 1.35;
   color: var(--mfc-black-color);
 }
 
-.actionsTop {
+.actionsBottom {
   display: flex;
+  align-items: center;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-top: 0.15rem;
+  padding-top: 0.75rem;
+  border-top: 0.05rem solid var(--mfc-create-form-border);
+}
+
+.saveStatus {
+  margin: 0;
+  margin-left: auto;
+  max-width: min(100%, 22rem);
+  font-size: 0.86rem;
+  line-height: 1.35;
+  color: var(--mfc-black-color);
+  text-align: right;
 }
 
 .iconDisabled {
@@ -33,7 +70,23 @@
   flex-direction: column;
   gap: 0.25rem;
   font-size: 0.84rem;
+  font-weight: 600;
   color: var(--mfc-black-color);
+}
+
+.label .input,
+.label input,
+.label select,
+.label textarea {
+  font-weight: 400;
+}
+
+.label .commentText {
+  font-weight: 400;
+}
+
+.label .info {
+  font-weight: 400;
 }
 
 .input {
@@ -62,10 +115,10 @@
   color: var(--mfc-black-color);
 }
 
-.commentGrid {
+.commentStack {
   margin-top: 0.7rem;
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 0.6rem;
 }
 
@@ -73,6 +126,20 @@
   min-height: 5rem;
   resize: vertical;
   font-family: inherit;
+}
+
+.commentText {
+  margin: 0;
+  min-height: 1.35em;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--mfc-black-color);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.commentTextPlaceholder {
+  color: var(--mfc-gray-color);
 }
 
 .taskList {
@@ -114,7 +181,4 @@
     grid-template-columns: 1fr;
   }
 
-  .commentGrid {
-    grid-template-columns: 1fr;
-  }
 }
