@@ -10,6 +10,7 @@ import {
   useUpdateMyAdaptationTaskStatusMutation,
 } from "@services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./Adaptation.module.css";
 import convertDate from "@utils/convertDate.ts";
 import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
@@ -37,7 +38,10 @@ interface AdaptationPlanResponse {
   days?: Array<{
     id: number;
     work_day: number;
-    date: string;
+    day_from?: number | null;
+    day_to?: number | null;
+    date_from: string;
+    date_to?: string | null;
     completion: "в процессе" | "выполнен" | "повторить" | "есть замечания";
     employee_comment?: string | null;
     intern_comment?: string | null;
@@ -63,7 +67,7 @@ function Adaptation(): JSX.Element {
   const [updateInternComment] = useUpdateMyAdaptationInternCommentMutation();
   const [updateTaskStatus] = useUpdateMyAdaptationTaskStatusMutation();
   const [saveStatus, setSaveStatus] = useState<{
-    type: "idle" | "saving" | "success" | "error";
+    type: "idle" | "loading" | "success" | "error";
     message: string;
   }>({ type: "idle", message: "" });
   const {
@@ -77,7 +81,11 @@ function Adaptation(): JSX.Element {
     myAdaptationPlan?.days?.map((day) => ({
       id: day.id,
       workDay: day.work_day,
-      date: convertDate(day.date),
+      dayFrom: day.day_from ?? undefined,
+      dayTo: day.day_to ?? undefined,
+      date: day.date_to
+        ? `${convertDate(day.date_from)} - ${convertDate(day.date_to)}`
+        : convertDate(day.date_from),
       completion: day.completion,
       responsible: myAdaptationPlan.mentor_user?.name ?? "Наставник",
       employeeComment: day.employee_comment ?? "",
@@ -102,7 +110,7 @@ function Adaptation(): JSX.Element {
       return;
     }
 
-    setSaveStatus({ type: "saving", message: FORM_STATUS_MESSAGES.saveLoading });
+    setSaveStatus({ type: "loading", message: FORM_STATUS_MESSAGES.saveLoading });
     try {
       await updateInternComment({
         dayId,
@@ -124,7 +132,7 @@ function Adaptation(): JSX.Element {
       return;
     }
 
-    setSaveStatus({ type: "saving", message: FORM_STATUS_MESSAGES.saveLoading });
+    setSaveStatus({ type: "loading", message: FORM_STATUS_MESSAGES.saveLoading });
     try {
       await updateTaskStatus({
         dayId,
@@ -191,19 +199,11 @@ function Adaptation(): JSX.Element {
           </span>
         </div>
       </div>
-      {saveStatus.type !== "idle" && (
-        <p
-          className={`${styles.saveStatus} ${
-            saveStatus.type === "error"
-              ? styles.saveStatusError
-              : saveStatus.type === "success"
-                ? styles.saveStatusSuccess
-                : styles.saveStatusLoading
-          }`}
-        >
-          {saveStatus.message}
-        </p>
-      )}
+      <FormActionStatus
+        type={saveStatus.type}
+        message={saveStatus.message}
+        className={styles.saveStatusSlot}
+      />
 
       <div className={styles.careerContainer}>
         {adaptationDays.length > 0 ? (

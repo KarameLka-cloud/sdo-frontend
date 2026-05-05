@@ -35,6 +35,8 @@ export interface TrainingPlanType {
 export interface AdaptationDayType {
   id?: number;
   workDay: number;
+  dayFrom?: number;
+  dayTo?: number;
   date: string;
   tasks: TaskType[];
   completion: CompletionStatus;

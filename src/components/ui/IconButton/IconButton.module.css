@@ -16,10 +16,6 @@
   height: 100%;
 }
 
-.button:active {
-  transform: translateY(1px);
-}
-
 .button:focus-visible {
   outline: 2px solid var(--mfc-focus-ring-color);
   outline-offset: 2px;

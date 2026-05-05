@@ -55,31 +55,6 @@
   gap: 0.75rem;
 }
 
-.createStatus {
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.4rem 0.65rem;
-  border-radius: 0.5rem;
-}
-
-.createStatusLoading {
-  color: var(--mfc-create-status-loading-text);
-  background: var(--mfc-create-status-loading-bg);
-  border: 0.05rem solid var(--mfc-create-status-loading-border);
-}
-
-.createStatusSuccess {
-  color: var(--mfc-create-status-success-text);
-  background: var(--mfc-create-status-success-bg);
-  border: 0.05rem solid var(--mfc-create-status-success-border);
-}
-
-.createStatusError {
-  color: var(--mfc-create-status-error-text);
-  background: var(--mfc-create-status-error-bg);
-  border: 0.05rem solid var(--mfc-create-status-error-border);
-}
-
 .searchEmpty {
   margin: 0.5rem auto 0;
   width: fit-content;

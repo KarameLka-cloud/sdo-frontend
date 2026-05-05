@@ -7,7 +7,7 @@ import {
 } from "@components/protected/ProtectedRoutes.tsx";
 import MentorshipLayout from "@layouts/DashboardLayout/MentorshipLayout/MentorshipLayout.tsx";
 import Interns from "@pages/Mentorship/Interns/Interns.tsx";
-import InternPlanEditor from "@pages/Mentorship/Interns/PlanEditor.tsx";
+import InternPlanEditor from "@pages/Mentorship/Interns/PlanEditor/PlanEditor.tsx";
 import MyInterns from "@pages/Mentorship/MyInterns/MyInterns.tsx";
 import { ROUTES } from "@constants/routes.ts";
 
@@ -34,7 +34,7 @@ export const mentorshipRoutes: RouteObject = {
       path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
       element: (
         <PageTitle
-          title={"Редактирование плана стажера"}
+          title={"Редактирование плана адаптации стажера"}
           element={<InternPlanEditor />}
         />
       ),

@@ -13,7 +13,7 @@ import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
 import AdaptationTemplatesAdmin from "@pages/Admin/Adaptation/Templates/Templates.tsx";
-import AdaptationTemplateTasksAdmin from "@pages/Admin/Adaptation/Templates/TemplateTasks.tsx";
+import AdaptationTemplateTasksAdmin from "@pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx";
 import { ROUTES } from "@constants/routes.ts";
 
 export const adminRoutes: RouteObject = {
@@ -62,13 +62,13 @@ export const adminRoutes: RouteObject = {
     {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
       element: (
-        <PageTitle title={"Шаблоны адаптации"} element={<AdaptationTemplatesAdmin />} />
+        <PageTitle title={"Планы адаптации"} element={<AdaptationTemplatesAdmin />} />
       ),
     },
     {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
       element: (
-        <PageTitle title={"Задачи шаблона"} element={<AdaptationTemplateTasksAdmin />} />
+        <PageTitle title={"Редактирование плана адаптации"} element={<AdaptationTemplateTasksAdmin />} />
       ),
     },
   ],

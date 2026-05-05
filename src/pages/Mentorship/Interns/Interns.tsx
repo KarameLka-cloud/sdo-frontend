@@ -18,6 +18,9 @@ import { ROUTES } from "@constants/routes.ts";
 import { UserType } from "@interfaces/api/UserType.ts";
 import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+import FormActionStatus, {
+  type FormActionStatusType,
+} from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./Interns.module.css";
 
 interface AdaptationPlanResponse {
@@ -61,8 +64,6 @@ interface AdaptationPlanResponse {
   }>;
 }
 
-type CreateStatusType = "idle" | "loading" | "success" | "error";
-
 function Interns(): JSX.Element {
   const navigate = useNavigate();
   const [createAdaptationPlan, { isLoading: isCreatingPlan }] =
@@ -105,7 +106,7 @@ function Interns(): JSX.Element {
     departmentHead: null as number | null,
   });
   const [createStatusType, setCreateStatusType] =
-    useState<CreateStatusType>("idle");
+    useState<FormActionStatusType>("idle");
   const [createStatusMessage, setCreateStatusMessage] = useState("");
   const hasSearch = search.trim().length > 0;
   const filteredPlans = useMemo(() => {
@@ -332,7 +333,7 @@ function Interns(): JSX.Element {
                       </option>
                       {filteredCreateTemplates.map((template) => (
                         <option key={template.id} value={template.id}>
-                          {template.name} (смены: {[...template.shifts].sort((a, b) => a - b).join(", ")})
+                          {template.name} (смена: {[...template.shifts].sort((a, b) => a - b).join(", ")})
                         </option>
                       ))}
                     </select>
@@ -390,19 +391,10 @@ function Interns(): JSX.Element {
                   <ButtonSubmit loading={isCreatingPlan} className={styles.submitButton}>
                     Создать
                   </ButtonSubmit>
-                  {createStatusType !== "idle" && (
-                    <span
-                      className={`${styles.createStatus} ${
-                        createStatusType === "error"
-                          ? styles.createStatusError
-                          : createStatusType === "success"
-                            ? styles.createStatusSuccess
-                            : styles.createStatusLoading
-                      }`}
-                    >
-                      {createStatusMessage}
-                    </span>
-                  )}
+                  <FormActionStatus
+                    type={createStatusType}
+                    message={createStatusMessage}
+                  />
                 </div>
               </form>
             )}

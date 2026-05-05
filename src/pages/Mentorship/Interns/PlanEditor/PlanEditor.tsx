@@ -19,6 +19,7 @@ import { ROUTES } from "@constants/routes.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import { USER_ROLES, hasRole } from "@constants/roles.ts";
 import { useUser } from "@hooks/useUser.ts";
+import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./PlanEditor.module.css";
 
 interface PlanType {
@@ -34,7 +35,10 @@ interface PlanType {
   days?: Array<{
     id: number;
     work_day: number;
-    date: string;
+    day_from?: number | null;
+    day_to?: number | null;
+    date_from: string;
+    date_to?: string | null;
     completion: "в процессе" | "выполнен" | "есть замечания";
     employee_comment?: string | null;
     intern_comment?: string | null;
@@ -55,6 +59,12 @@ function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
       {trimmed || "—"}
     </div>
   );
+}
+
+function formatDayTitle(day: { work_day: number; day_from?: number | null; day_to?: number | null }): string {
+  const dayFrom = day.day_from ?? day.work_day;
+  const dayTo = day.day_to ?? dayFrom;
+  return dayFrom === dayTo ? `День ${dayFrom}` : `День ${dayFrom} - ${dayTo}`;
 }
 
 function PlanEditor(): JSX.Element {
@@ -89,7 +99,10 @@ function PlanEditor(): JSX.Element {
     Array<{
       id: number;
       work_day: number;
-      date: string;
+      day_from?: number | null;
+      day_to?: number | null;
+      date_from: string;
+      date_to?: string | null;
       completion: "в процессе" | "выполнен" | "есть замечания";
       employee_comment: string;
       intern_comment: string;
@@ -137,7 +150,10 @@ function PlanEditor(): JSX.Element {
     const mappedDays = (plan.days ?? []).map((day) => ({
       id: day.id,
       work_day: day.work_day,
-      date: day.date,
+      day_from: day.day_from ?? null,
+      day_to: day.day_to ?? null,
+      date_from: day.date_from,
+      date_to: day.date_to ?? null,
       completion: day.completion,
       employee_comment: day.employee_comment ?? "",
       intern_comment: day.intern_comment ?? "",
@@ -203,7 +219,8 @@ function PlanEditor(): JSX.Element {
         return updateDay({
           planId: plan.id,
           dayId: day.id,
-          date: day.date,
+          date_from: day.date_from,
+          date_to: day.date_to || null,
           completion: day.completion,
           employee_comment: employee_comment || null,
           intern_comment: day.intern_comment || null,
@@ -261,7 +278,7 @@ function PlanEditor(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock header_name={"Редактирование плана"} button_back_visible={"enable"}>
+      <OverflowScrollBlock header_name={"Редактирование плана адаптации стажера"} button_back_visible={"enable"}>
         <Loader />
       </OverflowScrollBlock>
     );
@@ -269,7 +286,7 @@ function PlanEditor(): JSX.Element {
 
   if (isError || !plan) {
     return (
-      <OverflowScrollBlock header_name={"Редактирование плана"} button_back_visible={"enable"}>
+      <OverflowScrollBlock header_name={"Редактирование плана адаптации стажера"} button_back_visible={"enable"}>
         <DataMessage type="error" />
         {loadErrorMessage && <p className={styles.status}>{loadErrorMessage}</p>}
       </OverflowScrollBlock>
@@ -278,7 +295,7 @@ function PlanEditor(): JSX.Element {
 
   return (
     <OverflowScrollBlock
-      header_name={"Редактирование плана стажера"}
+      header_name={"Редактирование плана адаптации стажера"}
       button_back_visible={"enable"}
     >
       <div className={styles.container}>
@@ -309,7 +326,7 @@ function PlanEditor(): JSX.Element {
             </label>
             <label className={styles.label}>
               Смена
-              <span className={styles.info}>Смена {form.shift}</span>
+              <span className={styles.info}>{form.shift}</span>
             </label>
           </div>
 
@@ -323,7 +340,9 @@ function PlanEditor(): JSX.Element {
                   setForm({ ...form, mentor: event.target.value ? Number(event.target.value) : null })
                 }
               >
-                <option value="">Выберите наставника</option>
+                <option value="" disabled>
+                  Выберите наставника
+                </option>
                 {mentors.map((mentor) => (
                   <option key={mentor.id} value={mentor.id}>
                     {mentor.name}
@@ -343,7 +362,9 @@ function PlanEditor(): JSX.Element {
                   })
                 }
               >
-                <option value="">Выберите руководителя отдела</option>
+                <option value="" disabled>
+                  Выберите руководителя отдела
+                </option>
                 {heads.map((head) => (
                   <option key={head.id} value={head.id}>
                     {head.name}
@@ -360,38 +381,56 @@ function PlanEditor(): JSX.Element {
               disabled={isSavingPlan}
               className={isSavingPlan ? styles.iconDisabled : ""}
             />
-            <IconButton
-              type="delete"
-              onClick={handleDelete}
-              disabled={isDeleting}
-              className={isDeleting ? styles.iconDisabled : ""}
-            />
-            {statusType !== "idle" && status && (
-              <p className={styles.saveStatus}>{status}</p>
-            )}
+            <div className={styles.deleteAndStatus}>
+              <IconButton
+                type="delete"
+                onClick={handleDelete}
+                disabled={isDeleting}
+                className={isDeleting ? styles.iconDisabled : ""}
+              />
+              <FormActionStatus type={statusType} message={status} />
+            </div>
           </div>
         </div>
 
         {days.map((day, dayIndex) => (
           <div key={day.id} className={styles.dayCard}>
-            <div className={styles.dayHeader}>День {day.work_day}</div>
-            <div className={styles.formRow}>
-              <label className={styles.label}>
-                Дата
-                <Input
-                  type="date"
-                  name={`dayDate-${day.id}`}
-                  className={styles.dateInput}
-                  value={day.date}
-                  onChange={(event) =>
-                    setDays((previous) => {
-                      const next = [...previous];
-                      next[dayIndex] = { ...next[dayIndex], date: event.target.value };
-                      return next;
-                    })
-                  }
-                />
-              </label>
+            <div className={styles.dayHeader}>{formatDayTitle(day)}</div>
+            <div className={styles.dayTopRow}>
+              <div className={styles.dateRangeRow}>
+                <label className={styles.label}>
+                  Дата от
+                  <Input
+                    type="date"
+                    name={`dayDateFrom-${day.id}`}
+                    className={styles.dateInput}
+                    value={day.date_from}
+                    onChange={(event) =>
+                      setDays((previous) => {
+                        const next = [...previous];
+                        next[dayIndex] = { ...next[dayIndex], date_from: event.target.value };
+                        return next;
+                      })
+                    }
+                  />
+                </label>
+                <label className={styles.label}>
+                  Дата до (опционально)
+                  <Input
+                    type="date"
+                    name={`dayDateTo-${day.id}`}
+                    className={styles.dateInput}
+                    value={day.date_to ?? ""}
+                    onChange={(event) =>
+                      setDays((previous) => {
+                        const next = [...previous];
+                        next[dayIndex] = { ...next[dayIndex], date_to: event.target.value || null };
+                        return next;
+                      })
+                    }
+                  />
+                </label>
+              </div>
               <label className={styles.label}>
                 Статус дня
                 <select

@@ -76,32 +76,6 @@
   color: var(--mfc-gray-color);
 }
 
-.topBarStatus {
-  margin: 0;
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.35rem 0.6rem;
-  border-radius: 0.5rem;
-}
-
-.topBarStatusLoading {
-  color: var(--mfc-create-status-loading-text);
-  border: 0.05rem solid var(--mfc-create-status-loading-border);
-  background: var(--mfc-create-status-loading-bg);
-}
-
-.topBarStatusSuccess {
-  color: var(--mfc-create-status-success-text);
-  border: 0.05rem solid var(--mfc-create-status-success-border);
-  background: var(--mfc-create-status-success-bg);
-}
-
-.topBarStatusError {
-  color: var(--mfc-create-status-error-text);
-  border: 0.05rem solid var(--mfc-create-status-error-border);
-  background: var(--mfc-create-status-error-bg);
-}
-
 .list {
   display: flex;
   flex-direction: column;

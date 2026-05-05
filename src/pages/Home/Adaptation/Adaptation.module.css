@@ -19,30 +19,8 @@
   z-index: 2;
 }
 
-.saveStatus {
+.saveStatusSlot {
   margin: 0 0 1rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 0.45rem;
-  font-size: 0.82rem;
-  font-weight: 500;
-}
-
-.saveStatusLoading {
-  color: #1d4ed8;
-  background: #dbeafe;
-  border: 0.05rem solid #bfdbfe;
-}
-
-.saveStatusSuccess {
-  color: #166534;
-  background: #dcfce7;
-  border: 0.05rem solid #bbf7d0;
-}
-
-.saveStatusError {
-  color: #991b1b;
-  background: #fee2e2;
-  border: 0.05rem solid #fecaca;
 }
 
 .planInfoItem {

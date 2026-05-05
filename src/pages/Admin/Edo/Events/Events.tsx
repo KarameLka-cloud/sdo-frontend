@@ -19,8 +19,9 @@ import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import { useToggle } from "@hooks/useToggle.ts";
 import { useFiltered } from "@hooks/useFiltered.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
-
-type CreateStatusType = "idle" | "loading" | "success" | "error";
+import FormActionStatus, {
+  type FormActionStatusType,
+} from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 
 function Events(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
@@ -30,7 +31,7 @@ function Events(): JSX.Element {
   const [deleteEvent] = useDeleteEdoEventMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");
-  const [createStatusType, setCreateStatusType] = useState<CreateStatusType>("idle");
+  const [createStatusType, setCreateStatusType] = useState<FormActionStatusType>("idle");
   const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<EventType>(data, search);
 
@@ -159,19 +160,10 @@ function Events(): JSX.Element {
             </div>
             <div className={styles.form_actions}>
               <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
-              {createStatusType !== "idle" && (
-                <span
-                  className={`${styles.create_status} ${
-                    createStatusType === "error"
-                      ? styles.create_status_error
-                      : createStatusType === "success"
-                        ? styles.create_status_success
-                        : styles.create_status_loading
-                  }`}
-                >
-                  {createStatusMessage}
-                </span>
-              )}
+              <FormActionStatus
+                type={createStatusType}
+                message={createStatusMessage}
+              />
             </div>
           </form>
         ) : null}

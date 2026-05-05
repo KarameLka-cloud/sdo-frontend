@@ -45,12 +45,18 @@ function CareerDay({
     setIsEditingInternComment(false);
   };
 
+  const dayRangeLabel = (() => {
+    const from = day.dayFrom ?? day.workDay;
+    const to = day.dayTo ?? from;
+    return from === to ? `${from}` : `${from}-${to}`;
+  })();
+
   return (
     <div className={styles.careerDay}>
       <div className={styles.header}>
         <div className={styles.headerItem}>
           <span className={styles.label}>День</span>
-          <span className={styles.value}>{day.workDay}</span>
+          <span className={styles.value}>{dayRangeLabel}</span>
         </div>
         <div className={styles.headerItem}>
           <span className={styles.label}>Дата</span>

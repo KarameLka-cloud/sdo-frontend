@@ -112,28 +112,3 @@
     max-width: none;
   }
 }
-
-.create_status {
-  font-size: 0.85rem;
-  font-weight: 500;
-  padding: 0.4rem 0.65rem;
-  border-radius: 0.5rem;
-}
-
-.create_status_loading {
-  color: var(--mfc-create-status-loading-text);
-  background: var(--mfc-create-status-loading-bg);
-  border: 0.05rem solid var(--mfc-create-status-loading-border);
-}
-
-.create_status_success {
-  color: var(--mfc-create-status-success-text);
-  background: var(--mfc-create-status-success-bg);
-  border: 0.05rem solid var(--mfc-create-status-success-border);
-}
-
-.create_status_error {
-  color: var(--mfc-create-status-error-text);
-  background: var(--mfc-create-status-error-bg);
-  border: 0.05rem solid var(--mfc-create-status-error-border);
-}

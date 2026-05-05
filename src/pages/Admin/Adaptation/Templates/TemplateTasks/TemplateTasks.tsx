@@ -11,6 +11,7 @@ import {
   useUpdateAdaptationPlanTemplateMutation,
 } from "@services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./TemplateTasks.module.css";
 
 type ResponsibleRole =
@@ -305,7 +306,7 @@ function TemplateTasks(): JSX.Element {
   if (isLoading) {
     return (
       <OverflowScrollBlock
-        header_name={"Настройка задач шаблона"}
+        header_name={"Редактирование плана адаптации"}
         button_back_visible={"enable"}
       >
         <Loader />
@@ -316,7 +317,7 @@ function TemplateTasks(): JSX.Element {
   if (isError || !template) {
     return (
       <OverflowScrollBlock
-        header_name={"Настройка задач шаблона"}
+        header_name={"Редактирование плана адаптации"}
         button_back_visible={"enable"}
       >
         <DataMessage type="error" />
@@ -326,7 +327,7 @@ function TemplateTasks(): JSX.Element {
 
   return (
     <OverflowScrollBlock
-      header_name={"Настройка задач шаблона"}
+      header_name={"Редактирование плана адаптации"}
       button_back_visible={"enable"}
     >
       <div className={styles.container}>
@@ -362,19 +363,7 @@ function TemplateTasks(): JSX.Element {
                 <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
               )}
             </div>
-            {statusType !== "idle" && status ? (
-              <span
-                className={`${styles.topBarStatus} ${
-                  statusType === "error"
-                    ? styles.topBarStatusError
-                    : statusType === "success"
-                      ? styles.topBarStatusSuccess
-                      : styles.topBarStatusLoading
-                }`}
-              >
-                {status}
-              </span>
-            ) : null}
+            <FormActionStatus type={statusType} message={status} />
           </div>
         </div>
 

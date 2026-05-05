@@ -11,6 +11,7 @@ import {
   useGetAdaptationPlanTemplatesQuery,
 } from "@services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./Templates.module.css";
 
 interface AdaptationPlanTemplateType {
@@ -97,7 +98,7 @@ function Templates(): JSX.Element {
   };
 
   return (
-    <OverflowScrollBlock header_name={"Шаблоны адаптации"}>
+    <OverflowScrollBlock header_name={"Планы адаптации"}>
       <div className={styles.container}>
         <div className={styles.stickyControls}>
           <div className={styles.toolbar}>
@@ -107,19 +108,6 @@ function Templates(): JSX.Element {
               ) : (
                 <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
               )}
-              {statusType !== "idle" && status ? (
-                <span
-                  className={`${styles.createStatus} ${
-                    statusType === "error"
-                      ? styles.createStatusError
-                      : statusType === "success"
-                        ? styles.createStatusSuccess
-                        : styles.createStatusLoading
-                  }`}
-                >
-                  {status}
-                </span>
-              ) : null}
             </div>
             <Input
               type={"text"}
@@ -169,9 +157,10 @@ function Templates(): JSX.Element {
                   onChange={(e) => setForm({ ...form, shift: e.target.value })}
                 />
               </div>
-              <ButtonSubmit loading={isCreating} className={styles.submitButton}>
-                Создать
-              </ButtonSubmit>
+              <div className={styles.formActions}>
+                <ButtonSubmit loading={isCreating}>Создать</ButtonSubmit>
+                <FormActionStatus type={statusType} message={status} />
+              </div>
             </form>
           )}
         </div>
