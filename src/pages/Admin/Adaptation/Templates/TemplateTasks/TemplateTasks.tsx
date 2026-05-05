@@ -19,6 +19,8 @@ type ResponsibleRole =
   | "Наставник"
   | "Сотрудник УПиПК";
 
+type ResponsibleRoleForm = ResponsibleRole | "";
+
 interface TaskRule {
   description: string;
   responsible_role: ResponsibleRole;
@@ -37,7 +39,7 @@ interface AdaptationPlanTemplateType {
 
 interface TaskRuleForm {
   description: string;
-  responsible_role: ResponsibleRole;
+  responsible_role: ResponsibleRoleForm;
   day_from?: string;
   day_to?: string;
   links: string;
@@ -55,7 +57,7 @@ type StatusType = "idle" | "loading" | "success" | "error";
 
 const EMPTY_RULE: TaskRuleForm = {
   description: "",
-  responsible_role: "Наставник",
+  responsible_role: "",
   links: "",
 };
 
@@ -70,9 +72,14 @@ function toFormRule(rule: TaskRule): TaskRuleForm {
 }
 
 function toPayloadRule(rule: TaskRuleForm): TaskRule {
+  const responsible_role = rule.responsible_role;
+  if (!responsible_role) {
+    throw new Error("Responsible role required");
+  }
+
   return {
     description: rule.description.trim(),
-    responsible_role: rule.responsible_role,
+    responsible_role,
     day_from: rule.day_from ? Number(rule.day_from) : null,
     day_to: rule.day_to ? Number(rule.day_to) : null,
     links: rule.links
@@ -181,6 +188,12 @@ function TemplateTasks(): JSX.Element {
       return;
     }
 
+    if (preparedRules.some((rule) => !rule.responsible_role)) {
+      setStatusType("error");
+      setStatus("Выберите ответственного для каждой задачи.");
+      return;
+    }
+
     const normalized = preparedRules.map((rule) => ({
       ...rule,
       day_from: createDayFrom,
@@ -235,6 +248,12 @@ function TemplateTasks(): JSX.Element {
     if (!prepared.length) {
       setStatusType("error");
       setStatus("Добавьте хотя бы одну задачу с описанием.");
+      return;
+    }
+
+    if (prepared.some((rule) => !rule.responsible_role)) {
+      setStatusType("error");
+      setStatus("Выберите ответственного для каждой задачи.");
       return;
     }
 
@@ -423,10 +442,13 @@ function TemplateTasks(): JSX.Element {
                     onChange={(event) =>
                       updateCreateRule(index, {
                         ...rule,
-                        responsible_role: event.target.value as ResponsibleRole,
+                        responsible_role: event.target.value as ResponsibleRoleForm,
                       })
                     }
                   >
+                    <option value="" disabled>
+                      Выберите ответственного
+                    </option>
                     <option value="Наставник">Наставник</option>
                     <option value="Сотрудник УПиПК">Сотрудник УПиПК</option>
                     <option value="Руководитель отдела">Руководитель отдела</option>
@@ -532,10 +554,13 @@ function TemplateTasks(): JSX.Element {
                           onChange={(event) =>
                             updateEditingGroupRule(index, {
                               ...rule,
-                              responsible_role: event.target.value as ResponsibleRole,
+                              responsible_role: event.target.value as ResponsibleRoleForm,
                             })
                           }
                         >
+                          <option value="" disabled>
+                            Выберите ответственного
+                          </option>
                           <option value="Наставник">Наставник</option>
                           <option value="Сотрудник УПиПК">Сотрудник УПиПК</option>
                           <option value="Руководитель отдела">Руководитель отдела</option>

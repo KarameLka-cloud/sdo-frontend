@@ -1,6 +1,7 @@
 import { JSX, useEffect, useState } from "react";
 import styles from "./CareerDay.module.css";
 import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
+import IconButton from "@components/ui/IconButton/IconButton.tsx";
 import TaskItem from "./TaskItem.tsx";
 
 interface CareerDayProps {
@@ -134,21 +135,15 @@ function CareerDay({
                         className={styles.textarea}
                         placeholder="Введите комментарий..."
                       />
-                      <div className={styles.buttonGroup}>
-                        <button
-                          type="button"
-                          onClick={handleSaveInternComment}
-                          className={`${styles.button} ${styles.buttonPrimary}`}
-                        >
-                          Сохранить
-                        </button>
-                        <button
-                          type="button"
+                      <div className={styles.iconButtonGroup}>
+                        <IconButton
+                          type="save"
+                          onClick={() => void handleSaveInternComment()}
+                        />
+                        <IconButton
+                          type="close"
                           onClick={handleCancelInternComment}
-                          className={`${styles.button} ${styles.buttonSecondary}`}
-                        >
-                          Отменить
-                        </button>
+                        />
                       </div>
                     </div>
                   ) : (
@@ -156,13 +151,10 @@ function CareerDay({
                       <p className={styles.commentText}>
                         {editedInternComment || "Нет комментария"}
                       </p>
-                      <button
-                        type="button"
+                      <IconButton
+                        type="edit"
                         onClick={() => setIsEditingInternComment(true)}
-                        className={styles.editButton}
-                      >
-                        Редактировать
-                      </button>
+                      />
                     </div>
                   )}
                 </div>
