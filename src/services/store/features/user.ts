@@ -38,22 +38,6 @@ export const user = createApi({
     getDepartmentHeads: builder.query({
       query: (): string => API_ENDPOINTS.DEPARTMENT_HEADS,
     }),
-    // assignAdminRole: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: API_ENDPOINTS.ASSIGN_ADMIN_ROLE,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   invalidatesTags: ["Users"],
-    // }),
-    // revokeAdminRole: builder.mutation({
-    //   query: (credentials) => ({
-    //     url: API_ENDPOINTS.REVOKE_ADMIN_ROLE,
-    //     method: "POST",
-    //     body: credentials,
-    //   }),
-    //   invalidatesTags: ["Users"],
-    // }),
     getRoles: builder.query({
       query: () => API_ENDPOINTS.ROLES,
     }),
@@ -185,8 +169,6 @@ export const {
   useGetUsersQuery,
   useGetMentorsQuery,
   useGetDepartmentHeadsQuery,
-  // useAssignAdminRoleMutation,
-  // useRevokeAdminRoleMutation,
   useGetRolesQuery,
   useAssignRoleMutation,
   useRevokeRoleMutation,

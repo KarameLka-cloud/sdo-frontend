@@ -9,7 +9,6 @@ import { useForm } from "@hooks/useForm.ts";
 import {
   useGetEdoCoursesQuery,
   useAddEdoCourseMutation,
-  // useUpdateEdoCourseMutation,
   useDeleteEdoCourseMutation,
 } from "@services/store/features/edo.ts";
 import Select from "@components/ui/Select/Select.tsx";
@@ -27,7 +26,6 @@ function Courses(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEdoCoursesQuery("");
   const [addCourse, { isLoading: addLoading }] = useAddEdoCourseMutation();
-  // const [updateCourse] = useUpdateEdoCourseMutation();
   const [deleteCourse] = useDeleteEdoCourseMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");

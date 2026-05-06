@@ -63,10 +63,6 @@ function CareerDay({
           <span className={styles.label}>Дата</span>
           <span className={styles.value}>{day.date}</span>
         </div>
-        <div className={styles.headerItem}>
-          <span className={styles.label}>Наставник</span>
-          <span className={styles.value}>{day.responsible}</span>
-        </div>
         <div className={`${styles.headerItem} ${styles.statusHeaderItem}`}>
           <span className={styles.label}>Статус дня</span>
           <span

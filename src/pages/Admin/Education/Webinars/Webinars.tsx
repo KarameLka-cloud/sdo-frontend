@@ -9,7 +9,6 @@ import { useForm } from "@hooks/useForm.ts";
 import {
   useGetEducationWebinarsQuery,
   useAddEducationWebinarMutation,
-  // useUpdateEducationWebinarMutation,
   useDeleteEducationWebinarMutation,
 } from "@services/store/features/education.ts";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
@@ -25,7 +24,6 @@ function Webinars(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationWebinarsQuery("");
   const [addWebinar, { isLoading: addLoading }] = useAddEducationWebinarMutation();
-  // const [updateWebinar] = useUpdateEducationWebinarMutation();
   const [deleteWebinar] = useDeleteEducationWebinarMutation();
   const [search, setSearch] = useState("");
   const [createStatusType, setCreateStatusType] = useState<FormActionStatusType>("idle");

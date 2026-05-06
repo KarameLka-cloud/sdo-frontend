@@ -11,7 +11,6 @@ import {
   useGetEdoTestsQuery,
   useAddEdoTestMutation,
   useDeleteEdoTestMutation,
-  // useUpdateEdoTestMutation
 } from "@services/store/features/edo.ts";
 import { useGetPositionsQuery } from "@services/store/features/user.ts";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
@@ -27,7 +26,6 @@ function Tests(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEdoTestsQuery("");
   const [addTest, { isLoading: addLoading }] = useAddEdoTestMutation();
-  // const [updateTest] = useUpdateEdoTestMutation();
   const [deleteTest] = useDeleteEdoTestMutation();
   const { data: positions } = useGetPositionsQuery("");
   const [search, setSearch] = useState("");

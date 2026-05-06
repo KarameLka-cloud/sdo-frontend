@@ -25,7 +25,6 @@ export const useLogin = () => {
       Cookie.set(COOKIE_NAMES.AUTH_TOKEN, response.auth_token);
       navigate(ROUTES.ROOT);
     } catch (error: unknown) {
-      console.log(error);
       const message =
         (error as ApiErrorResponse).data?.message ?? "Ошибка авторизации";
       setErrorMessage(message);

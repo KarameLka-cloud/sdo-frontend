@@ -6,6 +6,16 @@ import Loader from "@components/ui/Loader/Loader.tsx";
 import { ROUTES } from "@constants/routes.ts";
 import { hasRole, USER_ROLES } from "@constants/roles.ts";
 import { COOKIE_NAMES } from "@constants/api.ts";
+import { useGetUserByDataQuery } from "@services/store/features/user.ts";
+
+function isUnauthorizedError(error: unknown): boolean {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "status" in error &&
+    (error as { status: unknown }).status === 401
+  );
+}
 
 type GuardRouteType = "login" | "dashboard";
 
@@ -20,27 +30,31 @@ const ProtectedRoute = ({
   elementLogin,
   route,
 }: ProtectedRoutePropsType) => {
-  // const {isLoading, error} = useGetUserByDataQuery("me");
-  // ВРЕМЕННО: отключена проверка авторизации
-  const isAuth = Boolean(Cookie.get(COOKIE_NAMES.AUTH_TOKEN));
-  if (isAuth) {
+  const hasToken = Boolean(Cookie.get(COOKIE_NAMES.AUTH_TOKEN));
+  const { isLoading, error } = useGetUserByDataQuery(undefined, {
+    skip: !hasToken,
+  });
+
+  if (hasToken) {
+    if (isLoading) {
+      return <Loader />;
+    }
+    if (error && isUnauthorizedError(error)) {
+      Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
+      if (route === "login") {
+        return elementLogin;
+      }
+      return <Navigate to={ROUTES.LOGIN} replace />;
+    }
     if (route === "login") {
       return <Navigate to={ROUTES.HOME} replace />;
     }
-    // if (!isLoading) {
-    //     if (error) {
-    //         Cookie.remove("auth_token");
-    //         return <Navigate to="login" replace/>
-    //     }
-    // }
     return elementDashboard;
-  } else {
-    if (route === "dashboard") {
-      return <Navigate to={ROUTES.LOGIN} replace />;
-    }
-    return elementLogin;
   }
-  // return elementDashboard || elementLogin;
+  if (route === "dashboard") {
+    return <Navigate to={ROUTES.LOGIN} replace />;
+  }
+  return elementLogin;
 };
 
 interface ProtectedRouteAdminProps {

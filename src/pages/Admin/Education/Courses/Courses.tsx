@@ -9,7 +9,6 @@ import { useForm } from "@hooks/useForm.ts";
 import {
   useGetEducationCoursesQuery,
   useAddEducationCourseMutation,
-  // useUpdateEducationCourseMutation,
   useDeleteEducationCourseMutation,
 } from "@services/store/features/education.ts";
 import Select from "@components/ui/Select/Select.tsx";
@@ -27,7 +26,6 @@ function Courses(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationCoursesQuery("");
   const [addCourse, { isLoading: addLoading }] = useAddEducationCourseMutation();
-  // const [updateCourse] = useUpdateEducationCourseMutation();
   const [deleteCourse] = useDeleteEducationCourseMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");

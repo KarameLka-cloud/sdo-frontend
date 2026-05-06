@@ -10,7 +10,6 @@ import { useForm } from "@hooks/useForm.ts";
 import {
   useGetEdoEventsQuery,
   useAddEdoEventMutation,
-  // useUpdateEdoEventMutation,
   useDeleteEdoEventMutation,
 } from "@services/store/features/edo.ts";
 import { useGetDepartmentsQuery } from "@services/store/features/user.ts";
@@ -27,7 +26,6 @@ function Events(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEdoEventsQuery("");
   const [addEvent, { isLoading: addLoading }] = useAddEdoEventMutation();
-  // const [updateEvent] = useUpdateEdoEventMutation();
   const [deleteEvent] = useDeleteEdoEventMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");

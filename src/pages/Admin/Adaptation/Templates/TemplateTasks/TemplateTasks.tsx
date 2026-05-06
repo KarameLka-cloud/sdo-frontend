@@ -381,8 +381,8 @@ function TemplateTasks(): JSX.Element {
               ) : (
                 <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
               )}
+              <FormActionStatus type={statusType} message={status} />
             </div>
-            <FormActionStatus type={statusType} message={status} />
           </div>
         </div>
 

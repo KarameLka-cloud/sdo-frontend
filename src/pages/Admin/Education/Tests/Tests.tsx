@@ -9,7 +9,6 @@ import { useForm } from "@hooks/useForm.ts";
 import {
   useGetEducationTestsQuery,
   useAddEducationTestMutation,
-  // useUpdateEducationTestMutation,
   useDeleteEducationTestMutation,
 } from "@services/store/features/education.ts";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
@@ -27,7 +26,6 @@ function Tests(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationTestsQuery("");
   const [addTest, { isLoading: addLoading }] = useAddEducationTestMutation();
-  // const [updateTest] = useUpdateEducationTestMutation();
   const [deleteTest] = useDeleteEducationTestMutation();
   const { data: positions } = useGetPositionsQuery("");
   const [search, setSearch] = useState("");

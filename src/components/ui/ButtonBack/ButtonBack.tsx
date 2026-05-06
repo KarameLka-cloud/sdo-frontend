@@ -6,20 +6,15 @@ import { ROUTES } from "@constants/routes.ts";
 
 interface ButtonBackType {
   className?: string;
-  // fallbackRoute?: keyof typeof ROUTES;
 }
 
-function ButtonBack({
-  className,
-  // fallbackRoute = 'HOME'
-}: ButtonBackType): JSX.Element {
+function ButtonBack({ className }: ButtonBackType): JSX.Element {
   const navigate = useNavigate();
 
   const handleBack = () => {
     if (window.history.length > 1) {
       navigate(-1);
     } else {
-      // navigate(ROUTES[fallbackRoute]);
       navigate(ROUTES.HOME);
     }
   };

@@ -85,19 +85,10 @@
   background: var(--scrollbar-thumb-active);
 }
 
-/*!* Firefox *!*/
-/** {*/
-/*    scrollbar-width: thin;*/
-/*    scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);*/
-/*}*/
-
-/*!* Smooth scrolling for the whole site *!*/
-/*html {*/
-/*    scroll-behavior: smooth;*/
-/*}*/
-
 * {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
 }
 
 body {

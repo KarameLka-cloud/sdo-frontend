@@ -10,7 +10,6 @@ import { useForm } from "@hooks/useForm.ts";
 import {
   useGetEducationEventsQuery,
   useAddEducationEventMutation,
-  // useUpdateEducationEventMutation,
   useDeleteEducationEventMutation,
 } from "@services/store/features/education.ts";
 import { useGetDepartmentsQuery } from "@services/store/features/user.ts";
@@ -27,7 +26,6 @@ function Events(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationEventsQuery("");
   const [addEvent, { isLoading: addLoading }] = useAddEducationEventMutation();
-  // const [updateEvent] = useUpdateEducationEventMutation();
   const [deleteEvent] = useDeleteEducationEventMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");
