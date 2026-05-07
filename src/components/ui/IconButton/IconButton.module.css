@@ -8,7 +8,9 @@
   cursor: pointer;
   border: 0;
   border-radius: var(--mfc-radius-sm);
-  transition: background-color var(--mfc-transition-fast), transform var(--mfc-transition-fast);
+  transition:
+    background-color var(--mfc-transition-fast),
+    transform var(--mfc-transition-fast);
 }
 
 .button img {

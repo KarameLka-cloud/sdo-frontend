@@ -6,7 +6,9 @@
   color: var(--mfc-black-color);
   background-color: var(--mfc-white-color);
   font-size: 0.875rem;
-  transition: border-color var(--mfc-transition-fast), box-shadow var(--mfc-transition-fast);
+  transition:
+    border-color var(--mfc-transition-fast),
+    box-shadow var(--mfc-transition-fast);
 }
 
 .input::placeholder {

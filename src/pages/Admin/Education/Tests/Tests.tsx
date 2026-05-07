@@ -29,7 +29,8 @@ function Tests(): JSX.Element {
   const [deleteTest] = useDeleteEducationTestMutation();
   const { data: positions } = useGetPositionsQuery("");
   const [search, setSearch] = useState("");
-  const [createStatusType, setCreateStatusType] = useState<FormActionStatusType>("idle");
+  const [createStatusType, setCreateStatusType] =
+    useState<FormActionStatusType>("idle");
   const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<TestType>(data, search);
 

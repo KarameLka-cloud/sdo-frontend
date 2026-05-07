@@ -1,12 +1,12 @@
 import { ChangeEvent, JSX, useState } from "react";
 import styles from "./Users.module.css";
-import {UserType} from "@interfaces/api/UserType.ts";
+import { UserType } from "@interfaces/api/UserType.ts";
 import Input from "@components/ui/Input/Input.tsx";
 import User from "@components/ui/User/User.tsx";
 import Loader from "@components/ui/Loader/Loader.tsx";
 import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import {useFiltered} from "@hooks/useFiltered.ts";
-import {useGetUsersQuery} from "@services/store/features/user.ts";
+import { useFiltered } from "@hooks/useFiltered.ts";
+import { useGetUsersQuery } from "@services/store/features/user.ts";
 import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
 import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
 
@@ -20,16 +20,22 @@ function Users(): JSX.Element {
   const filteredUsers = useFiltered<UserType>(data, search);
 
   // Фильтруем администраторов (ADMIN)
-  const admins = data?.filter((user: UserType) => isUserInRole(user, USER_ROLES.ADMIN)) || [];
+  const admins =
+    data?.filter((user: UserType) => isUserInRole(user, USER_ROLES.ADMIN)) ||
+    [];
   const filteredAdmins = useFiltered<UserType>(admins, search);
 
   // Фильтруем кураторов/наставников (MENTOR)
-  const curators = data?.filter((user: UserType) => isUserInRole(user, USER_ROLES.MENTOR)) || [];
+  const curators =
+    data?.filter((user: UserType) => isUserInRole(user, USER_ROLES.MENTOR)) ||
+    [];
   const filteredCurators = useFiltered<UserType>(curators, search);
 
   // Фильтруем начальников отделов (DEPARTMENT_HEAD)
   const heads =
-    data?.filter((user: UserType) => isUserInRole(user, USER_ROLES.DEPARTMENT_HEAD)) || [];
+    data?.filter((user: UserType) =>
+      isUserInRole(user, USER_ROLES.DEPARTMENT_HEAD),
+    ) || [];
   const filteredHeads = useFiltered<UserType>(heads, search);
 
   return (
@@ -72,7 +78,9 @@ function Users(): JSX.Element {
           placeholder={"Поиск"}
           className={styles.input}
           value={search}
-          onChange={(e: ChangeEvent<HTMLInputElement>): void => setSearch(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+            setSearch(e.target.value)
+          }
         />
       </div>
 
@@ -89,7 +97,9 @@ function Users(): JSX.Element {
                   <User key={item.id} user={item} className={styles.user} />
                 ))
               ) : hasSearch ? (
-                <p className={styles.searchEmpty}>Пользователь "{search}" не найден</p>
+                <p className={styles.searchEmpty}>
+                  Пользователь "{search}" не найден
+                </p>
               ) : (
                 <DataMessage type={"noData"} />
               )
@@ -109,7 +119,9 @@ function Users(): JSX.Element {
                   <User key={item.id} user={item} className={styles.user} />
                 ))
               ) : hasSearch ? (
-                <p className={styles.searchEmpty}>Администратор "{search}" не найден</p>
+                <p className={styles.searchEmpty}>
+                  Администратор "{search}" не найден
+                </p>
               ) : (
                 <DataMessage type={"noData"} />
               )
@@ -129,7 +141,9 @@ function Users(): JSX.Element {
                   <User key={item.id} user={item} className={styles.user} />
                 ))
               ) : hasSearch ? (
-                <p className={styles.searchEmpty}>Наставник "{search}" не найден</p>
+                <p className={styles.searchEmpty}>
+                  Наставник "{search}" не найден
+                </p>
               ) : (
                 <DataMessage type={"noData"} />
               )
@@ -149,7 +163,9 @@ function Users(): JSX.Element {
                   <User key={item.id} user={item} className={styles.user} />
                 ))
               ) : hasSearch ? (
-                <p className={styles.searchEmpty}>Руководитель отдела "{search}" не найден</p>
+                <p className={styles.searchEmpty}>
+                  Руководитель отдела "{search}" не найден
+                </p>
               ) : (
                 <DataMessage type={"noData"} />
               )

@@ -42,7 +42,8 @@ function Home(): JSX.Element {
       }
 
       return (
-        accumulator + day.tasks.filter((task) => task.status === "выполнено").length
+        accumulator +
+        day.tasks.filter((task) => task.status === "выполнено").length
       );
     }, 0);
 
@@ -95,16 +96,22 @@ function Home(): JSX.Element {
         <div className={styles.adaptationStatusSection}>
           {adaptationProgress ? (
             <div className={styles.adaptationStatusBlocks}>
-              <div className={`${styles.adaptationStatusBlock} ${styles.adaptationStatusBlockProgress}`}>
+              <div
+                className={`${styles.adaptationStatusBlock} ${styles.adaptationStatusBlockProgress}`}
+              >
                 <div
                   className={`${styles.adaptationStatusValue} ${
-                    adaptationProgress.percent === 100 ? styles.adaptationStatusValueCompleted : ""
+                    adaptationProgress.percent === 100
+                      ? styles.adaptationStatusValueCompleted
+                      : ""
                   }`}
                 >
                   {adaptationProgress.percent}%
                 </div>
                 {adaptationProgress.percent === 100 ? (
-                  <div className={styles.adaptationStatusAward}>🏅 Адаптация завершена</div>
+                  <div className={styles.adaptationStatusAward}>
+                    🏅 Адаптация завершена
+                  </div>
                 ) : (
                   <div className={styles.progressTrack}>
                     <div
@@ -117,17 +124,24 @@ function Home(): JSX.Element {
                   </div>
                 )}
               </div>
-              <div className={`${styles.adaptationStatusBlock} ${styles.adaptationStatusBlockDetails}`}>
+              <div
+                className={`${styles.adaptationStatusBlock} ${styles.adaptationStatusBlockDetails}`}
+              >
                 <div className={styles.adaptationStatusInfo}>
-                  <div className={styles.adaptationStatusTitle}>Статус прохождения адаптации</div>
+                  <div className={styles.adaptationStatusTitle}>
+                    Статус прохождения адаптации
+                  </div>
                 </div>
                 <div className={styles.adaptationStatusMeta}>
-                  Выполнено задач: {adaptationProgress.completedTasks} из {adaptationProgress.totalTasks}
+                  Выполнено задач: {adaptationProgress.completedTasks} из{" "}
+                  {adaptationProgress.totalTasks}
                 </div>
               </div>
             </div>
           ) : (
-            <div className={styles.adaptationStatusMeta}>Нет задач для расчета прогресса.</div>
+            <div className={styles.adaptationStatusMeta}>
+              Нет задач для расчета прогресса.
+            </div>
           )}
         </div>
       )}

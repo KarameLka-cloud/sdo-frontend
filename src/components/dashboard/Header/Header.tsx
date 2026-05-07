@@ -55,11 +55,7 @@ function Header({ className }: HeaderType): JSX.Element {
         )}
 
         <div className={styles.right_content}>
-          {name && (
-            <div className={styles.name}>
-              {getShortUserName(name)}
-            </div>
-          )}
+          {name && <div className={styles.name}>{getShortUserName(name)}</div>}
           <LogoutButton className={styles.logout} />
         </div>
       </div>

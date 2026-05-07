@@ -74,11 +74,11 @@ function Interns(): JSX.Element {
     isError: isAllPlansError,
   } = useGetAdaptationPlansQuery(undefined);
   const { data: usersData = [] } = useGetUsersQuery(undefined);
-  const { data: templatesData = [] } = useGetAdaptationPlanTemplatesQuery(undefined);
+  const { data: templatesData = [] } =
+    useGetAdaptationPlanTemplatesQuery(undefined);
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
-  const { data: departmentHeadsData = [] } = useGetDepartmentHeadsQuery(
-    undefined,
-  );
+  const { data: departmentHeadsData = [] } =
+    useGetDepartmentHeadsQuery(undefined);
   const adaptationPlans = allAdaptationPlansData as AdaptationPlanResponse[];
   const isLoading = isAllPlansLoading;
   const isError = isAllPlansError;
@@ -239,7 +239,10 @@ function Interns(): JSX.Element {
                   onClick={() => setIsCreateFormVisible(false)}
                 />
               ) : (
-                <IconButton type="edit" onClick={() => setIsCreateFormVisible(true)} />
+                <IconButton
+                  type="edit"
+                  onClick={() => setIsCreateFormVisible(true)}
+                />
               )}
               <Input
                 type={"text"}
@@ -320,7 +323,9 @@ function Interns(): JSX.Element {
                       className={styles.select}
                       value={newPlan.adaptationPlanTemplateId ?? ""}
                       onChange={(e) => {
-                        const templateId = e.target.value ? Number(e.target.value) : null;
+                        const templateId = e.target.value
+                          ? Number(e.target.value)
+                          : null;
                         setNewPlan({
                           ...newPlan,
                           adaptationPlanTemplateId: templateId,
@@ -333,7 +338,11 @@ function Interns(): JSX.Element {
                       </option>
                       {filteredCreateTemplates.map((template) => (
                         <option key={template.id} value={template.id}>
-                          {template.name} (смена: {[...template.shifts].sort((a, b) => a - b).join(", ")})
+                          {template.name} (смена:{" "}
+                          {[...template.shifts]
+                            .sort((a, b) => a - b)
+                            .join(", ")}
+                          )
                         </option>
                       ))}
                     </select>
@@ -347,7 +356,9 @@ function Interns(): JSX.Element {
                       onChange={(e) =>
                         setNewPlan({
                           ...newPlan,
-                          mentor: e.target.value ? Number(e.target.value) : null,
+                          mentor: e.target.value
+                            ? Number(e.target.value)
+                            : null,
                         })
                       }
                     >
@@ -370,7 +381,9 @@ function Interns(): JSX.Element {
                       onChange={(e) =>
                         setNewPlan({
                           ...newPlan,
-                          departmentHead: e.target.value ? Number(e.target.value) : null,
+                          departmentHead: e.target.value
+                            ? Number(e.target.value)
+                            : null,
                         })
                       }
                     >
@@ -388,7 +401,10 @@ function Interns(): JSX.Element {
                   </div>
                 </div>
                 <div className={styles.formActions}>
-                  <ButtonSubmit loading={isCreatingPlan} className={styles.submitButton}>
+                  <ButtonSubmit
+                    loading={isCreatingPlan}
+                    className={styles.submitButton}
+                  >
                     Создать
                   </ButtonSubmit>
                   <FormActionStatus
@@ -425,7 +441,9 @@ function Interns(): JSX.Element {
                     />
                   </div>
                 </div>
-                <div className={styles.meta}>ID пользователя: {plan.user_id}</div>
+                <div className={styles.meta}>
+                  ID пользователя: {plan.user_id}
+                </div>
                 {plan.template && (
                   <div className={styles.meta}>
                     Шаблон: {plan.template.name} ({plan.template.work_schedule})
@@ -435,14 +453,16 @@ function Interns(): JSX.Element {
                   <div className={styles.meta}>
                     Наставник:{" "}
                     {plan.mentor_user?.name ??
-                      mentors.find((mentor) => mentor.id === plan.mentor)?.name ??
+                      mentors.find((mentor) => mentor.id === plan.mentor)
+                        ?.name ??
                       "Не назначен"}
                   </div>
                   <div className={styles.meta}>
                     Руководитель отдела:{" "}
                     {plan.department_head_user?.name ??
-                      departmentHeads.find((head) => head.id === plan.department_head)
-                        ?.name ??
+                      departmentHeads.find(
+                        (head) => head.id === plan.department_head,
+                      )?.name ??
                       "Не назначен"}
                   </div>
                 </div>

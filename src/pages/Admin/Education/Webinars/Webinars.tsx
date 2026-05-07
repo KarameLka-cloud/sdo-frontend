@@ -23,10 +23,12 @@ import FormActionStatus, {
 function Webinars(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
   const { data, error, isLoading } = useGetEducationWebinarsQuery("");
-  const [addWebinar, { isLoading: addLoading }] = useAddEducationWebinarMutation();
+  const [addWebinar, { isLoading: addLoading }] =
+    useAddEducationWebinarMutation();
   const [deleteWebinar] = useDeleteEducationWebinarMutation();
   const [search, setSearch] = useState("");
-  const [createStatusType, setCreateStatusType] = useState<FormActionStatusType>("idle");
+  const [createStatusType, setCreateStatusType] =
+    useState<FormActionStatusType>("idle");
   const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<WebinarType>(data, search);
 

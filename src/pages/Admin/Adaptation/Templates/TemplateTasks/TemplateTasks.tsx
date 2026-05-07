@@ -14,10 +14,7 @@ import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./TemplateTasks.module.css";
 
-type ResponsibleRole =
-  | "Руководитель отдела"
-  | "Наставник"
-  | "Сотрудник УПиПК";
+type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
 
 type ResponsibleRoleForm = ResponsibleRole | "";
 
@@ -93,16 +90,25 @@ function TemplateTasks(): JSX.Element {
   const navigate = useNavigate();
   const params = useParams();
   const templateId = Number(params.templateId);
-  const { data = [], isLoading, isError } = useGetAdaptationPlanTemplatesQuery(undefined);
-  const [updateTemplate, { isLoading: isSaving }] = useUpdateAdaptationPlanTemplateMutation();
+  const {
+    data = [],
+    isLoading,
+    isError,
+  } = useGetAdaptationPlanTemplatesQuery(undefined);
+  const [updateTemplate, { isLoading: isSaving }] =
+    useUpdateAdaptationPlanTemplateMutation();
   const [deleteTemplate, { isLoading: isDeletingTemplate }] =
     useDeleteAdaptationPlanTemplateMutation();
   const [isCreateVisible, setIsCreateVisible] = useState(false);
-  const [createRules, setCreateRules] = useState<TaskRuleForm[]>([{ ...EMPTY_RULE }]);
+  const [createRules, setCreateRules] = useState<TaskRuleForm[]>([
+    { ...EMPTY_RULE },
+  ]);
   const [createDayFrom, setCreateDayFrom] = useState<string>("");
   const [createDayTo, setCreateDayTo] = useState<string>("");
   const [editingGroupKey, setEditingGroupKey] = useState<string | null>(null);
-  const [editingGroupRules, setEditingGroupRules] = useState<TaskRuleForm[]>([]);
+  const [editingGroupRules, setEditingGroupRules] = useState<TaskRuleForm[]>(
+    [],
+  );
   const [editingGroupIndexes, setEditingGroupIndexes] = useState<number[]>([]);
   const [editingGroupDayFrom, setEditingGroupDayFrom] = useState<string>("");
   const [editingGroupDayTo, setEditingGroupDayTo] = useState<string>("");
@@ -177,11 +183,15 @@ function TemplateTasks(): JSX.Element {
       return;
     }
 
-    setCreateRules((previous) => previous.filter((_, currentIndex) => currentIndex !== index));
+    setCreateRules((previous) =>
+      previous.filter((_, currentIndex) => currentIndex !== index),
+    );
   };
 
   const saveCreateRules = async () => {
-    const preparedRules = createRules.filter((rule) => rule.description.trim().length > 0);
+    const preparedRules = createRules.filter(
+      (rule) => rule.description.trim().length > 0,
+    );
     if (!preparedRules.length) {
       setStatusType("error");
       setStatus("Добавьте хотя бы одну задачу с описанием.");
@@ -240,11 +250,15 @@ function TemplateTasks(): JSX.Element {
       return;
     }
 
-    setEditingGroupRules((previous) => previous.filter((_, currentIndex) => currentIndex !== index));
+    setEditingGroupRules((previous) =>
+      previous.filter((_, currentIndex) => currentIndex !== index),
+    );
   };
 
   const saveEditGroup = async () => {
-    const prepared = editingGroupRules.filter((rule) => rule.description.trim().length > 0);
+    const prepared = editingGroupRules.filter(
+      (rule) => rule.description.trim().length > 0,
+    );
     if (!prepared.length) {
       setStatusType("error");
       setStatus("Добавьте хотя бы одну задачу с описанием.");
@@ -263,7 +277,9 @@ function TemplateTasks(): JSX.Element {
       day_to: editingGroupDayTo,
     }));
 
-    const nextRules = rules.filter((_, index) => !editingGroupIndexes.includes(index));
+    const nextRules = rules.filter(
+      (_, index) => !editingGroupIndexes.includes(index),
+    );
     nextRules.push(...normalized);
 
     try {
@@ -282,7 +298,9 @@ function TemplateTasks(): JSX.Element {
   };
 
   const deleteGroup = async (indexes: number[]) => {
-    const nextRules = rules.filter((_, currentIndex) => !indexes.includes(currentIndex));
+    const nextRules = rules.filter(
+      (_, currentIndex) => !indexes.includes(currentIndex),
+    );
 
     try {
       setStatusType("loading");
@@ -379,7 +397,10 @@ function TemplateTasks(): JSX.Element {
                   }}
                 />
               ) : (
-                <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
+                <IconButton
+                  type="edit"
+                  onClick={() => setIsCreateVisible(true)}
+                />
               )}
               <FormActionStatus type={statusType} message={status} />
             </div>
@@ -421,7 +442,10 @@ function TemplateTasks(): JSX.Element {
               + Задача
             </button>
             {createRules.map((rule, index) => (
-              <div key={`create-rule-${index}`} className={`${styles.row} ${styles.taskRow}`}>
+              <div
+                key={`create-rule-${index}`}
+                className={`${styles.row} ${styles.taskRow}`}
+              >
                 <label className={styles.label}>
                   Описание задачи
                   <Input
@@ -430,7 +454,10 @@ function TemplateTasks(): JSX.Element {
                     className={styles.input}
                     value={rule.description}
                     onChange={(event) =>
-                      updateCreateRule(index, { ...rule, description: event.target.value })
+                      updateCreateRule(index, {
+                        ...rule,
+                        description: event.target.value,
+                      })
                     }
                   />
                 </label>
@@ -442,7 +469,8 @@ function TemplateTasks(): JSX.Element {
                     onChange={(event) =>
                       updateCreateRule(index, {
                         ...rule,
-                        responsible_role: event.target.value as ResponsibleRoleForm,
+                        responsible_role: event.target
+                          .value as ResponsibleRoleForm,
                       })
                     }
                   >
@@ -451,7 +479,9 @@ function TemplateTasks(): JSX.Element {
                     </option>
                     <option value="Наставник">Наставник</option>
                     <option value="Сотрудник УПиПК">Сотрудник УПиПК</option>
-                    <option value="Руководитель отдела">Руководитель отдела</option>
+                    <option value="Руководитель отдела">
+                      Руководитель отдела
+                    </option>
                   </select>
                 </label>
                 <label className={styles.label}>
@@ -462,12 +492,18 @@ function TemplateTasks(): JSX.Element {
                     className={styles.input}
                     value={rule.links}
                     onChange={(event) =>
-                      updateCreateRule(index, { ...rule, links: event.target.value })
+                      updateCreateRule(index, {
+                        ...rule,
+                        links: event.target.value,
+                      })
                     }
                   />
                 </label>
                 <div className={styles.inlineActions}>
-                  <IconButton type="delete" onClick={() => removeCreateRule(index)} />
+                  <IconButton
+                    type="delete"
+                    onClick={() => removeCreateRule(index)}
+                  />
                 </div>
               </div>
             ))}
@@ -507,7 +543,9 @@ function TemplateTasks(): JSX.Element {
                           type="number"
                           min={1}
                           value={editingGroupDayFrom}
-                          onChange={(event) => setEditingGroupDayFrom(event.target.value)}
+                          onChange={(event) =>
+                            setEditingGroupDayFrom(event.target.value)
+                          }
                         />
                       </label>
                       <label className={styles.label}>
@@ -518,7 +556,9 @@ function TemplateTasks(): JSX.Element {
                           type="number"
                           min={1}
                           value={editingGroupDayTo}
-                          onChange={(event) => setEditingGroupDayTo(event.target.value)}
+                          onChange={(event) =>
+                            setEditingGroupDayTo(event.target.value)
+                          }
                         />
                       </label>
                     </div>
@@ -530,58 +570,72 @@ function TemplateTasks(): JSX.Element {
                       + Задача
                     </button>
                     {editingGroupRules.map((rule, index) => (
-                    <div key={`edit-rule-${index}`} className={`${styles.row} ${styles.taskRow}`}>
-                      <label className={styles.label}>
-                        Описание задачи
-                        <Input
-                          name={`editDescription-${index}`}
-                          type="text"
-                          className={styles.input}
-                          value={rule.description}
-                          onChange={(event) =>
-                            updateEditingGroupRule(index, {
-                              ...rule,
-                              description: event.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <label className={styles.label}>
-                        Ответственный
-                        <select
-                          className={styles.input}
-                          value={rule.responsible_role}
-                          onChange={(event) =>
-                            updateEditingGroupRule(index, {
-                              ...rule,
-                              responsible_role: event.target.value as ResponsibleRoleForm,
-                            })
-                          }
-                        >
-                          <option value="" disabled>
-                            Выберите ответственного
-                          </option>
-                          <option value="Наставник">Наставник</option>
-                          <option value="Сотрудник УПиПК">Сотрудник УПиПК</option>
-                          <option value="Руководитель отдела">Руководитель отдела</option>
-                        </select>
-                      </label>
-                      <label className={styles.label}>
-                        Ссылки
-                        <Input
-                          name={`editLinks-${index}`}
-                          type="text"
-                          className={styles.input}
-                          value={rule.links}
-                          onChange={(event) =>
-                            updateEditingGroupRule(index, { ...rule, links: event.target.value })
-                          }
-                        />
-                      </label>
-                      <div className={styles.inlineActions}>
-                        <IconButton type="delete" onClick={() => removeEditingGroupRule(index)} />
+                      <div
+                        key={`edit-rule-${index}`}
+                        className={`${styles.row} ${styles.taskRow}`}
+                      >
+                        <label className={styles.label}>
+                          Описание задачи
+                          <Input
+                            name={`editDescription-${index}`}
+                            type="text"
+                            className={styles.input}
+                            value={rule.description}
+                            onChange={(event) =>
+                              updateEditingGroupRule(index, {
+                                ...rule,
+                                description: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                        <label className={styles.label}>
+                          Ответственный
+                          <select
+                            className={styles.input}
+                            value={rule.responsible_role}
+                            onChange={(event) =>
+                              updateEditingGroupRule(index, {
+                                ...rule,
+                                responsible_role: event.target
+                                  .value as ResponsibleRoleForm,
+                              })
+                            }
+                          >
+                            <option value="" disabled>
+                              Выберите ответственного
+                            </option>
+                            <option value="Наставник">Наставник</option>
+                            <option value="Сотрудник УПиПК">
+                              Сотрудник УПиПК
+                            </option>
+                            <option value="Руководитель отдела">
+                              Руководитель отдела
+                            </option>
+                          </select>
+                        </label>
+                        <label className={styles.label}>
+                          Ссылки
+                          <Input
+                            name={`editLinks-${index}`}
+                            type="text"
+                            className={styles.input}
+                            value={rule.links}
+                            onChange={(event) =>
+                              updateEditingGroupRule(index, {
+                                ...rule,
+                                links: event.target.value,
+                              })
+                            }
+                          />
+                        </label>
+                        <div className={styles.inlineActions}>
+                          <IconButton
+                            type="delete"
+                            onClick={() => removeEditingGroupRule(index)}
+                          />
+                        </div>
                       </div>
-                    </div>
                     ))}
                     <div className={styles.actions}>
                       <IconButton
@@ -607,14 +661,24 @@ function TemplateTasks(): JSX.Element {
                 ) : (
                   <>
                     {group.items.map((item, index) => (
-                      <div key={`group-item-${group.key}-${index}`} className={styles.metaBlock}>
+                      <div
+                        key={`group-item-${group.key}-${index}`}
+                        className={styles.metaBlock}
+                      >
                         <p className={styles.meta}>{item.rule.description}</p>
-                        <p className={styles.meta}>Ответственный: {item.rule.responsible_role}</p>
-                        <p className={styles.meta}>Ссылки: {item.rule.links || "—"}</p>
+                        <p className={styles.meta}>
+                          Ответственный: {item.rule.responsible_role}
+                        </p>
+                        <p className={styles.meta}>
+                          Ссылки: {item.rule.links || "—"}
+                        </p>
                       </div>
                     ))}
                     <div className={styles.actions}>
-                      <IconButton type="edit" onClick={() => startEditGroup(group)} />
+                      <IconButton
+                        type="edit"
+                        onClick={() => startEditGroup(group)}
+                      />
                     </div>
                   </>
                 )}

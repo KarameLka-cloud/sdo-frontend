@@ -13,7 +13,10 @@ import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
 import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
 import styles from "./Adaptation.module.css";
 import convertDate from "@utils/convertDate.ts";
-import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
+import {
+  AdaptationDayType,
+  TaskStatus,
+} from "@interfaces/api/AdaptationDayType.ts";
 
 interface AdaptationPlanResponse {
   id: number;
@@ -51,7 +54,11 @@ interface AdaptationPlanResponse {
       id: number;
       description: string;
       status: "выполнено" | "не выполнено";
-      responsible_role?: "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК" | "Стажер";
+      responsible_role?:
+        | "Руководитель отдела"
+        | "Наставник"
+        | "Сотрудник УПиПК"
+        | "Стажер";
       links?: string[] | null;
     }>;
   }>;
@@ -60,7 +67,9 @@ interface AdaptationPlanResponse {
 function hasAdaptationPlan(
   plan: AdaptationPlanResponse | null | undefined,
 ): plan is AdaptationPlanResponse {
-  return Boolean(plan && typeof plan.id === "number" && plan.id > 0 && plan.start_date);
+  return Boolean(
+    plan && typeof plan.id === "number" && plan.id > 0 && plan.start_date,
+  );
 }
 
 function Adaptation(): JSX.Element {
@@ -76,7 +85,10 @@ function Adaptation(): JSX.Element {
     isError,
   } = useGetMyAdaptationPlanQuery(undefined);
 
-  const myAdaptationPlan = adaptationPlan as AdaptationPlanResponse | null | undefined;
+  const myAdaptationPlan = adaptationPlan as
+    | AdaptationPlanResponse
+    | null
+    | undefined;
   const adaptationDays: AdaptationDayType[] =
     myAdaptationPlan?.days?.map((day) => ({
       id: day.id,
@@ -110,13 +122,19 @@ function Adaptation(): JSX.Element {
       return;
     }
 
-    setSaveStatus({ type: "loading", message: FORM_STATUS_MESSAGES.saveLoading });
+    setSaveStatus({
+      type: "loading",
+      message: FORM_STATUS_MESSAGES.saveLoading,
+    });
     try {
       await updateInternComment({
         dayId,
         intern_comment: comment,
       }).unwrap();
-      setSaveStatus({ type: "success", message: FORM_STATUS_MESSAGES.saveSuccess });
+      setSaveStatus({
+        type: "success",
+        message: FORM_STATUS_MESSAGES.saveSuccess,
+      });
     } catch {
       setSaveStatus({ type: "error", message: FORM_STATUS_MESSAGES.saveError });
       throw new Error("Intern comment update failed");
@@ -132,14 +150,20 @@ function Adaptation(): JSX.Element {
       return;
     }
 
-    setSaveStatus({ type: "loading", message: FORM_STATUS_MESSAGES.saveLoading });
+    setSaveStatus({
+      type: "loading",
+      message: FORM_STATUS_MESSAGES.saveLoading,
+    });
     try {
       await updateTaskStatus({
         dayId,
         taskId,
         status,
       }).unwrap();
-      setSaveStatus({ type: "success", message: FORM_STATUS_MESSAGES.saveSuccess });
+      setSaveStatus({
+        type: "success",
+        message: FORM_STATUS_MESSAGES.saveSuccess,
+      });
     } catch {
       setSaveStatus({ type: "error", message: FORM_STATUS_MESSAGES.saveError });
       throw new Error("Task status update failed");
@@ -176,11 +200,15 @@ function Adaptation(): JSX.Element {
       <div className={styles.trainingPlanInfo}>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Начало стажировки:</span>
-          <span className={styles.planValue}>{convertDate(myAdaptationPlan.start_date)}</span>
+          <span className={styles.planValue}>
+            {convertDate(myAdaptationPlan.start_date)}
+          </span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>График:</span>
-          <span className={styles.planValue}>{myAdaptationPlan.work_schedule}</span>
+          <span className={styles.planValue}>
+            {myAdaptationPlan.work_schedule}
+          </span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Смена:</span>
@@ -189,13 +217,15 @@ function Adaptation(): JSX.Element {
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Наставник:</span>
           <span className={styles.planValue}>
-            {myAdaptationPlan.mentor_user?.name ?? `ID: ${myAdaptationPlan.mentor}`}
+            {myAdaptationPlan.mentor_user?.name ??
+              `ID: ${myAdaptationPlan.mentor}`}
           </span>
         </div>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Руководитель отдела:</span>
           <span className={styles.planValue}>
-            {myAdaptationPlan.department_head_user?.name ?? `ID: ${myAdaptationPlan.department_head}`}
+            {myAdaptationPlan.department_head_user?.name ??
+              `ID: ${myAdaptationPlan.department_head}`}
           </span>
         </div>
       </div>

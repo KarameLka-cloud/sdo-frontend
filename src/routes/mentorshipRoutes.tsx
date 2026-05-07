@@ -18,7 +18,9 @@ export const mentorshipRoutes: RouteObject = {
       path: ROUTES.MENTORSHIP_INTERNS,
       element: (
         <ProtectedRouteMentorshipInternsAdmin
-          elementInternsAdmin={<PageTitle title={"Стажеры"} element={<Interns />} />}
+          elementInternsAdmin={
+            <PageTitle title={"Стажеры"} element={<Interns />} />
+          }
         />
       ),
     },
@@ -26,7 +28,9 @@ export const mentorshipRoutes: RouteObject = {
       path: ROUTES.MENTORSHIP_MY_INTERNS,
       element: (
         <ProtectedRouteMyInterns
-          elementMyInterns={<PageTitle title={"Мои стажеры"} element={<MyInterns />} />}
+          elementMyInterns={
+            <PageTitle title={"Мои стажеры"} element={<MyInterns />} />
+          }
         />
       ),
     },

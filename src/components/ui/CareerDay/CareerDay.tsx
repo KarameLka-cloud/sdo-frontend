@@ -1,8 +1,11 @@
 import { JSX, useEffect, useState } from "react";
 import styles from "./CareerDay.module.css";
-import { AdaptationDayType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
+import {
+  AdaptationDayType,
+  TaskStatus,
+} from "@interfaces/api/AdaptationDayType.ts";
 import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import TaskItem from "./TaskItem.tsx";
+import TaskItem from "@components/ui/TaskItem/TaskItem.tsx";
 
 interface CareerDayProps {
   day: AdaptationDayType;
@@ -87,7 +90,9 @@ function CareerDay({
                 />
               ))
             ) : (
-              <p className={styles.emptyTasks}>На этот день задачи не назначены</p>
+              <p className={styles.emptyTasks}>
+                На этот день задачи не назначены
+              </p>
             )}
           </div>
         </div>
@@ -157,12 +162,18 @@ function CareerDay({
               )}
 
               <div className={styles.commentItem}>
-                <span className={styles.commentLabel}>Комментарий наставника</span>
-                <p className={styles.commentText}>{day.mentorComment || "Нет комментария"}</p>
+                <span className={styles.commentLabel}>
+                  Комментарий наставника
+                </span>
+                <p className={styles.commentText}>
+                  {day.mentorComment || "Нет комментария"}
+                </p>
               </div>
 
               <div className={styles.commentItem}>
-                <span className={styles.commentLabel}>Комментарий руководителя отдела</span>
+                <span className={styles.commentLabel}>
+                  Комментарий руководителя отдела
+                </span>
                 <p className={styles.commentText}>
                   {day.departmentHeadComment || "Нет комментария"}
                 </p>

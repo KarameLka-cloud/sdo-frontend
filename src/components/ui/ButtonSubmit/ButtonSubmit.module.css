@@ -16,7 +16,9 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
   cursor: pointer;
-  transition: background-color var(--mfc-transition-fast), transform var(--mfc-transition-fast);
+  transition:
+    background-color var(--mfc-transition-fast),
+    transform var(--mfc-transition-fast);
 }
 
 .button_submit:hover {

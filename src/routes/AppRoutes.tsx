@@ -66,11 +66,7 @@ const AppRoutes = createBrowserRouter([
         route={"dashboard"}
       />
     ),
-    children: [
-      homeRoutes,
-      adminRoutes,
-      mentorshipRoutes,
-    ],
+    children: [homeRoutes, adminRoutes, mentorshipRoutes],
   },
 ]);
 

@@ -114,7 +114,10 @@
 }
 
 .taskRow {
-  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.65fr) minmax(12rem, 0.75fr) auto;
+  grid-template-columns: minmax(0, 1fr) minmax(12rem, 0.65fr) minmax(
+      12rem,
+      0.75fr
+    ) auto;
   align-items: end;
 }
 
@@ -169,6 +172,9 @@
   }
 
   .taskRow {
-    grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.6fr) minmax(8rem, 0.7fr) auto;
+    grid-template-columns: minmax(0, 1fr) minmax(8rem, 0.6fr) minmax(
+        8rem,
+        0.7fr
+      ) auto;
   }
 }

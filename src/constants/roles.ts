@@ -50,7 +50,9 @@ export const hasRole = (
   const normalizedRoleName = normalizeRoleValue(roleName);
   const aliases = ROLE_ALIASES[targetRole];
 
-  return aliases.includes(normalizedRole) || aliases.includes(normalizedRoleName);
+  return (
+    aliases.includes(normalizedRole) || aliases.includes(normalizedRoleName)
+  );
 };
 
 export const isUserInRole = (

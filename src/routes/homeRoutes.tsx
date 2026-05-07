@@ -35,7 +35,9 @@ export const homeRoutes: RouteObject = {
     },
     {
       path: ROUTES.EDUCATION_EVENTS,
-      element: <PageTitle title={"Мероприятия"} element={<EducationEvents />} />,
+      element: (
+        <PageTitle title={"Мероприятия"} element={<EducationEvents />} />
+      ),
     },
     {
       path: ROUTES.EDUCATION_WEBINARS,

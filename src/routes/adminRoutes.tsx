@@ -29,15 +29,21 @@ export const adminRoutes: RouteObject = {
     },
     {
       path: ROUTES.ADMIN_EDUCATION_COURSE,
-      element: <PageTitle title={"Курсы"} element={<EducationCoursesAdmin />} />,
+      element: (
+        <PageTitle title={"Курсы"} element={<EducationCoursesAdmin />} />
+      ),
     },
     {
       path: ROUTES.ADMIN_EDUCATION_EVENTS,
-      element: <PageTitle title={"Мероприятия"} element={<EducationEventsAdmin />} />,
+      element: (
+        <PageTitle title={"Мероприятия"} element={<EducationEventsAdmin />} />
+      ),
     },
     {
       path: ROUTES.ADMIN_EDUCATION_WEBINARS,
-      element: <PageTitle title={"Вебинары"} element={<EducationWebinarsAdmin />} />,
+      element: (
+        <PageTitle title={"Вебинары"} element={<EducationWebinarsAdmin />} />
+      ),
     },
     {
       path: ROUTES.ADMIN_EDUCATION_TESTS,
@@ -62,13 +68,19 @@ export const adminRoutes: RouteObject = {
     {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
       element: (
-        <PageTitle title={"Планы адаптации"} element={<AdaptationTemplatesAdmin />} />
+        <PageTitle
+          title={"Планы адаптации"}
+          element={<AdaptationTemplatesAdmin />}
+        />
       ),
     },
     {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
       element: (
-        <PageTitle title={"Редактирование плана адаптации"} element={<AdaptationTemplateTasksAdmin />} />
+        <PageTitle
+          title={"Редактирование плана адаптации"}
+          element={<AdaptationTemplateTasksAdmin />}
+        />
       ),
     },
   ],

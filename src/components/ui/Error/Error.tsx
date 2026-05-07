@@ -7,7 +7,9 @@ interface ErrorType {
 }
 
 function Error({ children, className }: ErrorType): JSX.Element {
-  return <span className={`${styles.error} ${className ?? ""}`}>{children}</span>;
+  return (
+    <span className={`${styles.error} ${className ?? ""}`}>{children}</span>
+  );
 }
 
 export default Error;

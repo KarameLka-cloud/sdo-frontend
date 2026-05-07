@@ -48,7 +48,8 @@ function MyInterns(): JSX.Element {
   } = useGetAdaptationPlansQuery(undefined);
   const { data: usersData = [] } = useGetUsersQuery(undefined);
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
-  const { data: departmentHeadsData = [] } = useGetDepartmentHeadsQuery(undefined);
+  const { data: departmentHeadsData = [] } =
+    useGetDepartmentHeadsQuery(undefined);
 
   const adaptationPlans = adaptationPlansData as AdaptationPlanResponse[];
   const users = usersData as UserType[];
@@ -70,7 +71,8 @@ function MyInterns(): JSX.Element {
     }
 
     return adaptationPlans.filter(
-      (plan) => plan.mentor === currentUserId || plan.department_head === currentUserId,
+      (plan) =>
+        plan.mentor === currentUserId || plan.department_head === currentUserId,
     );
   }, [adaptationPlans, currentUserId, hasMyInternsAccess]);
 
@@ -138,19 +140,23 @@ function MyInterns(): JSX.Element {
                     />
                   </div>
                 </div>
-                <div className={styles.meta}>ID пользователя: {plan.user_id}</div>
+                <div className={styles.meta}>
+                  ID пользователя: {plan.user_id}
+                </div>
                 <div className={styles.actions}>
                   <div className={styles.meta}>
                     Наставник:{" "}
                     {plan.mentor_user?.name ??
-                      mentors.find((mentor) => mentor.id === plan.mentor)?.name ??
+                      mentors.find((mentor) => mentor.id === plan.mentor)
+                        ?.name ??
                       "Не назначен"}
                   </div>
                   <div className={styles.meta}>
                     Руководитель отдела:{" "}
                     {plan.department_head_user?.name ??
-                      departmentHeads.find((head) => head.id === plan.department_head)
-                        ?.name ??
+                      departmentHeads.find(
+                        (head) => head.id === plan.department_head,
+                      )?.name ??
                       "Не назначен"}
                   </div>
                 </div>

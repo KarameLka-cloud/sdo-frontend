@@ -29,7 +29,8 @@ function Events(): JSX.Element {
   const [deleteEvent] = useDeleteEdoEventMutation();
   const { data: departments } = useGetDepartmentsQuery("");
   const [search, setSearch] = useState("");
-  const [createStatusType, setCreateStatusType] = useState<FormActionStatusType>("idle");
+  const [createStatusType, setCreateStatusType] =
+    useState<FormActionStatusType>("idle");
   const [createStatusMessage, setCreateStatusMessage] = useState("");
   const filteredData = useFiltered<EventType>(data, search);
 

@@ -31,7 +31,12 @@ interface PlanType {
   mentor: number;
   department_head: number;
   user?: { name?: string };
-  template?: { id: number; name: string; work_schedule: string; shifts: number[] };
+  template?: {
+    id: number;
+    name: string;
+    work_schedule: string;
+    shifts: number[];
+  };
   days?: Array<{
     id: number;
     work_day: number;
@@ -44,7 +49,11 @@ interface PlanType {
     intern_comment?: string | null;
     mentor_comment?: string | null;
     department_head_comment?: string | null;
-    tasks?: Array<{ id: number; description: string; status: "выполнено" | "не выполнено" }>;
+    tasks?: Array<{
+      id: number;
+      description: string;
+      status: "выполнено" | "не выполнено";
+    }>;
   }>;
 }
 
@@ -61,7 +70,11 @@ function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
   );
 }
 
-function formatDayTitle(day: { work_day: number; day_from?: number | null; day_to?: number | null }): string {
+function formatDayTitle(day: {
+  work_day: number;
+  day_from?: number | null;
+  day_to?: number | null;
+}): string {
   const dayFrom = day.day_from ?? day.work_day;
   const dayTo = day.day_to ?? dayFrom;
   return dayFrom === dayTo ? `День ${dayFrom}` : `День ${dayFrom} - ${dayTo}`;
@@ -72,16 +85,21 @@ function PlanEditor(): JSX.Element {
   const { planId } = useParams();
   const numericPlanId = Number(planId);
 
-  const { data, isLoading, isError, error } = useGetAdaptationPlanByIdQuery(numericPlanId, {
-    skip: !numericPlanId,
-  });
+  const { data, isLoading, isError, error } = useGetAdaptationPlanByIdQuery(
+    numericPlanId,
+    {
+      skip: !numericPlanId,
+    },
+  );
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: headsData = [] } = useGetDepartmentHeadsQuery(undefined);
 
-  const [updatePlan, { isLoading: isSavingPlan }] = useUpdateAdaptationPlanMutation();
+  const [updatePlan, { isLoading: isSavingPlan }] =
+    useUpdateAdaptationPlanMutation();
   const [updateDay] = useUpdateAdaptationPlanDayMutation();
   const [updateTask] = useUpdateAdaptationPlanTaskStatusMutation();
-  const [deletePlan, { isLoading: isDeleting }] = useDeleteAdaptationPlanMutation();
+  const [deletePlan, { isLoading: isDeleting }] =
+    useDeleteAdaptationPlanMutation();
 
   const { role, role_name: roleName } = useUser();
   const plan = data as PlanType | undefined;
@@ -108,7 +126,11 @@ function PlanEditor(): JSX.Element {
       intern_comment: string;
       mentor_comment: string;
       department_head_comment: string;
-      tasks: Array<{ id: number; description: string; status: "выполнено" | "не выполнено" }>;
+      tasks: Array<{
+        id: number;
+        description: string;
+        status: "выполнено" | "не выполнено";
+      }>;
     }>
   >([]);
   const [initialDays, setInitialDays] = useState<typeof days>([]);
@@ -124,7 +146,11 @@ function PlanEditor(): JSX.Element {
       return "Недостаточно прав для просмотра или редактирования этого плана.";
     }
 
-    if ("data" in error && typeof error.data === "object" && error.data !== null) {
+    if (
+      "data" in error &&
+      typeof error.data === "object" &&
+      error.data !== null
+    ) {
       const message = (error.data as { message?: string }).message;
       if (message) {
         return message;
@@ -172,7 +198,11 @@ function PlanEditor(): JSX.Element {
 
   const commentPermissions = useMemo(() => {
     const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
-    const isDepartmentHead = hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
+    const isDepartmentHead = hasRole(
+      role,
+      roleName,
+      USER_ROLES.DEPARTMENT_HEAD,
+    );
     const isMentor = hasRole(role, roleName, USER_ROLES.MENTOR);
 
     return {
@@ -186,7 +216,12 @@ function PlanEditor(): JSX.Element {
     if (!plan) {
       return;
     }
-    if (!form.templateId || !form.mentor || !form.departmentHead || !form.startDate) {
+    if (
+      !form.templateId ||
+      !form.mentor ||
+      !form.departmentHead ||
+      !form.startDate
+    ) {
       setStatusType("error");
       setStatus("Заполните все обязательные поля.");
       return;
@@ -278,7 +313,10 @@ function PlanEditor(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock header_name={"Редактирование плана адаптации стажера"} button_back_visible={"enable"}>
+      <OverflowScrollBlock
+        header_name={"Редактирование плана адаптации стажера"}
+        button_back_visible={"enable"}
+      >
         <Loader />
       </OverflowScrollBlock>
     );
@@ -286,9 +324,14 @@ function PlanEditor(): JSX.Element {
 
   if (isError || !plan) {
     return (
-      <OverflowScrollBlock header_name={"Редактирование плана адаптации стажера"} button_back_visible={"enable"}>
+      <OverflowScrollBlock
+        header_name={"Редактирование плана адаптации стажера"}
+        button_back_visible={"enable"}
+      >
         <DataMessage type="error" />
-        {loadErrorMessage && <p className={styles.status}>{loadErrorMessage}</p>}
+        {loadErrorMessage && (
+          <p className={styles.status}>{loadErrorMessage}</p>
+        )}
       </OverflowScrollBlock>
     );
   }
@@ -315,13 +358,17 @@ function PlanEditor(): JSX.Element {
                 name="startDate"
                 className={styles.dateInput}
                 value={form.startDate}
-                onChange={(event) => setForm({ ...form, startDate: event.target.value })}
+                onChange={(event) =>
+                  setForm({ ...form, startDate: event.target.value })
+                }
               />
             </label>
             <label className={styles.label}>
               Шаблон адаптации
               <span className={styles.info}>
-                {plan.template ? `${plan.template.name} (${plan.template.work_schedule})` : "—"}
+                {plan.template
+                  ? `${plan.template.name} (${plan.template.work_schedule})`
+                  : "—"}
               </span>
             </label>
             <label className={styles.label}>
@@ -337,7 +384,12 @@ function PlanEditor(): JSX.Element {
                 className={styles.input}
                 value={form.mentor ?? ""}
                 onChange={(event) =>
-                  setForm({ ...form, mentor: event.target.value ? Number(event.target.value) : null })
+                  setForm({
+                    ...form,
+                    mentor: event.target.value
+                      ? Number(event.target.value)
+                      : null,
+                  })
                 }
               >
                 <option value="" disabled>
@@ -358,7 +410,9 @@ function PlanEditor(): JSX.Element {
                 onChange={(event) =>
                   setForm({
                     ...form,
-                    departmentHead: event.target.value ? Number(event.target.value) : null,
+                    departmentHead: event.target.value
+                      ? Number(event.target.value)
+                      : null,
                   })
                 }
               >
@@ -408,7 +462,10 @@ function PlanEditor(): JSX.Element {
                     onChange={(event) =>
                       setDays((previous) => {
                         const next = [...previous];
-                        next[dayIndex] = { ...next[dayIndex], date_from: event.target.value };
+                        next[dayIndex] = {
+                          ...next[dayIndex],
+                          date_from: event.target.value,
+                        };
                         return next;
                       })
                     }
@@ -424,7 +481,10 @@ function PlanEditor(): JSX.Element {
                     onChange={(event) =>
                       setDays((previous) => {
                         const next = [...previous];
-                        next[dayIndex] = { ...next[dayIndex], date_to: event.target.value || null };
+                        next[dayIndex] = {
+                          ...next[dayIndex],
+                          date_to: event.target.value || null,
+                        };
                         return next;
                       })
                     }
@@ -441,7 +501,10 @@ function PlanEditor(): JSX.Element {
                       const next = [...previous];
                       next[dayIndex] = {
                         ...next[dayIndex],
-                        completion: event.target.value as "в процессе" | "выполнен" | "есть замечания",
+                        completion: event.target.value as
+                          | "в процессе"
+                          | "выполнен"
+                          | "есть замечания",
                       };
                       return next;
                     })
@@ -464,7 +527,10 @@ function PlanEditor(): JSX.Element {
                     onChange={(event) =>
                       setDays((previous) => {
                         const next = [...previous];
-                        next[dayIndex] = { ...next[dayIndex], employee_comment: event.target.value };
+                        next[dayIndex] = {
+                          ...next[dayIndex],
+                          employee_comment: event.target.value,
+                        };
                         return next;
                       })
                     }
@@ -486,7 +552,10 @@ function PlanEditor(): JSX.Element {
                     onChange={(event) =>
                       setDays((previous) => {
                         const next = [...previous];
-                        next[dayIndex] = { ...next[dayIndex], mentor_comment: event.target.value };
+                        next[dayIndex] = {
+                          ...next[dayIndex],
+                          mentor_comment: event.target.value,
+                        };
                         return next;
                       })
                     }
@@ -531,7 +600,9 @@ function PlanEditor(): JSX.Element {
                         const tasks = [...next[dayIndex].tasks];
                         tasks[taskIndex] = {
                           ...tasks[taskIndex],
-                          status: event.target.value as "выполнено" | "не выполнено",
+                          status: event.target.value as
+                            | "выполнено"
+                            | "не выполнено",
                         };
                         next[dayIndex] = { ...next[dayIndex], tasks };
                         return next;

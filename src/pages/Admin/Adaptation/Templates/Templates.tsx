@@ -25,7 +25,11 @@ type StatusType = "idle" | "loading" | "success" | "error";
 
 function Templates(): JSX.Element {
   const navigate = useNavigate();
-  const { data = [], isLoading, isError } = useGetAdaptationPlanTemplatesQuery(undefined);
+  const {
+    data = [],
+    isLoading,
+    isError,
+  } = useGetAdaptationPlanTemplatesQuery(undefined);
   const [createTemplate, { isLoading: isCreating }] =
     useCreateAdaptationPlanTemplateMutation();
 
@@ -104,9 +108,15 @@ function Templates(): JSX.Element {
           <div className={styles.toolbar}>
             <div className={styles.toolbarActions}>
               {isCreateVisible ? (
-                <IconButton type="close" onClick={() => setIsCreateVisible(false)} />
+                <IconButton
+                  type="close"
+                  onClick={() => setIsCreateVisible(false)}
+                />
               ) : (
-                <IconButton type="edit" onClick={() => setIsCreateVisible(true)} />
+                <IconButton
+                  type="edit"
+                  onClick={() => setIsCreateVisible(true)}
+                />
               )}
             </div>
             <Input
@@ -136,7 +146,9 @@ function Templates(): JSX.Element {
                 <select
                   className={styles.input}
                   value={form.workSchedule}
-                  onChange={(e) => setForm({ ...form, workSchedule: e.target.value })}
+                  onChange={(e) =>
+                    setForm({ ...form, workSchedule: e.target.value })
+                  }
                 >
                   <option value="" disabled>
                     График работы
@@ -166,19 +178,27 @@ function Templates(): JSX.Element {
         </div>
         {isLoading && <Loader />}
         {isError && <DataMessage type="error" />}
-        {!isLoading && !isError && templates.length === 0 && <DataMessage type="noData" />}
+        {!isLoading && !isError && templates.length === 0 && (
+          <DataMessage type="noData" />
+        )}
         {!isLoading && !isError && templates.length > 0 && (
           <div className={styles.list}>
             {filteredTemplates.map((template) => (
               <div key={template.id} className={styles.card}>
                 <div className={styles.templateInfo}>
                   <p className={styles.title}>{template.name}</p>
-                  <p className={styles.meta}>График: {template.work_schedule}</p>
-                  <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
+                  <p className={styles.meta}>
+                    График: {template.work_schedule}
+                  </p>
+                  <p className={styles.meta}>
+                    Смены: {template.shifts.join(", ")}
+                  </p>
                 </div>
                 <IconButton
                   type="edit"
-                  onClick={() => navigate(`/admin/adaptation/templates/${template.id}`)}
+                  onClick={() =>
+                    navigate(`/admin/adaptation/templates/${template.id}`)
+                  }
                   className={styles.editButton}
                 />
               </div>

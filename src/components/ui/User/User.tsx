@@ -28,9 +28,12 @@ function User({ user, className }: UserPropsType): JSX.Element {
 
   const roles: RoleItem[] = rolesData?.data || [];
 
-  const handleRoleSelect = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    setSelectedRole(event.target.value);
-  }, []);
+  const handleRoleSelect = useCallback(
+    (event: ChangeEvent<HTMLSelectElement>) => {
+      setSelectedRole(event.target.value);
+    },
+    [],
+  );
 
   const handleSaveRole = useCallback(() => {
     if (selectedRole) {

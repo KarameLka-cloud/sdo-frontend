@@ -19,10 +19,18 @@ function FormActionStatus({
   }
 
   const variantClass =
-    type === "error" ? styles.error : type === "success" ? styles.success : styles.loading;
+    type === "error"
+      ? styles.error
+      : type === "success"
+        ? styles.success
+        : styles.loading;
 
   return (
-    <span className={[styles.root, variantClass, className].filter(Boolean).join(" ")}>
+    <span
+      className={[styles.root, variantClass, className]
+        .filter(Boolean)
+        .join(" ")}
+    >
       {message}
     </span>
   );
