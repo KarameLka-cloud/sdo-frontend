@@ -334,7 +334,7 @@ function Interns(): JSX.Element {
                       disabled={!newPlan.workSchedule}
                     >
                       <option value="" disabled>
-                        Шаблон адаптации
+                        План адаптации
                       </option>
                       {filteredCreateTemplates.map((template) => (
                         <option key={template.id} value={template.id}>
@@ -446,25 +446,22 @@ function Interns(): JSX.Element {
                 </div>
                 {plan.template && (
                   <div className={styles.meta}>
-                    Шаблон: {plan.template.name} ({plan.template.work_schedule})
+                    План: {plan.template.name} ({plan.template.work_schedule})
                   </div>
                 )}
-                <div className={styles.actions}>
-                  <div className={styles.meta}>
-                    Наставник:{" "}
-                    {plan.mentor_user?.name ??
-                      mentors.find((mentor) => mentor.id === plan.mentor)
-                        ?.name ??
-                      "Не назначен"}
-                  </div>
-                  <div className={styles.meta}>
-                    Руководитель отдела:{" "}
-                    {plan.department_head_user?.name ??
-                      departmentHeads.find(
-                        (head) => head.id === plan.department_head,
-                      )?.name ??
-                      "Не назначен"}
-                  </div>
+                <div className={styles.meta}>
+                  Наставник:{" "}
+                  {plan.mentor_user?.name ??
+                    mentors.find((mentor) => mentor.id === plan.mentor)?.name ??
+                    "Не назначен"}
+                </div>
+                <div className={styles.meta}>
+                  Руководитель отдела:{" "}
+                  {plan.department_head_user?.name ??
+                    departmentHeads.find(
+                      (head) => head.id === plan.department_head,
+                    )?.name ??
+                    "Не назначен"}
                 </div>
               </div>
             ))}

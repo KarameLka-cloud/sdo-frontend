@@ -364,7 +364,7 @@ function PlanEditor(): JSX.Element {
               />
             </label>
             <label className={styles.label}>
-              Шаблон адаптации
+              План адаптации
               <span className={styles.info}>
                 {plan.template
                   ? `${plan.template.name} (${plan.template.work_schedule})`
