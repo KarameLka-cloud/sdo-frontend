@@ -4,6 +4,7 @@ import { NavLink, NavLinkRenderProps } from "react-router-dom";
 import image_mfc_corp from "@assets/images/mfc_corp.png";
 import { NavLinkType } from "@interfaces/components/NavLinkType.ts";
 import { EXTERNAL_LINKS } from "@constants/external.ts";
+import libraryIcon from "@assets/images/icons/library.svg";
 
 interface NavType {
   className?: string;
@@ -29,6 +30,21 @@ function Nav({ className, links }: NavType): JSX.Element {
           </NavLink>
         ),
       )}
+
+      <span>...............................................</span>
+
+      <NavLink
+        to={EXTERNAL_LINKS.SDO_CORP}
+        target="_blank"
+        className={({ isActive }: NavLinkRenderProps): string =>
+          isActive
+            ? `${styles.link} ${styles.link_active}`
+            : `${styles.link} ${styles.link_inactive}`
+        }
+      >
+        <img src={libraryIcon} alt="СДО" className={styles.icon} />
+        СДО
+      </NavLink>
 
       <a
         href={EXTERNAL_LINKS.MFC_CORP}
