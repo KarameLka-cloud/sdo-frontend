@@ -1,7 +1,7 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
 import { ProtectedRoute } from "@components/protected/ProtectedRoutes.tsx";
 import PageTitle from "@components/PageTitle.tsx";
-import AuthLayout from "@layouts/AuthLayout/AuthLayout.tsx";
+import AuthLayout from "@/layouts/AuthLayout.tsx";
 import DashboardLayout from "@layouts/DashboardLayout/DashboardLayout.tsx";
 import Login from "@pages/Auth/Login.tsx";
 import Loader from "@components/ui/Loader/Loader.tsx";
