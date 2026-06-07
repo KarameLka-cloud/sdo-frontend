@@ -1,6 +1,5 @@
 import { RouteObject } from "react-router-dom";
 import PageTitle from "@components/PageTitle.tsx";
-import HomeLayout from "@layouts/DashboardLayout/HomeLayout/HomeLayout.tsx";
 import Home from "@pages/Home/Home/Home.tsx";
 import Adaptation from "@pages/Home/Adaptation/Adaptation.tsx";
 import Education from "@pages/Home/Education/Education.tsx";
@@ -13,9 +12,10 @@ import EdoCourses from "@pages/Home/Edo/Courses/Courses.tsx";
 import EdoEvents from "@pages/Home/Edo/Events/Events.tsx";
 import EdoTests from "@pages/Home/Edo/Tests/Tests.tsx";
 import { ROUTES } from "@constants/routes.ts";
+import MainLayout from "@/layouts/MainLayout";
 
 export const homeRoutes: RouteObject = {
-  element: <HomeLayout />,
+  element: <MainLayout />,
   children: [
     {
       path: ROUTES.HOME,

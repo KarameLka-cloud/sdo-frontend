@@ -1,7 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import PageTitle from "@components/PageTitle.tsx";
 import { ProtectedRouteAdmin } from "@components/protected/ProtectedRoutes.tsx";
-import AdminLayout from "@layouts/DashboardLayout/AdminLayout/AdminLayout.tsx";
 import UsersAdmin from "@pages/Admin/Users/Users.tsx";
 import EducationAdmin from "@pages/Admin/Education/Education.tsx";
 import EducationCoursesAdmin from "@pages/Admin/Education/Courses/Courses.tsx";
@@ -15,9 +14,10 @@ import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
 import AdaptationTemplatesAdmin from "@pages/Admin/Adaptation/Templates/Templates.tsx";
 import AdaptationTemplateTasksAdmin from "@pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx";
 import { ROUTES } from "@constants/routes.ts";
+import MainLayout from "@/layouts/MainLayout";
 
 export const adminRoutes: RouteObject = {
-  element: <ProtectedRouteAdmin elementAdmin={<AdminLayout />} />,
+  element: <ProtectedRouteAdmin elementAdmin={<MainLayout />} />,
   children: [
     {
       path: ROUTES.ADMIN_USERS,

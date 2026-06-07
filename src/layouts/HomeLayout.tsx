@@ -1,19 +1,21 @@
 import { JSX } from "react";
-import { Outlet } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip.tsx";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SidebarNav from "@/components/home/SidebarNav";
 import SidebarMain from "@/components/home/SidebarMain";
+import MainLayout from "./MainLayout";
 
-function DashboardLayout(): JSX.Element {
+function HomeLayout(): JSX.Element {
   return (
     <TooltipProvider>
       <SidebarProvider>
         <SidebarNav />
-        <SidebarMain>{<Outlet />}</SidebarMain>
+        <SidebarMain>
+          <MainLayout />
+        </SidebarMain>
       </SidebarProvider>
     </TooltipProvider>
   );
 }
 
-export default DashboardLayout;
+export default HomeLayout;

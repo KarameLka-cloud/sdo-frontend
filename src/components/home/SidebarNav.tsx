@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import {
   Sidebar,
   SidebarContent,
@@ -20,6 +21,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { ChevronRight } from "lucide-react";
+import { ROUTES } from "@/constants/routes.ts";
 import {
   // AudioWaveform,
   BookOpen,
@@ -49,19 +51,19 @@ function SidebarNav() {
         items: [
           {
             title: "Главная",
-            url: "/",
+            url: ROUTES.HOME,
           },
           {
             title: "Адаптация",
-            url: "adaptation",
+            url: ROUTES.ADAPTATION,
           },
           {
             title: "Образование",
-            url: "education",
+            url: ROUTES.EDUCATION,
           },
           {
             title: "ЕДО",
-            url: "edo",
+            url: ROUTES.EDO,
           },
         ],
       },
@@ -155,7 +157,7 @@ function SidebarNav() {
       <SidebarHeader>
         <img
           src={image_logo_mfc}
-          alt="LogoLink"
+          alt="LogoNavLink"
           className="w-full pl-10 pr-10"
         />
       </SidebarHeader>
@@ -184,9 +186,9 @@ function SidebarNav() {
                       {item.items?.map((subItem) => (
                         <SidebarMenuSubItem key={subItem.title}>
                           <SidebarMenuSubButton asChild>
-                            <a href={subItem.url}>
+                            <NavLink to={subItem.url}>
                               <span>{subItem.title}</span>
-                            </a>
+                            </NavLink>
                           </SidebarMenuSubButton>
                         </SidebarMenuSubItem>
                       ))}
@@ -198,26 +200,22 @@ function SidebarNav() {
           </SidebarMenu>
         </SidebarGroup>
 
+        <Separator />
+
         <SidebarGroup>
-          <Separator />
           <SidebarMenuItem>
             <SidebarMenuButton>
-              <a href="mentorship">
-                {/* <item.icon /> */}
-                Наставничество
-              </a>
+              <NavLink to={ROUTES.MENTORSHIP}>Наставничество</NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarGroup>
 
+        <Separator />
+
         <SidebarGroup>
-          <Separator />
           <SidebarMenuItem>
             <SidebarMenuButton>
-              <a href="admin">
-                {/* <item.icon /> */}
-                Администрирование
-              </a>
+              <NavLink to={ROUTES.ADMIN}>Администрирование</NavLink>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarGroup>
