@@ -6,7 +6,7 @@ import { Toaster } from "@/components/ui/sonner";
 function App(): JSX.Element {
   return (
     <>
-      <RouterProvider router={AppRoutes} />;
+      <RouterProvider router={AppRoutes} />
       <Toaster />
     </>
   );

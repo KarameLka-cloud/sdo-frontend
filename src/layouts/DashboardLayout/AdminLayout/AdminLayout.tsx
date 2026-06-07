@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { Outlet } from "react-router-dom";
-import Nav from "@components/dashboard/Nav/Nav.tsx";
-import Main from "@components/dashboard/Main/Main.tsx";
+import Nav from "@/components/home/Nav/Nav";
+import Main from "@/components/home/Main/Main";
 import { ADMIN_NAV_LINKS } from "@constants/navigation.ts";
 
 function AdminLayout(): JSX.Element {
