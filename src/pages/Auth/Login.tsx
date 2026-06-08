@@ -49,7 +49,11 @@ function Login(): JSX.Element {
         <form onSubmit={handleLogin} className="p-6 md:p-8">
           <FieldGroup>
             <div className="flex flex-col items-center gap-2 text-center">
-              <img src={image_logo_mfc} alt="LogoLink" className="h-12" />
+              <img
+                src={image_logo_mfc}
+                alt="LogoLink"
+                className="mx-auto h-12"
+              />
               <h1 className="text-2xl font-bold pt-4">
                 Добро пожаловать в личный кабинет сотрудника!
               </h1>
