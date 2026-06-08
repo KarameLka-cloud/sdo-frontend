@@ -1,12 +1,15 @@
 import {
   SidebarContent,
   SidebarGroup,
+  SidebarGroupLabel,
   SidebarMenu,
+  SidebarMenuAction,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import {
   Collapsible,
@@ -17,13 +20,18 @@ import {
   // AudioWaveform,
   BookOpen,
   Bot,
+  Folder,
+  Forward,
   // Command,
   Frame,
   // GalleryVerticalEnd,
   Map,
+  MoreHorizontal,
   PieChart,
   Settings2,
   SquareTerminal,
+  Trash2,
+  Home,
 } from "lucide-react";
 import { ChevronRight } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
@@ -31,6 +39,13 @@ import { NavLink } from "react-router-dom";
 import { ROUTES } from "@/constants/routes.ts";
 import { JSX } from "react";
 import firstWednesdayData from "@/utils/firstWednesday";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 function SContent(): JSX.Element {
   const data = {
@@ -41,7 +56,7 @@ function SContent(): JSX.Element {
     },
     navMain: [
       {
-        title: "Home",
+        title: `ЕДО | ${firstWednesdayData}`,
         url: "#",
         icon: SquareTerminal,
         isActive: true,
@@ -57,10 +72,6 @@ function SContent(): JSX.Element {
           {
             title: "Образование",
             url: ROUTES.EDUCATION,
-          },
-          {
-            title: `ЕДО | ${firstWednesdayData}`,
-            url: ROUTES.EDO,
           },
         ],
       },
@@ -79,52 +90,6 @@ function SContent(): JSX.Element {
           },
           {
             title: "Quantum",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Documentation",
-        url: "#",
-        icon: BookOpen,
-        items: [
-          {
-            title: "Introduction",
-            url: "#",
-          },
-          {
-            title: "Get Started",
-            url: "#",
-          },
-          {
-            title: "Tutorials",
-            url: "#",
-          },
-          {
-            title: "Changelog",
-            url: "#",
-          },
-        ],
-      },
-      {
-        title: "Settings",
-        url: "#",
-        icon: Settings2,
-        items: [
-          {
-            title: "General",
-            url: "#",
-          },
-          {
-            title: "Team",
-            url: "#",
-          },
-          {
-            title: "Billing",
-            url: "#",
-          },
-          {
-            title: "Limits",
             url: "#",
           },
         ],
@@ -153,11 +118,37 @@ function SContent(): JSX.Element {
     <SidebarContent className="pt-10">
       <SidebarGroup>
         <SidebarMenu>
+          {/* {data.projects.map((item) => ( */}
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <NavLink to="home">
+                {/* <item.icon /> */}
+                <Home />
+                <span>Главная</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          {/* ))} */}
+        </SidebarMenu>
+        <SidebarMenu>
+          {/* {data.projects.map((item) => ( */}
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <NavLink to="adaptation">
+                {/* <item.icon /> */}
+                <Bot />
+                <span>Адаптация</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          {/* ))} */}
+        </SidebarMenu>
+        <SidebarMenu>
           {data.navMain.map((item) => (
             <Collapsible
               key={item.title}
               asChild
-              defaultOpen={item.isActive}
+              // defaultOpen={item.isActive}
               className="group/collapsible"
             >
               <SidebarMenuItem>
@@ -187,31 +178,238 @@ function SContent(): JSX.Element {
         </SidebarMenu>
       </SidebarGroup>
 
-      <Separator />
-
-      <SidebarGroup>
-        <div className="mx-auto">Наставничество</div>
-
-        
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroupLabel>Наставничество</SidebarGroupLabel>
+        <SidebarMenu>
+          {/* {data.projects.map((item) => ( */}
+          <SidebarMenuItem key={0}>
+            <SidebarMenuButton asChild>
+              <NavLink to="admin">
+                {/* <item.icon /> */}
+                <Frame />
+                <span>Пользователи</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          {/* ))} */}
+        </SidebarMenu>
+        <SidebarMenu>
+          {/* {data.projects.map((item) => ( */}
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <NavLink to="admin/adaptation/templates">
+                {/* <item.icon /> */}
+                <Frame />
+                <span>Адаптация</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          {/* ))} */}
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible
+            asChild
+            // defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip="asdfsdfsdf">
+                  {/* {item.icon && <item.icon />}
+                  <span>{item.title}</span> */}
+                  <span>asfsdf</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <NavLink to="">
+                        <span>sdfsdf</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible
+            asChild
+            // defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip="asdfsdfsdf">
+                  {/* {item.icon && <item.icon />}
+                  <span>{item.title}</span> */}
+                  <span>asfsdf</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <NavLink to="">
+                        <span>sdfsdf</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible
+            asChild
+            // defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip="asdfsdfsdf">
+                  {/* {item.icon && <item.icon />}
+                  <span>{item.title}</span> */}
+                  <span>asfsdf</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <NavLink to="">
+                        <span>sdfsdf</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
       </SidebarGroup>
 
-      <Separator />
-
-      <SidebarGroup>
-        <div className="mx-auto">Администрирование</div>
-        {/* <SidebarMenuItem>
-          <SidebarMenuButton>
-            <NavLink to={ROUTES.MENTORSHIP}>Наставничество</NavLink>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-
-        <Separator />
-
-        <SidebarMenuItem>
-          <SidebarMenuButton>
-            <NavLink to={ROUTES.ADMIN}>Администрирование</NavLink>
-          </SidebarMenuButton>
-        </SidebarMenuItem> */}
+      <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+        <SidebarGroupLabel>Администрирование</SidebarGroupLabel>
+        <SidebarMenu>
+          {/* {data.projects.map((item) => ( */}
+          <SidebarMenuItem key={0}>
+            <SidebarMenuButton asChild>
+              <NavLink to="admin">
+                {/* <item.icon /> */}
+                <Frame />
+                <span>Пользователи</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          {/* ))} */}
+        </SidebarMenu>
+        <SidebarMenu>
+          {/* {data.projects.map((item) => ( */}
+          <SidebarMenuItem>
+            <SidebarMenuButton asChild>
+              <NavLink to="admin/adaptation/templates">
+                {/* <item.icon /> */}
+                <Frame />
+                <span>Адаптация</span>
+              </NavLink>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          {/* ))} */}
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible
+            asChild
+            // defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip="asdfsdfsdf">
+                  {/* {item.icon && <item.icon />}
+                  <span>{item.title}</span> */}
+                  <span>asfsdf</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <NavLink to="">
+                        <span>sdfsdf</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible
+            asChild
+            // defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip="asdfsdfsdf">
+                  {/* {item.icon && <item.icon />}
+                  <span>{item.title}</span> */}
+                  <span>asfsdf</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <NavLink to="">
+                        <span>sdfsdf</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
+        <SidebarMenu>
+          <Collapsible
+            asChild
+            // defaultOpen={item.isActive}
+            className="group/collapsible"
+          >
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <SidebarMenuButton tooltip="asdfsdfsdf">
+                  {/* {item.icon && <item.icon />}
+                  <span>{item.title}</span> */}
+                  <span>asfsdf</span>
+                  <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+                </SidebarMenuButton>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <SidebarMenuSub>
+                  <SidebarMenuSubItem>
+                    <SidebarMenuSubButton asChild>
+                      <NavLink to="">
+                        <span>sdfsdf</span>
+                      </NavLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </SidebarMenuSub>
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
       </SidebarGroup>
     </SidebarContent>
   );
