@@ -1,8 +1,8 @@
 import { JSX } from "react";
 import { Sidebar } from "@/components/ui/sidebar";
-import SHeader from "./SidebarNav/SHeader";
-import SContent from "./SidebarNav/SContent";
-import SFooter from "./SidebarNav/SFooter";
+import SHeader from "./SidebarNav/Header";
+import SContent from "./SidebarNav/Content";
+import SFooter from "./SidebarNav/Footer";
 
 function SidebarNav(): JSX.Element {
   return (
