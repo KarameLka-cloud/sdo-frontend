@@ -1,5 +1,5 @@
 import { ROUTES } from "@constants/routes";
-import { Home, User, Notebook, Album, Users, Brain } from "lucide-react";
+import { Home, Notebook, Album, Users, Brain } from "lucide-react";
 import firstWednesdayData from "@/utils/firstWednesday";
 
 export const HOME_NAV_LINKS = [

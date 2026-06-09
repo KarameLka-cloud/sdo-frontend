@@ -2,19 +2,11 @@ import { JSX } from "react";
 import { SidebarFooter } from "@/components/ui/sidebar";
 import image_fox from "@assets/images/fox.png";
 
-import {
-  // BadgeCheck,
-  // Bell,
-  ChevronsUpDown,
-  // CreditCard,
-  LogOut,
-  // Sparkles,
-} from "lucide-react";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -44,8 +36,7 @@ function SFooter(): JSX.Element {
       return lastName;
     }
 
-    // return `${firstName} ${lastName[0]}.`;
-    return `${lastName} ${firstName}`;
+    return `${firstName} ${lastName[0]}.`;
   };
 
   return (
