@@ -60,9 +60,7 @@ const AppRoutes = createBrowserRouter([
     ],
   },
   {
-    element: (
-      <ProtectedRoute elementDashboard={<HomeLayout />} route={"dashboard"} />
-    ),
+    element: <ProtectedRoute elementHome={<HomeLayout />} route={"home"} />,
     children: [homeRoutes, adminRoutes, mentorshipRoutes],
   },
 ]);

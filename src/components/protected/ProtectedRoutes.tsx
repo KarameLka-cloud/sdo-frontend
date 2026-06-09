@@ -17,16 +17,16 @@ function isUnauthorizedError(error: unknown): boolean {
   );
 }
 
-type GuardRouteType = "login" | "dashboard";
+type GuardRouteType = "login" | "home";
 
 interface ProtectedRoutePropsType {
   elementLogin?: ReactElement;
-  elementDashboard?: ReactElement;
+  elementHome?: ReactElement;
   route?: GuardRouteType;
 }
 
 const ProtectedRoute = ({
-  elementDashboard,
+  elementHome,
   elementLogin,
   route,
 }: ProtectedRoutePropsType) => {
@@ -49,9 +49,9 @@ const ProtectedRoute = ({
     if (route === "login") {
       return <Navigate to={ROUTES.HOME} replace />;
     }
-    return elementDashboard;
+    return elementHome;
   }
-  if (route === "dashboard") {
+  if (route === "home") {
     return <Navigate to={ROUTES.LOGIN} replace />;
   }
   return elementLogin;

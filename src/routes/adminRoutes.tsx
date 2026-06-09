@@ -2,12 +2,10 @@ import { RouteObject } from "react-router-dom";
 import PageTitle from "@components/PageTitle.tsx";
 import { ProtectedRouteAdmin } from "@components/protected/ProtectedRoutes.tsx";
 import UsersAdmin from "@pages/Admin/Users/Users.tsx";
-import EducationAdmin from "@pages/Admin/Education/Education.tsx";
 import EducationCoursesAdmin from "@pages/Admin/Education/Courses/Courses.tsx";
 import EducationEventsAdmin from "@pages/Admin/Education/Events/Events.tsx";
 import EducationWebinarsAdmin from "@pages/Admin/Education/Webinars/Webinars.tsx";
 import EducationTestsAdmin from "@pages/Admin/Education/Tests/Tests.tsx";
-import EdoAdmin from "@pages/Admin/Edo/Edo.tsx";
 import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
 import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
 import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
@@ -22,10 +20,6 @@ export const adminRoutes: RouteObject = {
     {
       path: ROUTES.ADMIN_USERS,
       element: <PageTitle title={"Пользователи"} element={<UsersAdmin />} />,
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION,
-      element: <PageTitle title={"Обучение"} element={<EducationAdmin />} />,
     },
     {
       path: ROUTES.ADMIN_EDUCATION_COURSE,
@@ -48,10 +42,6 @@ export const adminRoutes: RouteObject = {
     {
       path: ROUTES.ADMIN_EDUCATION_TESTS,
       element: <PageTitle title={"Тесты"} element={<EducationTestsAdmin />} />,
-    },
-    {
-      path: ROUTES.ADMIN_EDO,
-      element: <PageTitle title={"ЕДО"} element={<EdoAdmin />} />,
     },
     {
       path: ROUTES.ADMIN_EDO_COURSES,
