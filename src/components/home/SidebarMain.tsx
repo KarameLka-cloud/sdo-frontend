@@ -1,5 +1,5 @@
 import React, { JSX, useMemo } from "react";
-import { Link, matchPath, useLocation } from "react-router-dom";
+import { matchPath, NavLink, useLocation } from "react-router-dom";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -16,7 +16,7 @@ const segmentLabels: Record<string, string> = {
   home: "Главная",
   adaptation: "Адаптация",
   education: "Обучение",
-  edo: "ЭДО",
+  edo: "ЕДО",
   mentorship: "Наставничество",
   admin: "Администрирование",
   courses: "Курсы",
@@ -37,8 +37,7 @@ function buildBreadcrumbs(pathname: string) {
     {
       path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
       crumbs: [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Наставничество", href: ROUTES.MENTORSHIP_INTERNS },
+        { label: "Наставничество", href: ROUTES.MENTORSHIP },
         { label: "Стажеры", href: ROUTES.MENTORSHIP_INTERNS },
         { label: "Редактирование плана адаптации стажера" },
       ],
@@ -46,8 +45,7 @@ function buildBreadcrumbs(pathname: string) {
     {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
       crumbs: [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Администрирование", href: ROUTES.ADMIN_USERS },
+        { label: "Администрирование", href: ROUTES.ADMIN },
         { label: "Планы адаптации", href: ROUTES.ADMIN_ADAPTATION_TEMPLATES },
         { label: "Редактирование плана адаптации" },
       ],
@@ -82,7 +80,7 @@ function buildBreadcrumbs(pathname: string) {
   if (firstSegment === "education") {
     return [
       { label: "Главная", href: ROUTES.HOME },
-      { label: "Обучение", href: ROUTES.EDUCATION_COURSES },
+      { label: "Обучение", href: ROUTES.EDUCATION_EVENTS },
       { label: segmentLabels[secondSegment] ?? secondSegment },
     ];
   }
@@ -90,16 +88,19 @@ function buildBreadcrumbs(pathname: string) {
   if (firstSegment === "edo") {
     return [
       { label: "Главная", href: ROUTES.HOME },
-      { label: "ЭДО", href: ROUTES.EDO_COURSES },
+      { label: "ЕДО", href: ROUTES.EDO_EVENTS },
       { label: segmentLabels[secondSegment] ?? secondSegment },
     ];
   }
 
   if (firstSegment === "mentorship") {
+    if (!secondSegment) {
+      return [{ label: "Наставничество" }];
+    }
+
     if (secondSegment === "interns" && thirdSegment === "edit") {
       return [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Наставничество", href: ROUTES.MENTORSHIP_INTERNS },
+        { label: "Наставничество", href: ROUTES.MENTORSHIP },
         { label: "Стажеры", href: ROUTES.MENTORSHIP_INTERNS },
         { label: "Редактирование плана адаптации стажера" },
       ];
@@ -107,44 +108,45 @@ function buildBreadcrumbs(pathname: string) {
 
     if (secondSegment === "interns") {
       return [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Наставничество", href: ROUTES.MENTORSHIP_INTERNS },
+        { label: "Наставничество", href: ROUTES.MENTORSHIP },
         { label: "Стажеры" },
       ];
     }
 
     if (secondSegment === "my-interns") {
       return [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Наставничество", href: ROUTES.MENTORSHIP_INTERNS },
+        { label: "Наставничество", href: ROUTES.MENTORSHIP },
         { label: "Мои стажеры" },
       ];
     }
+
+    return [{ label: "Наставничество", href: ROUTES.MENTORSHIP }];
   }
 
   if (firstSegment === "admin") {
+    if (!secondSegment) {
+      return [{ label: "Администрирование" }];
+    }
+
     if (secondSegment === "users") {
       return [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Администрирование", href: ROUTES.ADMIN_USERS },
+        { label: "Администрирование", href: ROUTES.ADMIN },
         { label: "Пользователи" },
       ];
     }
 
     if (secondSegment === "education") {
       return [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Администрирование", href: ROUTES.ADMIN_USERS },
-        { label: "Обучение", href: ROUTES.ADMIN_EDUCATION_COURSE },
+        { label: "Администрирование", href: ROUTES.ADMIN },
+        { label: "Обучение", href: ROUTES.ADMIN_EDUCATION_EVENTS },
         { label: segmentLabels[thirdSegment] ?? thirdSegment },
       ];
     }
 
     if (secondSegment === "edo") {
       return [
-        { label: "Главная", href: ROUTES.HOME },
-        { label: "Администрирование", href: ROUTES.ADMIN_USERS },
-        { label: "ЭДО", href: ROUTES.ADMIN_EDO_COURSES },
+        { label: "Администрирование", href: ROUTES.ADMIN },
+        { label: "ЭДО", href: ROUTES.ADMIN_EDO_EVENTS },
         { label: segmentLabels[thirdSegment] ?? thirdSegment },
       ];
     }
@@ -152,12 +154,13 @@ function buildBreadcrumbs(pathname: string) {
     if (secondSegment === "adaptation") {
       if (thirdSegment === "templates") {
         return [
-          { label: "Главная", href: ROUTES.HOME },
-          { label: "Администрирование", href: ROUTES.ADMIN_USERS },
+          { label: "Администрирование", href: ROUTES.ADMIN },
           { label: "Планы адаптации" },
         ];
       }
     }
+
+    return [{ label: "Администрирование", href: ROUTES.ADMIN }];
   }
 
   return crumbs;
@@ -173,7 +176,7 @@ function SidebarMain({ children }: { children: React.ReactNode }): JSX.Element {
 
   return (
     <SidebarInset>
-      <header className="flex h-16 shrink-0 items-center gap-2">
+      <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center gap-2 bg-background">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" />
@@ -189,7 +192,7 @@ function SidebarMain({ children }: { children: React.ReactNode }): JSX.Element {
                     >
                       {!isLast && crumb.href ? (
                         <BreadcrumbLink asChild>
-                          <Link to={crumb.href}>{crumb.label}</Link>
+                          <NavLink to={crumb.href}>{crumb.label}</NavLink>
                         </BreadcrumbLink>
                       ) : (
                         <BreadcrumbPage>{crumb.label}</BreadcrumbPage>
@@ -206,13 +209,9 @@ function SidebarMain({ children }: { children: React.ReactNode }): JSX.Element {
         </div>
       </header>
 
-      {children}
-      {/* <div className="grid auto-rows-min gap-4 md:grid-cols-3">
-              <div className="aspect-video rounded-xl bg-muted/50" />
-              <div className="aspect-video rounded-xl bg-muted/50" />
-              <div className="aspect-video rounded-xl bg-muted/50" />
-            </div>
-            <div className="min-h-[100vh] flex-1 rounded-xl bg-muted/50 md:min-h-min" /> */}
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto">
+        {children}
+      </div>
     </SidebarInset>
   );
 }

@@ -27,12 +27,12 @@ function OverflowScrollBlock({
 
   return (
     <div className={styles.container}>
-      <HeaderPage
+      {/* <HeaderPage
         className={styles.header_page}
         button_back_visible={resolvedBackButtonVisibility}
       >
         {resolvedTitle}
-      </HeaderPage>
+      </HeaderPage> */}
 
       <div className={styles.main_content}>
         <div className={styles.content}>{children}</div>
