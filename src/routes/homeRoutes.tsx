@@ -1,6 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import PageTitle from "@components/PageTitle.tsx";
-import Home from "@pages/Home/Home/Home.tsx";
+import Home from "@/pages/Home/Home";
 import Adaptation from "@pages/Home/Adaptation/Adaptation.tsx";
 import EducationCourses from "@pages/Home/Education/Courses/Courses.tsx";
 import EducationEvents from "@pages/Home/Education/Events/Events.tsx";
