@@ -4,7 +4,7 @@ import { CourseType } from "@/interfaces/api/CourseType.ts";
 import Input from "@/components/ui/Input/Input";
 import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
 import CourseChange from "@/components/ui/CourseChange/CourseChange";
-import DataList from "@/components/ui/DataList/DataList";
+import DataList from "@/components/ui/custom/DataList";
 import { useForm } from "@/hooks/useForm.ts";
 import {
   useGetEducationCoursesQuery,

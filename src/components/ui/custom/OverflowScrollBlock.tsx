@@ -8,7 +8,7 @@ function OverflowScrollBlock({
   return (
     <div className="relative h-full">
       <div className="h-full">
-        <div className="h-full p-[5rem_1.5rem_1.5rem] overflow-auto">
+        <div className="h-full p-[1.5rem_1.5rem_1.5rem] overflow-auto">
           {children}
         </div>
       </div>

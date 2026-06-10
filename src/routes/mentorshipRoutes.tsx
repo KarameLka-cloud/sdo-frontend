@@ -1,14 +1,14 @@
 import { RouteObject } from "react-router-dom";
-import PageTitle from "@components/PageTitle.tsx";
+import PageTitle from "@/components/PageTitle.tsx";
 import {
   ProtectedRouteMentor,
   ProtectedRouteMentorshipInternsAdmin,
   ProtectedRouteMyInterns,
-} from "@components/protected/ProtectedRoutes.tsx";
-import Interns from "@pages/Mentorship/Interns/Interns.tsx";
-import InternPlanEditor from "@pages/Mentorship/Interns/PlanEditor/PlanEditor.tsx";
-import MyInterns from "@pages/Mentorship/MyInterns/MyInterns.tsx";
-import { ROUTES } from "@constants/routes.ts";
+} from "@/components/protected/ProtectedRoutes.tsx";
+import Interns from "@/pages/Mentorship/Interns/Interns.tsx";
+import InternPlanEditor from "@/pages/Mentorship/Interns/PlanEditor/PlanEditor.tsx";
+import MyInterns from "@/pages/Mentorship/MyInterns/MyInterns.tsx";
+import { ROUTES } from "@/constants/routes.ts";
 import MainLayout from "@/layouts/MainLayout";
 
 export const mentorshipRoutes: RouteObject = {

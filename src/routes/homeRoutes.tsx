@@ -1,15 +1,15 @@
 import { RouteObject } from "react-router-dom";
-import PageTitle from "@components/PageTitle.tsx";
+import PageTitle from "@/components/PageTitle.tsx";
 import Home from "@/pages/Home/Home";
-import Adaptation from "@pages/Home/Adaptation/Adaptation.tsx";
-import EducationCourses from "@pages/Home/Education/Courses/Courses.tsx";
-import EducationEvents from "@pages/Home/Education/Events/Events.tsx";
-import EducationWebinars from "@pages/Home/Education/Webinars/Webinars.tsx";
-import EducationTests from "@pages/Home/Education/Tests/Tests.tsx";
-import EdoCourses from "@pages/Home/Edo/Courses/Courses.tsx";
-import EdoEvents from "@pages/Home/Edo/Events/Events.tsx";
-import EdoTests from "@pages/Home/Edo/Tests/Tests.tsx";
-import { ROUTES } from "@constants/routes.ts";
+import Adaptation from "@/pages/Home/Adaptation/Adaptation.tsx";
+import EducationCourses from "@/pages/Home/Education/Courses";
+import EducationEvents from "@/pages/Home/Education/Events";
+import EducationWebinars from "@/pages/Home/Education/Webinars";
+import EducationTests from "@/pages/Home/Education/Tests";
+import EdoCourses from "@/pages/Home/Edo/Courses";
+import EdoEvents from "@/pages/Home/Edo/Events";
+import EdoTests from "@/pages/Home/Edo/Tests";
+import { ROUTES } from "@/constants/routes.ts";
 import MainLayout from "@/layouts/MainLayout";
 
 export const homeRoutes: RouteObject = {

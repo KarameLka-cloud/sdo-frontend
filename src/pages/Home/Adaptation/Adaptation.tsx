@@ -1,7 +1,7 @@
 import { JSX, useState } from "react";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import Development from "@/components/ui/Development/Development";
-import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import Development from "@/components/ui/custom/Development";
+import DataMessage from "@/components/ui/custom/DataMessage";
 import CareerDay from "@/components/ui/CareerDay/CareerDay";
 import Loader from "@/components/ui/Loader/Loader";
 import {
@@ -11,7 +11,6 @@ import {
 } from "@/services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
-import styles from "./Adaptation.module.css";
 import convertDate from "@/utils/convertDate.ts";
 import {
   AdaptationDayType,
@@ -197,45 +196,55 @@ function Adaptation(): JSX.Element {
   // Отображение плана обучения и задач для сотрудника
   return (
     <OverflowScrollBlock>
-      <div className={styles.trainingPlanInfo}>
-        <div className={styles.planInfoItem}>
-          <span className={styles.planLabel}>Начало стажировки:</span>
-          <span className={styles.planValue}>
+      {/* Блок информации о плане - sticky */}
+      <div className="bg-white border border-gray-200 rounded-xl p-3 mb-4 flex flex-wrap gap-2 items-center sticky top-0 z-10">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100">
+          <span className="font-semibold text-slate-600 text-xs">
+            Начало стажировки:
+          </span>
+          <span className="text-slate-900 font-semibold text-xs">
             {convertDate(myAdaptationPlan.start_date)}
           </span>
         </div>
-        <div className={styles.planInfoItem}>
-          <span className={styles.planLabel}>График:</span>
-          <span className={styles.planValue}>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100">
+          <span className="font-semibold text-slate-600 text-xs">График:</span>
+          <span className="text-slate-900 font-semibold text-xs">
             {myAdaptationPlan.work_schedule}
           </span>
         </div>
-        <div className={styles.planInfoItem}>
-          <span className={styles.planLabel}>Смена:</span>
-          <span className={styles.planValue}>{myAdaptationPlan.shift}</span>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100">
+          <span className="font-semibold text-slate-600 text-xs">Смена:</span>
+          <span className="text-slate-900 font-semibold text-xs">
+            {myAdaptationPlan.shift}
+          </span>
         </div>
-        <div className={styles.planInfoItem}>
-          <span className={styles.planLabel}>Наставник:</span>
-          <span className={styles.planValue}>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100">
+          <span className="font-semibold text-slate-600 text-xs">
+            Наставник:
+          </span>
+          <span className="text-slate-900 font-semibold text-xs">
             {myAdaptationPlan.mentor_user?.name ??
               `ID: ${myAdaptationPlan.mentor}`}
           </span>
         </div>
-        <div className={styles.planInfoItem}>
-          <span className={styles.planLabel}>Руководитель отдела:</span>
-          <span className={styles.planValue}>
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100">
+          <span className="font-semibold text-slate-600 text-xs">
+            Руководитель отдела:
+          </span>
+          <span className="text-slate-900 font-semibold text-xs">
             {myAdaptationPlan.department_head_user?.name ??
               `ID: ${myAdaptationPlan.department_head}`}
           </span>
         </div>
       </div>
+
       <FormActionStatus
         type={saveStatus.type}
         message={saveStatus.message}
-        className={styles.saveStatusSlot}
+        className="mb-4"
       />
 
-      <div className={styles.careerContainer}>
+      <div className="flex flex-col gap-0">
         {adaptationDays.length > 0 ? (
           adaptationDays.map((day) => (
             <CareerDay

@@ -1,7 +1,7 @@
 import { JSX, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import DataMessage from "@/components/ui/custom/DataMessage";
 import Input from "@/components/ui/Input/Input";
 import IconButton from "@/components/ui/IconButton/IconButton";
 import Loader from "@/components/ui/Loader/Loader";

@@ -4,7 +4,7 @@ import { WebinarType } from "@/interfaces/api/WebinarType.ts";
 import Input from "@/components/ui/Input/Input";
 import WebinarChange from "@/components/ui/WebinarChange/WebinarChange";
 import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
-import DataList from "@/components/ui/DataList/DataList";
+import DataList from "@/components/ui/custom/DataList";
 import { useForm } from "@/hooks/useForm.ts";
 import {
   useGetEducationWebinarsQuery,

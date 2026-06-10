@@ -5,7 +5,7 @@ import Input from "@/components/ui/Input/Input";
 import Select from "@/components/ui/Select/Select";
 import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
 import TestChange from "@/components/ui/TestChange/TestChange";
-import DataList from "@/components/ui/DataList/DataList";
+import DataList from "@/components/ui/custom/DataList";
 import { useForm } from "@/hooks/useForm.ts";
 import {
   useGetEdoTestsQuery,

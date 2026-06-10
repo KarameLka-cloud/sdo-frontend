@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import DataMessage from "../DataMessage/DataMessage.tsx";
+import DataMessage from "./DataMessage.tsx";
 import Loader from "../Loader/Loader.tsx";
 
 type DataListProps<T> = {

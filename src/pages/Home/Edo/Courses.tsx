@@ -1,13 +1,12 @@
 import { JSX } from "react";
-import styles from "./Courses.module.css";
 import { CourseType } from "@/interfaces/api/CourseType.ts";
-import DataList from "@/components/ui/DataList/DataList";
+import DataList from "@/components/ui/custom/DataList";
 import CourseItem from "@/components/ui/Course/Course";
-import { useGetEducationCoursesQuery } from "@/services/store/features/education.ts";
+import { useGetEdoCoursesQuery } from "@/services/store/features/edo.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 
 function Courses(): JSX.Element {
-  const { data, error, isLoading } = useGetEducationCoursesQuery("");
+  const { data, error, isLoading } = useGetEdoCoursesQuery("");
 
   return (
     <OverflowScrollBlock>
@@ -16,7 +15,7 @@ function Courses(): JSX.Element {
         error={!!error}
         isLoading={isLoading}
         renderItem={(item: CourseType) => (
-          <CourseItem key={item.id} course={item} className={styles.course} />
+          <CourseItem key={item.id} course={item} className="mt-4" />
         )}
       />
     </OverflowScrollBlock>

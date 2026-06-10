@@ -1,17 +1,17 @@
 import { RouteObject } from "react-router-dom";
-import PageTitle from "@components/PageTitle.tsx";
-import { ProtectedRouteAdmin } from "@components/protected/ProtectedRoutes.tsx";
-import UsersAdmin from "@pages/Admin/Users/Users.tsx";
-import EducationCoursesAdmin from "@pages/Admin/Education/Courses/Courses.tsx";
-import EducationEventsAdmin from "@pages/Admin/Education/Events/Events.tsx";
-import EducationWebinarsAdmin from "@pages/Admin/Education/Webinars/Webinars.tsx";
-import EducationTestsAdmin from "@pages/Admin/Education/Tests/Tests.tsx";
-import EdoCoursesAdmin from "@pages/Admin/Edo/Courses/Courses.tsx";
-import EdoEventsAdmin from "@pages/Admin/Edo/Events/Events.tsx";
-import EdoTestsAdmin from "@pages/Admin/Edo/Tests/Tests.tsx";
-import AdaptationTemplatesAdmin from "@pages/Admin/Adaptation/Templates/Templates.tsx";
-import AdaptationTemplateTasksAdmin from "@pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx";
-import { ROUTES } from "@constants/routes.ts";
+import PageTitle from "@/components/PageTitle.tsx";
+import { ProtectedRouteAdmin } from "@/components/protected/ProtectedRoutes.tsx";
+import UsersAdmin from "@/pages/Admin/Users/Users.tsx";
+import EducationCoursesAdmin from "@/pages/Admin/Education/Courses/Courses.tsx";
+import EducationEventsAdmin from "@/pages/Admin/Education/Events/Events.tsx";
+import EducationWebinarsAdmin from "@/pages/Admin/Education/Webinars/Webinars.tsx";
+import EducationTestsAdmin from "@/pages/Admin/Education/Tests/Tests.tsx";
+import EdoCoursesAdmin from "@/pages/Admin/Edo/Courses/Courses.tsx";
+import EdoEventsAdmin from "@/pages/Admin/Edo/Events/Events.tsx";
+import EdoTestsAdmin from "@/pages/Admin/Edo/Tests/Tests.tsx";
+import AdaptationTemplatesAdmin from "@/pages/Admin/Adaptation/Templates/Templates.tsx";
+import AdaptationTemplateTasksAdmin from "@/pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx";
+import { ROUTES } from "@/constants/routes.ts";
 import MainLayout from "@/layouts/MainLayout";
 
 export const adminRoutes: RouteObject = {

@@ -4,7 +4,7 @@ import { UserType } from "@/interfaces/api/UserType.ts";
 import Input from "@/components/ui/Input/Input";
 import User from "@/components/ui/User/User";
 import Loader from "@/components/ui/Loader/Loader";
-import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import DataMessage from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";

@@ -1,7 +1,6 @@
 import { JSX } from "react";
-import styles from "./Tests.module.css";
 import { TestType } from "@/interfaces/api/TestType.ts";
-import DataList from "@/components/ui/DataList/DataList";
+import DataList from "@/components/ui/custom/DataList";
 import TestItem from "@/components/ui/Test/Test";
 import { useGetEdoTestsQuery } from "@/services/store/features/edo.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
@@ -16,7 +15,7 @@ function Tests(): JSX.Element {
         error={!!error}
         isLoading={isLoading}
         renderItem={(item: TestType) => (
-          <TestItem key={item.id} test={item} className={styles.test} />
+          <TestItem key={item.id} test={item} className="mt-4" />
         )}
       />
     </OverflowScrollBlock>

@@ -1,5 +1,4 @@
 import { JSX } from "react";
-import styles from "./Development.module.css";
 import image_development from "@/assets/images/development.svg";
 
 interface DevelopmentType {
@@ -12,7 +11,7 @@ function Development({ className }: DevelopmentType): JSX.Element {
       <img
         src={image_development}
         alt="В разработке"
-        className={`${styles.development} ${className ?? ""}`}
+        className={`block w-3/5 mx-auto ${className ?? ""}`}
       />
     </div>
   );

@@ -1,5 +1,4 @@
 import { JSX } from "react";
-import styles from "./DataMessage.module.css";
 
 interface DataMessageProps {
   type: "noData" | "error";
@@ -18,7 +17,19 @@ function DataMessage({ type, className }: DataMessageProps): JSX.Element {
 
   const { message } = types[type];
 
-  return <div className={`${styles.message} ${className}`}>{message}</div>;
+  return (
+    <div
+      className={`
+        w-fit mx-auto mt-2 px-4 py-3
+        border border-gray-200 rounded-xl
+        bg-slate-50 text-gray-600
+        text-center text-base font-semibold
+        ${className}
+      `}
+    >
+      {message}
+    </div>
+  );
 }
 
 export default DataMessage;
