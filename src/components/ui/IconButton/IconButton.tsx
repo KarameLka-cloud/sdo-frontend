@@ -1,9 +1,9 @@
 import { JSX } from "react";
 import styles from "./IconButton.module.css";
-import editIcon from "@assets/images/icons/pencil.svg";
-import deleteIcon from "@assets/images/icons/trash.svg";
-import saveIcon from "@assets/images/icons/save.svg";
-import closeIcon from "@assets/images/icons/close.svg";
+import editIcon from "@/assets/images/icons/pencil.svg";
+import deleteIcon from "@/assets/images/icons/trash.svg";
+import saveIcon from "@/assets/images/icons/save.svg";
+import closeIcon from "@/assets/images/icons/close.svg";
 
 interface IconButtonProps {
   type: "edit" | "delete" | "save" | "close";

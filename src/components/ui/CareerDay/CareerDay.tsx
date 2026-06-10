@@ -3,9 +3,9 @@ import styles from "./CareerDay.module.css";
 import {
   AdaptationDayType,
   TaskStatus,
-} from "@interfaces/api/AdaptationDayType.ts";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import TaskItem from "@components/ui/TaskItem/TaskItem.tsx";
+} from "@/interfaces/api/AdaptationDayType.ts";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import TaskItem from "@/components/ui/TaskItem/TaskItem";
 
 interface CareerDayProps {
   day: AdaptationDayType;

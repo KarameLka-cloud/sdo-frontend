@@ -1,26 +1,26 @@
 import React, { JSX, useState } from "react";
 import styles from "./Courses.module.css";
-import { CourseType } from "@interfaces/api/CourseType.ts";
-import Input from "@components/ui/Input/Input.tsx";
-import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import CourseChange from "@components/ui/CourseChange/CourseChange.tsx";
-import DataList from "@components/ui/DataList/DataList.tsx";
-import { useForm } from "@hooks/useForm.ts";
+import { CourseType } from "@/interfaces/api/CourseType.ts";
+import Input from "@/components/ui/Input/Input";
+import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
+import CourseChange from "@/components/ui/CourseChange/CourseChange";
+import DataList from "@/components/ui/DataList/DataList";
+import { useForm } from "@/hooks/useForm.ts";
 import {
   useGetEducationCoursesQuery,
   useAddEducationCourseMutation,
   useDeleteEducationCourseMutation,
-} from "@services/store/features/education.ts";
-import Select from "@components/ui/Select/Select.tsx";
-import { useGetDepartmentsQuery } from "@services/store/features/user.ts";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import { useToggle } from "@hooks/useToggle.ts";
-import { useFiltered } from "@hooks/useFiltered.ts";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+} from "@/services/store/features/education.ts";
+import Select from "@/components/ui/Select/Select";
+import { useGetDepartmentsQuery } from "@/services/store/features/user.ts";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import { useToggle } from "@/hooks/useToggle.ts";
+import { useFiltered } from "@/hooks/useFiltered.ts";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/components/ui/FormActionStatus/FormActionStatus";
 
 function Courses(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
@@ -66,10 +66,7 @@ function Courses(): JSX.Element {
   };
 
   return (
-    <OverflowScrollBlock
-      header_name={"Редактирование эл. курсов"}
-      button_back_visible={"enable"}
-    >
+    <OverflowScrollBlock>
       <div className={styles.stickyControls}>
         <div className={styles.create_search}>
           {formShow ? (

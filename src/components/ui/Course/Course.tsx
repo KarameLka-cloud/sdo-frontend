@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import styles from "./Course.module.css";
-import convertDate from "@utils/convertDate.ts";
-import { CourseType } from "@interfaces/api/CourseType.ts";
+import convertDate from "@/utils/convertDate.ts";
+import { CourseType } from "@/interfaces/api/CourseType.ts";
 
 interface CoursePropsType {
   className?: string;

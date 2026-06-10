@@ -1,8 +1,7 @@
 import { JSX } from "react";
-import { SidebarFooter } from "@/components/ui/sidebar";
-import image_fox from "@assets/images/fox.png";
-
+import image_fox from "@/assets/images/fox.png";
 import { ChevronsUpDown, LogOut } from "lucide-react";
+import { SidebarFooter } from "@/components/ui/sidebar";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import {
   DropdownMenu,
@@ -18,7 +17,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { useLogout } from "@hooks/useLogout.ts";
+import { useLogout } from "@/hooks/useLogout.ts";
 import { useUser } from "@/hooks/useUser";
 
 function SFooter(): JSX.Element {

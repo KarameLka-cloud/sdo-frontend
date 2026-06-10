@@ -1,17 +1,17 @@
 import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import Input from "@components/ui/Input/Input.tsx";
-import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import Input from "@/components/ui/Input/Input";
+import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
+import Loader from "@/components/ui/Loader/Loader";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
-} from "@services/store/features/user.ts";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
-import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/services/store/features/user.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
+import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
 import styles from "./Templates.module.css";
 
 interface AdaptationPlanTemplateType {
@@ -102,7 +102,7 @@ function Templates(): JSX.Element {
   };
 
   return (
-    <OverflowScrollBlock header_name={"Планы адаптации"}>
+    <OverflowScrollBlock>
       <div className={styles.container}>
         <div className={styles.stickyControls}>
           <div className={styles.toolbar}>

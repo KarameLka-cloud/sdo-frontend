@@ -1,8 +1,8 @@
 import { JSX } from "react";
 import styles from "./CourseChange.module.css";
-import { CourseType } from "@interfaces/api/CourseType.ts";
-import convertDate from "@utils/convertDate.ts";
-import { useDelete } from "@hooks/useDelete.ts";
+import { CourseType } from "@/interfaces/api/CourseType.ts";
+import convertDate from "@/utils/convertDate.ts";
+import { useDelete } from "@/hooks/useDelete.ts";
 import IconButton from "../IconButton/IconButton.tsx";
 
 interface CoursePropsType {

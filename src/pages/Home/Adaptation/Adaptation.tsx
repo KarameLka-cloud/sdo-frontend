@@ -1,22 +1,22 @@
 import { JSX, useState } from "react";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import Development from "@components/ui/Development/Development.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import CareerDay from "@components/ui/CareerDay/CareerDay.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import Development from "@/components/ui/Development/Development";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import CareerDay from "@/components/ui/CareerDay/CareerDay";
+import Loader from "@/components/ui/Loader/Loader";
 import {
   useGetMyAdaptationPlanQuery,
   useUpdateMyAdaptationInternCommentMutation,
   useUpdateMyAdaptationTaskStatusMutation,
-} from "@services/store/features/user.ts";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
-import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/services/store/features/user.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
+import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
 import styles from "./Adaptation.module.css";
-import convertDate from "@utils/convertDate.ts";
+import convertDate from "@/utils/convertDate.ts";
 import {
   AdaptationDayType,
   TaskStatus,
-} from "@interfaces/api/AdaptationDayType.ts";
+} from "@/interfaces/api/AdaptationDayType.ts";
 
 interface AdaptationPlanResponse {
   id: number;
@@ -172,7 +172,7 @@ function Adaptation(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock header_name={"Адаптация"}>
+      <OverflowScrollBlock>
         <Loader />
       </OverflowScrollBlock>
     );
@@ -180,7 +180,7 @@ function Adaptation(): JSX.Element {
 
   if (isError) {
     return (
-      <OverflowScrollBlock header_name={"Адаптация"}>
+      <OverflowScrollBlock>
         <DataMessage type={"error"} />
       </OverflowScrollBlock>
     );
@@ -188,7 +188,7 @@ function Adaptation(): JSX.Element {
 
   if (!hasAdaptationPlan(myAdaptationPlan)) {
     return (
-      <OverflowScrollBlock header_name={"Адаптация"}>
+      <OverflowScrollBlock>
         <Development />
       </OverflowScrollBlock>
     );
@@ -196,7 +196,7 @@ function Adaptation(): JSX.Element {
 
   // Отображение плана обучения и задач для сотрудника
   return (
-    <OverflowScrollBlock header_name={"Адаптация"}>
+    <OverflowScrollBlock>
       <div className={styles.trainingPlanInfo}>
         <div className={styles.planInfoItem}>
           <span className={styles.planLabel}>Начало стажировки:</span>

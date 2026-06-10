@@ -1,3 +1,6 @@
+import { JSX } from "react";
+import { NavLink } from "react-router-dom";
+import { ChevronRight } from "lucide-react";
 import {
   SidebarContent,
   SidebarGroup,
@@ -14,17 +17,13 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
-import { ChevronRight } from "lucide-react";
-import { NavLink } from "react-router-dom";
-import { JSX } from "react";
 import {
   HOME_NAV_LINKS,
   MENTOR_NAV_LINKS,
   ADMIN_NAV_LINKS,
 } from "@/constants/navigation";
-
-import { useUser } from "@hooks/useUser.ts";
-import { hasAnyRole, USER_ROLES } from "@constants/roles.ts";
+import { useUser } from "@/hooks/useUser.ts";
+import { hasAnyRole, USER_ROLES } from "@/constants/roles.ts";
 
 function SContent(): JSX.Element {
   const { role } = useUser();

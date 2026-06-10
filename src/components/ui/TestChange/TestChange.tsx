@@ -1,7 +1,7 @@
-import { TestType } from "@interfaces/api/TestType.ts";
-import { useDelete } from "@hooks/useDelete.ts";
+import { TestType } from "@/interfaces/api/TestType.ts";
+import { useDelete } from "@/hooks/useDelete.ts";
 import styles from "./TestChange.module.css";
-import convertDate from "@utils/convertDate.ts";
+import convertDate from "@/utils/convertDate.ts";
 import { JSX } from "react";
 import IconButton from "../IconButton/IconButton.tsx";
 

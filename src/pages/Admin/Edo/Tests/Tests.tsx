@@ -1,26 +1,26 @@
 import React, { JSX, useState } from "react";
 import styles from "./Tests.module.css";
-import { TestType } from "@interfaces/api/TestType.ts";
-import Input from "@components/ui/Input/Input.tsx";
-import Select from "@components/ui/Select/Select.tsx";
-import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import TestChange from "@components/ui/TestChange/TestChange.tsx";
-import DataList from "@components/ui/DataList/DataList.tsx";
-import { useForm } from "@hooks/useForm.ts";
+import { TestType } from "@/interfaces/api/TestType.ts";
+import Input from "@/components/ui/Input/Input";
+import Select from "@/components/ui/Select/Select";
+import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
+import TestChange from "@/components/ui/TestChange/TestChange";
+import DataList from "@/components/ui/DataList/DataList";
+import { useForm } from "@/hooks/useForm.ts";
 import {
   useGetEdoTestsQuery,
   useAddEdoTestMutation,
   useDeleteEdoTestMutation,
-} from "@services/store/features/edo.ts";
-import { useGetPositionsQuery } from "@services/store/features/user.ts";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import { useToggle } from "@hooks/useToggle.ts";
-import { useFiltered } from "@hooks/useFiltered.ts";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+} from "@/services/store/features/edo.ts";
+import { useGetPositionsQuery } from "@/services/store/features/user.ts";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import { useToggle } from "@/hooks/useToggle.ts";
+import { useFiltered } from "@/hooks/useFiltered.ts";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/components/ui/FormActionStatus/FormActionStatus";
 
 function Tests(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
@@ -65,10 +65,7 @@ function Tests(): JSX.Element {
   };
 
   return (
-    <OverflowScrollBlock
-      header_name={"Редактирование тестов"}
-      button_back_visible={"enable"}
-    >
+    <OverflowScrollBlock>
       <div className={styles.stickyControls}>
         <div className={styles.create_search}>
           {formShow ? (

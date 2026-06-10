@@ -1,14 +1,14 @@
 import { ChangeEvent, JSX, useState } from "react";
 import styles from "./Users.module.css";
-import { UserType } from "@interfaces/api/UserType.ts";
-import Input from "@components/ui/Input/Input.tsx";
-import User from "@components/ui/User/User.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import { useFiltered } from "@hooks/useFiltered.ts";
-import { useGetUsersQuery } from "@services/store/features/user.ts";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
+import { UserType } from "@/interfaces/api/UserType.ts";
+import Input from "@/components/ui/Input/Input";
+import User from "@/components/ui/User/User";
+import Loader from "@/components/ui/Loader/Loader";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import { useFiltered } from "@/hooks/useFiltered.ts";
+import { useGetUsersQuery } from "@/services/store/features/user.ts";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
 
 type UsersTab = "users" | "admins" | "mentors" | "department_heads";
 
@@ -39,7 +39,7 @@ function Users(): JSX.Element {
   const filteredHeads = useFiltered<UserType>(heads, search);
 
   return (
-    <OverflowScrollBlock header_name={"Пользователи"}>
+    <OverflowScrollBlock>
       <div className={styles.tabs}>
         <button
           type="button"

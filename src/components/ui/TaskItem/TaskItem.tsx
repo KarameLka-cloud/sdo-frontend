@@ -1,6 +1,6 @@
 import { JSX, useState } from "react";
 import styles from "./TaskItem.module.css";
-import { TaskType, TaskStatus } from "@interfaces/api/AdaptationDayType.ts";
+import { TaskType, TaskStatus } from "@/interfaces/api/AdaptationDayType.ts";
 
 interface TaskItemProps {
   task: TaskType;

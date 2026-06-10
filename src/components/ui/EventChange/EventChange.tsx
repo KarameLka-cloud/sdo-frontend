@@ -1,9 +1,9 @@
 import { JSX } from "react";
 import styles from "./EventChange.module.css";
-import { EventType } from "@interfaces/api/EventType.ts";
-import convertDate from "@utils/convertDate.ts";
-import { useDelete } from "@hooks/useDelete.ts";
-import { convertTime } from "@utils/convertTime.ts";
+import { EventType } from "@/interfaces/api/EventType.ts";
+import convertDate from "@/utils/convertDate.ts";
+import { useDelete } from "@/hooks/useDelete.ts";
+import { convertTime } from "@/utils/convertTime.ts";
 import IconButton from "../IconButton/IconButton.tsx";
 
 interface EventPropsType {

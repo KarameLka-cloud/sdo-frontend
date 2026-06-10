@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { TooltipProvider } from "@/components/ui/tooltip.tsx";
+import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import SidebarNav from "@/components/home/SidebarNav";
 import SidebarMain from "@/components/home/SidebarMain";

@@ -1,11 +1,11 @@
 import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import Input from "@components/ui/Input/Input.tsx";
-import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import Input from "@/components/ui/Input/Input";
+import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
+import Loader from "@/components/ui/Loader/Loader";
 import {
   useCreateAdaptationPlanMutation,
   useGetAdaptationPlanTemplatesQuery,
@@ -13,14 +13,14 @@ import {
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
-} from "@services/store/features/user.ts";
-import { ROUTES } from "@constants/routes.ts";
-import { UserType } from "@interfaces/api/UserType.ts";
-import { isUserInRole, USER_ROLES } from "@constants/roles.ts";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+} from "@/services/store/features/user.ts";
+import { ROUTES } from "@/constants/routes.ts";
+import { UserType } from "@/interfaces/api/UserType.ts";
+import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/components/ui/FormActionStatus/FormActionStatus";
 import styles from "./Interns.module.css";
 
 interface AdaptationPlanResponse {
@@ -226,7 +226,7 @@ function Interns(): JSX.Element {
     : [];
 
   return (
-    <OverflowScrollBlock header_name={"Список стажеров"}>
+    <OverflowScrollBlock>
       <div className={styles.container}>
         {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}

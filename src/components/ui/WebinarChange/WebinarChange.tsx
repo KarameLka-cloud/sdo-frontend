@@ -1,9 +1,9 @@
 import { JSX } from "react";
 import styles from "./WebinarChange.module.css";
-import { WebinarType } from "@interfaces/api/WebinarType.ts";
-import convertDate from "@utils/convertDate.ts";
-import { useDelete } from "@hooks/useDelete.ts";
-import { convertTime } from "@utils/convertTime.ts";
+import { WebinarType } from "@/interfaces/api/WebinarType.ts";
+import convertDate from "@/utils/convertDate.ts";
+import { useDelete } from "@/hooks/useDelete.ts";
+import { convertTime } from "@/utils/convertTime.ts";
 import IconButton from "../IconButton/IconButton.tsx";
 
 interface EventPropsType {

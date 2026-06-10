@@ -1,8 +1,8 @@
 import { JSX } from "react";
 import styles from "./Webinar.module.css";
-import convertDate from "@utils/convertDate.ts";
-import { WebinarType } from "@interfaces/api/WebinarType.ts";
-import { convertTime } from "@utils/convertTime.ts";
+import convertDate from "@/utils/convertDate.ts";
+import { WebinarType } from "@/interfaces/api/WebinarType.ts";
+import { convertTime } from "@/utils/convertTime.ts";
 
 interface EventPropsType {
   className?: string;

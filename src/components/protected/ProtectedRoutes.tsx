@@ -1,12 +1,12 @@
 import { ReactElement } from "react";
 import Cookie from "js-cookie";
 import { Navigate } from "react-router-dom";
-import { useUser } from "@hooks/useUser.ts";
-import Loader from "@components/ui/Loader/Loader.tsx";
-import { ROUTES } from "@constants/routes.ts";
-import { hasRole, USER_ROLES } from "@constants/roles.ts";
-import { COOKIE_NAMES } from "@constants/api.ts";
-import { useGetUserByDataQuery } from "@services/store/features/user.ts";
+import { useUser } from "@/hooks/useUser.ts";
+import Loader from "@/components/ui/Loader/Loader";
+import { ROUTES } from "@/constants/routes.ts";
+import { hasRole, USER_ROLES } from "@/constants/roles.ts";
+import { COOKIE_NAMES } from "@/constants/api.ts";
+import { useGetUserByDataQuery } from "@/services/store/features/user.ts";
 
 function isUnauthorizedError(error: unknown): boolean {
   return (

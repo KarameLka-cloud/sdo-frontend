@@ -1,17 +1,17 @@
 import { JSX, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import Input from "@components/ui/Input/Input.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import Input from "@/components/ui/Input/Input";
+import Loader from "@/components/ui/Loader/Loader";
 import {
   useDeleteAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
   useUpdateAdaptationPlanTemplateMutation,
-} from "@services/store/features/user.ts";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
-import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/services/store/features/user.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
+import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
 import styles from "./TemplateTasks.module.css";
 
 type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
@@ -342,10 +342,7 @@ function TemplateTasks(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock
-        header_name={"Редактирование плана адаптации"}
-        button_back_visible={"enable"}
-      >
+      <OverflowScrollBlock>
         <Loader />
       </OverflowScrollBlock>
     );
@@ -353,20 +350,14 @@ function TemplateTasks(): JSX.Element {
 
   if (isError || !template) {
     return (
-      <OverflowScrollBlock
-        header_name={"Редактирование плана адаптации"}
-        button_back_visible={"enable"}
-      >
+      <OverflowScrollBlock>
         <DataMessage type="error" />
       </OverflowScrollBlock>
     );
   }
 
   return (
-    <OverflowScrollBlock
-      header_name={"Редактирование плана адаптации"}
-      button_back_visible={"enable"}
-    >
+    <OverflowScrollBlock>
       <div className={styles.container}>
         <div className={styles.stickyHeader}>
           <div className={styles.templateMetaBlock}>

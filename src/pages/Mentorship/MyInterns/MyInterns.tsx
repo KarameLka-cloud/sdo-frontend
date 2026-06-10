@@ -1,20 +1,20 @@
 import { JSX, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import Input from "@components/ui/Input/Input.tsx";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import Input from "@/components/ui/Input/Input";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import Loader from "@/components/ui/Loader/Loader";
 import {
   useGetAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
-} from "@services/store/features/user.ts";
-import { ROUTES } from "@constants/routes.ts";
-import { useUser } from "@hooks/useUser.ts";
-import { UserType } from "@interfaces/api/UserType.ts";
-import { hasRole, isUserInRole, USER_ROLES } from "@constants/roles.ts";
+} from "@/services/store/features/user.ts";
+import { ROUTES } from "@/constants/routes.ts";
+import { useUser } from "@/hooks/useUser.ts";
+import { UserType } from "@/interfaces/api/UserType.ts";
+import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
 import styles from "./MyInterns.module.css";
 
 interface AdaptationPlanResponse {
@@ -97,7 +97,7 @@ function MyInterns(): JSX.Element {
   }, [hasSearch, search, visiblePlans]);
 
   return (
-    <OverflowScrollBlock header_name={"Список стажеров"}>
+    <OverflowScrollBlock>
       <div className={styles.container}>
         {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}

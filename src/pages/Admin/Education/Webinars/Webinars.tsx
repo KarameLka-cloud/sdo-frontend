@@ -1,24 +1,24 @@
 import React, { JSX, useState } from "react";
 import styles from "./Webinars.module.css";
-import { WebinarType } from "@interfaces/api/WebinarType.ts";
-import Input from "@components/ui/Input/Input.tsx";
-import WebinarChange from "@components/ui/WebinarChange/WebinarChange.tsx";
-import ButtonSubmit from "@components/ui/ButtonSubmit/ButtonSubmit.tsx";
-import DataList from "@components/ui/DataList/DataList.tsx";
-import { useForm } from "@hooks/useForm.ts";
+import { WebinarType } from "@/interfaces/api/WebinarType.ts";
+import Input from "@/components/ui/Input/Input";
+import WebinarChange from "@/components/ui/WebinarChange/WebinarChange";
+import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
+import DataList from "@/components/ui/DataList/DataList";
+import { useForm } from "@/hooks/useForm.ts";
 import {
   useGetEducationWebinarsQuery,
   useAddEducationWebinarMutation,
   useDeleteEducationWebinarMutation,
-} from "@services/store/features/education.ts";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import { useFiltered } from "@hooks/useFiltered.ts";
-import { useToggle } from "@hooks/useToggle.ts";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
+} from "@/services/store/features/education.ts";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import { useFiltered } from "@/hooks/useFiltered.ts";
+import { useToggle } from "@/hooks/useToggle.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/components/ui/FormActionStatus/FormActionStatus";
 
 function Webinars(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();
@@ -61,10 +61,7 @@ function Webinars(): JSX.Element {
   };
 
   return (
-    <OverflowScrollBlock
-      header_name={"Редактирование вебинаров"}
-      button_back_visible={"enable"}
-    >
+    <OverflowScrollBlock>
       <div className={styles.stickyControls}>
         <div className={styles.create_search}>
           {formShow ? (

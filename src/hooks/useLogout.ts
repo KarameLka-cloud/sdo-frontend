@@ -1,8 +1,8 @@
-import { useLogoutMutation } from "../services/store/features/auth.ts";
 import Cookie from "js-cookie";
 import { useNavigate } from "react-router-dom";
-import { ROUTES } from "../constants/routes.ts";
-import { COOKIE_NAMES } from "../constants/api.ts";
+import { useLogoutMutation } from "@/services/store/features/auth.ts";
+import { ROUTES } from "@/constants/routes.ts";
+import { COOKIE_NAMES } from "@/constants/api.ts";
 
 export const useLogout = () => {
   const navigate = useNavigate();

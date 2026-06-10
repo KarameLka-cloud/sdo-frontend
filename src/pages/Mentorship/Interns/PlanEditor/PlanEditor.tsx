@@ -1,10 +1,10 @@
 import { JSX, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
-import DataMessage from "@components/ui/DataMessage/DataMessage.tsx";
-import IconButton from "@components/ui/IconButton/IconButton.tsx";
-import Input from "@components/ui/Input/Input.tsx";
-import Loader from "@components/ui/Loader/Loader.tsx";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import DataMessage from "@/components/ui/DataMessage/DataMessage";
+import IconButton from "@/components/ui/IconButton/IconButton";
+import Input from "@/components/ui/Input/Input";
+import Loader from "@/components/ui/Loader/Loader";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
@@ -13,13 +13,13 @@ import {
   useUpdateAdaptationPlanDayMutation,
   useUpdateAdaptationPlanMutation,
   useUpdateAdaptationPlanTaskStatusMutation,
-} from "@services/store/features/user.ts";
-import { UserType } from "@interfaces/api/UserType.ts";
-import { ROUTES } from "@constants/routes.ts";
-import { FORM_STATUS_MESSAGES } from "@constants/formStatus.ts";
-import { USER_ROLES, hasRole } from "@constants/roles.ts";
-import { useUser } from "@hooks/useUser.ts";
-import FormActionStatus from "@components/ui/FormActionStatus/FormActionStatus.tsx";
+} from "@/services/store/features/user.ts";
+import { UserType } from "@/interfaces/api/UserType.ts";
+import { ROUTES } from "@/constants/routes.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
+import { USER_ROLES, hasRole } from "@/constants/roles.ts";
+import { useUser } from "@/hooks/useUser.ts";
+import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
 import styles from "./PlanEditor.module.css";
 
 interface PlanType {
@@ -313,10 +313,7 @@ function PlanEditor(): JSX.Element {
 
   if (isLoading) {
     return (
-      <OverflowScrollBlock
-        header_name={"Редактирование плана адаптации стажера"}
-        button_back_visible={"enable"}
-      >
+      <OverflowScrollBlock>
         <Loader />
       </OverflowScrollBlock>
     );
@@ -324,10 +321,7 @@ function PlanEditor(): JSX.Element {
 
   if (isError || !plan) {
     return (
-      <OverflowScrollBlock
-        header_name={"Редактирование плана адаптации стажера"}
-        button_back_visible={"enable"}
-      >
+      <OverflowScrollBlock>
         <DataMessage type="error" />
         {loadErrorMessage && (
           <p className={styles.status}>{loadErrorMessage}</p>
@@ -337,10 +331,7 @@ function PlanEditor(): JSX.Element {
   }
 
   return (
-    <OverflowScrollBlock
-      header_name={"Редактирование плана адаптации стажера"}
-      button_back_visible={"enable"}
-    >
+    <OverflowScrollBlock>
       <div className={styles.container}>
         <div className={styles.planSummaryCard}>
           <div className={styles.internSection}>

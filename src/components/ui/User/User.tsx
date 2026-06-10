@@ -1,13 +1,13 @@
 import { ChangeEvent, JSX, useCallback, useState } from "react";
 import styles from "./User.module.css";
-import { UserType } from "@interfaces/api/UserType.ts";
-import { useToggle } from "@hooks/useToggle.ts";
+import { UserType } from "@/interfaces/api/UserType.ts";
+import { useToggle } from "@/hooks/useToggle.ts";
 import IconButton from "../IconButton/IconButton.tsx";
 import {
   useGetRolesQuery,
   useAssignRoleMutation,
   useRevokeRoleMutation,
-} from "@services/store/features/user.ts";
+} from "@/services/store/features/user.ts";
 
 interface UserPropsType {
   user: UserType;

@@ -1,19 +1,16 @@
 import { JSX } from "react";
 import styles from "./Tests.module.css";
-import { TestType } from "@interfaces/api/TestType.ts";
-import DataList from "@components/ui/DataList/DataList.tsx";
-import TestItem from "@components/ui/Test/Test.tsx";
-import { useGetEducationTestsQuery } from "@services/store/features/education.ts";
-import OverflowScrollBlock from "@components/ui/OverflowScrollBlock/OverflowScrollBlock.tsx";
+import { TestType } from "@/interfaces/api/TestType.ts";
+import DataList from "@/components/ui/DataList/DataList";
+import TestItem from "@/components/ui/Test/Test";
+import { useGetEducationTestsQuery } from "@/services/store/features/education.ts";
+import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 
 function Tests(): JSX.Element {
   const { data, error, isLoading } = useGetEducationTestsQuery("");
 
   return (
-    <OverflowScrollBlock
-      header_name={"Назначенные тесты"}
-      button_back_visible={"enable"}
-    >
+    <OverflowScrollBlock>
       <DataList<TestType>
         data={data}
         error={!!error}
