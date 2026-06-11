@@ -64,7 +64,7 @@ function TaskItem({
   };
 
   return (
-    <div className="flex items-center justify-between gap-4 p-4 bg-white border border-gray-200 rounded-lg transition-shadow duration-200 hover:shadow-sm md:flex-row flex-col md:gap-4 gap-3">
+    <div className="flex items-center justify-between p-4 bg-white border border-gray-200 rounded-lg transition-shadow duration-200 hover:shadow-sm md:flex-row flex-col md:gap-4 gap-4">
       <div className="flex-1 flex flex-col gap-3">
         <p className="m-0 text-sm text-gray-900 leading-relaxed wrap-break-word">
           {task.description}
