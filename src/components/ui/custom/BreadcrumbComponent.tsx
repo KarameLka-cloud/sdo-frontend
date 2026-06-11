@@ -8,7 +8,6 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-
 import { ROUTES } from "@/constants/routes";
 
 const segmentLabels: Record<string, string> = {
@@ -165,7 +164,7 @@ function buildBreadcrumbs(pathname: string) {
   return crumbs;
 }
 
-function BreadcrumbElement(): JSX.Element {
+function BreadcrumbComponent(): JSX.Element {
   const location = useLocation();
 
   const crumbs = useMemo(
@@ -201,4 +200,4 @@ function BreadcrumbElement(): JSX.Element {
   );
 }
 
-export default BreadcrumbElement;
+export default BreadcrumbComponent;

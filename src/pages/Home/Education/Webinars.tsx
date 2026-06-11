@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
 import DataList from "@/components/ui/custom/DataList";
-import WebinarItem from "@/components/ui/Webinar/Webinar";
+import WebinarItem from "@/components/ui/custom/Webinar";
 import { useGetEducationWebinarsQuery } from "@/services/store/features/education.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 

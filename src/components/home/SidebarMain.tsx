@@ -1,7 +1,7 @@
 import React, { JSX } from "react";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { Separator } from "@/components/ui/separator";
-import BreadcrumbElement from "../ui/custom/BreadcrumbElement";
+import BreadcrumbComponent from "@components/ui/custom/BreadcrumbComponent";
 
 function SidebarMain({ children }: { children: React.ReactNode }): JSX.Element {
   return (
@@ -10,7 +10,7 @@ function SidebarMain({ children }: { children: React.ReactNode }): JSX.Element {
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" />
-          <BreadcrumbElement />
+          <BreadcrumbComponent />
         </div>
       </header>
 

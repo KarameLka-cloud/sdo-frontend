@@ -103,7 +103,7 @@ function Users(): JSX.Element {
       </div>
 
       {/* Search Container */}
-      <div className="bg-white pb-4 z-[9] relative">
+      <div className="bg-white pb-4 z-9 relative">
         <Input
           type={"text"}
           name={"search"}
