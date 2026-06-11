@@ -1,11 +1,11 @@
 import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import IconButton from "@/components/ui/IconButton/IconButton";
+import IconButton from "@/components/ui/custom/IconButton";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import Input from "@/components/ui/Input/Input";
-import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
-import Loader from "@/components/ui/Loader/Loader";
+import Input from "@/components/ui/custom/Input";
+import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
+import Loader from "@/components/ui/custom/Loader";
 import {
   useCreateAdaptationPlanMutation,
   useGetAdaptationPlanTemplatesQuery,
@@ -20,7 +20,7 @@ import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@/components/ui/FormActionStatus/FormActionStatus";
+} from "@/components/ui/custom/FormActionStatus";
 import styles from "./Interns.module.css";
 
 interface AdaptationPlanResponse {

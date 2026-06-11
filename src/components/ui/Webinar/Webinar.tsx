@@ -1,5 +1,4 @@
 import { JSX } from "react";
-import styles from "./Webinar.module.css";
 import convertDate from "@/utils/convertDate.ts";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
 import { convertTime } from "@/utils/convertTime.ts";
@@ -11,15 +10,17 @@ interface EventPropsType {
 
 function Webinar({ className, webinar }: EventPropsType): JSX.Element {
   return (
-    <div className={`${styles.webinar} ${className ?? ""}`}>
+    <div
+      className={`flex items-center justify-between py-1.5 px-4 rounded-2xl bg-white ${className || ""}`}
+    >
       <div>
-        <span className={styles.title}>{webinar.title}</span>
+        <span className="block font-semibold">{webinar.title}</span>
       </div>
-      <div className={styles.time}>
-        <div style={{ textAlign: "center" }}>
+      <div className="ml-4 py-1.5 px-5 rounded-2xl bg-gray-50">
+        <div className="text-center">
           {convertTime(webinar.time_start)}-{convertTime(webinar.time_end)}
         </div>
-        <div style={{ textAlign: "center" }}>{convertDate(webinar.date)}</div>
+        <div className="text-center">{convertDate(webinar.date)}</div>
       </div>
     </div>
   );

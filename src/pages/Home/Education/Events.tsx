@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { EventType } from "@/interfaces/api/EventType.ts";
 import DataList from "@/components/ui/custom/DataList";
-import EventItem from "@/components/ui/Event/Event";
+import EventItem from "@/components/ui/custom/Event";
 import { useGetEducationEventsQuery } from "@/services/store/features/education.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 

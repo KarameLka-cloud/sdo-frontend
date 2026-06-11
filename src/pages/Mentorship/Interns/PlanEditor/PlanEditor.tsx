@@ -2,9 +2,9 @@ import { JSX, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import IconButton from "@/components/ui/IconButton/IconButton";
-import Input from "@/components/ui/Input/Input";
-import Loader from "@/components/ui/Loader/Loader";
+import IconButton from "@/components/ui/custom/IconButton";
+import Input from "@/components/ui/custom/Input";
+import Loader from "@/components/ui/custom/Loader";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
@@ -19,7 +19,7 @@ import { ROUTES } from "@/constants/routes.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
-import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
+import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import styles from "./PlanEditor.module.css";
 
 interface PlanType {

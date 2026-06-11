@@ -25,7 +25,7 @@ import {
 import { useUser } from "@/hooks/useUser.ts";
 import { hasAnyRole, USER_ROLES } from "@/constants/roles.ts";
 
-function SContent(): JSX.Element {
+function Content(): JSX.Element {
   const { role } = useUser();
 
   const isAdmin = hasAnyRole(role, [USER_ROLES.ADMIN]);
@@ -175,4 +175,4 @@ function SContent(): JSX.Element {
   );
 }
 
-export default SContent;
+export default Content;

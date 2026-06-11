@@ -1,10 +1,10 @@
 import React, { JSX, useState } from "react";
 import styles from "./Events.module.css";
 import { EventType } from "@/interfaces/api/EventType.ts";
-import Input from "@/components/ui/Input/Input";
-import Select from "@/components/ui/Select/Select";
-import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
-import EventChange from "@/components/ui/EventChange/EventChange";
+import Input from "@/components/ui/custom/Input";
+import Select from "@/components/ui/custom/Select";
+import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
+import EventChange from "@/components/ui/custom/EventChange";
 import DataList from "@/components/ui/custom/DataList";
 import { useForm } from "@/hooks/useForm.ts";
 import {
@@ -14,13 +14,13 @@ import {
 } from "@/services/store/features/education.ts";
 import { useGetDepartmentsQuery } from "@/services/store/features/user.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import IconButton from "@/components/ui/IconButton/IconButton";
+import IconButton from "@/components/ui/custom/IconButton";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useToggle } from "@/hooks/useToggle.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@/components/ui/FormActionStatus/FormActionStatus";
+} from "@/components/ui/custom/FormActionStatus";
 
 function Events(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();

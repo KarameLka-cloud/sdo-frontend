@@ -1,9 +1,8 @@
 import { ChangeEvent, JSX, useState } from "react";
-import styles from "./Users.module.css";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import Input from "@/components/ui/Input/Input";
-import User from "@/components/ui/User/User";
-import Loader from "@/components/ui/Loader/Loader";
+import Input from "@/components/ui/custom/Input";
+import User from "@/components/ui/custom/User";
+import Loader from "@/components/ui/custom/Loader";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
@@ -38,45 +37,78 @@ function Users(): JSX.Element {
     ) || [];
   const filteredHeads = useFiltered<UserType>(heads, search);
 
+  const renderContent = (
+    items: UserType[] | undefined,
+    emptyMessage: string,
+  ) => {
+    if (error) return <DataMessage type={"error"} />;
+    if (isLoading) return <Loader />;
+    if (items && items.length > 0) {
+      return items.map((item: UserType) => (
+        <User key={item.id} user={item} className="mt-3" />
+      ));
+    }
+    if (hasSearch) {
+      return (
+        <p className="mx-auto mt-4 w-fit py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 text-gray-600 text-center">
+          {emptyMessage}
+        </p>
+      );
+    }
+    return <DataMessage type={"noData"} />;
+  };
+
   return (
     <OverflowScrollBlock>
-      <div className={styles.tabs}>
+      {/* Tabs */}
+      <div className="flex items-center w-full gap-0 mb-5 border-b border-gray-300 sticky top-0 bg-white z-10">
         <button
           type="button"
-          className={`${styles.tabButton} ${activeTab === "users" ? styles.activeTab : ""}`}
+          className={`flex-1 py-3.5 px-4 border-none border-b-[0.15rem] border-transparent bg-transparent text-gray-600 text-[0.95rem] font-semibold leading-tight text-center cursor-pointer transition-all duration-200 hover:text-gray-800 ${
+            activeTab === "users" ? "text-blue-700 border-b-blue-700" : ""
+          }`}
           onClick={() => setActiveTab("users")}
         >
           Все пользователи
         </button>
         <button
           type="button"
-          className={`${styles.tabButton} ${activeTab === "admins" ? styles.activeTab : ""}`}
+          className={`flex-1 py-3.5 px-4 border-none border-b-[0.15rem] border-transparent bg-transparent text-gray-600 text-[0.95rem] font-semibold leading-tight text-center cursor-pointer transition-all duration-200 hover:text-gray-800 ${
+            activeTab === "admins" ? "text-blue-700 border-b-blue-700" : ""
+          }`}
           onClick={() => setActiveTab("admins")}
         >
           Администраторы
         </button>
         <button
           type="button"
-          className={`${styles.tabButton} ${activeTab === "department_heads" ? styles.activeTab : ""}`}
+          className={`flex-1 py-3.5 px-4 border-none border-b-[0.15rem] border-transparent bg-transparent text-gray-600 text-[0.95rem] font-semibold leading-tight text-center cursor-pointer transition-all duration-200 hover:text-gray-800 ${
+            activeTab === "department_heads"
+              ? "text-blue-700 border-b-blue-700"
+              : ""
+          }`}
           onClick={() => setActiveTab("department_heads")}
         >
           Руководители отделов
         </button>
         <button
           type="button"
-          className={`${styles.tabButton} ${activeTab === "mentors" ? styles.activeTab : ""}`}
+          className={`flex-1 py-3.5 px-4 border-none border-b-[0.15rem] border-transparent bg-transparent text-gray-600 text-[0.95rem] font-semibold leading-tight text-center cursor-pointer transition-all duration-200 hover:text-gray-800 ${
+            activeTab === "mentors" ? "text-blue-700 border-b-blue-700" : ""
+          }`}
           onClick={() => setActiveTab("mentors")}
         >
           Наставники
         </button>
       </div>
 
-      <div className={styles.searchContainer}>
+      {/* Search Container */}
+      <div className="bg-white pb-4 z-[9] relative">
         <Input
           type={"text"}
           name={"search"}
           placeholder={"Поиск"}
-          className={styles.input}
+          className="w-full p-2.5 shadow-sm"
           value={search}
           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
             setSearch(e.target.value)
@@ -84,94 +116,22 @@ function Users(): JSX.Element {
         />
       </div>
 
-      <div className={styles.content}>
-        {activeTab === "users" && (
-          <>
-            {error ? (
-              <DataMessage type={"error"} />
-            ) : isLoading ? (
-              <Loader />
-            ) : data ? (
-              data && filteredUsers.length > 0 ? (
-                filteredUsers.map((item: UserType) => (
-                  <User key={item.id} user={item} className={styles.user} />
-                ))
-              ) : hasSearch ? (
-                <p className={styles.searchEmpty}>
-                  Пользователь "{search}" не найден
-                </p>
-              ) : (
-                <DataMessage type={"noData"} />
-              )
-            ) : null}
-          </>
-        )}
+      {/* Content */}
+      <div className="max-h-[calc(100vh-280px)] overflow-y-auto pt-0">
+        {activeTab === "users" &&
+          renderContent(filteredUsers, `Пользователь "${search}" не найден`)}
 
-        {activeTab === "admins" && (
-          <>
-            {error ? (
-              <DataMessage type={"error"} />
-            ) : isLoading ? (
-              <Loader />
-            ) : filteredAdmins ? (
-              filteredAdmins.length > 0 ? (
-                filteredAdmins.map((item: UserType) => (
-                  <User key={item.id} user={item} className={styles.user} />
-                ))
-              ) : hasSearch ? (
-                <p className={styles.searchEmpty}>
-                  Администратор "{search}" не найден
-                </p>
-              ) : (
-                <DataMessage type={"noData"} />
-              )
-            ) : null}
-          </>
-        )}
+        {activeTab === "admins" &&
+          renderContent(filteredAdmins, `Администратор "${search}" не найден`)}
 
-        {activeTab === "mentors" && (
-          <>
-            {error ? (
-              <DataMessage type={"error"} />
-            ) : isLoading ? (
-              <Loader />
-            ) : filteredCurators ? (
-              filteredCurators.length > 0 ? (
-                filteredCurators.map((item: UserType) => (
-                  <User key={item.id} user={item} className={styles.user} />
-                ))
-              ) : hasSearch ? (
-                <p className={styles.searchEmpty}>
-                  Наставник "{search}" не найден
-                </p>
-              ) : (
-                <DataMessage type={"noData"} />
-              )
-            ) : null}
-          </>
-        )}
+        {activeTab === "mentors" &&
+          renderContent(filteredCurators, `Наставник "${search}" не найден`)}
 
-        {activeTab === "department_heads" && (
-          <>
-            {error ? (
-              <DataMessage type={"error"} />
-            ) : isLoading ? (
-              <Loader />
-            ) : filteredHeads ? (
-              filteredHeads.length > 0 ? (
-                filteredHeads.map((item: UserType) => (
-                  <User key={item.id} user={item} className={styles.user} />
-                ))
-              ) : hasSearch ? (
-                <p className={styles.searchEmpty}>
-                  Руководитель отдела "{search}" не найден
-                </p>
-              ) : (
-                <DataMessage type={"noData"} />
-              )
-            ) : null}
-          </>
-        )}
+        {activeTab === "department_heads" &&
+          renderContent(
+            filteredHeads,
+            `Руководитель отдела "${search}" не найден`,
+          )}
       </div>
     </OverflowScrollBlock>
   );

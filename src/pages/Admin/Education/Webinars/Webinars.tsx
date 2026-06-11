@@ -1,9 +1,9 @@
 import React, { JSX, useState } from "react";
 import styles from "./Webinars.module.css";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
-import Input from "@/components/ui/Input/Input";
-import WebinarChange from "@/components/ui/WebinarChange/WebinarChange";
-import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
+import Input from "@/components/ui/custom/Input";
+import WebinarChange from "@/components/ui/custom/WebinarChange";
+import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
 import DataList from "@/components/ui/custom/DataList";
 import { useForm } from "@/hooks/useForm.ts";
 import {
@@ -12,13 +12,13 @@ import {
   useDeleteEducationWebinarMutation,
 } from "@/services/store/features/education.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import IconButton from "@/components/ui/IconButton/IconButton";
+import IconButton from "@/components/ui/custom/IconButton";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useToggle } from "@/hooks/useToggle.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
-} from "@/components/ui/FormActionStatus/FormActionStatus";
+} from "@/components/ui/custom/FormActionStatus";
 
 function Webinars(): JSX.Element {
   const { value: formShow, toggle: handleFormShow } = useToggle();

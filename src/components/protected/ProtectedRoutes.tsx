@@ -2,7 +2,7 @@ import { ReactElement } from "react";
 import Cookie from "js-cookie";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser.ts";
-import Loader from "@/components/ui/Loader/Loader";
+// import Loader from "@/components/ui/custom/Loader";
 import { ROUTES } from "@/constants/routes.ts";
 import { hasRole, USER_ROLES } from "@/constants/roles.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
@@ -37,7 +37,7 @@ const ProtectedRoute = ({
 
   if (hasToken) {
     if (isLoading) {
-      return <Loader />;
+      return;
     }
     if (error && isUnauthorizedError(error)) {
       Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
@@ -77,7 +77,7 @@ const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRouteAdminProps) => {
   const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
-    return <Loader />;
+    return;
   }
 
   const hasAdminAccess = hasRole(role, roleName, USER_ROLES.ADMIN);
@@ -92,7 +92,7 @@ const ProtectedRouteMentor = ({ elementMentor }: ProtectedRouteMentorProps) => {
   const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
-    return <Loader />;
+    return;
   }
 
   const hasAccess =
@@ -113,7 +113,7 @@ const ProtectedRouteMyInterns = ({
   const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
-    return <Loader />;
+    return;
   }
 
   const hasAccess =
@@ -133,7 +133,7 @@ const ProtectedRouteMentorshipInternsAdmin = ({
   const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
-    return <Loader />;
+    return;
   }
 
   const hasAccess =

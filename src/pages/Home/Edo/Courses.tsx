@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { CourseType } from "@/interfaces/api/CourseType.ts";
 import DataList from "@/components/ui/custom/DataList";
-import CourseItem from "@/components/ui/Course/Course";
+import CourseItem from "@/components/ui/custom/Course";
 import { useGetEdoCoursesQuery } from "@/services/store/features/edo.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 

@@ -1,17 +1,17 @@
 import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import IconButton from "@/components/ui/IconButton/IconButton";
+import IconButton from "@/components/ui/custom/IconButton";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import Input from "@/components/ui/Input/Input";
-import ButtonSubmit from "@/components/ui/ButtonSubmit/ButtonSubmit";
-import Loader from "@/components/ui/Loader/Loader";
+import Input from "@/components/ui/custom/Input";
+import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
+import Loader from "@/components/ui/custom/Loader";
 import { useNavigate } from "react-router-dom";
 import {
   useCreateAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
 } from "@/services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
-import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
+import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import styles from "./Templates.module.css";
 
 interface AdaptationPlanTemplateType {

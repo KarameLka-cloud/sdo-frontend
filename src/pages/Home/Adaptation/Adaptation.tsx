@@ -2,15 +2,15 @@ import { JSX, useState } from "react";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import Development from "@/components/ui/custom/Development";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import CareerDay from "@/components/ui/CareerDay/CareerDay";
-import Loader from "@/components/ui/Loader/Loader";
+import CareerDay from "@/components/ui/custom/CareerDay";
+import Loader from "@/components/ui/custom/Loader";
 import {
   useGetMyAdaptationPlanQuery,
   useUpdateMyAdaptationInternCommentMutation,
   useUpdateMyAdaptationTaskStatusMutation,
 } from "@/services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
-import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
+import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import convertDate from "@/utils/convertDate.ts";
 import {
   AdaptationDayType,

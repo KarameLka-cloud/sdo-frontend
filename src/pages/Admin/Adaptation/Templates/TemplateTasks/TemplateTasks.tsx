@@ -1,17 +1,17 @@
 import { JSX, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
-import IconButton from "@/components/ui/IconButton/IconButton";
+import IconButton from "@/components/ui/custom/IconButton";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import Input from "@/components/ui/Input/Input";
-import Loader from "@/components/ui/Loader/Loader";
+import Input from "@/components/ui/custom/Input";
+import Loader from "@/components/ui/custom/Loader";
 import {
   useDeleteAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
   useUpdateAdaptationPlanTemplateMutation,
 } from "@/services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
-import FormActionStatus from "@/components/ui/FormActionStatus/FormActionStatus";
+import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import styles from "./TemplateTasks.module.css";
 
 type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";

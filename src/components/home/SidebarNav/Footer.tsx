@@ -20,7 +20,7 @@ import {
 import { useLogout } from "@/hooks/useLogout.ts";
 import { useUser } from "@/hooks/useUser";
 
-function SFooter(): JSX.Element {
+function Footer(): JSX.Element {
   const { isMobile } = useSidebar();
   const { logout } = useLogout();
   const { name, description } = useUser();
@@ -92,4 +92,4 @@ function SFooter(): JSX.Element {
   );
 }
 
-export default SFooter;
+export default Footer;

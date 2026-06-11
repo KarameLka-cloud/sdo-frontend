@@ -4,7 +4,7 @@ import PageTitle from "@/components/PageTitle.tsx";
 import AuthLayout from "@/layouts/AuthLayout.tsx";
 import HomeLayout from "@/layouts/HomeLayout.tsx";
 import Login from "@/pages/Auth/Login.tsx";
-import Loader from "@/components/ui/Loader/Loader.tsx";
+// import Loader from "@/components/ui/custom/Loader.tsx";
 import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { hasRole, USER_ROLES } from "@/constants/roles.ts";
@@ -15,9 +15,9 @@ import { mentorshipRoutes } from "./mentorshipRoutes.tsx";
 function MentorshipRedirect() {
   const { role, role_name: roleName, isLoading } = useUser();
 
-  if (isLoading) {
-    return <Loader />;
-  }
+  // if (isLoading) {
+  //   return <Loader />;
+  // }
 
   if (hasRole(role, roleName, USER_ROLES.ADMIN)) {
     return <Navigate to={ROUTES.MENTORSHIP_INTERNS} replace />;
