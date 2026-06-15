@@ -1,8 +1,8 @@
 import React, { JSX, useEffect } from "react";
-import image_login_background from "@assets/images/login_background.svg";
-import image_logo_mfc from "@assets/images/logo_mfc.svg";
-import { useForm } from "@hooks/useForm.ts";
-import { useLogin } from "@hooks/useLogin.ts";
+import image_login_background from "@/assets/images/login_background.svg";
+import image_logo_mfc from "@/assets/images/logo_mfc.svg";
+import { useForm } from "@/hooks/useForm.ts";
+import { useLogin } from "@/hooks/useLogin.ts";
 import {
   Field,
   FieldGroup,
@@ -93,7 +93,7 @@ function Login(): JSX.Element {
             )}
           </FieldGroup>
         </form>
-        <div className="relative hidden bg-[var(--mfc-dark-color)] md:block">
+        <div className="relative hidden bg-(--mfc-dark-color) md:block">
           <img
             src={image_login_background}
             alt="Image"

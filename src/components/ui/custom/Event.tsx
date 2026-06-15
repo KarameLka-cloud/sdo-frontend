@@ -2,7 +2,8 @@ import { JSX } from "react";
 import convertDate from "@/utils/convertDate.ts";
 import { EventType } from "@/interfaces/api/EventType.ts";
 import { convertTime } from "@/utils/convertTime.ts";
-import icon_link from "@/assets/images/icons/link.svg";
+import { Calendar, Clock, Building, ExternalLink, Timer } from "lucide-react";
+import { Separator } from "@/components/ui/separator";
 
 interface EventPropsType {
   className?: string;
@@ -10,35 +11,107 @@ interface EventPropsType {
 }
 
 function Event({ className, event }: EventPropsType): JSX.Element {
+  const hasLink = Boolean(event.link);
+
   return (
     <div
-      className={`flex items-center justify-between py-1.5 px-4 rounded-2xl bg-white ${className || ""}`}
+      className={`group flex flex-col md:flex-row items-stretch rounded-xl bg-white border border-gray-200 shadow-sm ${className}`}
     >
-      <div>
-        <span className="block font-semibold">{event.title}</span>
-        <span className="block text-gray-500">{event.description}</span>
-        <span className="block italic">
-          {event.department}{" "}
-          {event.note_department && `(${event.note_department})`}
-        </span>
-      </div>
-
-      <div className="flex items-center ml-auto">
-        {event.link && (
-          <img
-            src={icon_link}
-            onClick={() => window.open(event.link, "_blank")}
-            alt={"Ссылка"}
-            className="h-5.5 cursor-pointer"
-          />
+      <div className="p-4 w-2/3 flex flex-col justify-center">
+        <h3 className="font-semibold text-gray-900 text-base leading-tight">
+          {event.title}
+        </h3>
+        {event.description && (
+          <p className="text-gray-500 text-sm mt-6 leading-relaxed">
+            {event.description}
+          </p>
         )}
       </div>
 
-      <div className="py-1.5 px-5 ml-4 rounded-2xl bg-gray-50">
-        {event.time && (
-          <span className="block text-center">{convertTime(event.time)}</span>
+      <Separator
+        orientation="vertical"
+        className="bg-gray-200 hidden md:block"
+      />
+
+      <div className="w-1/3 p-4 flex flex-col">
+        <div className="space-y-2">
+          <div className="flex items-center gap-2 text-sm">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-purple-50 text-purple-60l0">
+              <Calendar className="h-3.5 w-3.5" />
+            </div>
+            <span className="text-gray-500 text-xs uppercase tracking-wide font-medium">
+              Дата:
+            </span>
+            <span className="font-medium text-gray-900 tabular-nums">
+              {convertDate(event.date)}
+            </span>
+          </div>
+
+          {event.time && (
+            <div className="flex items-center gap-2 text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-blue-50 text-blue-600">
+                <Clock className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-gray-500 text-xs uppercase tracking-wide font-medium">
+                Время:
+              </span>
+              <span className="font-medium text-gray-900 tabular-nums">
+                {convertTime(event.time)}
+              </span>
+            </div>
+          )}
+
+          {event.time && (
+            <div className="flex items-center gap-2 text-sm">
+              <div className="flex h-6 w-6 items-center justify-center rounded-md bg-amber-50 text-amber-600">
+                <Timer className="h-3.5 w-3.5" />
+              </div>
+              <span className="text-gray-500 text-xs uppercase tracking-wide font-medium">
+                Время прохождения:
+              </span>
+              <span className="font-medium text-gray-900 tabular-nums">
+                ~ мин.
+              </span>
+            </div>
+          )}
+
+          <div className="flex items-center gap-2 text-sm">
+            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-emerald-50 text-emerald-600">
+              <Building className="h-3.5 w-3.5" />
+            </div>
+            <div className="flex-1">
+              <span className="text-gray-500 text-xs uppercase tracking-wide font-medium">
+                Отдел:{" "}
+                <span
+                  className={`font-medium tabular-nums ${event.note_department ? "text-gray-400" : "text-gray-900"}`}
+                >
+                  {event.department}
+                  {event.note_department && (
+                    <span className="text-gray-900 ml-1">
+                      ({event.note_department})
+                    </span>
+                  )}
+                </span>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {hasLink ? (
+          <a
+            href={event.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 mt-4 bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-500 cursor-pointer"
+          >
+            <span>Ссылка</span>
+            <ExternalLink className="h-3 w-3 opacity-70" />
+          </a>
+        ) : (
+          <div className="mt-4 px-3 py-1.5 text-sm font-medium bg-gray-100 text-gray-400 rounded-lg text-center">
+            Ссылка отсутствует
+          </div>
         )}
-        <span className="block text-center">{convertDate(event.date)}</span>
       </div>
     </div>
   );

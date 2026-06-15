@@ -1,8 +1,8 @@
 import { JSX, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import dateNow from "@utils/dateNow.ts";
-import { useUser } from "@hooks/useUser.ts";
-import { useGetMyAdaptationPlanQuery } from "@services/store/features/user.ts";
+import dateNow from "@/utils/dateNow.ts";
+import { useUser } from "@/hooks/useUser.ts";
+import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
 
 interface AdaptationTask {
   id: number;
