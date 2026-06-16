@@ -1,6 +1,5 @@
 import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import IconButton from "@/components/ui/custom/IconButton";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import Input from "@/components/ui/custom/Input";
@@ -242,7 +241,7 @@ function Interns(): JSX.Element {
     : [];
 
   return (
-    <OverflowScrollBlock>
+    <>
       <div className="flex flex-col gap-4">
         {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}
@@ -420,10 +419,7 @@ function Interns(): JSX.Element {
                   </div>
                 </div>
                 <div className="flex items-center gap-3 max-[900px]:flex-col max-[900px]:items-start">
-                  <ButtonSubmit
-                    loading={isCreatingPlan}
-                    className="self-start"
-                  >
+                  <ButtonSubmit loading={isCreatingPlan} className="self-start">
                     Создать
                   </ButtonSubmit>
                   <FormActionStatus
@@ -495,7 +491,7 @@ function Interns(): JSX.Element {
           </div>
         )}
       </div>
-    </OverflowScrollBlock>
+    </>
   );
 }
 

@@ -5,7 +5,6 @@ import { toast } from "sonner";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import Loader from "@/components/ui/custom/Loader";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import {
   useGetUsersQuery,
   useGetRolesQuery,
@@ -68,8 +67,7 @@ function BackToUsersLink({ className }: { className?: string }) {
   return (
     <Button variant="ghost" className={cn("w-fit -ml-2", className)} asChild>
       <Link to={ROUTES.ADMIN_USERS}>
-        <ArrowLeftIcon />
-        К списку пользователей
+        <ArrowLeftIcon />К списку пользователей
       </Link>
     </Button>
   );
@@ -100,12 +98,10 @@ function UserEditState({
   withBackLink?: boolean;
 }) {
   return (
-    <OverflowScrollBlock>
-      <div className="flex flex-col gap-4">
-        <DataMessage type={type} />
-        {withBackLink && <BackToUsersLink />}
-      </div>
-    </OverflowScrollBlock>
+    <div className="flex flex-col gap-4">
+      <DataMessage type={type} />
+      {withBackLink && <BackToUsersLink />}
+    </div>
   );
 }
 
@@ -244,9 +240,7 @@ function UserEdit(): JSX.Element {
   const users = (data as UserType[] | undefined) ?? [];
   const user = useMemo(
     () =>
-      parsedUserId
-        ? users.find((item) => item.id === parsedUserId)
-        : undefined,
+      parsedUserId ? users.find((item) => item.id === parsedUserId) : undefined,
     [users, parsedUserId],
   );
   const roles: RoleItem[] = rolesData?.data ?? [];
@@ -284,11 +278,7 @@ function UserEdit(): JSX.Element {
   }
 
   if (isLoading) {
-    return (
-      <OverflowScrollBlock>
-        <Loader />
-      </OverflowScrollBlock>
-    );
+    return <Loader />;
   }
 
   if (error) {
@@ -300,24 +290,22 @@ function UserEdit(): JSX.Element {
   }
 
   return (
-    <OverflowScrollBlock>
-      <div className="flex w-full flex-col gap-6">
-        <BackToUsersLink />
+    <div className="flex w-full flex-col gap-6">
+      <BackToUsersLink />
 
-        <UserProfileCard user={user} />
+      <UserProfileCard user={user} />
 
-        <UserRoleForm
-          user={user}
-          roles={roles}
-          selectedRole={selectedRole}
-          onRoleChange={setSelectedRole}
-          onSave={handleSaveRole}
-          onRevoke={handleRevokeRole}
-          isAssigning={isAssigning}
-          isRevoking={isRevoking}
-        />
-      </div>
-    </OverflowScrollBlock>
+      <UserRoleForm
+        user={user}
+        roles={roles}
+        selectedRole={selectedRole}
+        onRoleChange={setSelectedRole}
+        onSave={handleSaveRole}
+        onRevoke={handleRevokeRole}
+        isAssigning={isAssigning}
+        isRevoking={isRevoking}
+      />
+    </div>
   );
 }
 

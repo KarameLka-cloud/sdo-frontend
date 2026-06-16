@@ -12,7 +12,6 @@ import {
   useDeleteEdoEventMutation,
 } from "@/services/store/features/edo.ts";
 import { useGetDepartmentsQuery } from "@/services/store/features/user.ts";
-import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import IconButton from "@/components/ui/custom/IconButton";
 import { useToggle } from "@/hooks/useToggle.ts";
 import { useFiltered } from "@/hooks/useFiltered.ts";
@@ -68,7 +67,7 @@ function Events(): JSX.Element {
   };
 
   return (
-    <OverflowScrollBlock>
+    <>
       <div className="sticky top-[var(--mfc-sticky-panel-top)] z-[var(--mfc-sticky-panel-z-index)] mb-[var(--mfc-sticky-panel-margin-bottom)] flex flex-col gap-4">
         <div className="flex items-center justify-between gap-[0.8rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-sticky-panel-bg)] p-[var(--mfc-sticky-panel-padding)] max-[900px]:flex-col max-[900px]:items-stretch">
           {formShow ? (
@@ -182,7 +181,7 @@ function Events(): JSX.Element {
           )}
         />
       </div>
-    </OverflowScrollBlock>
+    </>
   );
 }
 

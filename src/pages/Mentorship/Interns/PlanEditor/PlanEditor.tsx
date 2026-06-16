@@ -1,6 +1,5 @@
 import { JSX, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import IconButton from "@/components/ui/custom/IconButton";
 import Input from "@/components/ui/custom/Input";
@@ -315,28 +314,24 @@ function PlanEditor(): JSX.Element {
   };
 
   if (isLoading) {
-    return (
-      <OverflowScrollBlock>
-        <Loader />
-      </OverflowScrollBlock>
-    );
+    return <Loader />;
   }
 
   if (isError || !plan) {
     return (
-      <OverflowScrollBlock>
+      <>
         <DataMessage type="error" />
         {loadErrorMessage && (
           <p className="mt-[0.3rem] text-[0.86rem] text-[var(--mfc-black-color)]">
             {loadErrorMessage}
           </p>
         )}
-      </OverflowScrollBlock>
+      </>
     );
   }
 
   return (
-    <OverflowScrollBlock>
+    <>
       <div className="flex flex-col gap-[0.9rem]">
         <div className="flex flex-col gap-3 rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] px-4 py-[0.85rem]">
           <div className="border-b border-[var(--mfc-create-form-border)] pb-2">
@@ -371,7 +366,9 @@ function PlanEditor(): JSX.Element {
             </label>
             <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
               Смена
-              <span className="m-0 font-normal text-[var(--mfc-gray-color)]">{form.shift}</span>
+              <span className="m-0 font-normal text-[var(--mfc-gray-color)]">
+                {form.shift}
+              </span>
             </label>
           </div>
 
@@ -626,7 +623,7 @@ function PlanEditor(): JSX.Element {
           </div>
         ))}
       </div>
-    </OverflowScrollBlock>
+    </>
   );
 }
 

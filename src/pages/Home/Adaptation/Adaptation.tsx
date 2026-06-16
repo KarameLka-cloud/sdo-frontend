@@ -1,5 +1,4 @@
 import { JSX, useState } from "react";
-import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import Development from "@/components/ui/custom/Development";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import CareerDay from "@/components/ui/custom/CareerDay";
@@ -170,32 +169,20 @@ function Adaptation(): JSX.Element {
   };
 
   if (isLoading) {
-    return (
-      <OverflowScrollBlock>
-        <Loader />
-      </OverflowScrollBlock>
-    );
+    return <Loader />;
   }
 
   if (isError) {
-    return (
-      <OverflowScrollBlock>
-        <DataMessage type={"error"} />
-      </OverflowScrollBlock>
-    );
+    return <DataMessage type={"error"} />;
   }
 
   if (!hasAdaptationPlan(myAdaptationPlan)) {
-    return (
-      <OverflowScrollBlock>
-        <Development />
-      </OverflowScrollBlock>
-    );
+    return <Development />;
   }
 
   // Отображение плана обучения и задач для сотрудника
   return (
-    <OverflowScrollBlock>
+    <>
       {/* Блок информации о плане - sticky */}
       <div className="bg-white border border-gray-200 rounded-xl p-3 mb-4 flex flex-wrap gap-2 items-center sticky top-0 z-10">
         <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100">
@@ -258,7 +245,7 @@ function Adaptation(): JSX.Element {
           <Development />
         )}
       </div>
-    </OverflowScrollBlock>
+    </>
   );
 }
 
