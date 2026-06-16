@@ -15,6 +15,7 @@ export const ROUTES = {
   MENTORSHIP_INTERNS_PLAN_EDIT: "/mentorship/interns/:planId/edit",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
+  ADMIN_USER_EDIT: "/admin/users/:userId",
   ADMIN_EDUCATION_COURSE: "/admin/education/courses",
   ADMIN_EDUCATION_EVENTS: "/admin/education/events",
   ADMIN_EDUCATION_WEBINARS: "/admin/education/webinars",

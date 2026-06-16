@@ -4,6 +4,15 @@ export const USER_ROLES = {
   DEPARTMENT_HEAD: "DEPARTMENT_HEAD",
 } as const;
 
+export const USER_ROLE_LABELS: Record<
+  (typeof USER_ROLES)[keyof typeof USER_ROLES],
+  string
+> = {
+  [USER_ROLES.ADMIN]: "Администратор",
+  [USER_ROLES.MENTOR]: "Наставник",
+  [USER_ROLES.DEPARTMENT_HEAD]: "Руководитель отдела",
+};
+
 export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 interface UserRoleSource {

@@ -12,7 +12,6 @@ import {
 } from "@/services/store/features/user.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus from "@/components/ui/custom/FormActionStatus";
-import styles from "./TemplateTasks.module.css";
 
 type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
 
@@ -358,15 +357,19 @@ function TemplateTasks(): JSX.Element {
 
   return (
     <OverflowScrollBlock>
-      <div className={styles.container}>
-        <div className={styles.stickyHeader}>
-          <div className={styles.templateMetaBlock}>
+      <div className="flex h-full min-h-0 flex-col gap-[0.9rem] overflow-hidden">
+        <div className="sticky top-0 z-[2] flex flex-col gap-[0.6rem] bg-[var(--mfc-create-form-bg)] pb-[0.15rem]">
+          <div className="flex items-center justify-between gap-[0.8rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-3 max-[1000px]:flex-col max-[1000px]:items-start">
             <div>
-              <p className={styles.meta}>План: {template.name}</p>
-              <p className={styles.meta}>График: {template.work_schedule}</p>
-              <p className={styles.meta}>Смены: {template.shifts.join(", ")}</p>
+              <p className="mb-1 text-[var(--mfc-gray-color)]">План: {template.name}</p>
+              <p className="mb-1 text-[var(--mfc-gray-color)]">
+                График: {template.work_schedule}
+              </p>
+              <p className="mb-1 text-[var(--mfc-gray-color)]">
+                Смены: {template.shifts.join(", ")}
+              </p>
             </div>
-            <div className={styles.metaActions}>
+            <div className="flex items-center justify-center self-stretch max-[1000px]:self-start">
               <IconButton
                 type="delete"
                 onClick={handleDeleteTemplate}
@@ -375,8 +378,8 @@ function TemplateTasks(): JSX.Element {
             </div>
           </div>
 
-          <div className={styles.topBar}>
-            <div className={styles.topBarActions}>
+          <div className="flex items-center justify-between gap-[0.8rem]">
+            <div className="flex items-center gap-2">
               {isCreateVisible ? (
                 <IconButton
                   type="close"
@@ -399,25 +402,25 @@ function TemplateTasks(): JSX.Element {
         </div>
 
         {isCreateVisible && (
-          <div className={styles.ruleCard}>
-            <p className={styles.title}>Новые задачи</p>
-            <div className={`${styles.row} ${styles.dayRangeRow}`}>
-              <label className={styles.label}>
+          <div className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]">
+            <p className="m-0 text-base font-semibold">Новые задачи</p>
+            <div className="grid grid-cols-[minmax(7rem,10rem)_minmax(9rem,12rem)] justify-start gap-2 max-[1000px]:grid-cols-1">
+              <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                 День
                 <Input
                   name="createDayFrom"
-                  className={styles.input}
+                  className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                   type="number"
                   min={1}
                   value={createDayFrom}
                   onChange={(event) => setCreateDayFrom(event.target.value)}
                 />
               </label>
-              <label className={styles.label}>
+              <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                 До дня (опционально)
                 <Input
                   name="createDayTo"
-                  className={styles.input}
+                  className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                   type="number"
                   min={1}
                   value={createDayTo}
@@ -427,7 +430,7 @@ function TemplateTasks(): JSX.Element {
             </div>
             <button
               type="button"
-              className={`${styles.secondaryButton} ${styles.addTaskButton}`}
+              className="inline-flex h-8 w-fit cursor-pointer items-center justify-center rounded-lg border border-[var(--mfc-create-field-border)] bg-[var(--mfc-create-form-bg)] px-[0.9rem] text-sm leading-none text-[var(--mfc-black-color)]"
               onClick={addCreateRule}
             >
               + Задача
@@ -435,14 +438,14 @@ function TemplateTasks(): JSX.Element {
             {createRules.map((rule, index) => (
               <div
                 key={`create-rule-${index}`}
-                className={`${styles.row} ${styles.taskRow}`}
+                className="grid grid-cols-[minmax(0,1fr)_minmax(12rem,0.65fr)_minmax(12rem,0.75fr)_auto] items-end gap-2 max-[1000px]:grid-cols-[minmax(0,1fr)_minmax(8rem,0.6fr)_minmax(8rem,0.7fr)_auto]"
               >
-                <label className={styles.label}>
+                <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                   Описание задачи
                   <Input
                     name={`createDescription-${index}`}
                     type="text"
-                    className={styles.input}
+                    className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                     value={rule.description}
                     onChange={(event) =>
                       updateCreateRule(index, {
@@ -452,10 +455,10 @@ function TemplateTasks(): JSX.Element {
                     }
                   />
                 </label>
-                <label className={styles.label}>
+                <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                   Ответственный
                   <select
-                    className={styles.input}
+                    className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                     value={rule.responsible_role}
                     onChange={(event) =>
                       updateCreateRule(index, {
@@ -475,12 +478,12 @@ function TemplateTasks(): JSX.Element {
                     </option>
                   </select>
                 </label>
-                <label className={styles.label}>
+                <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                   Ссылки
                   <Input
                     name={`createLinks-${index}`}
                     type="text"
-                    className={styles.input}
+                    className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                     value={rule.links}
                     onChange={(event) =>
                       updateCreateRule(index, {
@@ -490,7 +493,7 @@ function TemplateTasks(): JSX.Element {
                     }
                   />
                 </label>
-                <div className={styles.inlineActions}>
+                <div className="flex items-center justify-end self-end pb-0.5">
                   <IconButton
                     type="delete"
                     onClick={() => removeCreateRule(index)}
@@ -498,7 +501,7 @@ function TemplateTasks(): JSX.Element {
                 </div>
               </div>
             ))}
-            <div className={styles.actions}>
+            <div className="flex items-center gap-2">
               <IconButton
                 type="save"
                 onClick={saveCreateRules}
@@ -519,18 +522,21 @@ function TemplateTasks(): JSX.Element {
 
         {rules.length === 0 && <DataMessage type="noData" />}
         {rules.length > 0 && (
-          <div className={styles.list}>
+          <div className="flex min-h-0 flex-1 flex-col gap-[0.8rem] overflow-y-auto pr-1">
             {groupedRules.map((group) => (
-              <div key={`rule-group-${group.key}`} className={styles.ruleCard}>
-                <p className={styles.title}>{group.title}</p>
+              <div
+                key={`rule-group-${group.key}`}
+                className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
+              >
+                <p className="m-0 text-base font-semibold">{group.title}</p>
                 {editingGroupKey === group.key ? (
                   <>
-                    <div className={`${styles.row} ${styles.dayRangeRow}`}>
-                      <label className={styles.label}>
+                    <div className="grid grid-cols-[minmax(7rem,10rem)_minmax(9rem,12rem)] justify-start gap-2 max-[1000px]:grid-cols-1">
+                      <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                         День
                         <Input
                           name="editDayFrom"
-                          className={styles.input}
+                          className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                           type="number"
                           min={1}
                           value={editingGroupDayFrom}
@@ -539,11 +545,11 @@ function TemplateTasks(): JSX.Element {
                           }
                         />
                       </label>
-                      <label className={styles.label}>
+                      <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                         До дня (опционально)
                         <Input
                           name="editDayTo"
-                          className={styles.input}
+                          className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                           type="number"
                           min={1}
                           value={editingGroupDayTo}
@@ -555,7 +561,7 @@ function TemplateTasks(): JSX.Element {
                     </div>
                     <button
                       type="button"
-                      className={`${styles.secondaryButton} ${styles.addTaskButton}`}
+                      className="inline-flex h-8 w-fit cursor-pointer items-center justify-center rounded-lg border border-[var(--mfc-create-field-border)] bg-[var(--mfc-create-form-bg)] px-[0.9rem] text-sm leading-none text-[var(--mfc-black-color)]"
                       onClick={addEditingGroupRule}
                     >
                       + Задача
@@ -563,14 +569,14 @@ function TemplateTasks(): JSX.Element {
                     {editingGroupRules.map((rule, index) => (
                       <div
                         key={`edit-rule-${index}`}
-                        className={`${styles.row} ${styles.taskRow}`}
+                        className="grid grid-cols-[minmax(0,1fr)_minmax(12rem,0.65fr)_minmax(12rem,0.75fr)_auto] items-end gap-2 max-[1000px]:grid-cols-[minmax(0,1fr)_minmax(8rem,0.6fr)_minmax(8rem,0.7fr)_auto]"
                       >
-                        <label className={styles.label}>
+                        <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                           Описание задачи
                           <Input
                             name={`editDescription-${index}`}
                             type="text"
-                            className={styles.input}
+                            className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                             value={rule.description}
                             onChange={(event) =>
                               updateEditingGroupRule(index, {
@@ -580,10 +586,10 @@ function TemplateTasks(): JSX.Element {
                             }
                           />
                         </label>
-                        <label className={styles.label}>
+                        <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                           Ответственный
                           <select
-                            className={styles.input}
+                            className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                             value={rule.responsible_role}
                             onChange={(event) =>
                               updateEditingGroupRule(index, {
@@ -605,12 +611,12 @@ function TemplateTasks(): JSX.Element {
                             </option>
                           </select>
                         </label>
-                        <label className={styles.label}>
+                        <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
                           Ссылки
                           <Input
                             name={`editLinks-${index}`}
                             type="text"
-                            className={styles.input}
+                            className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                             value={rule.links}
                             onChange={(event) =>
                               updateEditingGroupRule(index, {
@@ -620,7 +626,7 @@ function TemplateTasks(): JSX.Element {
                             }
                           />
                         </label>
-                        <div className={styles.inlineActions}>
+                        <div className="flex items-center justify-end self-end pb-0.5">
                           <IconButton
                             type="delete"
                             onClick={() => removeEditingGroupRule(index)}
@@ -628,7 +634,7 @@ function TemplateTasks(): JSX.Element {
                         </div>
                       </div>
                     ))}
-                    <div className={styles.actions}>
+                    <div className="flex items-center gap-2">
                       <IconButton
                         type="save"
                         onClick={saveEditGroup}
@@ -654,18 +660,20 @@ function TemplateTasks(): JSX.Element {
                     {group.items.map((item, index) => (
                       <div
                         key={`group-item-${group.key}-${index}`}
-                        className={styles.metaBlock}
+                        className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-3"
                       >
-                        <p className={styles.meta}>{item.rule.description}</p>
-                        <p className={styles.meta}>
+                        <p className="mb-1 text-[var(--mfc-gray-color)]">
+                          {item.rule.description}
+                        </p>
+                        <p className="mb-1 text-[var(--mfc-gray-color)]">
                           Ответственный: {item.rule.responsible_role}
                         </p>
-                        <p className={styles.meta}>
+                        <p className="mb-1 text-[var(--mfc-gray-color)]">
                           Ссылки: {item.rule.links || "—"}
                         </p>
                       </div>
                     ))}
-                    <div className={styles.actions}>
+                    <div className="flex items-center gap-2">
                       <IconButton
                         type="edit"
                         onClick={() => startEditGroup(group)}

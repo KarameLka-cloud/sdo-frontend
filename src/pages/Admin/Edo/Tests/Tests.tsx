@@ -1,5 +1,4 @@
 import React, { JSX, useState } from "react";
-import styles from "./Tests.module.css";
 import { TestType } from "@/interfaces/api/TestType.ts";
 import Input from "@/components/ui/custom/Input";
 import Select from "@/components/ui/custom/Select";
@@ -66,8 +65,8 @@ function Tests(): JSX.Element {
 
   return (
     <OverflowScrollBlock>
-      <div className={styles.stickyControls}>
-        <div className={styles.create_search}>
+      <div className="sticky top-[var(--mfc-sticky-panel-top)] z-[var(--mfc-sticky-panel-z-index)] mb-[var(--mfc-sticky-panel-margin-bottom)] flex flex-col gap-4">
+        <div className="flex items-center justify-between gap-[0.8rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-sticky-panel-bg)] p-[var(--mfc-sticky-panel-padding)] max-[900px]:flex-col max-[900px]:items-stretch">
           {formShow ? (
             <IconButton type={"close"} onClick={handleFormShow} />
           ) : (
@@ -77,7 +76,7 @@ function Tests(): JSX.Element {
             type={"text"}
             name={"search"}
             placeholder={"🔎"}
-            className={styles.input_search}
+            className="w-[40%] max-w-md max-[900px]:w-full max-[900px]:max-w-none"
             value={search}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
               setSearch(e.target.value)
@@ -85,14 +84,17 @@ function Tests(): JSX.Element {
           />
         </div>
         {formShow && (
-          <form onSubmit={handleAction} className={styles.form}>
+          <form
+            onSubmit={handleAction}
+            className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
+          >
             <Input
               type="text"
               name="title"
               placeholder="Название"
               value={formItems.title}
               onChange={handleChange}
-              className={styles.form_input_text}
+              className="w-full"
             />
             <Input
               type="text"
@@ -100,16 +102,16 @@ function Tests(): JSX.Element {
               placeholder="Ссылка"
               value={formItems.url}
               onChange={handleChange}
-              className={styles.form_input_text}
+              className="w-full"
             />
-            <div className={styles.form_position}>
+            <div className="flex gap-[0.7rem] max-[900px]:flex-col">
               {positions && (
                 <Select
                   name={"position_id"}
                   value={formItems.position_id}
                   onChange={handleChange}
                   data={positions}
-                  className={styles.form_select}
+                  className="w-[30%] rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm max-[900px]:w-full"
                 />
               )}
               <Input
@@ -118,7 +120,7 @@ function Tests(): JSX.Element {
                 placeholder="Примечание по должности (опционально)"
                 value={formItems.note_position}
                 onChange={handleChange}
-                className={styles.form_note_position}
+                className="w-[70%] max-[900px]:w-full"
               />
             </div>
             <Input
@@ -127,9 +129,9 @@ function Tests(): JSX.Element {
               placeholder="Пройти до"
               value={formItems.date_end}
               onChange={handleChange}
-              className={styles.form_input_date_end}
+              className="w-fit"
             />
-            <div className={styles.form_actions}>
+            <div className="flex items-center gap-3 max-[900px]:flex-col max-[900px]:items-start">
               <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
               <FormActionStatus
                 type={createStatusType}
@@ -140,7 +142,7 @@ function Tests(): JSX.Element {
         )}
       </div>
 
-      <div className={styles.list}>
+      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         <DataList<TestType>
           data={filteredData}
           error={!!error}
@@ -150,7 +152,7 @@ function Tests(): JSX.Element {
               key={item.id}
               test={item}
               mutationDelete={deleteTest}
-              className={styles.test}
+              className="not-first:mt-4"
             />
           )}
         />

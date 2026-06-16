@@ -2,7 +2,9 @@ import { JSX, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import dateNow from "@/utils/dateNow.ts";
 import { useUser } from "@/hooks/useUser.ts";
+import Loader from "@/components/ui/custom/Loader";
 import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Типы вынесены в отдельную область
 interface AdaptationTask {
@@ -133,7 +135,8 @@ const useHasAdaptationPlan = (
 
 function Home(): JSX.Element {
   const { name, department, description } = useUser();
-  const { data: myAdaptationPlan } = useGetMyAdaptationPlanQuery(undefined);
+  const { data: myAdaptationPlan, isLoading: isAdaptationLoading } =
+    useGetMyAdaptationPlanQuery(undefined);
 
   const plan = myAdaptationPlan as AdaptationPlanResponse | null | undefined;
   const adaptationProgress = useAdaptationProgress(plan);
@@ -172,7 +175,15 @@ function Home(): JSX.Element {
 
         <Card className="overflow-hidden px-4 py-6">
           <CardContent className="h-full">
-            {hasAdaptationPlan && adaptationProgress ? (
+            {isAdaptationLoading ? (
+              <div className="flex w-full max-w-xs flex-col gap-2">
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-full" />
+                <Skeleton className="h-4 w-3/4" />
+              </div>
+            ) : hasAdaptationPlan && adaptationProgress ? (
               <div className="flex h-full items-center justify-between gap-6">
                 <div className="flex h-full flex-col justify-between">
                   <CardTitle>Прогресс адаптации</CardTitle>

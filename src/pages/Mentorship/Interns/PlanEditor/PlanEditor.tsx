@@ -20,7 +20,7 @@ import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import FormActionStatus from "@/components/ui/custom/FormActionStatus";
-import styles from "./PlanEditor.module.css";
+import { cn } from "@/lib/utils";
 
 interface PlanType {
   id: number;
@@ -63,7 +63,10 @@ function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
   const trimmed = (text ?? "").trim();
   return (
     <div
-      className={`${styles.commentText} ${!trimmed ? styles.commentTextPlaceholder : ""}`}
+      className={cn(
+        "m-0 min-h-[1.35em] text-sm leading-[1.45] whitespace-pre-wrap break-words text-[var(--mfc-black-color)]",
+        !trimmed && "text-[var(--mfc-gray-color)]",
+      )}
     >
       {trimmed || "—"}
     </div>
@@ -324,7 +327,9 @@ function PlanEditor(): JSX.Element {
       <OverflowScrollBlock>
         <DataMessage type="error" />
         {loadErrorMessage && (
-          <p className={styles.status}>{loadErrorMessage}</p>
+          <p className="mt-[0.3rem] text-[0.86rem] text-[var(--mfc-black-color)]">
+            {loadErrorMessage}
+          </p>
         )}
       </OverflowScrollBlock>
     );
@@ -332,47 +337,49 @@ function PlanEditor(): JSX.Element {
 
   return (
     <OverflowScrollBlock>
-      <div className={styles.container}>
-        <div className={styles.planSummaryCard}>
-          <div className={styles.internSection}>
-            <span className={styles.internCardLabel}>Стажер</span>
-            <div className={styles.internName}>
+      <div className="flex flex-col gap-[0.9rem]">
+        <div className="flex flex-col gap-3 rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] px-4 py-[0.85rem]">
+          <div className="border-b border-[var(--mfc-create-form-border)] pb-2">
+            <span className="mb-[0.35rem] block text-[0.84rem] font-semibold text-[var(--mfc-gray-color)]">
+              Стажер
+            </span>
+            <div className="text-[1.05rem] leading-snug font-semibold text-[var(--mfc-black-color)]">
               {plan.user?.name ?? `ID пользователя: ${plan.user_id}`}
             </div>
           </div>
 
-          <div className={styles.formRow}>
-            <label className={styles.label}>
+          <div className="grid grid-cols-3 gap-[0.6rem] max-[900px]:grid-cols-1">
+            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
               Дата начала
               <Input
                 type="date"
                 name="startDate"
-                className={styles.dateInput}
+                className="w-fit"
                 value={form.startDate}
                 onChange={(event) =>
                   setForm({ ...form, startDate: event.target.value })
                 }
               />
             </label>
-            <label className={styles.label}>
+            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
               План адаптации
-              <span className={styles.info}>
+              <span className="m-0 font-normal text-[var(--mfc-gray-color)]">
                 {plan.template
                   ? `${plan.template.name} (${plan.template.work_schedule})`
                   : "—"}
               </span>
             </label>
-            <label className={styles.label}>
+            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
               Смена
-              <span className={styles.info}>{form.shift}</span>
+              <span className="m-0 font-normal text-[var(--mfc-gray-color)]">{form.shift}</span>
             </label>
           </div>
 
-          <div className={styles.formRow}>
-            <label className={styles.label}>
+          <div className="grid grid-cols-3 gap-[0.6rem] max-[900px]:grid-cols-1">
+            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
               Наставник
               <select
-                className={styles.input}
+                className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
                 value={form.mentor ?? ""}
                 onChange={(event) =>
                   setForm({
@@ -393,10 +400,10 @@ function PlanEditor(): JSX.Element {
                 ))}
               </select>
             </label>
-            <label className={styles.label}>
+            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
               Руководитель отдела
               <select
-                className={styles.input}
+                className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
                 value={form.departmentHead ?? ""}
                 onChange={(event) =>
                   setForm({
@@ -419,19 +426,19 @@ function PlanEditor(): JSX.Element {
             </label>
           </div>
 
-          <div className={styles.actionsBottom}>
+          <div className="mt-[0.15rem] flex flex-wrap items-center gap-3 border-t border-[var(--mfc-create-form-border)] pt-3">
             <IconButton
               type="save"
               onClick={handleSaveAll}
               disabled={isSavingPlan}
-              className={isSavingPlan ? styles.iconDisabled : ""}
+              className={cn(isSavingPlan && "pointer-events-none opacity-50")}
             />
-            <div className={styles.deleteAndStatus}>
+            <div className="flex flex-wrap items-center gap-3">
               <IconButton
                 type="delete"
                 onClick={handleDelete}
                 disabled={isDeleting}
-                className={isDeleting ? styles.iconDisabled : ""}
+                className={cn(isDeleting && "pointer-events-none opacity-50")}
               />
               <FormActionStatus type={statusType} message={status} />
             </div>
@@ -439,16 +446,21 @@ function PlanEditor(): JSX.Element {
         </div>
 
         {days.map((day, dayIndex) => (
-          <div key={day.id} className={styles.dayCard}>
-            <div className={styles.dayHeader}>{formatDayTitle(day)}</div>
-            <div className={styles.dayTopRow}>
-              <div className={styles.dateRangeRow}>
-                <label className={styles.label}>
+          <div
+            key={day.id}
+            className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.8rem]"
+          >
+            <div className="mb-[0.6rem] inline-flex self-start rounded-lg border border-slate-200 bg-slate-50 px-[0.58rem] py-[0.28rem] text-sm font-semibold text-[var(--mfc-black-color)]">
+              {formatDayTitle(day)}
+            </div>
+            <div className="grid grid-cols-[minmax(0,2fr)_minmax(11rem,1fr)] gap-[0.6rem] max-[900px]:grid-cols-1">
+              <div className="grid grid-cols-2 items-start gap-[0.35rem] max-[900px]:grid-cols-1 max-[900px]:gap-[0.6rem]">
+                <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                   Дата от
                   <Input
                     type="date"
                     name={`dayDateFrom-${day.id}`}
-                    className={styles.dateInput}
+                    className="w-fit"
                     value={day.date_from}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -462,12 +474,12 @@ function PlanEditor(): JSX.Element {
                     }
                   />
                 </label>
-                <label className={styles.label}>
+                <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                   Дата до (опционально)
                   <Input
                     type="date"
                     name={`dayDateTo-${day.id}`}
-                    className={styles.dateInput}
+                    className="w-fit"
                     value={day.date_to ?? ""}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -482,10 +494,10 @@ function PlanEditor(): JSX.Element {
                   />
                 </label>
               </div>
-              <label className={styles.label}>
+              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                 Статус дня
                 <select
-                  className={styles.input}
+                  className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
                   value={day.completion}
                   onChange={(event) =>
                     setDays((previous) => {
@@ -508,12 +520,12 @@ function PlanEditor(): JSX.Element {
               </label>
             </div>
 
-            <div className={styles.commentStack}>
-              <label className={styles.label}>
+            <div className="mt-[0.7rem] flex flex-col gap-[0.6rem]">
+              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                 Комментарий УПиПК
                 {commentPermissions.canEditEmployee ? (
                   <textarea
-                    className={`${styles.input} ${styles.commentInput}`}
+                    className="min-h-20 w-full resize-y rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] font-[inherit] text-sm"
                     value={day.employee_comment}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -530,15 +542,15 @@ function PlanEditor(): JSX.Element {
                   <ReadonlyCommentBlock text={day.employee_comment} />
                 )}
               </label>
-              <label className={styles.label}>
+              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                 Комментарий стажера
                 <ReadonlyCommentBlock text={day.intern_comment} />
               </label>
-              <label className={styles.label}>
+              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                 Комментарий наставника
                 {commentPermissions.canEditMentor ? (
                   <textarea
-                    className={`${styles.input} ${styles.commentInput}`}
+                    className="min-h-20 w-full resize-y rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] font-[inherit] text-sm"
                     value={day.mentor_comment}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -555,11 +567,11 @@ function PlanEditor(): JSX.Element {
                   <ReadonlyCommentBlock text={day.mentor_comment} />
                 )}
               </label>
-              <label className={styles.label}>
+              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
                 Комментарий руководителя
                 {commentPermissions.canEditDepartmentHead ? (
                   <textarea
-                    className={`${styles.input} ${styles.commentInput}`}
+                    className="min-h-20 w-full resize-y rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] font-[inherit] text-sm"
                     value={day.department_head_comment}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -578,12 +590,17 @@ function PlanEditor(): JSX.Element {
               </label>
             </div>
 
-            <div className={styles.taskList}>
+            <div className="mt-[0.7rem] flex flex-col gap-2">
               {day.tasks.map((task, taskIndex) => (
-                <div key={task.id} className={styles.taskRow}>
-                  <span className={styles.taskName}>{task.description}</span>
+                <div
+                  key={task.id}
+                  className="grid grid-cols-[1fr_11rem] items-center gap-2 max-[900px]:grid-cols-1"
+                >
+                  <span className="text-[0.88rem] text-[var(--mfc-black-color)]">
+                    {task.description}
+                  </span>
                   <select
-                    className={styles.input}
+                    className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
                     value={task.status}
                     onChange={(event) =>
                       setDays((previous) => {

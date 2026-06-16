@@ -22,7 +22,6 @@ import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
 } from "@/components/ui/custom/FormActionStatus";
-import styles from "./Interns.module.css";
 
 interface AdaptationPlanResponse {
   id: number;
@@ -244,12 +243,12 @@ function Interns(): JSX.Element {
 
   return (
     <OverflowScrollBlock>
-      <div className={styles.container}>
+      <div className="flex flex-col gap-4">
         {isLoading && <Loader />}
         {isError && <DataMessage type={"error"} />}
         {!isLoading && !isError && (
-          <div className={styles.stickyControls}>
-            <div className={styles.createSearch}>
+          <div className="sticky top-[var(--mfc-sticky-panel-top)] z-[var(--mfc-sticky-panel-z-index)] mb-[var(--mfc-sticky-panel-margin-bottom)] flex flex-col gap-4">
+            <div className="flex items-center justify-between gap-[0.8rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-sticky-panel-bg)] p-[var(--mfc-sticky-panel-padding)] max-[900px]:flex-col max-[900px]:items-stretch">
               {isCreateFormVisible ? (
                 <IconButton
                   type="close"
@@ -265,7 +264,7 @@ function Interns(): JSX.Element {
                 type={"text"}
                 name={"search"}
                 placeholder={"🔎"}
-                className={styles.searchInput}
+                className="w-[40%] max-w-md max-[900px]:w-full"
                 value={search}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                   setSearch(e.target.value)
@@ -273,10 +272,13 @@ function Interns(): JSX.Element {
               />
             </div>
             {isCreateFormVisible && (
-              <form className={styles.createForm} onSubmit={handleCreatePlan}>
-                <div className={styles.field}>
+              <form
+                className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
+                onSubmit={handleCreatePlan}
+              >
+                <div className="flex flex-col">
                   <select
-                    className={styles.select}
+                    className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                     value={newPlan.userId ?? ""}
                     onChange={(e) =>
                       setNewPlan({
@@ -297,12 +299,12 @@ function Interns(): JSX.Element {
                       ))}
                   </select>
                 </div>
-                <div className={styles.formRow}>
-                  <div className={styles.field}>
+                <div className="flex gap-[0.7rem] max-[900px]:flex-col">
+                  <div className="flex flex-col">
                     <Input
                       type="date"
                       name="startDate"
-                      className={styles.dateInput}
+                      className="w-fit"
                       placeholder="Дата начала"
                       value={newPlan.startDate}
                       onChange={(e) =>
@@ -313,9 +315,9 @@ function Interns(): JSX.Element {
                       }
                     />
                   </div>
-                  <div className={styles.field}>
+                  <div className="flex flex-col">
                     <select
-                      className={styles.select}
+                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                       value={newPlan.workSchedule}
                       onChange={(e) =>
                         setNewPlan({
@@ -335,9 +337,9 @@ function Interns(): JSX.Element {
                       ))}
                     </select>
                   </div>
-                  <div className={styles.field}>
+                  <div className="flex flex-col">
                     <select
-                      className={styles.select}
+                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                       value={newPlan.adaptationPlanTemplateId ?? ""}
                       onChange={(e) => {
                         const templateId = e.target.value
@@ -365,10 +367,10 @@ function Interns(): JSX.Element {
                     </select>
                   </div>
                 </div>
-                <div className={styles.formRow}>
-                  <div className={styles.field}>
+                <div className="flex gap-[0.7rem] max-[900px]:flex-col">
+                  <div className="flex flex-col">
                     <select
-                      className={styles.select}
+                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                       value={newPlan.mentor ?? ""}
                       onChange={(e) =>
                         setNewPlan({
@@ -391,9 +393,9 @@ function Interns(): JSX.Element {
                         ))}
                     </select>
                   </div>
-                  <div className={styles.field}>
+                  <div className="flex flex-col">
                     <select
-                      className={styles.select}
+                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
                       value={newPlan.departmentHead ?? ""}
                       onChange={(e) =>
                         setNewPlan({
@@ -417,10 +419,10 @@ function Interns(): JSX.Element {
                     </select>
                   </div>
                 </div>
-                <div className={styles.formActions}>
+                <div className="flex items-center gap-3 max-[900px]:flex-col max-[900px]:items-start">
                   <ButtonSubmit
                     loading={isCreatingPlan}
-                    className={styles.submitButton}
+                    className="self-start"
                   >
                     Создать
                   </ButtonSubmit>
@@ -437,14 +439,17 @@ function Interns(): JSX.Element {
           <DataMessage type={"noData"} />
         )}
         {!isLoading && !isError && adaptationPlans.length > 0 && (
-          <div className={styles.list}>
+          <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 overflow-y-auto pr-1">
             {filteredPlans.map((plan) => (
-              <div key={plan.id} className={styles.card}>
-                <div className={styles.cardHeader}>
-                  <div className={styles.name}>
+              <div
+                key={plan.id}
+                className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-4"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <div className="text-base font-semibold text-[var(--mfc-black-color)]">
                     {plan.user?.name || "Пользователь без имени"}
                   </div>
-                  <div className={styles.iconActions}>
+                  <div className="ml-auto flex gap-[0.4rem]">
                     <IconButton
                       type="edit"
                       onClick={() =>
@@ -458,21 +463,21 @@ function Interns(): JSX.Element {
                     />
                   </div>
                 </div>
-                <div className={styles.meta}>
+                <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
                   ID пользователя: {plan.user_id}
                 </div>
                 {plan.template && (
-                  <div className={styles.meta}>
+                  <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
                     План: {plan.template.name} ({plan.template.work_schedule})
                   </div>
                 )}
-                <div className={styles.meta}>
+                <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
                   Наставник:{" "}
                   {plan.mentor_user?.name ??
                     mentors.find((mentor) => mentor.id === plan.mentor)?.name ??
                     "Не назначен"}
                 </div>
-                <div className={styles.meta}>
+                <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
                   Руководитель отдела:{" "}
                   {plan.department_head_user?.name ??
                     departmentHeads.find(
@@ -483,7 +488,9 @@ function Interns(): JSX.Element {
               </div>
             ))}
             {hasSearch && filteredPlans.length === 0 && (
-              <p className={styles.searchEmpty}>Стажер "{search}" не найден</p>
+              <p className="mx-auto mt-2 w-fit rounded-xl border border-[var(--mfc-create-field-border)] bg-[var(--mfc-surface-color)] px-4 py-3 text-center text-[var(--mfc-gray-color)]">
+                Стажер "{search}" не найден
+              </p>
             )}
           </div>
         )}

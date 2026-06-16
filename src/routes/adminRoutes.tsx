@@ -2,6 +2,7 @@ import { RouteObject } from "react-router-dom";
 import PageTitle from "@/components/PageTitle.tsx";
 import { ProtectedRouteAdmin } from "@/components/protected/ProtectedRoutes.tsx";
 import UsersAdmin from "@/pages/Admin/Users/Users.tsx";
+import UserEditAdmin from "@/pages/Admin/Users/UserEdit.tsx";
 import EducationCoursesAdmin from "@/pages/Admin/Education/Courses/Courses.tsx";
 import EducationEventsAdmin from "@/pages/Admin/Education/Events/Events.tsx";
 import EducationWebinarsAdmin from "@/pages/Admin/Education/Webinars/Webinars.tsx";
@@ -20,6 +21,15 @@ export const adminRoutes: RouteObject = {
     {
       path: ROUTES.ADMIN_USERS,
       element: <PageTitle title={"Пользователи"} element={<UsersAdmin />} />,
+    },
+    {
+      path: ROUTES.ADMIN_USER_EDIT,
+      element: (
+        <PageTitle
+          title={"Редактирование пользователя"}
+          element={<UserEditAdmin />}
+        />
+      ),
     },
     {
       path: ROUTES.ADMIN_EDUCATION_COURSE,

@@ -47,6 +47,14 @@ function buildBreadcrumbs(pathname: string) {
         { label: "Редактирование плана адаптации" },
       ],
     },
+    {
+      path: ROUTES.ADMIN_USER_EDIT,
+      crumbs: [
+        { label: "Администрирование", href: ROUTES.ADMIN },
+        { label: "Пользователи", href: ROUTES.ADMIN_USERS },
+        { label: "Редактирование пользователя" },
+      ],
+    },
   ];
 
   const special = specialRoutes.find((route) =>
