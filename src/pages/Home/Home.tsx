@@ -2,7 +2,6 @@ import { JSX, useMemo } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import dateNow from "@/utils/dateNow.ts";
 import { useUser } from "@/hooks/useUser.ts";
-import Loader from "@/components/ui/custom/Loader";
 import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -50,7 +49,7 @@ const CircularProgress = ({ percent }: { percent: number }): JSX.Element => {
   }
 
   return (
-    <div className="relative aspect-square h-full w-full max-w-30">
+    <div className="relative aspect-square h-full w-full max-w-32">
       <svg
         className="h-full w-full -rotate-90 transform"
         viewBox={`0 0 ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
@@ -125,14 +124,6 @@ const useAdaptationProgress = (
   }, [plan]);
 };
 
-const useHasAdaptationPlan = (
-  plan: AdaptationPlanResponse | null | undefined,
-) => {
-  return useMemo(() => {
-    return Boolean(plan && typeof plan.id === "number" && plan.id > 0);
-  }, [plan]);
-};
-
 function Home(): JSX.Element {
   const { name, department, description } = useUser();
   const { data: myAdaptationPlan, isLoading: isAdaptationLoading } =
@@ -140,7 +131,10 @@ function Home(): JSX.Element {
 
   const plan = myAdaptationPlan as AdaptationPlanResponse | null | undefined;
   const adaptationProgress = useAdaptationProgress(plan);
-  const hasAdaptationPlan = useHasAdaptationPlan(plan);
+  const hasAdaptationPlan = useMemo(
+    () => Boolean(plan && typeof plan.id === "number" && plan.id > 0),
+    [plan],
+  );
 
   const shortName = useMemo(() => {
     const nameParts = name.trim().split(/\s+/);
@@ -152,7 +146,7 @@ function Home(): JSX.Element {
       <div className="grid gap-6 xl:grid-cols-2">
         <Card className="overflow-hidden px-4 py-6">
           <CardHeader>
-            <CardTitle>{dateNow}</CardTitle>
+            <CardTitle>{dateNow()}</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="space-y-3">

@@ -5,7 +5,6 @@ import Loader from "@/components/ui/custom/Loader";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
-import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
 import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
 import { ROUTES } from "@/constants/routes.ts";
 import { PencilIcon, SearchIcon, XIcon } from "lucide-react";
@@ -20,11 +19,7 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Field,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -100,23 +95,23 @@ function Users(): JSX.Element {
 
   const isEmpty = filteredData.length === 0;
   const hasSearch = search.trim().length > 0;
+  const hasRoleFilter = activeTab !== "users";
 
   return (
-    <OverflowScrollBlock
-      header={
+    <>
+      <div className="mt-10 sticky">
         <Card>
           <CardContent>
-            <FieldGroup className="gap-4 sm:flex-row sm:items-end">
-              <Field className="flex-1">
+            <FieldGroup className="grid gap-4 sm:grid-cols-2">
+              <Field>
                 <FieldLabel htmlFor="users-search">Поиск</FieldLabel>
                 <InputGroup>
-                  <InputGroupAddon align="inline-start">
+                  <InputGroupAddon>
                     <SearchIcon />
                   </InputGroupAddon>
                   <InputGroupInput
                     id="users-search"
-                    placeholder="Имя, отдел или роль..."
-                    type="search"
+                    placeholder="Имя, отдел, роль..."
                     value={search}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       setSearch(e.target.value)
@@ -134,18 +129,14 @@ function Users(): JSX.Element {
                   )}
                 </InputGroup>
               </Field>
-
-              <Field className="w-full sm:w-64">
-                <FieldLabel htmlFor="users-role-filter">Роль</FieldLabel>
+              <Field>
+                <FieldLabel htmlFor="users-role">Роль</FieldLabel>
                 <Select
                   value={activeTab}
-                  onValueChange={(value: UsersTab) => {
-                    setActiveTab(value);
-                    setSearch("");
-                  }}
+                  onValueChange={(value) => setActiveTab(value as UsersTab)}
                 >
-                  <SelectTrigger id="users-role-filter" className="w-full">
-                    <SelectValue placeholder="Выберите роль" />
+                  <SelectTrigger id="users-role" className="w-full">
+                    <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
                     {TAB_OPTIONS.map((tab) => (
@@ -159,43 +150,48 @@ function Users(): JSX.Element {
             </FieldGroup>
           </CardContent>
         </Card>
-      }
-    >
+      </div>
       {error && <DataMessage type="error" />}
       {isLoading && <Loader />}
 
       {data && (
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Имя пользователя</TableHead>
-              <TableHead>Отдел</TableHead>
-              <TableHead>Роль</TableHead>
-              <TableHead className="text-right">Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {isEmpty ? (
+        <>
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  {hasSearch ? (
-                    <p className="text-sm text-muted-foreground">
-                      Пользователь «{search}» не найден
-                    </p>
-                  ) : (
-                    <DataMessage type="noData" />
-                  )}
-                </TableCell>
+                <TableHead>Имя пользователя</TableHead>
+                <TableHead>Отдел</TableHead>
+                <TableHead>Роль</TableHead>
+                <TableHead className="text-right">Действия</TableHead>
               </TableRow>
-            ) : (
-              filteredData.map((user: UserType) => (
-                <UserRow key={user.id} user={user} />
-              ))
-            )}
-          </TableBody>
-        </Table>
+            </TableHeader>
+            <TableBody>
+              {isEmpty ? (
+                <TableRow>
+                  <TableCell colSpan={4} className="h-24 text-center">
+                    {hasSearch ? (
+                      <p className="text-sm text-muted-foreground">
+                        Пользователь «{search}» не найден
+                      </p>
+                    ) : hasRoleFilter ? (
+                      <p className="text-sm text-muted-foreground">
+                        Нет пользователей с ролью «{ROLE_LABELS[activeTab]}»
+                      </p>
+                    ) : (
+                      <DataMessage type="noData" />
+                    )}
+                  </TableCell>
+                </TableRow>
+              ) : (
+                filteredData.map((user: UserType) => (
+                  <UserRow key={user.id} user={user} />
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </>
       )}
-    </OverflowScrollBlock>
+    </>
   );
 }
 

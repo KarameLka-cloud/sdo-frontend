@@ -1,5 +1,5 @@
-const formattedDate: () => string = (): string => {
-  const date: Date = new Date();
+export default function dateNow(): string {
+  const date = new Date();
   const optionsDate: Intl.DateTimeFormatOptions = {
     day: "2-digit",
     month: "2-digit",
@@ -8,14 +8,7 @@ const formattedDate: () => string = (): string => {
   const optionsWeekday: Intl.DateTimeFormatOptions = {
     weekday: "long",
   };
-  const formattedDate: string = date.toLocaleDateString("ru-RU", optionsDate);
-  const formattedWeekday: string = date.toLocaleDateString(
-    "ru-RU",
-    optionsWeekday,
-  );
+  const formattedDate = date.toLocaleDateString("ru-RU", optionsDate);
+  const formattedWeekday = date.toLocaleDateString("ru-RU", optionsWeekday);
   return `${formattedDate} г., ${formattedWeekday}`;
-};
-
-const dateNow = formattedDate();
-
-export default dateNow;
+}
