@@ -88,9 +88,6 @@ function Users(): JSX.Element {
   const filteredByRole = users.filter(ROLE_FILTERS[activeTab]);
   const filteredData = useFiltered(filteredByRole, search);
 
-  if (error) return <DataMessage type="error" />;
-  if (isLoading) return <Loader />;
-
   const isEmpty = filteredData.length === 0;
   const hasSearch = search.trim().length > 0;
 
@@ -140,36 +137,39 @@ function Users(): JSX.Element {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Имя пользователя</TableHead>
-            <TableHead>Отдел</TableHead>
-            <TableHead>Роль</TableHead>
-            <TableHead className="text-right">Действия</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {isEmpty ? (
-            <tr>
-              <td colSpan={4}>
-                {hasSearch ? (
-                  <p className="mx-auto mt-4 w-fit py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 text-gray-600 text-center">
-                    {ROLE_LABELS[activeTab]} "{search}" не найден(а)
-                  </p>
-                ) : (
-                  <DataMessage type="noData" />
-                )}
-              </td>
-            </tr>
-          ) : (
-            filteredData.map((user: UserType) => (
-              <UserRow key={user.id} user={user} />
-            ))
-          )}
-        </TableBody>
-      </Table>
+      {error && <DataMessage type="error" />}
+      {isLoading && <Loader />}
+      {data && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Имя пользователя</TableHead>
+              <TableHead>Отдел</TableHead>
+              <TableHead>Роль</TableHead>
+              <TableHead className="text-right">Действия</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {isEmpty ? (
+              <tr>
+                <td colSpan={4}>
+                  {hasSearch ? (
+                    <p className="mx-auto mt-4 w-fit py-3 px-4 border border-gray-300 rounded-xl bg-slate-50 text-gray-600 text-center">
+                      Пользователь"{search}" не найден(а)
+                    </p>
+                  ) : (
+                    <DataMessage type="noData" />
+                  )}
+                </td>
+              </tr>
+            ) : (
+              filteredData.map((user: UserType) => (
+                <UserRow key={user.id} user={user} />
+              ))
+            )}
+          </TableBody>
+        </Table>
+      )}
     </OverflowScrollBlock>
   );
 }
