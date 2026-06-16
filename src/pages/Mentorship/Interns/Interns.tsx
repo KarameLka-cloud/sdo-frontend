@@ -15,8 +15,9 @@ import {
   useGetUsersQuery,
 } from "@/services/store/features/user.ts";
 import { ROUTES } from "@/constants/routes.ts";
+import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
+import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import FormActionStatus, {
   type FormActionStatusType,
@@ -95,6 +96,22 @@ function Interns(): JSX.Element {
   const departmentHeads = (departmentHeadsData as UserType[]).length
     ? (departmentHeadsData as UserType[])
     : users.filter((user) => isUserInRole(user, USER_ROLES.DEPARTMENT_HEAD));
+  const { role, role_name: roleName, id: currentUserId } = useUser();
+  const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
+  const adaptationPlansList = useMemo(() => {
+    if (isAdmin) {
+      return adaptationPlans;
+    }
+
+    if (!currentUserId) {
+      return [];
+    }
+
+    return adaptationPlans.filter(
+      (plan) =>
+        plan.mentor === currentUserId || plan.department_head === currentUserId,
+    );
+  }, [adaptationPlans, currentUserId, isAdmin]);
   const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
   const [search, setSearch] = useState("");
   const [newPlan, setNewPlan] = useState({
@@ -111,11 +128,11 @@ function Interns(): JSX.Element {
   const hasSearch = search.trim().length > 0;
   const filteredPlans = useMemo(() => {
     if (!hasSearch) {
-      return adaptationPlans;
+      return adaptationPlansList;
     }
 
     const searchLower = search.toLowerCase();
-    return adaptationPlans.filter((plan) => {
+    return adaptationPlansList.filter((plan) => {
       const userName = plan.user?.name?.toLowerCase() ?? "";
       const department = plan.user?.department?.toLowerCase() ?? "";
       const userId = String(plan.user_id);
@@ -126,7 +143,7 @@ function Interns(): JSX.Element {
         userId.includes(searchLower)
       );
     });
-  }, [adaptationPlans, hasSearch, search]);
+  }, [adaptationPlansList, hasSearch, search]);
 
   const handleCreatePlan = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();

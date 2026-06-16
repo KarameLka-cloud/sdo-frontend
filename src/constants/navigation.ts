@@ -1,8 +1,23 @@
 import { ROUTES } from "@constants/routes";
+import type { LucideIcon } from "lucide-react";
 import { Home, Notebook, Album, Users, Brain } from "lucide-react";
 import firstWednesdayData from "@/utils/firstWednesday";
 
-export const HOME_NAV_LINKS = [
+interface NavigationItemChild {
+  id: number;
+  name: string;
+  path: string;
+}
+
+interface NavigationItem {
+  id: number;
+  name: string;
+  path: string;
+  icon: LucideIcon;
+  children?: readonly NavigationItemChild[];
+}
+
+export const HOME_NAV_LINKS: ReadonlyArray<NavigationItem> = [
   {
     id: 1,
     name: "Главная",
@@ -38,24 +53,18 @@ export const HOME_NAV_LINKS = [
       { id: 3, name: "Тесты", path: ROUTES.EDO_TESTS },
     ],
   },
-] as const;
+];
 
-export const MENTOR_NAV_LINKS = [
+export const MENTOR_NAV_LINKS: ReadonlyArray<NavigationItem> = [
   {
     id: 1,
     name: "Стажеры",
     path: ROUTES.MENTORSHIP_INTERNS,
     icon: Users,
   },
-  {
-    id: 2,
-    name: "Мои стажеры",
-    path: ROUTES.MENTORSHIP_MY_INTERNS,
-    icon: Users,
-  },
-] as const;
+];
 
-export const ADMIN_NAV_LINKS = [
+export const ADMIN_NAV_LINKS: ReadonlyArray<NavigationItem> = [
   {
     id: 1,
     name: "Пользователи",
@@ -119,4 +128,4 @@ export const ADMIN_NAV_LINKS = [
     path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
     icon: Brain,
   },
-] as const;
+];

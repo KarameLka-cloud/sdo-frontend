@@ -65,8 +65,8 @@ interface ProtectedRouteMentorProps {
   elementMentor?: ReactElement;
 }
 
-interface ProtectedRouteMyInternsProps {
-  elementMyInterns?: ReactElement;
+interface ProtectedRouteInternsProps {
+  elementInterns?: ReactElement;
 }
 
 interface ProtectedRouteMentorshipInternsAdminProps {
@@ -107,9 +107,9 @@ const ProtectedRouteMentor = ({ elementMentor }: ProtectedRouteMentorProps) => {
   return elementMentor;
 };
 
-const ProtectedRouteMyInterns = ({
-  elementMyInterns,
-}: ProtectedRouteMyInternsProps) => {
+const ProtectedRouteInterns = ({
+  elementInterns,
+}: ProtectedRouteInternsProps) => {
   const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
@@ -124,7 +124,7 @@ const ProtectedRouteMyInterns = ({
     return <Navigate to={ROUTES.HOME} replace />;
   }
 
-  return elementMyInterns;
+  return elementInterns;
 };
 
 const ProtectedRouteMentorshipInternsAdmin = ({
@@ -151,6 +151,6 @@ export {
   ProtectedRoute,
   ProtectedRouteAdmin,
   ProtectedRouteMentor,
-  ProtectedRouteMyInterns,
+  ProtectedRouteInterns,
   ProtectedRouteMentorshipInternsAdmin,
 };

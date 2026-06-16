@@ -1,10 +1,11 @@
 import { createBrowserRouter, Navigate } from "react-router-dom";
+import Cookie from "js-cookie";
 import { ProtectedRoute } from "@/components/protected/ProtectedRoutes.tsx";
 import PageTitle from "@/components/PageTitle.tsx";
 import AuthLayout from "@/layouts/AuthLayout.tsx";
 import HomeLayout from "@/layouts/HomeLayout.tsx";
 import Login from "@/pages/Auth/Login.tsx";
-// import Loader from "@/components/ui/custom/Loader.tsx";
+import { COOKIE_NAMES } from "@/constants/api.ts";
 import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { hasRole, USER_ROLES } from "@/constants/roles.ts";
@@ -13,21 +14,23 @@ import { adminRoutes } from "./adminRoutes.tsx";
 import { mentorshipRoutes } from "./mentorshipRoutes.tsx";
 
 function MentorshipRedirect() {
+  const token = Cookie.get(COOKIE_NAMES.AUTH_TOKEN);
   const { role, role_name: roleName, isLoading } = useUser();
 
-  // if (isLoading) {
-  //   return <Loader />;
-  // }
+  if (!token) {
+    return <Navigate to={ROUTES.LOGIN} replace />;
+  }
 
-  if (hasRole(role, roleName, USER_ROLES.ADMIN)) {
-    return <Navigate to={ROUTES.MENTORSHIP_INTERNS} replace />;
+  if (isLoading) {
+    return null;
   }
 
   if (
+    hasRole(role, roleName, USER_ROLES.ADMIN) ||
     hasRole(role, roleName, USER_ROLES.MENTOR) ||
     hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD)
   ) {
-    return <Navigate to={ROUTES.MENTORSHIP_MY_INTERNS} replace />;
+    return <Navigate to={ROUTES.MENTORSHIP_INTERNS} replace />;
   }
 
   return <Navigate to={ROUTES.HOME} replace />;

@@ -22,7 +22,6 @@ const segmentLabels: Record<string, string> = {
   webinars: "Вебинары",
   tests: "Тесты",
   interns: "Стажеры",
-  "my-interns": "Мои стажеры",
   templates: "Планы адаптации",
   edit: "Редактирование",
 };
@@ -108,13 +107,6 @@ function buildBreadcrumbs(pathname: string) {
       return [
         { label: "Наставничество", href: ROUTES.MENTORSHIP },
         { label: "Стажеры" },
-      ];
-    }
-
-    if (secondSegment === "my-interns") {
-      return [
-        { label: "Наставничество", href: ROUTES.MENTORSHIP },
-        { label: "Мои стажеры" },
       ];
     }
 

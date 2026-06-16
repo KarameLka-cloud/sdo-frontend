@@ -86,7 +86,7 @@ const CircularProgress = ({ percent }: { percent: number }): JSX.Element => {
 
 const EmptyAdaptationPlan = (): JSX.Element => (
   <div
-    className="flex h-full items-center justify-center rounded-3xl border border-dashed border-border bg-muted/60 px-4 py-6 text-sm text-muted-foreground"
+    className="flex h-full items-center justify-center rounded-3xl border border-border bg-muted/60 px-4 py-6 text-sm text-muted-foreground"
     role="status"
     aria-label="План адаптации не назначен"
   >
