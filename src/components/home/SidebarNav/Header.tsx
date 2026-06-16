@@ -11,7 +11,7 @@ function Header(): JSX.Element {
         <img
           src={image_logo_mfc}
           alt="LogoNavLink"
-          className="w-full pl-10 pr-10"
+          className="w-full px-12 pt-2"
         />
       </NavLink>
     </SidebarHeader>
