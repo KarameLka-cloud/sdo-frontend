@@ -164,9 +164,7 @@ function Users(): JSX.Element {
               </td>
             </tr>
           ) : (
-            filteredData.map((user: UserType) => (
-              <UserRow key={user.id} user={user} />
-            ))
+            filteredData.map((user: UserType) => <UserRow key={user.id} user={user} />)
           )}
         </TableBody>
       </Table>
