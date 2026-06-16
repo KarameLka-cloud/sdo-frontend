@@ -1,8 +1,7 @@
 import { JSX } from "react";
-import image_fox from "@/assets/images/fox.png";
 import { ChevronsUpDown, LogOut } from "lucide-react";
 import { SidebarFooter } from "@/components/ui/sidebar";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Avatar } from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -48,8 +47,10 @@ function Footer(): JSX.Element {
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={image_fox} alt={name} />
+                <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
+                  <span className="text-white text-sm font-semibold">
+                    {name.split(" ")[1].charAt(0).toUpperCase()}
+                  </span>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">
@@ -68,8 +69,10 @@ function Footer(): JSX.Element {
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="h-8 w-8 rounded-lg">
-                    <AvatarImage src={image_fox} alt={name} />
+                  <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
+                    <span className="text-white text-sm font-semibold">
+                      {name.split(" ")[1].charAt(0).toUpperCase()}
+                    </span>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
                     <span className="truncate font-medium">

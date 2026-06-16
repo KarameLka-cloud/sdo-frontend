@@ -1,9 +1,9 @@
 import { JSX } from "react";
 import { TestType } from "@/interfaces/api/TestType.ts";
 import DataList from "@/components/ui/custom/DataList";
-import TestItem from "@/components/ui/custom/Test";
 import { useGetEducationTestsQuery } from "@/services/store/features/education.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import UniversalCard from "@/components/ui/custom/UniversalCard";
 
 function Tests(): JSX.Element {
   const { data, error, isLoading } = useGetEducationTestsQuery("");
@@ -15,7 +15,7 @@ function Tests(): JSX.Element {
         error={!!error}
         isLoading={isLoading}
         renderItem={(item: TestType) => (
-          <TestItem key={item.id} test={item} className="mt-4" />
+          <UniversalCard type="test" item={item} className="mt-4" />
         )}
       />
     </OverflowScrollBlock>

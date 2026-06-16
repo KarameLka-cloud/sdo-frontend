@@ -1,9 +1,9 @@
 import { JSX } from "react";
 import { CourseType } from "@/interfaces/api/CourseType.ts";
 import DataList from "@/components/ui/custom/DataList";
-import CourseItem from "@/components/ui/custom/Course";
 import { useGetEducationCoursesQuery } from "@/services/store/features/education.ts";
 import OverflowScrollBlock from "@/components/ui/custom/OverflowScrollBlock";
+import UniversalCard from "@/components/ui/custom/UniversalCard";
 
 function Courses(): JSX.Element {
   const { data, error, isLoading } = useGetEducationCoursesQuery("");
@@ -15,7 +15,7 @@ function Courses(): JSX.Element {
         error={!!error}
         isLoading={isLoading}
         renderItem={(item: CourseType) => (
-          <CourseItem key={item.id} course={item} className="mt-4" />
+          <UniversalCard type="course" item={item} className="mt-4" />
         )}
       />
     </OverflowScrollBlock>
