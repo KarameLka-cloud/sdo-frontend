@@ -1,4 +1,4 @@
-import React, { JSX, useEffect } from "react";
+import { FormEvent, JSX, useEffect } from "react";
 import image_login_background from "@/assets/images/login_background.svg";
 import image_logo_mfc from "@/assets/images/logo_mfc.svg";
 import { useForm } from "@/hooks/useForm.ts";
@@ -17,36 +17,26 @@ import { toast } from "sonner";
 
 function Login(): JSX.Element {
   const { loginUser, errorMessage, isLoading } = useLogin();
-  const { formItems, setFormItems, handleChange } = useForm({
+  const { formItems, handleChange } = useForm({
     login: "",
     password: "",
   });
 
   useEffect(() => {
     if (errorMessage) {
-      toast.error(errorMessage, {
-        position: "top-center",
-      });
+      toast.error(errorMessage);
     }
   }, [errorMessage]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    await loginUser(formItems);
-    if (!isLoading) {
-      if (!errorMessage) {
-        setFormItems({
-          login: "",
-          password: "",
-        });
-      }
-    }
+    void loginUser(formItems);
   };
 
   return (
     <Card className="overflow-hidden p-0">
       <CardContent className="grid p-0 md:grid-cols-2">
-        <form onSubmit={handleLogin} className="p-6 md:p-8">
+        <form onSubmit={handleSubmit} className="p-6 md:p-8">
           <FieldGroup>
             <div className="flex flex-col items-center gap-2 text-center">
               <img
@@ -54,7 +44,7 @@ function Login(): JSX.Element {
                 alt="LogoLink"
                 className="mx-auto h-12"
               />
-              <h1 className="text-2xl font-bold pt-4">
+              <h1 className="pt-4 text-2xl font-bold">
                 Добро пожаловать в личный кабинет сотрудника!
               </h1>
             </div>
@@ -81,23 +71,22 @@ function Login(): JSX.Element {
               />
             </Field>
             <FieldSeparator />
-            {!isLoading ? (
-              <Button type="submit" className="cursor-pointer">
-                Войти
-              </Button>
-            ) : (
-              <Button variant="outline" disabled>
-                <Spinner data-icon="inline-start" />
-                Пожалуйста, подождите...
-              </Button>
-            )}
+            <Button
+              type="submit"
+              className="cursor-pointer"
+              disabled={isLoading}
+              variant={isLoading ? "outline" : "default"}
+            >
+              {isLoading && <Spinner data-icon="inline-start" />}
+              {isLoading ? "Пожалуйста, подождите..." : "Войти"}
+            </Button>
           </FieldGroup>
         </form>
         <div className="relative hidden bg-(--mfc-dark-color) md:block">
           <img
             src={image_login_background}
             alt="Image"
-            className="absolute inset-0 h-full m-auto pt-2 object-cover"
+            className="absolute inset-0 m-auto h-full object-cover pt-2"
           />
         </div>
       </CardContent>

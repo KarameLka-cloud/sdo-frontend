@@ -12,6 +12,7 @@ export const ROUTES = {
   EDO_TESTS: "/edo/tests",
   MENTORSHIP: "/mentorship",
   MENTORSHIP_INTERNS: "/mentorship/interns",
+  MENTORSHIP_INTERNS_PLAN_CREATE: "/mentorship/interns/create",
   MENTORSHIP_INTERNS_PLAN_EDIT: "/mentorship/interns/:planId/edit",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",

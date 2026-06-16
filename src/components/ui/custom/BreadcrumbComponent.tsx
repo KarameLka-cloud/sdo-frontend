@@ -32,6 +32,14 @@ function buildBreadcrumbs(pathname: string) {
     crumbs: Array<{ label: string; href?: string }>;
   }> = [
     {
+      path: ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE,
+      crumbs: [
+        { label: "Наставничество", href: ROUTES.MENTORSHIP },
+        { label: "Стажеры", href: ROUTES.MENTORSHIP_INTERNS },
+        { label: "Создание плана адаптации" },
+      ],
+    },
+    {
       path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
       crumbs: [
         { label: "Наставничество", href: ROUTES.MENTORSHIP },

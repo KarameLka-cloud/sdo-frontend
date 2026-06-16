@@ -1,13 +1,8 @@
-import { ChangeEvent, FormEvent, JSX, useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import IconButton from "@/components/ui/custom/IconButton";
+import { JSX, useState } from "react";
+import { Link } from "react-router-dom";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import Input from "@/components/ui/custom/Input";
-import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
 import Loader from "@/components/ui/custom/Loader";
 import {
-  useCreateAdaptationPlanMutation,
-  useGetAdaptationPlanTemplatesQuery,
   useGetAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
@@ -17,480 +12,325 @@ import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
-import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
-import FormActionStatus, {
-  type FormActionStatusType,
-} from "@/components/ui/custom/FormActionStatus";
+import convertDate from "@/utils/convertDate.ts";
+import { PencilIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-interface AdaptationPlanResponse {
+interface AdaptationPlan {
   id: number;
   user_id: number;
   start_date?: string;
-  adaptation_plan_template_id?: number | null;
   mentor: number;
   department_head: number;
   work_schedule?: string;
-  shift?: number;
-  template?: {
-    id: number;
-    name: string;
-    work_schedule: string;
-    shifts: number[];
-  };
-  mentor_user?: {
-    id?: number;
-    name?: string;
-  };
-  department_head_user?: {
-    id?: number;
-    name?: string;
-  };
-  user?: {
-    id?: number;
-    name?: string;
-    department?: string;
-  };
-  days?: Array<{
-    id: number;
-    work_day: number;
-    date: string;
-    completion: "в процессе" | "выполнен" | "есть замечания";
-    tasks?: Array<{
-      id: number;
-      description: string;
-      status: "выполнено" | "не выполнено";
-    }>;
-  }>;
+  template?: { name?: string; work_schedule?: string };
+  mentor_user?: { name?: string };
+  department_head_user?: { name?: string };
+  user?: { name?: string; department?: string };
 }
 
-function Interns(): JSX.Element {
-  const navigate = useNavigate();
-  const [createAdaptationPlan, { isLoading: isCreatingPlan }] =
-    useCreateAdaptationPlanMutation();
-  const {
-    data: allAdaptationPlansData = [],
-    isLoading: isAllPlansLoading,
-    isError: isAllPlansError,
-  } = useGetAdaptationPlansQuery(undefined);
-  const { data: usersData = [] } = useGetUsersQuery(undefined);
-  const { data: templatesData = [] } =
-    useGetAdaptationPlanTemplatesQuery(undefined);
-  const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
-  const { data: departmentHeadsData = [] } =
-    useGetDepartmentHeadsQuery(undefined);
-  const adaptationPlans = allAdaptationPlansData as AdaptationPlanResponse[];
-  const isLoading = isAllPlansLoading;
-  const isError = isAllPlansError;
-  const users = usersData as UserType[];
-  const adaptationTemplates = templatesData as {
-    id: number;
-    name: string;
-    work_schedule: string;
-    shifts: number[];
-  }[];
-  const mentors = (mentorsData as UserType[]).length
-    ? (mentorsData as UserType[])
-    : users.filter((user) => isUserInRole(user, USER_ROLES.MENTOR));
-  const departmentHeads = (departmentHeadsData as UserType[]).length
-    ? (departmentHeadsData as UserType[])
-    : users.filter((user) => isUserInRole(user, USER_ROLES.DEPARTMENT_HEAD));
-  const { role, role_name: roleName, id: currentUserId } = useUser();
-  const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
-  const adaptationPlansList = useMemo(() => {
-    if (isAdmin) {
-      return adaptationPlans;
-    }
+const ALL_SCHEDULES = "all";
 
-    if (!currentUserId) {
-      return [];
-    }
+const getWorkSchedule = (plan: AdaptationPlan) =>
+  plan.template?.work_schedule ?? plan.work_schedule ?? "";
 
-    return adaptationPlans.filter(
-      (plan) =>
-        plan.mentor === currentUserId || plan.department_head === currentUserId,
-    );
-  }, [adaptationPlans, currentUserId, isAdmin]);
-  const [isCreateFormVisible, setIsCreateFormVisible] = useState(false);
-  const [search, setSearch] = useState("");
-  const [newPlan, setNewPlan] = useState({
-    userId: null as number | null,
-    startDate: "",
-    workSchedule: "",
-    adaptationPlanTemplateId: null as number | null,
-    mentor: null as number | null,
-    departmentHead: null as number | null,
-  });
-  const [createStatusType, setCreateStatusType] =
-    useState<FormActionStatusType>("idle");
-  const [createStatusMessage, setCreateStatusMessage] = useState("");
-  const hasSearch = search.trim().length > 0;
-  const filteredPlans = useMemo(() => {
-    if (!hasSearch) {
-      return adaptationPlansList;
-    }
+const resolveRoleUsers = (
+  fromApi: UserType[] | undefined,
+  allUsers: UserType[],
+  role: (typeof USER_ROLES)[keyof typeof USER_ROLES],
+) => {
+  const list = (fromApi ?? []) as UserType[];
+  return list.length
+    ? list
+    : allUsers.filter((user) => isUserInRole(user, role));
+};
 
-    const searchLower = search.toLowerCase();
-    return adaptationPlansList.filter((plan) => {
-      const userName = plan.user?.name?.toLowerCase() ?? "";
-      const department = plan.user?.department?.toLowerCase() ?? "";
-      const userId = String(plan.user_id);
-
-      return (
-        userName.includes(searchLower) ||
-        department.includes(searchLower) ||
-        userId.includes(searchLower)
-      );
-    });
-  }, [adaptationPlansList, hasSearch, search]);
-
-  const handleCreatePlan = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    setCreateStatusType("loading");
-    setCreateStatusMessage(FORM_STATUS_MESSAGES.createLoading);
-
-    if (!newPlan.userId) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выберите пользователя");
-      return;
-    }
-    if (!newPlan.startDate) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Укажите дату начала стажировки");
-      return;
-    }
-    if (!newPlan.workSchedule) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выберите режим работы");
-      return;
-    }
-    if (!newPlan.adaptationPlanTemplateId) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выберите шаблон адаптации");
-      return;
-    }
-    const template = adaptationTemplates.find(
-      (item) => item.id === newPlan.adaptationPlanTemplateId,
-    );
-    if (!template) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выбранный шаблон не найден");
-      return;
-    }
-    if (template.work_schedule !== newPlan.workSchedule) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выберите шаблон с подходящим режимом работы");
-      return;
-    }
-    const selectedShift = [...template.shifts].sort((a, b) => a - b)[0];
-    if (!selectedShift) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("У выбранного шаблона не найдены смены");
-      return;
-    }
-    if (!newPlan.mentor) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выберите наставника");
-      return;
-    }
-    if (!newPlan.departmentHead) {
-      setCreateStatusType("error");
-      setCreateStatusMessage("Выберите руководителя отдела");
-      return;
-    }
-
-    try {
-      await createAdaptationPlan({
-        user_id: newPlan.userId,
-        start_date: newPlan.startDate,
-        adaptation_plan_template_id: newPlan.adaptationPlanTemplateId,
-        shift: selectedShift,
-        mentor: newPlan.mentor,
-        department_head: newPlan.departmentHead,
-      }).unwrap();
-      setNewPlan({
-        userId: null,
-        startDate: "",
-        workSchedule: "",
-        adaptationPlanTemplateId: null,
-        mentor: null,
-        departmentHead: null,
-      });
-      setCreateStatusType("success");
-      setCreateStatusMessage(FORM_STATUS_MESSAGES.createSuccess);
-    } catch {
-      setCreateStatusType("error");
-      setCreateStatusMessage(FORM_STATUS_MESSAGES.createError);
-    }
-  };
-
-  const availableWorkSchedules = Array.from(
-    new Set(adaptationTemplates.map((template) => template.work_schedule)),
+const buildNameLookup = (users: UserType[]) =>
+  new Map(
+    users
+      .filter((user) => user.id != null)
+      .map((user) => [user.id!, user.name ?? ""]),
   );
 
-  const filteredCreateTemplates = newPlan.workSchedule
-    ? adaptationTemplates
-        .filter((template) => template.work_schedule === newPlan.workSchedule)
-        .sort((a, b) => {
-          const firstShiftA = Math.min(...a.shifts);
-          const firstShiftB = Math.min(...b.shifts);
-          if (firstShiftA !== firstShiftB) {
-            return firstShiftA - firstShiftB;
-          }
-          return a.name.localeCompare(b.name, "ru");
-        })
-    : [];
+const getPersonName = (
+  embedded: { name?: string } | undefined,
+  id: number,
+  lookup: Map<number, string>,
+) => embedded?.name ?? lookup.get(id) ?? "Не назначен";
+
+const filterVisiblePlans = (
+  plans: AdaptationPlan[],
+  isAdmin: boolean,
+  currentUserId?: number,
+) => {
+  if (isAdmin) return plans;
+  if (!currentUserId) return [];
+  return plans.filter(
+    (plan) =>
+      plan.mentor === currentUserId || plan.department_head === currentUserId,
+  );
+};
+
+const filterBySchedule = (plans: AdaptationPlan[], schedule: string) =>
+  schedule === ALL_SCHEDULES
+    ? plans
+    : plans.filter((plan) => getWorkSchedule(plan) === schedule);
+
+const filterBySearch = (
+  plans: AdaptationPlan[],
+  search: string,
+  mentorNames: Map<number, string>,
+  headNames: Map<number, string>,
+) => {
+  const query = search.trim().toLowerCase();
+  if (!query) return plans;
+
+  return plans.filter((plan) => {
+    const values = [
+      plan.user?.name,
+      plan.user?.department,
+      plan.template?.name,
+      getPersonName(plan.mentor_user, plan.mentor, mentorNames),
+      getPersonName(plan.department_head_user, plan.department_head, headNames),
+      plan.user_id,
+    ];
+
+    return values.some((value) =>
+      String(value ?? "")
+        .toLowerCase()
+        .includes(query),
+    );
+  });
+};
+
+const InternRow = ({
+  plan,
+  mentorName,
+  headName,
+}: {
+  plan: AdaptationPlan;
+  mentorName: string;
+  headName: string;
+}) => {
+  const schedule = getWorkSchedule(plan);
+
+  return (
+    <TableRow>
+      <TableCell className="font-medium">
+        {plan.user?.name ?? "Пользователь без имени"}
+      </TableCell>
+      <TableCell className="text-muted-foreground">
+        {plan.user?.department ?? "—"}
+      </TableCell>
+      <TableCell>{convertDate(plan.start_date)}</TableCell>
+      <TableCell>
+        {plan.template?.name ?? "—"}
+        {schedule && (
+          <span className="text-muted-foreground"> ({schedule})</span>
+        )}
+      </TableCell>
+      <TableCell>{mentorName}</TableCell>
+      <TableCell>{headName}</TableCell>
+      <TableCell className="text-right">
+        <Button variant="outline" size="sm" asChild>
+          <Link
+            to={ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
+              ":planId",
+              String(plan.id),
+            )}
+          >
+            <PencilIcon />
+            Редактировать
+          </Link>
+        </Button>
+      </TableCell>
+    </TableRow>
+  );
+};
+
+function Interns(): JSX.Element {
+  const {
+    data: plansData,
+    isLoading,
+    isError,
+  } = useGetAdaptationPlansQuery(undefined);
+  const { data: usersData } = useGetUsersQuery(undefined);
+  const { data: mentorsData } = useGetMentorsQuery(undefined);
+  const { data: departmentHeadsData } = useGetDepartmentHeadsQuery(undefined);
+  const { role, role_name: roleName, id: currentUserId } = useUser();
+
+  const [search, setSearch] = useState("");
+  const [scheduleFilter, setScheduleFilter] = useState(ALL_SCHEDULES);
+
+  const adaptationPlans = (plansData ?? []) as AdaptationPlan[];
+  const users = (usersData ?? []) as UserType[];
+  const mentors = resolveRoleUsers(mentorsData, users, USER_ROLES.MENTOR);
+  const departmentHeads = resolveRoleUsers(
+    departmentHeadsData,
+    users,
+    USER_ROLES.DEPARTMENT_HEAD,
+  );
+  const mentorNames = buildNameLookup(mentors);
+  const headNames = buildNameLookup(departmentHeads);
+  const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
+
+  const visiblePlans = filterVisiblePlans(
+    adaptationPlans,
+    isAdmin,
+    currentUserId,
+  );
+  const filteredPlans = filterBySearch(
+    filterBySchedule(visiblePlans, scheduleFilter),
+    search,
+    mentorNames,
+    headNames,
+  );
+  const hasSearch = search.trim().length > 0;
+  const workScheduleOptions = [
+    ...new Set(visiblePlans.map(getWorkSchedule).filter(Boolean)),
+  ].sort((a, b) => a.localeCompare(b, "ru"));
 
   return (
     <>
-      <div className="flex flex-col gap-4">
-        {isLoading && <Loader />}
-        {isError && <DataMessage type={"error"} />}
-        {!isLoading && !isError && (
-          <div className="sticky top-[var(--mfc-sticky-panel-top)] z-[var(--mfc-sticky-panel-z-index)] mb-[var(--mfc-sticky-panel-margin-bottom)] flex flex-col gap-4">
-            <div className="flex items-center justify-between gap-[0.8rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-sticky-panel-bg)] p-[var(--mfc-sticky-panel-padding)] max-[900px]:flex-col max-[900px]:items-stretch">
-              {isCreateFormVisible ? (
-                <IconButton
-                  type="close"
-                  onClick={() => setIsCreateFormVisible(false)}
-                />
-              ) : (
-                <IconButton
-                  type="edit"
-                  onClick={() => setIsCreateFormVisible(true)}
-                />
-              )}
-              <Input
-                type={"text"}
-                name={"search"}
-                placeholder={"🔎"}
-                className="w-[40%] max-w-md max-[900px]:w-full"
-                value={search}
-                onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                  setSearch(e.target.value)
-                }
-              />
-            </div>
-            {isCreateFormVisible && (
-              <form
-                className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
-                onSubmit={handleCreatePlan}
-              >
-                <div className="flex flex-col">
-                  <select
-                    className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                    value={newPlan.userId ?? ""}
-                    onChange={(e) =>
-                      setNewPlan({
-                        ...newPlan,
-                        userId: e.target.value ? Number(e.target.value) : null,
-                      })
-                    }
-                  >
-                    <option value="" disabled>
-                      Пользователь
-                    </option>
-                    {users
-                      .filter((user) => user.id !== undefined)
-                      .map((user) => (
-                        <option key={user.id} value={user.id}>
-                          {user.name}
-                        </option>
-                      ))}
-                  </select>
-                </div>
-                <div className="flex gap-[0.7rem] max-[900px]:flex-col">
-                  <div className="flex flex-col">
-                    <Input
-                      type="date"
-                      name="startDate"
-                      className="w-fit"
-                      placeholder="Дата начала"
-                      value={newPlan.startDate}
-                      onChange={(e) =>
-                        setNewPlan({
-                          ...newPlan,
-                          startDate: e.target.value,
-                        })
-                      }
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <select
-                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                      value={newPlan.workSchedule}
-                      onChange={(e) =>
-                        setNewPlan({
-                          ...newPlan,
-                          workSchedule: e.target.value,
-                          adaptationPlanTemplateId: null,
-                        })
-                      }
-                    >
-                      <option value="" disabled>
-                        Режим работы
-                      </option>
-                      {availableWorkSchedules.map((schedule) => (
-                        <option key={schedule} value={schedule}>
-                          {schedule}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                  <div className="flex flex-col">
-                    <select
-                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                      value={newPlan.adaptationPlanTemplateId ?? ""}
-                      onChange={(e) => {
-                        const templateId = e.target.value
-                          ? Number(e.target.value)
-                          : null;
-                        setNewPlan({
-                          ...newPlan,
-                          adaptationPlanTemplateId: templateId,
-                        });
-                      }}
-                      disabled={!newPlan.workSchedule}
-                    >
-                      <option value="" disabled>
-                        План адаптации
-                      </option>
-                      {filteredCreateTemplates.map((template) => (
-                        <option key={template.id} value={template.id}>
-                          {template.name} (смена:{" "}
-                          {[...template.shifts]
-                            .sort((a, b) => a - b)
-                            .join(", ")}
-                          )
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="flex gap-[0.7rem] max-[900px]:flex-col">
-                  <div className="flex flex-col">
-                    <select
-                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                      value={newPlan.mentor ?? ""}
-                      onChange={(e) =>
-                        setNewPlan({
-                          ...newPlan,
-                          mentor: e.target.value
-                            ? Number(e.target.value)
-                            : null,
-                        })
-                      }
-                    >
-                      <option value="" disabled>
-                        Наставник
-                      </option>
-                      {mentors
-                        .filter((mentor) => mentor.id !== undefined)
-                        .map((mentor) => (
-                          <option key={mentor.id} value={mentor.id}>
-                            {mentor.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                  <div className="flex flex-col">
-                    <select
-                      className="box-border min-h-9 w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                      value={newPlan.departmentHead ?? ""}
-                      onChange={(e) =>
-                        setNewPlan({
-                          ...newPlan,
-                          departmentHead: e.target.value
-                            ? Number(e.target.value)
-                            : null,
-                        })
-                      }
-                    >
-                      <option value="" disabled>
-                        Руководитель отдела
-                      </option>
-                      {departmentHeads
-                        .filter((head) => head.id !== undefined)
-                        .map((head) => (
-                          <option key={head.id} value={head.id}>
-                            {head.name}
-                          </option>
-                        ))}
-                    </select>
-                  </div>
-                </div>
-                <div className="flex items-center gap-3 max-[900px]:flex-col max-[900px]:items-start">
-                  <ButtonSubmit loading={isCreatingPlan} className="self-start">
-                    Создать
-                  </ButtonSubmit>
-                  <FormActionStatus
-                    type={createStatusType}
-                    message={createStatusMessage}
+      <div className="sticky mt-10">
+        <Card>
+          <CardContent>
+            <FieldGroup className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="interns-search">Поиск</FieldLabel>
+                <InputGroup>
+                  <InputGroupAddon>
+                    <SearchIcon />
+                  </InputGroupAddon>
+                  <InputGroupInput
+                    id="interns-search"
+                    placeholder="Имя, отдел, наставник, план..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                   />
-                </div>
-              </form>
-            )}
-          </div>
-        )}
-        {!isLoading && !isError && adaptationPlans.length === 0 && (
-          <DataMessage type={"noData"} />
-        )}
-        {!isLoading && !isError && adaptationPlans.length > 0 && (
-          <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 overflow-y-auto pr-1">
-            {filteredPlans.map((plan) => (
-              <div
-                key={plan.id}
-                className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-4"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <div className="text-base font-semibold text-[var(--mfc-black-color)]">
-                    {plan.user?.name || "Пользователь без имени"}
-                  </div>
-                  <div className="ml-auto flex gap-[0.4rem]">
-                    <IconButton
-                      type="edit"
-                      onClick={() =>
-                        navigate(
-                          ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
-                            ":planId",
-                            String(plan.id),
-                          ),
-                        )
-                      }
-                    />
-                  </div>
-                </div>
-                <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
-                  ID пользователя: {plan.user_id}
-                </div>
-                {plan.template && (
-                  <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
-                    План: {plan.template.name} ({plan.template.work_schedule})
-                  </div>
-                )}
-                <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
-                  Наставник:{" "}
-                  {plan.mentor_user?.name ??
-                    mentors.find((mentor) => mentor.id === plan.mentor)?.name ??
-                    "Не назначен"}
-                </div>
-                <div className="m-0 text-sm text-[var(--mfc-gray-color)]">
-                  Руководитель отдела:{" "}
-                  {plan.department_head_user?.name ??
-                    departmentHeads.find(
-                      (head) => head.id === plan.department_head,
-                    )?.name ??
-                    "Не назначен"}
-                </div>
-              </div>
-            ))}
-            {hasSearch && filteredPlans.length === 0 && (
-              <p className="mx-auto mt-2 w-fit rounded-xl border border-[var(--mfc-create-field-border)] bg-[var(--mfc-surface-color)] px-4 py-3 text-center text-[var(--mfc-gray-color)]">
-                Стажер "{search}" не найден
-              </p>
-            )}
-          </div>
-        )}
+                  {hasSearch && (
+                    <InputGroupAddon align="inline-end">
+                      <InputGroupButton
+                        aria-label="Очистить поиск"
+                        onClick={() => setSearch("")}
+                      >
+                        <XIcon />
+                      </InputGroupButton>
+                    </InputGroupAddon>
+                  )}
+                </InputGroup>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="interns-schedule">Режим работы</FieldLabel>
+                <Select
+                  value={scheduleFilter}
+                  onValueChange={setScheduleFilter}
+                >
+                  <SelectTrigger id="interns-schedule" className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value={ALL_SCHEDULES}>
+                      Все режимы работы
+                    </SelectItem>
+                    {workScheduleOptions.map((schedule) => (
+                      <SelectItem key={schedule} value={schedule}>
+                        {schedule}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </FieldGroup>
+            <div className="mt-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link to={ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE}>
+                  <PlusIcon />
+                  Создать план
+                </Link>
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {isError && <DataMessage type="error" />}
+      {isLoading && <Loader />}
+
+      {plansData && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Имя стажера</TableHead>
+              <TableHead>Отдел</TableHead>
+              <TableHead>Дата начала</TableHead>
+              <TableHead>План адаптации</TableHead>
+              <TableHead>Наставник</TableHead>
+              <TableHead>Руководитель</TableHead>
+              <TableHead className="text-right">Действия</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredPlans.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={7} className="h-24 text-center">
+                  {hasSearch ? (
+                    <p className="text-sm text-muted-foreground">
+                      Стажер «{search}» не найден
+                    </p>
+                  ) : scheduleFilter !== ALL_SCHEDULES ? (
+                    <p className="text-sm text-muted-foreground">
+                      Нет стажеров с режимом работы «{scheduleFilter}»
+                    </p>
+                  ) : (
+                    <DataMessage type="noData" />
+                  )}
+                </TableCell>
+              </TableRow>
+            ) : (
+              filteredPlans.map((plan) => (
+                <InternRow
+                  key={plan.id}
+                  plan={plan}
+                  mentorName={getPersonName(
+                    plan.mentor_user,
+                    plan.mentor,
+                    mentorNames,
+                  )}
+                  headName={getPersonName(
+                    plan.department_head_user,
+                    plan.department_head,
+                    headNames,
+                  )}
+                />
+              ))
+            )}
+          </TableBody>
+        </Table>
+      )}
     </>
   );
 }

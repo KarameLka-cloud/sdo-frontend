@@ -1,4 +1,4 @@
-import { FormEvent, JSX, useEffect, useMemo, useState } from "react";
+import { FormEvent, JSX, useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { ArrowLeftIcon } from "lucide-react";
 import { toast } from "sonner";
@@ -17,17 +17,11 @@ import { Badge } from "@/components/ui/badge";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldGroup } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -40,27 +34,16 @@ import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import { cn } from "@/lib/utils";
 
-interface RoleItem {
-  name: string;
-  label: string;
-}
-
-type DataMessageType = "error" | "noData";
+const NO_ROLE_VALUE = "__no_rights__";
 
 const parseUserId = (value: string | undefined): number | null => {
   const parsed = Number(value);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
 };
 
-const getInitials = (name?: string): string => {
-  if (!name) return "?";
-
-  return name
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
+const getInitials = (name?: string) => {
+  const [first = "", second = ""] = (name ?? "").split(" ");
+  return `${second.charAt(0)}${first.charAt(0)}`.toUpperCase();
 };
 
 function BackToUsersLink({ className }: { className?: string }) {
@@ -73,14 +56,6 @@ function BackToUsersLink({ className }: { className?: string }) {
   );
 }
 
-function UserRoleBadge({ user }: { user: UserType }) {
-  if (user.role_name) {
-    return <Badge variant="destructive">{user.role_name}</Badge>;
-  }
-
-  return <Badge variant="secondary">Пользователь</Badge>;
-}
-
 function UserInfoItem({ label, value }: { label: string; value?: string }) {
   return (
     <div className="flex flex-col gap-1">
@@ -90,46 +65,29 @@ function UserInfoItem({ label, value }: { label: string; value?: string }) {
   );
 }
 
-function UserEditState({
-  type,
-  withBackLink = true,
-}: {
-  type: DataMessageType;
-  withBackLink?: boolean;
-}) {
-  return (
-    <div className="flex flex-col gap-4">
-      <DataMessage type={type} />
-      {withBackLink && <BackToUsersLink />}
-    </div>
-  );
-}
-
 function UserProfileCard({ user }: { user: UserType }) {
   return (
     <Card>
       <CardHeader>
-        <div className="flex items-start gap-4">
+        <div className="flex items-center gap-4">
           <Avatar size="lg">
             <AvatarFallback>{getInitials(user.name)}</AvatarFallback>
           </Avatar>
           <div className="flex min-w-0 flex-1 flex-col gap-1">
             <div className="flex flex-wrap items-center gap-2">
               <CardTitle className="text-lg">{user.name}</CardTitle>
-              <UserRoleBadge user={user} />
+              <Badge variant={user.role_name ? "destructive" : "secondary"}>
+                {user.role_name ?? "Пользователь"}
+              </Badge>
             </div>
           </div>
         </div>
       </CardHeader>
       <CardContent>
-        <dl className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <dl className="grid grid-cols-1 gap-4 sm:grid-cols-3">
           <UserInfoItem label="Логин" value={user.login} />
+          <UserInfoItem label="Описание" value={user.description} />
           <UserInfoItem label="Отдел" value={user.department} />
-          {user.description && (
-            <div className="sm:col-span-2 lg:col-span-3">
-              <UserInfoItem label="Описание" value={user.description} />
-            </div>
-          )}
         </dl>
       </CardContent>
     </Card>
@@ -137,54 +95,44 @@ function UserProfileCard({ user }: { user: UserType }) {
 }
 
 function UserRoleForm({
-  user,
+  currentRole,
   roles,
   selectedRole,
   onRoleChange,
   onSave,
-  onRevoke,
-  isAssigning,
-  isRevoking,
+  isSaving,
 }: {
-  user: UserType;
-  roles: RoleItem[];
+  currentRole: string;
+  roles: { name: string; label: string }[];
   selectedRole: string;
   onRoleChange: (role: string) => void;
   onSave: () => void;
-  onRevoke: () => void;
-  isAssigning: boolean;
-  isRevoking: boolean;
+  isSaving: boolean;
 }) {
-  const isSaving = isAssigning || isRevoking;
-  const hasRoleChanged = selectedRole !== (user.role ?? "");
-
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSave();
   };
 
   return (
-    <Card>
+    <Card className="w-1/4">
       <CardHeader>
         <CardTitle>Роль</CardTitle>
-        <CardDescription>
-          Назначьте или измените роль пользователя в системе
-        </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent>
+        <CardContent className="p-4">
           <FieldGroup>
             <Field>
-              <FieldLabel htmlFor="user-role">Роль пользователя</FieldLabel>
               <Select
-                value={selectedRole || undefined}
+                value={selectedRole}
                 onValueChange={onRoleChange}
-                disabled={isSaving || roles.length === 0}
+                disabled={isSaving}
               >
                 <SelectTrigger id="user-role" className="w-full">
                   <SelectValue placeholder="Выберите роль" />
                 </SelectTrigger>
                 <SelectContent>
+                  <SelectItem value={NO_ROLE_VALUE}>Нет прав</SelectItem>
                   {roles.map((role) => (
                     <SelectItem key={role.name} value={role.name}>
                       {role.label}
@@ -192,34 +140,18 @@ function UserRoleForm({
                   ))}
                 </SelectContent>
               </Select>
-              <FieldDescription>
-                {roles.length === 0
-                  ? "Список ролей недоступен"
-                  : "Роль определяет доступ к разделам администрирования и наставничества"}
-              </FieldDescription>
             </Field>
           </FieldGroup>
         </CardContent>
         <Separator />
-        <CardFooter className="flex flex-wrap gap-2">
+        <CardFooter>
           <Button
             type="submit"
-            disabled={!selectedRole || !hasRoleChanged || isSaving}
+            disabled={selectedRole === currentRole || isSaving}
           >
-            {isAssigning && <Spinner />}
+            {isSaving && <Spinner />}
             Сохранить
           </Button>
-          {user.role && (
-            <Button
-              type="button"
-              variant="destructive"
-              onClick={onRevoke}
-              disabled={isSaving}
-            >
-              {isRevoking && <Spinner />}
-              Отобрать права
-            </Button>
-          )}
         </CardFooter>
       </form>
     </Card>
@@ -234,25 +166,38 @@ function UserEdit(): JSX.Element {
   const { data: rolesData } = useGetRolesQuery("");
   const [assignRole, { isLoading: isAssigning }] = useAssignRoleMutation();
   const [revokeRole, { isLoading: isRevoking }] = useRevokeRoleMutation();
-
-  const [selectedRole, setSelectedRole] = useState("");
+  const [selectedRole, setSelectedRole] = useState(NO_ROLE_VALUE);
 
   const users = (data as UserType[] | undefined) ?? [];
-  const user = useMemo(
-    () =>
-      parsedUserId ? users.find((item) => item.id === parsedUserId) : undefined,
-    [users, parsedUserId],
-  );
-  const roles: RoleItem[] = rolesData?.data ?? [];
+  const user = parsedUserId
+    ? users.find((item) => item.id === parsedUserId)
+    : undefined;
+  const roles = rolesData?.data ?? [];
+  const currentRole = user?.role ?? NO_ROLE_VALUE;
+  const isSaving = isAssigning || isRevoking;
 
   useEffect(() => {
-    setSelectedRole(user?.role ?? "");
-  }, [user?.role, user?.id]);
+    if (user) {
+      setSelectedRole(user.role ?? NO_ROLE_VALUE);
+    }
+  }, [user]);
 
   const handleSaveRole = async () => {
-    if (!user?.id || !selectedRole || selectedRole === (user.role ?? "")) {
+    if (!user?.id) return;
+
+    if (selectedRole === NO_ROLE_VALUE) {
+      if (!user.role) return;
+
+      try {
+        await revokeRole({ user_id: user.id, role: user.role }).unwrap();
+        toast.success("Права отозваны");
+      } catch {
+        toast.error("Не удалось отозвать права");
+      }
       return;
     }
+
+    if (selectedRole === user.role) return;
 
     try {
       await assignRole({ user_id: user.id, role: selectedRole }).unwrap();
@@ -262,19 +207,13 @@ function UserEdit(): JSX.Element {
     }
   };
 
-  const handleRevokeRole = async () => {
-    if (!user?.id || !user.role) return;
-
-    try {
-      await revokeRole({ user_id: user.id, role: user.role }).unwrap();
-      toast.success("Права отозваны");
-    } catch {
-      toast.error("Не удалось отозвать права");
-    }
-  };
-
   if (!parsedUserId) {
-    return <UserEditState type="error" />;
+    return (
+      <div className="flex flex-col gap-4">
+        <DataMessage type="error" />
+        <BackToUsersLink />
+      </div>
+    );
   }
 
   if (isLoading) {
@@ -282,28 +221,29 @@ function UserEdit(): JSX.Element {
   }
 
   if (error) {
-    return <UserEditState type="error" withBackLink={false} />;
+    return <DataMessage type="error" />;
   }
 
   if (!user) {
-    return <UserEditState type="noData" />;
+    return (
+      <div className="flex flex-col gap-4">
+        <DataMessage type="noData" />
+        <BackToUsersLink />
+      </div>
+    );
   }
 
   return (
     <div className="flex w-full flex-col gap-6">
       <BackToUsersLink />
-
       <UserProfileCard user={user} />
-
       <UserRoleForm
-        user={user}
+        currentRole={currentRole}
         roles={roles}
         selectedRole={selectedRole}
         onRoleChange={setSelectedRole}
         onSave={handleSaveRole}
-        onRevoke={handleRevokeRole}
-        isAssigning={isAssigning}
-        isRevoking={isRevoking}
+        isSaving={isSaving}
       />
     </div>
   );

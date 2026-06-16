@@ -1,40 +1,31 @@
-import { JSX, useMemo } from "react";
+import { JSX } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import dateNow from "@/utils/dateNow.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Типы вынесены в отдельную область
-interface AdaptationTask {
-  id: number;
-  status?: "выполнено" | "не выполнено";
-}
-
-interface AdaptationDay {
-  completion: "в процессе" | "выполнен" | "повторить" | "есть замечания";
-  tasks?: AdaptationTask[];
-}
-
-interface AdaptationPlanResponse {
+interface AdaptationPlan {
   id?: number;
-  days?: AdaptationDay[];
+  days?: { tasks?: { status?: string }[] }[];
 }
 
-const SVG_CONFIG = {
-  VIEW_BOX_SIZE: 100,
-  RADIUS: 45,
-  STROKE_WIDTH: 10,
-  COLOR_BG: "#e2e8f0",
-  COLOR_PRIMARY: "#000000",
-} as const;
+const RADIUS = 45;
+const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
+
+function getAdaptationProgress(plan?: AdaptationPlan | null) {
+  const tasks = (plan?.days ?? []).flatMap((day) => day.tasks ?? []);
+  if (tasks.length === 0) return null;
+
+  const completedTasks = tasks.filter((t) => t.status === "выполнено").length;
+  return {
+    percent: Math.round((completedTasks / tasks.length) * 100),
+    completedTasks,
+    totalTasks: tasks.length,
+  };
+}
 
 const CircularProgress = ({ percent }: { percent: number }): JSX.Element => {
-  const { RADIUS, VIEW_BOX_SIZE, STROKE_WIDTH, COLOR_BG, COLOR_PRIMARY } =
-    SVG_CONFIG;
-  const circumference = 2 * Math.PI * RADIUS;
-  const strokeDashoffset = circumference - (percent / 100) * circumference;
-
   if (percent === 100) {
     return (
       <div className="flex aspect-square h-full w-full flex-col items-center justify-center rounded-full bg-emerald-50">
@@ -52,26 +43,26 @@ const CircularProgress = ({ percent }: { percent: number }): JSX.Element => {
     <div className="relative aspect-square h-full w-full max-w-32">
       <svg
         className="h-full w-full -rotate-90 transform"
-        viewBox={`0 0 ${VIEW_BOX_SIZE} ${VIEW_BOX_SIZE}`}
+        viewBox="0 0 100 100"
         aria-label={`Прогресс: ${percent}%`}
       >
         <circle
-          cx={VIEW_BOX_SIZE / 2}
-          cy={VIEW_BOX_SIZE / 2}
+          cx={50}
+          cy={50}
           r={RADIUS}
           fill="none"
-          stroke={COLOR_BG}
-          strokeWidth={STROKE_WIDTH}
+          stroke="#e2e8f0"
+          strokeWidth={10}
         />
         <circle
-          cx={VIEW_BOX_SIZE / 2}
-          cy={VIEW_BOX_SIZE / 2}
+          cx={50}
+          cy={50}
           r={RADIUS}
           fill="none"
-          stroke={COLOR_PRIMARY}
-          strokeWidth={STROKE_WIDTH}
-          strokeDasharray={circumference}
-          strokeDashoffset={strokeDashoffset}
+          stroke="#000000"
+          strokeWidth={10}
+          strokeDasharray={CIRCUMFERENCE}
+          strokeDashoffset={CIRCUMFERENCE * (1 - percent / 100)}
           strokeLinecap="round"
           style={{ transition: "stroke-dashoffset 0.5s ease" }}
         />
@@ -85,61 +76,16 @@ const CircularProgress = ({ percent }: { percent: number }): JSX.Element => {
   );
 };
 
-const EmptyAdaptationPlan = (): JSX.Element => (
-  <div
-    className="flex h-full items-center justify-center rounded-3xl border border-border bg-muted/60 px-4 py-6 text-sm text-muted-foreground"
-    role="status"
-    aria-label="План адаптации не назначен"
-  >
-    План адаптации не назначен
-  </div>
-);
-
-const useAdaptationProgress = (
-  plan: AdaptationPlanResponse | null | undefined,
-) => {
-  return useMemo(() => {
-    const days = Array.isArray(plan?.days) ? plan.days : [];
-
-    const totalTasks = days.reduce((sum, day) => {
-      return sum + (Array.isArray(day.tasks) ? day.tasks.length : 0);
-    }, 0);
-
-    if (totalTasks === 0) {
-      return null;
-    }
-
-    const completedTasks = days.reduce((sum, day) => {
-      if (!Array.isArray(day.tasks)) return sum;
-      return (
-        sum + day.tasks.filter((task) => task.status === "выполнено").length
-      );
-    }, 0);
-
-    return {
-      percent: Math.round((completedTasks / totalTasks) * 100),
-      completedTasks,
-      totalTasks,
-    };
-  }, [plan]);
-};
-
 function Home(): JSX.Element {
   const { name, department, description } = useUser();
-  const { data: myAdaptationPlan, isLoading: isAdaptationLoading } =
-    useGetMyAdaptationPlanQuery(undefined);
+  const { data: plan, isLoading } = useGetMyAdaptationPlanQuery(undefined);
 
-  const plan = myAdaptationPlan as AdaptationPlanResponse | null | undefined;
-  const adaptationProgress = useAdaptationProgress(plan);
-  const hasAdaptationPlan = useMemo(
-    () => Boolean(plan && typeof plan.id === "number" && plan.id > 0),
-    [plan],
-  );
+  const adaptationPlan = plan as AdaptationPlan | undefined;
+  const progress = getAdaptationProgress(adaptationPlan);
+  const hasPlan = Boolean(adaptationPlan?.id && adaptationPlan.id > 0);
 
-  const shortName = useMemo(() => {
-    const nameParts = name.trim().split(/\s+/);
-    return nameParts[1] || nameParts[0] || "Пользователь";
-  }, [name]);
+  const nameParts = name.trim().split(/\s+/);
+  const shortName = nameParts[1] || nameParts[0] || "Пользователь";
 
   return (
     <div className="h-full px-6 py-6">
@@ -169,15 +115,14 @@ function Home(): JSX.Element {
 
         <Card className="overflow-hidden px-4 py-6">
           <CardContent className="h-full">
-            {isAdaptationLoading ? (
-              <div className="flex w-full max-w-xs flex-col gap-2">
-                <Skeleton className="h-4 w-full" />
+            {isLoading ? (
+              <div className="flex h-full flex-col justify-between">
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-full" />
                 <Skeleton className="h-4 w-3/4" />
               </div>
-            ) : hasAdaptationPlan && adaptationProgress ? (
+            ) : hasPlan && progress ? (
               <div className="flex h-full items-center justify-between gap-6">
                 <div className="flex h-full flex-col justify-between">
                   <CardTitle>Прогресс адаптации</CardTitle>
@@ -186,18 +131,22 @@ function Home(): JSX.Element {
                       Выполнено задач
                     </p>
                     <p className="text-3xl font-semibold text-foreground">
-                      {adaptationProgress.completedTasks} /{" "}
-                      {adaptationProgress.totalTasks}
+                      {progress.completedTasks} / {progress.totalTasks}
                     </p>
                   </div>
                 </div>
-
                 <div className="flex h-full items-center justify-center">
-                  <CircularProgress percent={adaptationProgress.percent} />
+                  <CircularProgress percent={progress.percent} />
                 </div>
               </div>
             ) : (
-              <EmptyAdaptationPlan />
+              <div
+                className="flex h-full items-center justify-center rounded-3xl border border-border bg-muted/60 px-4 py-6 text-sm text-muted-foreground"
+                role="status"
+                aria-label="План адаптации не назначен"
+              >
+                План адаптации не назначен
+              </div>
             )}
           </CardContent>
         </Card>
