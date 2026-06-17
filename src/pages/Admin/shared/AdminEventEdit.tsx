@@ -1,4 +1,4 @@
-import { FormEvent, JSX, useEffect, useState } from "react";
+import { FormEvent, JSX, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { EventType } from "@/interfaces/api/EventType.ts";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -36,10 +37,10 @@ import {
   AdminDomain,
   EVENT_ROUTES,
   parseEntityId,
-  toDateInputValue,
-  toTimeInputValue,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
+import { mapEventToFormValues } from "@/pages/Admin/shared/adminEditFormMappers.ts";
+import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
 
 const HOOKS = {
   education: {
@@ -92,19 +93,27 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState("");
 
-  const event = eventData as EventType | undefined;
+  const event =
+    eventData && eventData.id === id ? (eventData as EventType) : undefined;
 
-  useEffect(() => {
-    if (!event) return;
-    setTitle(event.title);
-    setDescription(event.description ?? "");
-    setLink(event.link ?? "");
-    setDepartmentId(event.department_id ? String(event.department_id) : "");
-    setNoteDepartment(event.note_department ?? "");
-    setDate(toDateInputValue(event.date));
-    setTime(toTimeInputValue(event.time));
-    setDuration(String(event.duration));
-  }, [event]);
+  const populateForm = useCallback((item: EventType) => {
+    const values = mapEventToFormValues(item);
+    setTitle(values.title);
+    setDescription(values.description);
+    setLink(values.link);
+    setDepartmentId(values.departmentId);
+    setNoteDepartment(values.noteDepartment);
+    setDate(values.date);
+    setTime(values.time);
+    setDuration(values.duration);
+  }, []);
+
+  const isFormPopulated = usePopulateEditForm(
+    id,
+    event,
+    !isDepartmentsLoading,
+    populateForm,
+  );
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
@@ -152,7 +161,7 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     <AdminFormPage
       backTo={routes.list}
       backLabel="К списку мероприятий"
-      isLoading={isLoading || isDepartmentsLoading}
+      isLoading={isLoading || isDepartmentsLoading || !isFormPopulated}
       isError={isError || !event}
     >
       <Card>
@@ -174,7 +183,7 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                 <FieldLabel htmlFor="event-description">
                   Описание
                 </FieldLabel>
-                <Input
+                <Textarea
                   id="event-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}

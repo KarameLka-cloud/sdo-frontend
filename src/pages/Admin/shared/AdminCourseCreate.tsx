@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -44,6 +45,7 @@ function AdminCourseCreate({ domain }: { domain: AdminDomain }): JSX.Element {
     useGetDepartmentsQuery("");
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [departmentId, setDepartmentId] = useState("");
   const [noteDepartment, setNoteDepartment] = useState("");
@@ -64,6 +66,7 @@ function AdminCourseCreate({ domain }: { domain: AdminDomain }): JSX.Element {
     try {
       await addCourse({
         title: title.trim(),
+        description: description.trim() || undefined,
         link: link.trim(),
         department_id: Number(departmentId),
         note_department: noteDepartment.trim() || undefined,
@@ -96,6 +99,15 @@ function AdminCourseCreate({ domain }: { domain: AdminDomain }): JSX.Element {
                   id="course-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="course-description">Описание</FieldLabel>
+                <Textarea
+                  id="course-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>

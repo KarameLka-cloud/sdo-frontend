@@ -1,4 +1,4 @@
-import { FormEvent, JSX, useEffect, useState } from "react";
+import { FormEvent, JSX, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { TestType } from "@/interfaces/api/TestType.ts";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -36,9 +37,10 @@ import {
   AdminDomain,
   TEST_ROUTES,
   parseEntityId,
-  toDateInputValue,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
+import { mapTestToFormValues } from "@/pages/Admin/shared/adminEditFormMappers.ts";
+import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
 
 const HOOKS = {
   education: {
@@ -83,23 +85,33 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     useGetPositionsQuery("");
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [positionId, setPositionId] = useState("");
   const [notePosition, setNotePosition] = useState("");
   const [date, setDate] = useState("");
   const [duration, setDuration] = useState("");
 
-  const test = testData as TestType | undefined;
+  const test =
+    testData && testData.id === id ? (testData as TestType) : undefined;
 
-  useEffect(() => {
-    if (!test) return;
-    setTitle(test.title);
-    setLink(test.link);
-    setPositionId(test.position_id ? String(test.position_id) : "");
-    setNotePosition(test.note_position ?? "");
-    setDate(toDateInputValue(test.date));
-    setDuration(String(test.duration));
-  }, [test]);
+  const populateForm = useCallback((item: TestType) => {
+    const values = mapTestToFormValues(item);
+    setTitle(values.title);
+    setDescription(values.description);
+    setLink(values.link);
+    setPositionId(values.positionId);
+    setNotePosition(values.notePosition);
+    setDate(values.date);
+    setDuration(values.duration);
+  }, []);
+
+  const isFormPopulated = usePopulateEditForm(
+    id,
+    test,
+    !isPositionsLoading,
+    populateForm,
+  );
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
@@ -117,6 +129,7 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
       await updateTest({
         id,
         title: title.trim(),
+        description: description.trim() || undefined,
         link: link.trim(),
         position_id: Number(positionId),
         note_position: notePosition.trim() || undefined,
@@ -146,7 +159,7 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     <AdminFormPage
       backTo={routes.list}
       backLabel="К списку тестов"
-      isLoading={isLoading || isPositionsLoading}
+      isLoading={isLoading || isPositionsLoading || !isFormPopulated}
       isError={isError || !test}
     >
       <Card>
@@ -162,6 +175,15 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                   id="test-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="test-description">Описание</FieldLabel>
+                <Textarea
+                  id="test-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>

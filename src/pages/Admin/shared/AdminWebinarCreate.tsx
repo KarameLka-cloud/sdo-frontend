@@ -12,6 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
@@ -23,6 +24,7 @@ function AdminWebinarCreate(): JSX.Element {
     useAddEducationWebinarMutation();
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
@@ -40,6 +42,7 @@ function AdminWebinarCreate(): JSX.Element {
     try {
       await addWebinar({
         title: title.trim(),
+        description: description.trim() || undefined,
         link: link.trim() || undefined,
         date,
         time: time || undefined,
@@ -70,6 +73,15 @@ function AdminWebinarCreate(): JSX.Element {
                   id="webinar-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="webinar-description">Описание</FieldLabel>
+                <Textarea
+                  id="webinar-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>

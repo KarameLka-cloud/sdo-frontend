@@ -174,7 +174,7 @@ function UniversalCard({
 
   const fields = getFields();
   const description =
-    type === "event" ? (item as EventType).description : undefined;
+    "description" in item ? item.description : undefined;
 
   const getIconColor = (iconType: string) => {
     const colors: Record<string, string> = {
@@ -239,7 +239,7 @@ function UniversalCard({
           ))}
         </div>
 
-        {hasLink && (
+        {hasLink ? (
           <a
             href={link!.trim()}
             target="_blank"
@@ -249,6 +249,15 @@ function UniversalCard({
             <span>Ссылка</span>
             <ExternalLink className="h-3 w-3 opacity-70" />
           </a>
+        ) : (
+          <button
+            type="button"
+            disabled
+            className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium mt-4 bg-gray-100 text-gray-400 cursor-not-allowed"
+          >
+            <span>Ссылка</span>
+            <ExternalLink className="h-3 w-3 opacity-70" />
+          </button>
         )}
       </div>
     </div>

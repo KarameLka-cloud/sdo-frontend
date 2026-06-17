@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -44,6 +45,7 @@ function AdminTestCreate({ domain }: { domain: AdminDomain }): JSX.Element {
     useGetPositionsQuery("");
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [positionId, setPositionId] = useState("");
   const [notePosition, setNotePosition] = useState("");
@@ -64,6 +66,7 @@ function AdminTestCreate({ domain }: { domain: AdminDomain }): JSX.Element {
     try {
       await addTest({
         title: title.trim(),
+        description: description.trim() || undefined,
         link: link.trim(),
         position_id: Number(positionId),
         note_position: notePosition.trim() || undefined,
@@ -96,6 +99,15 @@ function AdminTestCreate({ domain }: { domain: AdminDomain }): JSX.Element {
                   id="test-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="test-description">Описание</FieldLabel>
+                <Textarea
+                  id="test-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>

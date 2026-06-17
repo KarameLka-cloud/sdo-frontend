@@ -1,4 +1,4 @@
-import { FormEvent, JSX, useEffect, useState } from "react";
+import { FormEvent, JSX, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { CourseType } from "@/interfaces/api/CourseType.ts";
@@ -22,6 +22,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -36,9 +37,10 @@ import {
   AdminDomain,
   COURSE_ROUTES,
   parseEntityId,
-  toDateInputValue,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
+import { mapCourseToFormValues } from "@/pages/Admin/shared/adminEditFormMappers.ts";
+import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
 
 const HOOKS = {
   education: {
@@ -83,23 +85,33 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     useGetDepartmentsQuery("");
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [departmentId, setDepartmentId] = useState("");
   const [noteDepartment, setNoteDepartment] = useState("");
   const [date, setDate] = useState("");
   const [duration, setDuration] = useState("");
 
-  const course = courseData as CourseType | undefined;
+  const course =
+    courseData && courseData.id === id ? (courseData as CourseType) : undefined;
 
-  useEffect(() => {
-    if (!course) return;
-    setTitle(course.title);
-    setLink(course.link);
-    setDepartmentId(course.department_id ? String(course.department_id) : "");
-    setNoteDepartment(course.note_department ?? "");
-    setDate(toDateInputValue(course.date));
-    setDuration(String(course.duration));
-  }, [course]);
+  const populateForm = useCallback((item: CourseType) => {
+    const values = mapCourseToFormValues(item);
+    setTitle(values.title);
+    setDescription(values.description);
+    setLink(values.link);
+    setDepartmentId(values.departmentId);
+    setNoteDepartment(values.noteDepartment);
+    setDate(values.date);
+    setDuration(values.duration);
+  }, []);
+
+  const isFormPopulated = usePopulateEditForm(
+    id,
+    course,
+    !isDepartmentsLoading,
+    populateForm,
+  );
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
@@ -117,6 +129,7 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
       await updateCourse({
         id,
         title: title.trim(),
+        description: description.trim() || undefined,
         link: link.trim(),
         department_id: Number(departmentId),
         note_department: noteDepartment.trim() || undefined,
@@ -146,7 +159,7 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     <AdminFormPage
       backTo={routes.list}
       backLabel="К списку курсов"
-      isLoading={isLoading || isDepartmentsLoading}
+      isLoading={isLoading || isDepartmentsLoading || !isFormPopulated}
       isError={isError || !course}
     >
       <Card>
@@ -162,6 +175,15 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                   id="course-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="course-description">Описание</FieldLabel>
+                <Textarea
+                  id="course-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>

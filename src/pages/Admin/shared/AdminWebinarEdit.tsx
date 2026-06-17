@@ -1,4 +1,4 @@
-import { FormEvent, JSX, useEffect, useState } from "react";
+import { FormEvent, JSX, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
@@ -15,16 +15,17 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@/components/ui/separator";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import AdminEditFormFooter from "@/pages/Admin/shared/components/AdminEditFormFooter";
 import {
   WEBINAR_ROUTES,
   parseEntityId,
-  toDateInputValue,
-  toTimeInputValue,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
+import { mapWebinarToFormValues } from "@/pages/Admin/shared/adminEditFormMappers.ts";
+import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
 
 const DELETE_MESSAGES = {
   confirm: "Удалить вебинар?",
@@ -52,21 +53,28 @@ function AdminWebinarEdit(): JSX.Element {
   );
 
   const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
   const [link, setLink] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [duration, setDuration] = useState("");
 
-  const webinar = webinarData as WebinarType | undefined;
+  const webinar =
+    webinarData && webinarData.id === id
+      ? (webinarData as WebinarType)
+      : undefined;
 
-  useEffect(() => {
-    if (!webinar) return;
-    setTitle(webinar.title);
-    setLink(webinar.link ?? "");
-    setDate(toDateInputValue(webinar.date));
-    setTime(toTimeInputValue(webinar.time));
-    setDuration(String(webinar.duration));
-  }, [webinar]);
+  const populateForm = useCallback((item: WebinarType) => {
+    const values = mapWebinarToFormValues(item);
+    setTitle(values.title);
+    setDescription(values.description);
+    setLink(values.link);
+    setDate(values.date);
+    setTime(values.time);
+    setDuration(values.duration);
+  }, []);
+
+  const isFormPopulated = usePopulateEditForm(id, webinar, true, populateForm);
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
     formEvent.preventDefault();
@@ -82,6 +90,7 @@ function AdminWebinarEdit(): JSX.Element {
       await updateWebinar({
         id,
         title: title.trim(),
+        description: description.trim() || undefined,
         link: link.trim() || undefined,
         date,
         time: time || undefined,
@@ -110,7 +119,7 @@ function AdminWebinarEdit(): JSX.Element {
     <AdminFormPage
       backTo={WEBINAR_ROUTES.list}
       backLabel="К списку вебинаров"
-      isLoading={isLoading}
+      isLoading={isLoading || !isFormPopulated}
       isError={isError || !webinar}
     >
       <Card>
@@ -126,6 +135,15 @@ function AdminWebinarEdit(): JSX.Element {
                   id="webinar-title"
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="webinar-description">Описание</FieldLabel>
+                <Textarea
+                  id="webinar-description"
+                  value={description}
+                  onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>

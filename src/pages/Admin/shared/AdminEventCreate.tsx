@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -105,7 +106,7 @@ function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
                 <FieldLabel htmlFor="event-description">
                   Описание
                 </FieldLabel>
-                <Input
+                <Textarea
                   id="event-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
