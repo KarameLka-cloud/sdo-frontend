@@ -53,8 +53,11 @@ type UsersTab = keyof typeof TABS;
 const TAB_IDS = Object.keys(TABS) as UsersTab[];
 
 const filterByTab = (users: UserType[], tab: UsersTab) => {
-  const role = TABS[tab].role;
-  return role ? users.filter((user) => isUserInRole(user, role)) : users;
+  const tabConfig = TABS[tab];
+  if (!("role" in tabConfig) || !tabConfig.role) {
+    return users;
+  }
+  return users.filter((user) => isUserInRole(user, tabConfig.role));
 };
 
 const UserRow = ({ user }: { user: UserType }) => (
@@ -161,13 +164,16 @@ function Users(): JSX.Element {
                     <p className="text-sm text-muted-foreground">
                       Пользователь «{search}» не найден
                     </p>
-                  ) : TABS[activeTab].role ? (
-                    <p className="text-sm text-muted-foreground">
-                      Нет пользователей с ролью «{TABS[activeTab].label}»
-                    </p>
-                  ) : (
-                    <DataMessage type="noData" />
-                  )}
+                  ) : (() => {
+                    const tabConfig = TABS[activeTab];
+                    return "role" in tabConfig ? (
+                      <p className="text-sm text-muted-foreground">
+                        Нет пользователей с ролью «{tabConfig.label}»
+                      </p>
+                    ) : (
+                      <DataMessage type="noData" />
+                    );
+                  })()}
                 </TableCell>
               </TableRow>
             ) : (

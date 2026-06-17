@@ -8,7 +8,7 @@ import Login from "@/pages/Auth/Login.tsx";
 import { COOKIE_NAMES } from "@/constants/api.ts";
 import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
-import { hasRole, USER_ROLES } from "@/constants/roles.ts";
+import { hasAnyRoleFromUser, MENTOR_ACCESS_ROLES } from "@/constants/roles.ts";
 import { homeRoutes } from "./homeRoutes.tsx";
 import { adminRoutes } from "./adminRoutes.tsx";
 import { mentorshipRoutes } from "./mentorshipRoutes.tsx";
@@ -25,11 +25,7 @@ function MentorshipRedirect() {
     return null;
   }
 
-  if (
-    hasRole(role, roleName, USER_ROLES.ADMIN) ||
-    hasRole(role, roleName, USER_ROLES.MENTOR) ||
-    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD)
-  ) {
+  if (hasAnyRoleFromUser(role, roleName, MENTOR_ACCESS_ROLES)) {
     return <Navigate to={ROUTES.MENTORSHIP_INTERNS} replace />;
   }
 

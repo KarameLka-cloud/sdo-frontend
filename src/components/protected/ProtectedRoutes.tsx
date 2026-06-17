@@ -2,9 +2,13 @@ import { ReactElement } from "react";
 import Cookie from "js-cookie";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@/hooks/useUser.ts";
-// import Loader from "@/components/ui/custom/Loader";
 import { ROUTES } from "@/constants/routes.ts";
-import { hasRole, USER_ROLES } from "@/constants/roles.ts";
+import {
+  hasAnyRoleFromUser,
+  USER_ROLES,
+  MENTOR_ACCESS_ROLES,
+  type UserRole,
+} from "@/constants/roles.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
 import { useGetUserByDataQuery } from "@/services/store/features/user.ts";
 
@@ -57,100 +61,39 @@ const ProtectedRoute = ({
   return elementLogin;
 };
 
+interface RoleGuardProps {
+  allowedRoles: readonly UserRole[];
+  children?: ReactElement;
+}
+
+function RoleGuard({ allowedRoles, children }: RoleGuardProps) {
+  const { role, role_name: roleName, isLoading } = useUser();
+
+  if (isLoading) {
+    return null;
+  }
+
+  if (!hasAnyRoleFromUser(role, roleName, allowedRoles)) {
+    return <Navigate to={ROUTES.HOME} replace />;
+  }
+
+  return children;
+}
+
 interface ProtectedRouteAdminProps {
   elementAdmin?: ReactElement;
 }
+
+const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRouteAdminProps) => (
+  <RoleGuard allowedRoles={[USER_ROLES.ADMIN]}>{elementAdmin}</RoleGuard>
+);
 
 interface ProtectedRouteMentorProps {
   elementMentor?: ReactElement;
 }
 
-interface ProtectedRouteInternsProps {
-  elementInterns?: ReactElement;
-}
+const ProtectedRouteMentor = ({ elementMentor }: ProtectedRouteMentorProps) => (
+  <RoleGuard allowedRoles={MENTOR_ACCESS_ROLES}>{elementMentor}</RoleGuard>
+);
 
-interface ProtectedRouteMentorshipInternsAdminProps {
-  elementInternsAdmin?: ReactElement;
-}
-
-const ProtectedRouteAdmin = ({ elementAdmin }: ProtectedRouteAdminProps) => {
-  const { role, role_name: roleName, isLoading } = useUser();
-
-  if (isLoading) {
-    return;
-  }
-
-  const hasAdminAccess = hasRole(role, roleName, USER_ROLES.ADMIN);
-  if (!hasAdminAccess) {
-    return <Navigate to={ROUTES.HOME} replace />;
-  }
-
-  return elementAdmin;
-};
-
-const ProtectedRouteMentor = ({ elementMentor }: ProtectedRouteMentorProps) => {
-  const { role, role_name: roleName, isLoading } = useUser();
-
-  if (isLoading) {
-    return;
-  }
-
-  const hasAccess =
-    hasRole(role, roleName, USER_ROLES.ADMIN) ||
-    hasRole(role, roleName, USER_ROLES.MENTOR) ||
-    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
-
-  if (!hasAccess) {
-    return <Navigate to={ROUTES.HOME} replace />;
-  }
-
-  return elementMentor;
-};
-
-const ProtectedRouteInterns = ({
-  elementInterns,
-}: ProtectedRouteInternsProps) => {
-  const { role, role_name: roleName, isLoading } = useUser();
-
-  if (isLoading) {
-    return;
-  }
-
-  const hasAccess =
-    hasRole(role, roleName, USER_ROLES.MENTOR) ||
-    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
-
-  if (!hasAccess) {
-    return <Navigate to={ROUTES.HOME} replace />;
-  }
-
-  return elementInterns;
-};
-
-const ProtectedRouteMentorshipInternsAdmin = ({
-  elementInternsAdmin,
-}: ProtectedRouteMentorshipInternsAdminProps) => {
-  const { role, role_name: roleName, isLoading } = useUser();
-
-  if (isLoading) {
-    return;
-  }
-
-  const hasAccess =
-    hasRole(role, roleName, USER_ROLES.ADMIN) ||
-    hasRole(role, roleName, USER_ROLES.MENTOR) ||
-    hasRole(role, roleName, USER_ROLES.DEPARTMENT_HEAD);
-  if (!hasAccess) {
-    return <Navigate to={ROUTES.HOME} replace />;
-  }
-
-  return elementInternsAdmin;
-};
-
-export {
-  ProtectedRoute,
-  ProtectedRouteAdmin,
-  ProtectedRouteMentor,
-  ProtectedRouteInterns,
-  ProtectedRouteMentorshipInternsAdmin,
-};
+export { ProtectedRoute, ProtectedRouteAdmin, ProtectedRouteMentor, RoleGuard };

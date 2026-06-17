@@ -12,7 +12,6 @@ import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
-import convertDate from "@/utils/convertDate.ts";
 import { PencilIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -135,22 +134,10 @@ const InternRow = ({
   mentorName: string;
   headName: string;
 }) => {
-  const schedule = getWorkSchedule(plan);
-
   return (
     <TableRow>
       <TableCell className="font-medium">
         {plan.user?.name ?? "Пользователь без имени"}
-      </TableCell>
-      <TableCell className="text-muted-foreground">
-        {plan.user?.department ?? "—"}
-      </TableCell>
-      <TableCell>{convertDate(plan.start_date)}</TableCell>
-      <TableCell>
-        {plan.template?.name ?? "—"}
-        {schedule && (
-          <span className="text-muted-foreground"> ({schedule})</span>
-        )}
       </TableCell>
       <TableCell>{mentorName}</TableCell>
       <TableCell>{headName}</TableCell>
@@ -285,9 +272,6 @@ function Interns(): JSX.Element {
           <TableHeader>
             <TableRow>
               <TableHead>Имя стажера</TableHead>
-              <TableHead>Отдел</TableHead>
-              <TableHead>Дата начала</TableHead>
-              <TableHead>План адаптации</TableHead>
               <TableHead>Наставник</TableHead>
               <TableHead>Руководитель</TableHead>
               <TableHead className="text-right">Действия</TableHead>

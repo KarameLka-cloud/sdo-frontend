@@ -29,6 +29,12 @@ const ROLE_ALIASES: Record<UserRole, readonly string[]> = {
 const normalizeRoleValue = (value: string | undefined): string =>
   value?.trim().toLowerCase() ?? "";
 
+export const MENTOR_ACCESS_ROLES = [
+  USER_ROLES.ADMIN,
+  USER_ROLES.MENTOR,
+  USER_ROLES.DEPARTMENT_HEAD,
+] as const;
+
 export const hasAnyRole = (
   role: string | undefined,
   allowedRoles: readonly UserRole[],
@@ -63,6 +69,13 @@ export const hasRole = (
     aliases.includes(normalizedRole) || aliases.includes(normalizedRoleName)
   );
 };
+
+export const hasAnyRoleFromUser = (
+  role: string | undefined,
+  roleName: string | undefined,
+  allowedRoles: readonly UserRole[],
+): boolean =>
+  allowedRoles.some((allowedRole) => hasRole(role, roleName, allowedRole));
 
 export const isUserInRole = (
   user: UserRoleSource,

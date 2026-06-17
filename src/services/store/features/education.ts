@@ -1,22 +1,12 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import Cookie from "js-cookie";
-import { API_ENDPOINTS, COOKIE_NAMES } from "@constants/api.ts";
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { API_ENDPOINTS } from "@constants/api.ts";
+import { baseQuery } from "../baseQuery.ts";
 
 export const education = createApi({
   reducerPath: "education",
   tagTypes: ["Courses", "Events", "Webinars", "Tests"],
-  baseQuery: fetchBaseQuery({
-    baseUrl: import.meta.env.VITE_BACKEND_LOCATION,
-    prepareHeaders: (headers) => {
-      const token = Cookie.get(COOKIE_NAMES.AUTH_TOKEN);
-      if (token) {
-        headers.set("Authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery,
   endpoints: (builder) => ({
-    // Education courses
     getEducationCourses: builder.query({
       query: () => API_ENDPOINTS.EDUCATION_COURSES,
       providesTags: (result) =>
@@ -54,7 +44,6 @@ export const education = createApi({
       invalidatesTags: ["Courses"],
     }),
 
-    // Education events
     getEducationEvents: builder.query({
       query: () => API_ENDPOINTS.EDUCATION_EVENTS,
       providesTags: (result) =>
@@ -92,7 +81,6 @@ export const education = createApi({
       invalidatesTags: ["Events"],
     }),
 
-    // Education webinars
     getEducationWebinars: builder.query({
       query: () => API_ENDPOINTS.EDUCATION_WEBINARS,
       providesTags: (result) =>
@@ -130,7 +118,6 @@ export const education = createApi({
       invalidatesTags: ["Webinars"],
     }),
 
-    // Education tests
     getEducationTests: builder.query({
       query: () => API_ENDPOINTS.EDUCATION_TESTS,
       providesTags: (result) =>

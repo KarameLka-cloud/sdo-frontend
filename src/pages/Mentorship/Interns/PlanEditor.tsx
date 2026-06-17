@@ -20,6 +20,7 @@ import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import { cn } from "@/lib/utils";
+import { formatDayRange } from "@/utils/formatDayRange.ts";
 
 interface PlanType {
   id: number;
@@ -70,16 +71,6 @@ function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
       {trimmed || "—"}
     </div>
   );
-}
-
-function formatDayTitle(day: {
-  work_day: number;
-  day_from?: number | null;
-  day_to?: number | null;
-}): string {
-  const dayFrom = day.day_from ?? day.work_day;
-  const dayTo = day.day_to ?? dayFrom;
-  return dayFrom === dayTo ? `День ${dayFrom}` : `День ${dayFrom} - ${dayTo}`;
 }
 
 function PlanEditor(): JSX.Element {
@@ -448,7 +439,7 @@ function PlanEditor(): JSX.Element {
             className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.8rem]"
           >
             <div className="mb-[0.6rem] inline-flex self-start rounded-lg border border-slate-200 bg-slate-50 px-[0.58rem] py-[0.28rem] text-sm font-semibold text-[var(--mfc-black-color)]">
-              {formatDayTitle(day)}
+              {formatDayRange(day.day_from, day.day_to, day.work_day, "День")}
             </div>
             <div className="grid grid-cols-[minmax(0,2fr)_minmax(11rem,1fr)] gap-[0.6rem] max-[900px]:grid-cols-1">
               <div className="grid grid-cols-2 items-start gap-[0.35rem] max-[900px]:grid-cols-1 max-[900px]:gap-[0.6rem]">

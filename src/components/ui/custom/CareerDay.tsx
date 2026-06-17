@@ -5,6 +5,7 @@ import {
 } from "@/interfaces/api/AdaptationDayType.ts";
 import IconButton from "@/components/ui/custom/IconButton";
 import TaskItem from "@/components/ui/custom/TaskItem";
+import { formatDayRange } from "@/utils/formatDayRange.ts";
 
 interface CareerDayProps {
   day: AdaptationDayType;
@@ -48,11 +49,7 @@ function CareerDay({
     setIsEditingInternComment(false);
   };
 
-  const dayRangeLabel = (() => {
-    const from = day.dayFrom ?? day.workDay;
-    const to = day.dayTo ?? from;
-    return from === to ? `${from}` : `${from}-${to}`;
-  })();
+  const dayRangeLabel = formatDayRange(day.dayFrom, day.dayTo, day.workDay);
 
   const getStatusClass = (completion: string) => {
     const statusMap: Record<string, string> = {
