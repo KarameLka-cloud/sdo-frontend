@@ -1,7 +1,7 @@
 import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
-import DataMessage from "@/components/ui/custom/DataMessage";
+import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import convertDate from "@/utils/convertDate.ts";
@@ -49,7 +49,7 @@ function AdminWebinarsPage(): JSX.Element {
   const hasSearch = search.trim().length > 0;
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <AdminListToolbar
         createTo={WEBINAR_ROUTES.create}
         createLabel="Создать вебинар"
@@ -59,8 +59,12 @@ function AdminWebinarsPage(): JSX.Element {
         onSearchChange={setSearch}
       />
 
-      {error && <DataMessage type="error" />}
-      {isLoading && <Loader />}
+      {error && <DataMessage type="error" centered />}
+      {isLoading && (
+        <DataStateCenter>
+          <Loader />
+        </DataStateCenter>
+      )}
 
       {data && (
         <Table>
@@ -115,7 +119,7 @@ function AdminWebinarsPage(): JSX.Element {
           </TableBody>
         </Table>
       )}
-    </>
+    </div>
   );
 }
 

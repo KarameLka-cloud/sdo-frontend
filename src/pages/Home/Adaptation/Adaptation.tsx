@@ -1,6 +1,6 @@
 import { JSX, useState } from "react";
 import Development from "@/components/ui/custom/Development";
-import DataMessage from "@/components/ui/custom/DataMessage";
+import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
 import CareerDay from "@/components/ui/custom/CareerDay";
 import Loader from "@/components/ui/custom/Loader";
 import { Card, CardContent } from "@/components/ui/card";
@@ -135,8 +135,14 @@ function Adaptation(): JSX.Element {
     );
   };
 
-  if (isLoading) return <Loader />;
-  if (isError) return <DataMessage type="error" />;
+  if (isLoading) {
+    return (
+      <DataStateCenter>
+        <Loader />
+      </DataStateCenter>
+    );
+  }
+  if (isError) return <DataMessage type="error" centered />;
   if (!hasPlan || !plan) return <Development />;
 
   const adaptationDays = mapPlanDays(plan);

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import Loader from "@/components/ui/custom/Loader";
-import DataMessage from "@/components/ui/custom/DataMessage";
+import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
 import AdminBackLink from "@/pages/Admin/shared/components/AdminBackLink";
 
 interface AdminFormPageProps {
@@ -22,27 +22,29 @@ function AdminFormPage({
 }: AdminFormPageProps) {
   if (isError) {
     return (
-      <div className="flex w-full flex-col gap-6">
+      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
         <AdminBackLink to={backTo} label={backLabel} />
-        <DataMessage type="error" />
+        <DataMessage type="error" centered />
       </div>
     );
   }
 
   if (isNoData) {
     return (
-      <div className="flex w-full flex-col gap-6">
+      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
         <AdminBackLink to={backTo} label={backLabel} />
-        <DataMessage type="noData" />
+        <DataMessage type="noData" centered />
       </div>
     );
   }
 
   if (isLoading) {
     return (
-      <div className="flex w-full flex-col gap-6">
+      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
         <AdminBackLink to={backTo} label={backLabel} />
-        <Loader />
+        <DataStateCenter>
+          <Loader />
+        </DataStateCenter>
       </div>
     );
   }

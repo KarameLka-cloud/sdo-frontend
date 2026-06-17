@@ -1,6 +1,6 @@
 import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DataMessage from "@/components/ui/custom/DataMessage";
+import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 import {
   useDeleteAdaptationPlanMutation,
@@ -154,7 +154,7 @@ function Interns(): JSX.Element {
   const hasSearch = search.trim().length > 0;
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <AdminListToolbar
         createTo={INTERNSHIP_ROUTES.create}
         createLabel="Создать план"
@@ -164,8 +164,12 @@ function Interns(): JSX.Element {
         onSearchChange={setSearch}
       />
 
-      {isError && <DataMessage type="error" />}
-      {isLoading && <Loader />}
+      {isError && <DataMessage type="error" centered />}
+      {isLoading && (
+        <DataStateCenter>
+          <Loader />
+        </DataStateCenter>
+      )}
 
       {plansData && (
         <Table>
@@ -231,7 +235,7 @@ function Interns(): JSX.Element {
           </TableBody>
         </Table>
       )}
-    </>
+    </div>
   );
 }
 

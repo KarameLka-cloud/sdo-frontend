@@ -17,12 +17,14 @@ function AdminTableEmptyRow({
 }: AdminTableEmptyRowProps) {
   return (
     <TableRow>
-      <TableCell colSpan={colSpan} className="h-24 text-center">
-        {hasSearch ? (
-          <p className="text-sm text-muted-foreground">{notFoundMessage}</p>
-        ) : (
-          emptyContent ?? <DataMessage type="noData" />
-        )}
+      <TableCell colSpan={colSpan} className="p-0">
+        <div className="flex min-h-[calc(100dvh-14rem)] items-center justify-center px-4 py-8">
+          {hasSearch ? (
+            <p className="text-sm text-muted-foreground">{notFoundMessage}</p>
+          ) : (
+            emptyContent ?? <DataMessage type="noData" />
+          )}
+        </div>
       </TableCell>
     </TableRow>
   );

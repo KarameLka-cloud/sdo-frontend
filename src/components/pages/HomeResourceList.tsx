@@ -52,18 +52,20 @@ function HomeResourceList({
   const { data, error, isLoading } = useQuery("");
 
   return (
-    <DataList
-      data={data}
-      error={!!error}
-      isLoading={isLoading}
-      renderItem={(item) => (
-        <UniversalCard
-          type={cardType as CardType}
-          item={item as Parameters<typeof UniversalCard>[0]["item"]}
-          className="mt-4"
-        />
-      )}
-    />
+    <div className="flex min-h-0 flex-1 flex-col">
+      <DataList
+        data={data}
+        error={!!error}
+        isLoading={isLoading}
+        renderItem={(item) => (
+          <UniversalCard
+            type={cardType as CardType}
+            item={item as Parameters<typeof UniversalCard>[0]["item"]}
+            className="mt-4"
+          />
+        )}
+      />
+    </div>
   );
 }
 

@@ -2,7 +2,7 @@ import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import Loader from "@/components/ui/custom/Loader";
-import DataMessage from "@/components/ui/custom/DataMessage";
+import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
 import { isUserInRole, USER_ROLES, type UserRole } from "@/constants/roles.ts";
@@ -64,7 +64,7 @@ function Users(): JSX.Element {
   const tabConfig = TABS[activeTab];
 
   return (
-    <>
+    <div className="flex min-h-0 flex-1 flex-col">
       <AdminListToolbar
         searchId="users-search"
         searchPlaceholder="Имя, отдел, роль..."
@@ -91,8 +91,12 @@ function Users(): JSX.Element {
         }
       />
 
-      {error && <DataMessage type="error" />}
-      {isLoading && <Loader />}
+      {error && <DataMessage type="error" centered />}
+      {isLoading && (
+        <DataStateCenter>
+          <Loader />
+        </DataStateCenter>
+      )}
 
       {data && (
         <Table>
@@ -159,7 +163,7 @@ function Users(): JSX.Element {
           </TableBody>
         </Table>
       )}
-    </>
+    </div>
   );
 }
 

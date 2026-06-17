@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import DataMessage from "./DataMessage.tsx";
+import DataMessage, { DataStateCenter } from "./DataMessage.tsx";
 import Loader from "./Loader.tsx";
 
 type DataListProps<T> = {
@@ -18,9 +18,13 @@ export function DataList<T>({
   isLoading,
   error,
   renderItem,
-  emptyMessage = <DataMessage type="noData" />,
-  errorMessage = <DataMessage type="error" />,
-  loader = <Loader />,
+  emptyMessage = <DataMessage type="noData" centered />,
+  errorMessage = <DataMessage type="error" centered />,
+  loader = (
+    <DataStateCenter>
+      <Loader />
+    </DataStateCenter>
+  ),
   maxItems,
 }: DataListProps<T>) {
   if (error) return errorMessage;
