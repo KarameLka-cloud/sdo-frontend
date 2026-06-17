@@ -1,5 +1,4 @@
 import { FormEvent, JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateAdaptationPlanTemplateMutation } from "@/services/store/features/user.ts";
 import { Button } from "@/components/ui/button";
@@ -28,7 +27,6 @@ import {
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 
 function TemplateCreate(): JSX.Element {
-  const navigate = useNavigate();
   const [createTemplate, { isLoading: isCreating }] =
     useCreateAdaptationPlanTemplateMutation();
 
@@ -54,7 +52,6 @@ function TemplateCreate(): JSX.Element {
         shifts: [shiftNumber],
       }).unwrap();
       toast.success("Шаблон создан");
-      navigate(TEMPLATE_ROUTES.list);
     } catch {
       toast.error("Не удалось создать шаблон");
     }

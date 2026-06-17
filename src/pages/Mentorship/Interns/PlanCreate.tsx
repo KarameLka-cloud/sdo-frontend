@@ -1,5 +1,4 @@
 import { FormEvent, JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import {
   useCreateAdaptationPlanMutation,
@@ -59,7 +58,6 @@ const sortTemplates = (a: AdaptationTemplate, b: AdaptationTemplate) => {
 };
 
 function PlanCreate(): JSX.Element {
-  const navigate = useNavigate();
   const [createAdaptationPlan, { isLoading: isCreating }] =
     useCreateAdaptationPlanMutation();
   const { data: usersData, isLoading: isUsersLoading } =
@@ -126,7 +124,6 @@ function PlanCreate(): JSX.Element {
         department_head: Number(departmentHeadId),
       }).unwrap();
       toast.success("План адаптации создан");
-      navigate(INTERNSHIP_ROUTES.list);
     } catch {
       toast.error("Не удалось создать план адаптации");
     }

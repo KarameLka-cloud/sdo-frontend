@@ -1,5 +1,4 @@
 import { FormEvent, JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { DepartmentType } from "@/interfaces/api/DepartmentType.ts";
 import { useGetDepartmentsQuery } from "@/services/store/features/user.ts";
@@ -37,7 +36,6 @@ const HOOKS = {
 } as const;
 
 function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
-  const navigate = useNavigate();
   const routes = EVENT_ROUTES[domain];
   const useAddMutation = HOOKS[domain];
   const [addEvent, { isLoading: isCreating }] = useAddMutation();
@@ -75,7 +73,6 @@ function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
         duration: Number(duration),
       }).unwrap();
       toast.success("Мероприятие создано");
-      navigate(routes.list);
     } catch {
       toast.error("Не удалось создать мероприятие");
     }

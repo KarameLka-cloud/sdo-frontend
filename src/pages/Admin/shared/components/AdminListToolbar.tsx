@@ -37,17 +37,17 @@ function AdminListToolbar({
       <Card>
         <CardContent>
           <FieldGroup className="flex flex-row items-end justify-between gap-4">
-            {leftSlot ??
-              (createTo && createLabel ? (
-                <Button variant="outline" size="sm" asChild>
-                  <Link to={createTo}>
-                    <PlusIcon />
-                    {createLabel}
-                  </Link>
-                </Button>
-              ) : (
-                <div />
-              ))}
+            <div className="shrink-0">
+              {leftSlot ??
+                (createTo && createLabel ? (
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to={createTo}>
+                      <PlusIcon />
+                      {createLabel}
+                    </Link>
+                  </Button>
+                ) : null)}
+            </div>
             <Field className="w-2/4">
               <InputGroup>
                 <InputGroupAddon>

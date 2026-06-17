@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
+  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle,
@@ -158,6 +159,23 @@ function DayRangeFields({
   );
 }
 
+function TemplateInfoItem({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-col gap-1">
+      <dt className="text-sm text-muted-foreground">{label}</dt>
+      <dd className="text-sm font-medium">{value}</dd>
+    </div>
+  );
+}
+
+function ReadonlyFieldValue({ value }: { value: string }): JSX.Element {
+  return (
+    <p className="text-sm leading-relaxed">
+      {value.trim() || <span className="text-muted-foreground">—</span>}
+    </p>
+  );
+}
+
 interface RuleRowFieldsProps {
   rule: TaskRuleForm;
   idPrefix: string;
@@ -172,57 +190,86 @@ function RuleRowFields({
   onRemove,
 }: RuleRowFieldsProps): JSX.Element {
   return (
-    <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,0.65fr)_minmax(10rem,0.75fr)_auto] sm:items-end">
-      <Field>
-        <FieldLabel htmlFor={`${idPrefix}-description`}>
-          Описание задачи
-        </FieldLabel>
-        <Input
-          id={`${idPrefix}-description`}
-          value={rule.description}
-          onChange={(event) =>
-            onChange({ ...rule, description: event.target.value })
-          }
-        />
-      </Field>
-      <Field>
-        <FieldLabel htmlFor={`${idPrefix}-role`}>Ответственный</FieldLabel>
-        <Select
-          value={rule.responsible_role || undefined}
-          onValueChange={(value) =>
-            onChange({ ...rule, responsible_role: value as ResponsibleRole })
-          }
-        >
-          <SelectTrigger id={`${idPrefix}-role`} className="w-full">
-            <SelectValue placeholder="Выберите ответственного" />
-          </SelectTrigger>
-          <SelectContent>
-            {RESPONSIBLE_ROLE_OPTIONS.map((role) => (
-              <SelectItem key={role} value={role}>
-                {role}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </Field>
-      <Field>
-        <FieldLabel htmlFor={`${idPrefix}-links`}>Ссылки</FieldLabel>
-        <Input
-          id={`${idPrefix}-links`}
-          value={rule.links}
-          onChange={(event) => onChange({ ...rule, links: event.target.value })}
-        />
-      </Field>
-      <Button
-        type="button"
-        variant="outline"
-        size="icon"
-        className="shrink-0"
-        onClick={onRemove}
-        aria-label="Удалить задачу"
-      >
-        <Trash2 className="size-4" />
-      </Button>
+    <div className="rounded-lg border p-4">
+      <FieldGroup className="grid gap-4">
+        <Field>
+          <FieldLabel htmlFor={`${idPrefix}-description`}>
+            Описание задачи
+          </FieldLabel>
+          <Input
+            id={`${idPrefix}-description`}
+            value={rule.description}
+            onChange={(event) =>
+              onChange({ ...rule, description: event.target.value })
+            }
+          />
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel htmlFor={`${idPrefix}-role`}>Ответственный</FieldLabel>
+            <Select
+              value={rule.responsible_role || undefined}
+              onValueChange={(value) =>
+                onChange({
+                  ...rule,
+                  responsible_role: value as ResponsibleRole,
+                })
+              }
+            >
+              <SelectTrigger id={`${idPrefix}-role`} className="w-full">
+                <SelectValue placeholder="Выберите ответственного" />
+              </SelectTrigger>
+              <SelectContent>
+                {RESPONSIBLE_ROLE_OPTIONS.map((role) => (
+                  <SelectItem key={role} value={role}>
+                    {role}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+          <Field>
+            <FieldLabel htmlFor={`${idPrefix}-links`}>Ссылки</FieldLabel>
+            <Input
+              id={`${idPrefix}-links`}
+              value={rule.links}
+              onChange={(event) =>
+                onChange({ ...rule, links: event.target.value })
+              }
+              placeholder="Через запятую"
+            />
+          </Field>
+        </div>
+        <div className="flex justify-end">
+          <Button type="button" variant="outline" size="sm" onClick={onRemove}>
+            <Trash2 className="size-4" />
+            Удалить задачу
+          </Button>
+        </div>
+      </FieldGroup>
+    </div>
+  );
+}
+
+function RuleRowReadonly({ rule }: { rule: TaskRuleForm }): JSX.Element {
+  return (
+    <div className="rounded-lg border p-4">
+      <FieldGroup className="grid gap-4">
+        <Field>
+          <FieldLabel>Описание задачи</FieldLabel>
+          <ReadonlyFieldValue value={rule.description} />
+        </Field>
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Field>
+            <FieldLabel>Ответственный</FieldLabel>
+            <ReadonlyFieldValue value={rule.responsible_role} />
+          </Field>
+          <Field>
+            <FieldLabel>Ссылки</FieldLabel>
+            <ReadonlyFieldValue value={rule.links} />
+          </Field>
+        </div>
+      </FieldGroup>
     </div>
   );
 }
@@ -499,26 +546,20 @@ function TemplateTasks(): JSX.Element {
       backLabel="К списку планов адаптации"
     >
       <Card>
-        <CardHeader className="flex flex-row items-start justify-between gap-4">
-          <div className="space-y-1">
-            <CardTitle>{template.name}</CardTitle>
-            <p className="text-sm text-muted-foreground">
-              График: {template.work_schedule} | Смены:{" "}
-              {template.shifts.join(", ")}
-            </p>
-          </div>
-          <Button
-            type="button"
-            variant="destructive"
-            disabled={isDeleting || isSaving}
-            onClick={() => handleDelete(template.id)}
-          >
-            {isDeleting && <Spinner />}
-            Удалить план
-          </Button>
+        <CardHeader>
+          <CardTitle>{template.name}</CardTitle>
+          <CardDescription>Шаблон плана адаптации</CardDescription>
         </CardHeader>
-        <Separator />
-        <CardFooter className="justify-start">
+        <CardContent className="p-4">
+          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <TemplateInfoItem label="График" value={template.work_schedule} />
+            <TemplateInfoItem
+              label="Смены"
+              value={template.shifts.join(", ")}
+            />
+          </dl>
+        </CardContent>
+        <CardFooter className="justify-between">
           {isCreateVisible ? (
             <Button type="button" variant="outline" onClick={resetCreateForm}>
               <X className="size-4" />
@@ -534,69 +575,68 @@ function TemplateTasks(): JSX.Element {
               Добавить задачи
             </Button>
           )}
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isDeleting || isSaving}
+            onClick={() => handleDelete(template.id)}
+          >
+            {isDeleting && <Spinner />}
+            Удалить план
+          </Button>
         </CardFooter>
       </Card>
 
       {isCreateVisible && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Новые задачи</CardTitle>
+            <CardTitle>Новые задачи</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4 p-4 pt-0">
-            <DayRangeFields
-              idPrefix="create"
-              dayFrom={createDayFrom}
-              dayTo={createDayTo}
-              onDayFromChange={setCreateDayFrom}
-              onDayToChange={setCreateDayTo}
-            />
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              className="w-fit"
-              onClick={addCreateRule}
-            >
-              <Plus className="size-4" />
-              Задача
-            </Button>
-            {createRules.map((rule, index) => (
-              <RuleRowFields
-                key={`create-rule-${index}`}
-                idPrefix={`create-rule-${index}`}
-                rule={rule}
-                onChange={(nextRule) => updateCreateRule(index, nextRule)}
-                onRemove={() => removeCreateRule(index)}
-              />
-            ))}
-          </CardContent>
-          <Separator />
-          <CardFooter className="gap-2">
-            <Button
-              type="button"
-              onClick={saveCreateRules}
-              disabled={isSaving}
-            >
-              {isSaving && <Spinner />}
-              Сохранить
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={resetCreateForm}
-              disabled={isSaving}
-            >
-              Отмена
-            </Button>
-          </CardFooter>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              void saveCreateRules();
+            }}
+          >
+            <CardContent className="p-4">
+              <FieldGroup className="grid gap-4">
+                <DayRangeFields
+                  idPrefix="create"
+                  dayFrom={createDayFrom}
+                  dayTo={createDayTo}
+                  onDayFromChange={setCreateDayFrom}
+                  onDayToChange={setCreateDayTo}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  className="w-fit"
+                  onClick={addCreateRule}
+                >
+                  <Plus className="size-4" />
+                  Задача
+                </Button>
+                {createRules.map((rule, index) => (
+                  <RuleRowFields
+                    key={`create-rule-${index}`}
+                    idPrefix={`create-rule-${index}`}
+                    rule={rule}
+                    onChange={(nextRule) => updateCreateRule(index, nextRule)}
+                    onRemove={() => removeCreateRule(index)}
+                  />
+                ))}
+              </FieldGroup>
+            </CardContent>
+            <Separator />
+            <CardFooter>
+              <Button type="submit" disabled={isSaving}>
+                {isSaving && <Spinner />}
+                Сохранить
+              </Button>
+            </CardFooter>
+          </form>
         </Card>
-      )}
-
-      {rules.length === 0 && !isCreateVisible && (
-        <p className="text-sm text-muted-foreground">
-          Задачи ещё не добавлены. Нажмите «Добавить задачи», чтобы создать
-          первую группу.
-        </p>
       )}
 
       <div className="flex flex-col gap-4">
@@ -605,67 +645,61 @@ function TemplateTasks(): JSX.Element {
             <CardHeader>
               <CardTitle className="text-base">{group.title}</CardTitle>
             </CardHeader>
-            <CardContent className="flex flex-col gap-4 p-4 pt-0">
-              {editingGroupKey === group.key ? (
-                <>
-                  <DayRangeFields
-                    idPrefix={`edit-${group.key}`}
-                    dayFrom={editingGroupDayFrom}
-                    dayTo={editingGroupDayTo}
-                    onDayFromChange={setEditingGroupDayFrom}
-                    onDayToChange={setEditingGroupDayTo}
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    className="w-fit"
-                    onClick={addEditingGroupRule}
-                  >
-                    <Plus className="size-4" />
-                    Задача
-                  </Button>
-                  {editingGroupRules.map((rule, index) => (
-                    <RuleRowFields
-                      key={`edit-rule-${group.key}-${index}`}
-                      idPrefix={`edit-rule-${group.key}-${index}`}
-                      rule={rule}
-                      onChange={(nextRule) =>
-                        updateEditingGroupRule(index, nextRule)
-                      }
-                      onRemove={() => removeEditingGroupRule(index)}
+            {editingGroupKey === group.key ? (
+              <form
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void saveEditGroup();
+                }}
+              >
+                <CardContent className="p-4">
+                  <FieldGroup className="grid gap-4">
+                    <DayRangeFields
+                      idPrefix={`edit-${group.key}`}
+                      dayFrom={editingGroupDayFrom}
+                      dayTo={editingGroupDayTo}
+                      onDayFromChange={setEditingGroupDayFrom}
+                      onDayToChange={setEditingGroupDayTo}
                     />
-                  ))}
-                </>
-              ) : (
-                group.items.map((item, index) => (
-                  <div
-                    key={`group-item-${group.key}-${index}`}
-                    className="rounded-lg border p-3 text-sm"
-                  >
-                    <p className="font-medium">{item.rule.description}</p>
-                    <p className="text-muted-foreground">
-                      Ответственный: {item.rule.responsible_role}
-                    </p>
-                    <p className="text-muted-foreground">
-                      Ссылки: {item.rule.links || "—"}
-                    </p>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="w-fit"
+                      onClick={addEditingGroupRule}
+                    >
+                      <Plus className="size-4" />
+                      Задача
+                    </Button>
+                    {editingGroupRules.map((rule, index) => (
+                      <RuleRowFields
+                        key={`edit-rule-${group.key}-${index}`}
+                        idPrefix={`edit-rule-${group.key}-${index}`}
+                        rule={rule}
+                        onChange={(nextRule) =>
+                          updateEditingGroupRule(index, nextRule)
+                        }
+                        onRemove={() => removeEditingGroupRule(index)}
+                      />
+                    ))}
+                  </FieldGroup>
+                </CardContent>
+                <Separator />
+                <CardFooter className="justify-between">
+                  <div className="flex gap-2">
+                    <Button type="submit" disabled={isSaving}>
+                      {isSaving && <Spinner />}
+                      Сохранить
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={resetEditGroup}
+                      disabled={isSaving}
+                    >
+                      Отмена
+                    </Button>
                   </div>
-                ))
-              )}
-            </CardContent>
-            <Separator />
-            <CardFooter className="gap-2">
-              {editingGroupKey === group.key ? (
-                <>
-                  <Button
-                    type="button"
-                    onClick={saveEditGroup}
-                    disabled={isSaving}
-                  >
-                    {isSaving && <Spinner />}
-                    Сохранить
-                  </Button>
                   <Button
                     type="button"
                     variant="destructive"
@@ -674,25 +708,32 @@ function TemplateTasks(): JSX.Element {
                   >
                     Удалить группу
                   </Button>
+                </CardFooter>
+              </form>
+            ) : (
+              <>
+                <CardContent className="p-4">
+                  <FieldGroup className="grid gap-4">
+                    {group.items.map((item, index) => (
+                      <RuleRowReadonly
+                        key={`group-item-${group.key}-${index}`}
+                        rule={item.rule}
+                      />
+                    ))}
+                  </FieldGroup>
+                </CardContent>
+                <Separator />
+                <CardFooter>
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={resetEditGroup}
-                    disabled={isSaving}
+                    onClick={() => startEditGroup(group)}
                   >
-                    Отмена
+                    Редактировать
                   </Button>
-                </>
-              ) : (
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => startEditGroup(group)}
-                >
-                  Редактировать
-                </Button>
-              )}
-            </CardFooter>
+                </CardFooter>
+              </>
+            )}
           </Card>
         ))}
       </div>

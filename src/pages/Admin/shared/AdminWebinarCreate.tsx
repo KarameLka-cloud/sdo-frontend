@@ -1,5 +1,4 @@
 import { FormEvent, JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useAddEducationWebinarMutation } from "@/services/store/features/education.ts";
 import { Button } from "@/components/ui/button";
@@ -19,7 +18,6 @@ import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import { WEBINAR_ROUTES } from "@/pages/Admin/shared/adminResourceConfig.ts";
 
 function AdminWebinarCreate(): JSX.Element {
-  const navigate = useNavigate();
   const [addWebinar, { isLoading: isCreating }] =
     useAddEducationWebinarMutation();
 
@@ -49,7 +47,6 @@ function AdminWebinarCreate(): JSX.Element {
         duration: Number(duration),
       }).unwrap();
       toast.success("Вебинар создан");
-      navigate(WEBINAR_ROUTES.list);
     } catch {
       toast.error("Не удалось создать вебинар");
     }

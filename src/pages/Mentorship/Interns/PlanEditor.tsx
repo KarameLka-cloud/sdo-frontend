@@ -14,12 +14,7 @@ import { UserType } from "@/interfaces/api/UserType.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import {
@@ -110,7 +105,10 @@ function CommentFieldWithSave({
   return (
     <Field>
       <FieldLabel>{label}</FieldLabel>
-      <Textarea value={value} onChange={(event) => onChange(event.target.value)} />
+      <Textarea
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+      />
       <Button
         type="button"
         size="sm"
@@ -130,7 +128,7 @@ function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
   return (
     <div
       className={cn(
-        "m-0 min-h-[1.35em] text-sm leading-relaxed whitespace-pre-wrap break-words",
+        "m-0 min-h-[1.35em] text-sm leading-relaxed whitespace-pre-wrap wrap-break-word",
         !trimmed && "text-muted-foreground",
       )}
     >
@@ -144,9 +142,12 @@ function PlanEditor(): JSX.Element {
   const { planId } = useParams();
   const numericPlanId = parseEntityId(planId) ?? 0;
 
-  const { data, isLoading, isError, error   } = useGetAdaptationPlanByIdQuery(numericPlanId, {
+  const { data, isLoading, isError, error } = useGetAdaptationPlanByIdQuery(
+    numericPlanId,
+    {
       skip: !numericPlanId,
-    });
+    },
+  );
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: headsData = [] } = useGetDepartmentHeadsQuery(undefined);
 
@@ -448,9 +449,7 @@ function PlanEditor(): JSX.Element {
                 <FieldLabel htmlFor="plan-intern">Стажер</FieldLabel>
                 <Input
                   id="plan-intern"
-                  value={
-                    plan.user?.name ?? `Пользователь ID: ${plan.user_id}`
-                  }
+                  value={plan.user?.name ?? `Пользователь ID: ${plan.user_id}`}
                   readOnly
                   disabled
                 />
@@ -478,7 +477,9 @@ function PlanEditor(): JSX.Element {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="plan-template">Шаблон адаптации</FieldLabel>
+                <FieldLabel htmlFor="plan-template">
+                  Шаблон адаптации
+                </FieldLabel>
                 <Input
                   id="plan-template"
                   value={
@@ -549,7 +550,7 @@ function PlanEditor(): JSX.Element {
                 {formatDayRange(day.day_from, day.day_to, day.work_day, "День")}
               </CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-4 p-4 pt-0">
+            <CardContent className="p-4">
               <FieldGroup className="grid gap-4 sm:grid-cols-2">
                 <Field>
                   <FieldLabel htmlFor={`day-date-from-${day.id}`}>
@@ -618,7 +619,9 @@ function PlanEditor(): JSX.Element {
                   <SelectContent>
                     <SelectItem value="в процессе">В процессе</SelectItem>
                     <SelectItem value="выполнен">Выполнен</SelectItem>
-                    <SelectItem value="есть замечания">Есть замечания</SelectItem>
+                    <SelectItem value="есть замечания">
+                      Есть замечания
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </Field>
@@ -736,7 +739,9 @@ function PlanEditor(): JSX.Element {
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="не выполнено">Не выполнено</SelectItem>
+                        <SelectItem value="не выполнено">
+                          Не выполнено
+                        </SelectItem>
                         <SelectItem value="выполнено">Выполнено</SelectItem>
                       </SelectContent>
                     </Select>

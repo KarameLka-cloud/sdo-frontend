@@ -71,12 +71,12 @@ function Users(): JSX.Element {
         search={search}
         onSearchChange={setSearch}
         leftSlot={
-          <Field className="w-full min-w-[12rem]">
+          <Field className="min-w-48">
             <Select
               value={activeTab}
               onValueChange={(value) => setActiveTab(value as UsersTab)}
             >
-              <SelectTrigger id="users-role" className="w-full">
+              <SelectTrigger id="users-role" size="sm" className="w-56">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>

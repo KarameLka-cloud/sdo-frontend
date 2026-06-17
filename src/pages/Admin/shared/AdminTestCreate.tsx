@@ -1,5 +1,4 @@
 import { FormEvent, JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { PositionType } from "@/interfaces/api/PositionType.ts";
 import { useGetPositionsQuery } from "@/services/store/features/user.ts";
@@ -37,7 +36,6 @@ const HOOKS = {
 } as const;
 
 function AdminTestCreate({ domain }: { domain: AdminDomain }): JSX.Element {
-  const navigate = useNavigate();
   const routes = TEST_ROUTES[domain];
   const useAddMutation = HOOKS[domain];
   const [addTest, { isLoading: isCreating }] = useAddMutation();
@@ -74,7 +72,6 @@ function AdminTestCreate({ domain }: { domain: AdminDomain }): JSX.Element {
         duration: Number(duration),
       }).unwrap();
       toast.success("Тест создан");
-      navigate(routes.list);
     } catch {
       toast.error("Не удалось создать тест");
     }
