@@ -1,16 +1,37 @@
 import { JSX, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import IconButton from "@/components/ui/custom/IconButton";
-import DataMessage from "@/components/ui/custom/DataMessage";
-import Input from "@/components/ui/custom/Input";
-import Loader from "@/components/ui/custom/Loader";
+import { toast } from "sonner";
+import { Plus, Trash2, X } from "lucide-react";
 import {
   useDeleteAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplatesQuery,
   useUpdateAdaptationPlanTemplateMutation,
 } from "@/services/store/features/user.ts";
-import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
-import FormActionStatus from "@/components/ui/custom/FormActionStatus";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
+import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
+import {
+  TEMPLATE_ROUTES,
+  parseEntityId,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
 
 type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
 
@@ -48,12 +69,22 @@ interface GroupedRuleBlock {
   items: Array<{ rule: TaskRuleForm; index: number }>;
 }
 
-type StatusType = "idle" | "loading" | "success" | "error";
-
 const EMPTY_RULE: TaskRuleForm = {
   description: "",
   responsible_role: "",
   links: "",
+};
+
+const RESPONSIBLE_ROLE_OPTIONS: ResponsibleRole[] = [
+  "Наставник",
+  "Сотрудник УПиПК",
+  "Руководитель отдела",
+];
+
+const DELETE_MESSAGES = {
+  confirm: "Удалить шаблон адаптации?",
+  success: "Шаблон адаптации удалён",
+  error: "Не удалось удалить шаблон",
 };
 
 function toFormRule(rule: TaskRule): TaskRuleForm {
@@ -84,10 +115,123 @@ function toPayloadRule(rule: TaskRuleForm): TaskRule {
   };
 }
 
+interface DayRangeFieldsProps {
+  dayFrom: string;
+  dayTo: string;
+  onDayFromChange: (value: string) => void;
+  onDayToChange: (value: string) => void;
+  idPrefix: string;
+}
+
+function DayRangeFields({
+  dayFrom,
+  dayTo,
+  onDayFromChange,
+  onDayToChange,
+  idPrefix,
+}: DayRangeFieldsProps): JSX.Element {
+  return (
+    <FieldGroup className="grid gap-4 sm:grid-cols-2">
+      <Field>
+        <FieldLabel htmlFor={`${idPrefix}-day-from`}>День</FieldLabel>
+        <Input
+          id={`${idPrefix}-day-from`}
+          type="number"
+          min={1}
+          value={dayFrom}
+          onChange={(event) => onDayFromChange(event.target.value)}
+        />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor={`${idPrefix}-day-to`}>
+          До дня (опционально)
+        </FieldLabel>
+        <Input
+          id={`${idPrefix}-day-to`}
+          type="number"
+          min={1}
+          value={dayTo}
+          onChange={(event) => onDayToChange(event.target.value)}
+        />
+      </Field>
+    </FieldGroup>
+  );
+}
+
+interface RuleRowFieldsProps {
+  rule: TaskRuleForm;
+  idPrefix: string;
+  onChange: (nextRule: TaskRuleForm) => void;
+  onRemove: () => void;
+}
+
+function RuleRowFields({
+  rule,
+  idPrefix,
+  onChange,
+  onRemove,
+}: RuleRowFieldsProps): JSX.Element {
+  return (
+    <div className="grid gap-4 sm:grid-cols-[minmax(0,1fr)_minmax(10rem,0.65fr)_minmax(10rem,0.75fr)_auto] sm:items-end">
+      <Field>
+        <FieldLabel htmlFor={`${idPrefix}-description`}>
+          Описание задачи
+        </FieldLabel>
+        <Input
+          id={`${idPrefix}-description`}
+          value={rule.description}
+          onChange={(event) =>
+            onChange({ ...rule, description: event.target.value })
+          }
+        />
+      </Field>
+      <Field>
+        <FieldLabel htmlFor={`${idPrefix}-role`}>Ответственный</FieldLabel>
+        <Select
+          value={rule.responsible_role || undefined}
+          onValueChange={(value) =>
+            onChange({ ...rule, responsible_role: value as ResponsibleRole })
+          }
+        >
+          <SelectTrigger id={`${idPrefix}-role`} className="w-full">
+            <SelectValue placeholder="Выберите ответственного" />
+          </SelectTrigger>
+          <SelectContent>
+            {RESPONSIBLE_ROLE_OPTIONS.map((role) => (
+              <SelectItem key={role} value={role}>
+                {role}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </Field>
+      <Field>
+        <FieldLabel htmlFor={`${idPrefix}-links`}>Ссылки</FieldLabel>
+        <Input
+          id={`${idPrefix}-links`}
+          value={rule.links}
+          onChange={(event) => onChange({ ...rule, links: event.target.value })}
+        />
+      </Field>
+      <Button
+        type="button"
+        variant="outline"
+        size="icon"
+        className="shrink-0"
+        onClick={onRemove}
+        aria-label="Удалить задачу"
+      >
+        <Trash2 className="size-4" />
+      </Button>
+    </div>
+  );
+}
+
 function TemplateTasks(): JSX.Element {
   const navigate = useNavigate();
-  const params = useParams();
-  const templateId = Number(params.templateId);
+  const { templateId: templateIdParam } = useParams();
+  const templateId = parseEntityId(templateIdParam) ?? 0;
+
   const {
     data = [],
     isLoading,
@@ -95,23 +239,26 @@ function TemplateTasks(): JSX.Element {
   } = useGetAdaptationPlanTemplatesQuery(undefined);
   const [updateTemplate, { isLoading: isSaving }] =
     useUpdateAdaptationPlanTemplateMutation();
-  const [deleteTemplate, { isLoading: isDeletingTemplate }] =
-    useDeleteAdaptationPlanTemplateMutation();
+  const deleteMutation = useDeleteAdaptationPlanTemplateMutation();
+  const { handleDelete, isDeleting } = useAdminEditDelete(
+    deleteMutation,
+    DELETE_MESSAGES,
+    () => navigate(TEMPLATE_ROUTES.list),
+  );
+
   const [isCreateVisible, setIsCreateVisible] = useState(false);
   const [createRules, setCreateRules] = useState<TaskRuleForm[]>([
     { ...EMPTY_RULE },
   ]);
-  const [createDayFrom, setCreateDayFrom] = useState<string>("");
-  const [createDayTo, setCreateDayTo] = useState<string>("");
+  const [createDayFrom, setCreateDayFrom] = useState("");
+  const [createDayTo, setCreateDayTo] = useState("");
   const [editingGroupKey, setEditingGroupKey] = useState<string | null>(null);
   const [editingGroupRules, setEditingGroupRules] = useState<TaskRuleForm[]>(
     [],
   );
   const [editingGroupIndexes, setEditingGroupIndexes] = useState<number[]>([]);
-  const [editingGroupDayFrom, setEditingGroupDayFrom] = useState<string>("");
-  const [editingGroupDayTo, setEditingGroupDayTo] = useState<string>("");
-  const [status, setStatus] = useState("");
-  const [statusType, setStatusType] = useState<StatusType>("idle");
+  const [editingGroupDayFrom, setEditingGroupDayFrom] = useState("");
+  const [editingGroupDayTo, setEditingGroupDayTo] = useState("");
 
   const templates = data as AdaptationPlanTemplateType[];
   const template = useMemo(
@@ -146,6 +293,21 @@ function TemplateTasks(): JSX.Element {
 
     return Array.from(map.values());
   }, [rules]);
+
+  const resetCreateForm = () => {
+    setIsCreateVisible(false);
+    setCreateRules([{ ...EMPTY_RULE }]);
+    setCreateDayFrom("");
+    setCreateDayTo("");
+  };
+
+  const resetEditGroup = () => {
+    setEditingGroupKey(null);
+    setEditingGroupRules([]);
+    setEditingGroupIndexes([]);
+    setEditingGroupDayFrom("");
+    setEditingGroupDayTo("");
+  };
 
   const saveRules = async (nextRules: TaskRuleForm[]) => {
     if (!template) {
@@ -191,14 +353,12 @@ function TemplateTasks(): JSX.Element {
       (rule) => rule.description.trim().length > 0,
     );
     if (!preparedRules.length) {
-      setStatusType("error");
-      setStatus("Добавьте хотя бы одну задачу с описанием.");
+      toast.error("Добавьте хотя бы одну задачу с описанием.");
       return;
     }
 
     if (preparedRules.some((rule) => !rule.responsible_role)) {
-      setStatusType("error");
-      setStatus("Выберите ответственного для каждой задачи.");
+      toast.error("Выберите ответственного для каждой задачи.");
       return;
     }
 
@@ -209,18 +369,11 @@ function TemplateTasks(): JSX.Element {
     }));
 
     try {
-      setStatusType("loading");
-      setStatus(FORM_STATUS_MESSAGES.saveLoading);
       await saveRules([...rules, ...normalized]);
-      setCreateRules([{ ...EMPTY_RULE }]);
-      setCreateDayFrom("");
-      setCreateDayTo("");
-      setIsCreateVisible(false);
-      setStatusType("success");
-      setStatus(FORM_STATUS_MESSAGES.createSuccess);
+      resetCreateForm();
+      toast.success("Задачи добавлены");
     } catch {
-      setStatusType("error");
-      setStatus(FORM_STATUS_MESSAGES.saveError);
+      toast.error("Не удалось сохранить задачи");
     }
   };
 
@@ -258,14 +411,12 @@ function TemplateTasks(): JSX.Element {
       (rule) => rule.description.trim().length > 0,
     );
     if (!prepared.length) {
-      setStatusType("error");
-      setStatus("Добавьте хотя бы одну задачу с описанием.");
+      toast.error("Добавьте хотя бы одну задачу с описанием.");
       return;
     }
 
     if (prepared.some((rule) => !rule.responsible_role)) {
-      setStatusType("error");
-      setStatus("Выберите ответственного для каждой задачи.");
+      toast.error("Выберите ответственного для каждой задачи.");
       return;
     }
 
@@ -281,17 +432,11 @@ function TemplateTasks(): JSX.Element {
     nextRules.push(...normalized);
 
     try {
-      setStatusType("loading");
-      setStatus(FORM_STATUS_MESSAGES.saveLoading);
       await saveRules(nextRules);
-      setEditingGroupKey(null);
-      setEditingGroupRules([]);
-      setEditingGroupIndexes([]);
-      setStatusType("success");
-      setStatus(FORM_STATUS_MESSAGES.saveSuccess);
+      resetEditGroup();
+      toast.success("Изменения сохранены");
     } catch {
-      setStatusType("error");
-      setStatus(FORM_STATUS_MESSAGES.saveError);
+      toast.error("Не удалось сохранить изменения");
     }
   };
 
@@ -301,383 +446,257 @@ function TemplateTasks(): JSX.Element {
     );
 
     try {
-      setStatusType("loading");
-      setStatus(FORM_STATUS_MESSAGES.deleteLoading);
       await saveRules(nextRules);
       if (editingGroupKey !== null) {
-        setEditingGroupKey(null);
-        setEditingGroupRules([]);
-        setEditingGroupIndexes([]);
+        resetEditGroup();
       }
-      setStatusType("success");
-      setStatus(FORM_STATUS_MESSAGES.deleteSuccess);
+      toast.success("Группа задач удалена");
     } catch {
-      setStatusType("error");
-      setStatus(FORM_STATUS_MESSAGES.deleteError);
+      toast.error("Не удалось удалить группу задач");
     }
   };
 
-  const handleDeleteTemplate = async () => {
-    if (!template) {
-      return;
-    }
-
-    const confirmed = window.confirm("Удалить шаблон адаптации?");
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      setStatusType("loading");
-      setStatus(FORM_STATUS_MESSAGES.deleteLoading);
-      await deleteTemplate(template.id).unwrap();
-      navigate("/admin/adaptation/templates");
-    } catch {
-      setStatusType("error");
-      setStatus(FORM_STATUS_MESSAGES.deleteError);
-    }
-  };
+  if (!templateId) {
+    return (
+      <AdminFormPage
+        backTo={TEMPLATE_ROUTES.list}
+        backLabel="К списку планов адаптации"
+        isError
+      >
+        <></>
+      </AdminFormPage>
+    );
+  }
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <AdminFormPage
+        backTo={TEMPLATE_ROUTES.list}
+        backLabel="К списку планов адаптации"
+        isLoading
+      >
+        <></>
+      </AdminFormPage>
+    );
   }
 
   if (isError || !template) {
-    return <DataMessage type="error" />;
+    return (
+      <AdminFormPage
+        backTo={TEMPLATE_ROUTES.list}
+        backLabel="К списку планов адаптации"
+        isNoData={!isError}
+        isError={isError}
+      >
+        <></>
+      </AdminFormPage>
+    );
   }
 
   return (
-    <div className="flex h-full min-h-0 flex-col gap-[0.9rem] overflow-hidden">
-      <div className="sticky top-0 z-[2] flex flex-col gap-[0.6rem] bg-[var(--mfc-create-form-bg)] pb-[0.15rem]">
-        <div className="flex items-center justify-between gap-[0.8rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-3 max-[1000px]:flex-col max-[1000px]:items-start">
-          <div>
-            <p className="mb-1 text-[var(--mfc-gray-color)]">
-              План: {template.name}
-            </p>
-            <p className="mb-1 text-[var(--mfc-gray-color)]">
-              График: {template.work_schedule}
-            </p>
-            <p className="mb-1 text-[var(--mfc-gray-color)]">
-              Смены: {template.shifts.join(", ")}
+    <AdminFormPage
+      backTo={TEMPLATE_ROUTES.list}
+      backLabel="К списку планов адаптации"
+    >
+      <Card>
+        <CardHeader className="flex flex-row items-start justify-between gap-4">
+          <div className="space-y-1">
+            <CardTitle>{template.name}</CardTitle>
+            <p className="text-sm text-muted-foreground">
+              График: {template.work_schedule} | Смены:{" "}
+              {template.shifts.join(", ")}
             </p>
           </div>
-          <div className="flex items-center justify-center self-stretch max-[1000px]:self-start">
-            <IconButton
-              type="delete"
-              onClick={handleDeleteTemplate}
-              disabled={isDeletingTemplate}
-            />
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between gap-[0.8rem]">
-          <div className="flex items-center gap-2">
-            {isCreateVisible ? (
-              <IconButton
-                type="close"
-                onClick={() => {
-                  setIsCreateVisible(false);
-                  setCreateRules([{ ...EMPTY_RULE }]);
-                  setCreateDayFrom("");
-                  setCreateDayTo("");
-                }}
-              />
-            ) : (
-              <IconButton
-                type="edit"
-                onClick={() => setIsCreateVisible(true)}
-              />
-            )}
-            <FormActionStatus type={statusType} message={status} />
-          </div>
-        </div>
-      </div>
+          <Button
+            type="button"
+            variant="destructive"
+            disabled={isDeleting || isSaving}
+            onClick={() => handleDelete(template.id)}
+          >
+            {isDeleting && <Spinner />}
+            Удалить план
+          </Button>
+        </CardHeader>
+        <Separator />
+        <CardFooter className="justify-start">
+          {isCreateVisible ? (
+            <Button type="button" variant="outline" onClick={resetCreateForm}>
+              <X className="size-4" />
+              Отмена
+            </Button>
+          ) : (
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setIsCreateVisible(true)}
+            >
+              <Plus className="size-4" />
+              Добавить задачи
+            </Button>
+          )}
+        </CardFooter>
+      </Card>
 
       {isCreateVisible && (
-        <div className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]">
-          <p className="m-0 text-base font-semibold">Новые задачи</p>
-          <div className="grid grid-cols-[minmax(7rem,10rem)_minmax(9rem,12rem)] justify-start gap-2 max-[1000px]:grid-cols-1">
-            <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-              День
-              <Input
-                name="createDayFrom"
-                className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                type="number"
-                min={1}
-                value={createDayFrom}
-                onChange={(event) => setCreateDayFrom(event.target.value)}
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-              До дня (опционально)
-              <Input
-                name="createDayTo"
-                className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                type="number"
-                min={1}
-                value={createDayTo}
-                onChange={(event) => setCreateDayTo(event.target.value)}
-              />
-            </label>
-          </div>
-          <button
-            type="button"
-            className="inline-flex h-8 w-fit cursor-pointer items-center justify-center rounded-lg border border-[var(--mfc-create-field-border)] bg-[var(--mfc-create-form-bg)] px-[0.9rem] text-sm leading-none text-[var(--mfc-black-color)]"
-            onClick={addCreateRule}
-          >
-            + Задача
-          </button>
-          {createRules.map((rule, index) => (
-            <div
-              key={`create-rule-${index}`}
-              className="grid grid-cols-[minmax(0,1fr)_minmax(12rem,0.65fr)_minmax(12rem,0.75fr)_auto] items-end gap-2 max-[1000px]:grid-cols-[minmax(0,1fr)_minmax(8rem,0.6fr)_minmax(8rem,0.7fr)_auto]"
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-base">Новые задачи</CardTitle>
+          </CardHeader>
+          <CardContent className="flex flex-col gap-4 p-4 pt-0">
+            <DayRangeFields
+              idPrefix="create"
+              dayFrom={createDayFrom}
+              dayTo={createDayTo}
+              onDayFromChange={setCreateDayFrom}
+              onDayToChange={setCreateDayTo}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              className="w-fit"
+              onClick={addCreateRule}
             >
-              <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                Описание задачи
-                <Input
-                  name={`createDescription-${index}`}
-                  type="text"
-                  className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                  value={rule.description}
-                  onChange={(event) =>
-                    updateCreateRule(index, {
-                      ...rule,
-                      description: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                Ответственный
-                <select
-                  className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                  value={rule.responsible_role}
-                  onChange={(event) =>
-                    updateCreateRule(index, {
-                      ...rule,
-                      responsible_role: event.target
-                        .value as ResponsibleRoleForm,
-                    })
-                  }
-                >
-                  <option value="" disabled>
-                    Выберите ответственного
-                  </option>
-                  <option value="Наставник">Наставник</option>
-                  <option value="Сотрудник УПиПК">Сотрудник УПиПК</option>
-                  <option value="Руководитель отдела">
-                    Руководитель отдела
-                  </option>
-                </select>
-              </label>
-              <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                Ссылки
-                <Input
-                  name={`createLinks-${index}`}
-                  type="text"
-                  className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                  value={rule.links}
-                  onChange={(event) =>
-                    updateCreateRule(index, {
-                      ...rule,
-                      links: event.target.value,
-                    })
-                  }
-                />
-              </label>
-              <div className="flex items-center justify-end self-end pb-0.5">
-                <IconButton
-                  type="delete"
-                  onClick={() => removeCreateRule(index)}
-                />
-              </div>
-            </div>
-          ))}
-          <div className="flex items-center gap-2">
-            <IconButton
-              type="save"
+              <Plus className="size-4" />
+              Задача
+            </Button>
+            {createRules.map((rule, index) => (
+              <RuleRowFields
+                key={`create-rule-${index}`}
+                idPrefix={`create-rule-${index}`}
+                rule={rule}
+                onChange={(nextRule) => updateCreateRule(index, nextRule)}
+                onRemove={() => removeCreateRule(index)}
+              />
+            ))}
+          </CardContent>
+          <Separator />
+          <CardFooter className="gap-2">
+            <Button
+              type="button"
               onClick={saveCreateRules}
               disabled={isSaving}
-            />
-            <IconButton
-              type="close"
-              onClick={() => {
-                setIsCreateVisible(false);
-                setCreateRules([{ ...EMPTY_RULE }]);
-                setCreateDayFrom("");
-                setCreateDayTo("");
-              }}
-            />
-          </div>
-        </div>
+            >
+              {isSaving && <Spinner />}
+              Сохранить
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={resetCreateForm}
+              disabled={isSaving}
+            >
+              Отмена
+            </Button>
+          </CardFooter>
+        </Card>
       )}
 
-      {rules.length === 0 && <DataMessage type="noData" />}
-      {rules.length > 0 && (
-        <div className="flex min-h-0 flex-1 flex-col gap-[0.8rem] overflow-y-auto pr-1">
-          {groupedRules.map((group) => (
-            <div
-              key={`rule-group-${group.key}`}
-              className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
-            >
-              <p className="m-0 text-base font-semibold">{group.title}</p>
+      {rules.length === 0 && !isCreateVisible && (
+        <p className="text-sm text-muted-foreground">
+          Задачи ещё не добавлены. Нажмите «Добавить задачи», чтобы создать
+          первую группу.
+        </p>
+      )}
+
+      <div className="flex flex-col gap-4">
+        {groupedRules.map((group) => (
+          <Card key={`rule-group-${group.key}`}>
+            <CardHeader>
+              <CardTitle className="text-base">{group.title}</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-4 p-4 pt-0">
               {editingGroupKey === group.key ? (
                 <>
-                  <div className="grid grid-cols-[minmax(7rem,10rem)_minmax(9rem,12rem)] justify-start gap-2 max-[1000px]:grid-cols-1">
-                    <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                      День
-                      <Input
-                        name="editDayFrom"
-                        className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                        type="number"
-                        min={1}
-                        value={editingGroupDayFrom}
-                        onChange={(event) =>
-                          setEditingGroupDayFrom(event.target.value)
-                        }
-                      />
-                    </label>
-                    <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                      До дня (опционально)
-                      <Input
-                        name="editDayTo"
-                        className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                        type="number"
-                        min={1}
-                        value={editingGroupDayTo}
-                        onChange={(event) =>
-                          setEditingGroupDayTo(event.target.value)
-                        }
-                      />
-                    </label>
-                  </div>
-                  <button
+                  <DayRangeFields
+                    idPrefix={`edit-${group.key}`}
+                    dayFrom={editingGroupDayFrom}
+                    dayTo={editingGroupDayTo}
+                    onDayFromChange={setEditingGroupDayFrom}
+                    onDayToChange={setEditingGroupDayTo}
+                  />
+                  <Button
                     type="button"
-                    className="inline-flex h-8 w-fit cursor-pointer items-center justify-center rounded-lg border border-[var(--mfc-create-field-border)] bg-[var(--mfc-create-form-bg)] px-[0.9rem] text-sm leading-none text-[var(--mfc-black-color)]"
+                    variant="outline"
+                    size="sm"
+                    className="w-fit"
                     onClick={addEditingGroupRule}
                   >
-                    + Задача
-                  </button>
+                    <Plus className="size-4" />
+                    Задача
+                  </Button>
                   {editingGroupRules.map((rule, index) => (
-                    <div
-                      key={`edit-rule-${index}`}
-                      className="grid grid-cols-[minmax(0,1fr)_minmax(12rem,0.65fr)_minmax(12rem,0.75fr)_auto] items-end gap-2 max-[1000px]:grid-cols-[minmax(0,1fr)_minmax(8rem,0.6fr)_minmax(8rem,0.7fr)_auto]"
-                    >
-                      <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                        Описание задачи
-                        <Input
-                          name={`editDescription-${index}`}
-                          type="text"
-                          className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                          value={rule.description}
-                          onChange={(event) =>
-                            updateEditingGroupRule(index, {
-                              ...rule,
-                              description: event.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                        Ответственный
-                        <select
-                          className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                          value={rule.responsible_role}
-                          onChange={(event) =>
-                            updateEditingGroupRule(index, {
-                              ...rule,
-                              responsible_role: event.target
-                                .value as ResponsibleRoleForm,
-                            })
-                          }
-                        >
-                          <option value="" disabled>
-                            Выберите ответственного
-                          </option>
-                          <option value="Наставник">Наставник</option>
-                          <option value="Сотрудник УПиПК">
-                            Сотрудник УПиПК
-                          </option>
-                          <option value="Руководитель отдела">
-                            Руководитель отдела
-                          </option>
-                        </select>
-                      </label>
-                      <label className="flex flex-col gap-1 text-[0.85rem] text-[var(--mfc-black-color)]">
-                        Ссылки
-                        <Input
-                          name={`editLinks-${index}`}
-                          type="text"
-                          className="box-border h-9 rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm leading-tight"
-                          value={rule.links}
-                          onChange={(event) =>
-                            updateEditingGroupRule(index, {
-                              ...rule,
-                              links: event.target.value,
-                            })
-                          }
-                        />
-                      </label>
-                      <div className="flex items-center justify-end self-end pb-0.5">
-                        <IconButton
-                          type="delete"
-                          onClick={() => removeEditingGroupRule(index)}
-                        />
-                      </div>
-                    </div>
+                    <RuleRowFields
+                      key={`edit-rule-${group.key}-${index}`}
+                      idPrefix={`edit-rule-${group.key}-${index}`}
+                      rule={rule}
+                      onChange={(nextRule) =>
+                        updateEditingGroupRule(index, nextRule)
+                      }
+                      onRemove={() => removeEditingGroupRule(index)}
+                    />
                   ))}
-                  <div className="flex items-center gap-2">
-                    <IconButton
-                      type="save"
-                      onClick={saveEditGroup}
-                      disabled={isSaving}
-                    />
-                    <IconButton
-                      type="delete"
-                      onClick={() => deleteGroup(editingGroupIndexes)}
-                      disabled={isSaving}
-                    />
-                    <IconButton
-                      type="close"
-                      onClick={() => {
-                        setEditingGroupKey(null);
-                        setEditingGroupRules([]);
-                        setEditingGroupIndexes([]);
-                      }}
-                    />
-                  </div>
                 </>
               ) : (
-                <>
-                  {group.items.map((item, index) => (
-                    <div
-                      key={`group-item-${group.key}-${index}`}
-                      className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-3"
-                    >
-                      <p className="mb-1 text-[var(--mfc-gray-color)]">
-                        {item.rule.description}
-                      </p>
-                      <p className="mb-1 text-[var(--mfc-gray-color)]">
-                        Ответственный: {item.rule.responsible_role}
-                      </p>
-                      <p className="mb-1 text-[var(--mfc-gray-color)]">
-                        Ссылки: {item.rule.links || "—"}
-                      </p>
-                    </div>
-                  ))}
-                  <div className="flex items-center gap-2">
-                    <IconButton
-                      type="edit"
-                      onClick={() => startEditGroup(group)}
-                    />
+                group.items.map((item, index) => (
+                  <div
+                    key={`group-item-${group.key}-${index}`}
+                    className="rounded-lg border p-3 text-sm"
+                  >
+                    <p className="font-medium">{item.rule.description}</p>
+                    <p className="text-muted-foreground">
+                      Ответственный: {item.rule.responsible_role}
+                    </p>
+                    <p className="text-muted-foreground">
+                      Ссылки: {item.rule.links || "—"}
+                    </p>
                   </div>
-                </>
+                ))
               )}
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
+            </CardContent>
+            <Separator />
+            <CardFooter className="gap-2">
+              {editingGroupKey === group.key ? (
+                <>
+                  <Button
+                    type="button"
+                    onClick={saveEditGroup}
+                    disabled={isSaving}
+                  >
+                    {isSaving && <Spinner />}
+                    Сохранить
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="destructive"
+                    onClick={() => deleteGroup(editingGroupIndexes)}
+                    disabled={isSaving}
+                  >
+                    Удалить группу
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={resetEditGroup}
+                    disabled={isSaving}
+                  >
+                    Отмена
+                  </Button>
+                </>
+              ) : (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => startEditGroup(group)}
+                >
+                  Редактировать
+                </Button>
+              )}
+            </CardFooter>
+          </Card>
+        ))}
+      </div>
+    </AdminFormPage>
   );
 }
 

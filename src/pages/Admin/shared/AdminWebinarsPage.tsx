@@ -1,125 +1,117 @@
-import React, { JSX, useState } from "react";
+import { JSX, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
-import Input from "@/components/ui/custom/Input";
-import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
-import AdminResourceRow from "@/components/ui/custom/AdminResourceRow";
-import DataList from "@/components/ui/custom/DataList";
-import AdminStickyToolbar from "@/components/ui/custom/AdminStickyToolbar";
-import { useForm } from "@/hooks/useForm.ts";
-import { useCreateFormStatus } from "@/hooks/useCreateFormStatus.ts";
+import DataMessage from "@/components/ui/custom/DataMessage";
+import Loader from "@/components/ui/custom/Loader";
 import { useFiltered } from "@/hooks/useFiltered.ts";
-import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import convertDate from "@/utils/convertDate.ts";
+import { truncateText } from "@/utils/truncateText.ts";
 import { convertTime } from "@/utils/convertTime.ts";
 import {
   useGetEducationWebinarsQuery,
-  useAddEducationWebinarMutation,
   useDeleteEducationWebinarMutation,
 } from "@/services/store/features/education.ts";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
+import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
+import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import {
+  buildEditPath,
+  WEBINAR_ROUTES,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
 
-const EMPTY_FORM = {
-  title: "",
-  time_start: "",
-  time_end: "",
-  date: "",
+const DELETE_MESSAGES = {
+  confirm: "Удалить вебинар?",
+  success: "Вебинар удалён",
+  error: "Не удалось удалить вебинар",
 };
 
 function AdminWebinarsPage(): JSX.Element {
+  const navigate = useNavigate();
   const { data, error, isLoading } = useGetEducationWebinarsQuery("");
-  const [addWebinar, { isLoading: addLoading }] =
-    useAddEducationWebinarMutation();
-  const [deleteWebinar] = useDeleteEducationWebinarMutation();
+  const deleteMutation = useDeleteEducationWebinarMutation();
   const [search, setSearch] = useState("");
-  const { type: createStatusType, message: createStatusMessage, submit } =
-    useCreateFormStatus();
+  const { handleDelete, isDeletingItem } = useAdminListDelete<WebinarType>(
+    deleteMutation,
+    DELETE_MESSAGES,
+  );
+
   const filteredData = useFiltered<WebinarType>(data, search);
-
-  const { formItems, setFormItems, handleChange } = useForm(EMPTY_FORM);
-
-  const handleAction = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await submit(
-      () => addWebinar(formItems).unwrap().then(() => undefined),
-      () => setFormItems(EMPTY_FORM),
-    );
-  };
+  const hasSearch = search.trim().length > 0;
 
   return (
     <>
-      <AdminStickyToolbar
+      <AdminListToolbar
+        createTo={WEBINAR_ROUTES.create}
+        createLabel="Создать вебинар"
+        searchId="webinars-search"
+        searchPlaceholder="Название, дата..."
         search={search}
         onSearchChange={setSearch}
-        form={
-          <form
-            onSubmit={handleAction}
-            className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
-          >
-            <Input
-              type="text"
-              name="title"
-              placeholder="Название"
-              value={formItems.title}
-              onChange={handleChange}
-              className="w-full"
-            />
-            <div className="flex gap-[0.7rem] max-[900px]:flex-col">
-              <Input
-                type="date"
-                name="date"
-                placeholder="Дата"
-                value={formItems.date}
-                onChange={handleChange}
-                className="w-fit"
-              />
-              <Input
-                type="time"
-                name="time_start"
-                placeholder="Время начала"
-                value={formItems.time_start}
-                onChange={handleChange}
-                className="w-fit"
-              />
-              <Input
-                type="time"
-                name="time_end"
-                placeholder="Время окончания"
-                value={formItems.time_end}
-                onChange={handleChange}
-                className="w-fit"
-              />
-            </div>
-            <div className="flex items-center gap-3 max-[900px]:flex-col max-[900px]:items-start">
-              <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
-              <FormActionStatus
-                type={createStatusType}
-                message={createStatusMessage}
-              />
-            </div>
-          </form>
-        }
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-        <DataList<WebinarType>
-          data={filteredData}
-          error={!!error}
-          isLoading={isLoading}
-          renderItem={(item) => (
-            <AdminResourceRow
-              key={item.id}
-              item={item}
-              deleteMessage="Удалить вебинар?"
-              mutationDelete={deleteWebinar}
-              className="not-first:mt-4"
-            >
-              <span className="text-base block">{item.title}</span>
-              <span className="text-sm text-gray-900 block">
-                {`${convertDate(item.date)} | ${convertTime(item.time_start)}-${convertTime(item.time_end)}`}
-              </span>
-            </AdminResourceRow>
-          )}
-        />
-      </div>
+      {error && <DataMessage type="error" />}
+      {isLoading && <Loader />}
+
+      {data && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Название</TableHead>
+              <TableHead>Дата</TableHead>
+              <TableHead>Время</TableHead>
+              <TableHead className="text-right">Действия</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.length === 0 ? (
+              <AdminTableEmptyRow
+                colSpan={4}
+                hasSearch={hasSearch}
+                notFoundMessage={`Вебинар «${search}» не найден`}
+              />
+            ) : (
+              filteredData.map((item) => {
+                const editPath = buildEditPath(WEBINAR_ROUTES.edit, item.id);
+
+                return (
+                  <TableRow
+                    key={item.id}
+                    className="cursor-pointer"
+                    onClick={() => navigate(editPath)}
+                  >
+                    <TableCell className="font-medium" title={item.title}>
+                      {truncateText(item.title)}
+                    </TableCell>
+                    <TableCell>{convertDate(item.date)}</TableCell>
+                    <TableCell>
+                      {convertTime(item.time_start)}–{convertTime(item.time_end)}
+                    </TableCell>
+                    <TableCell
+                      className="text-right"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <AdminTableRowActions
+                        editPath={editPath}
+                        onDelete={() => handleDelete(item)}
+                        isDeleting={isDeletingItem(item.id)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      )}
     </>
   );
 }

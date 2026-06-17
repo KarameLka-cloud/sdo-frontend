@@ -24,7 +24,64 @@ const segmentLabels: Record<string, string> = {
   interns: "Стажеры",
   templates: "Планы адаптации",
   edit: "Редактирование",
+  create: "Создание",
 };
+
+function buildAdminResourceBreadcrumbs(
+  domain: "education" | "edo",
+  resource: "courses" | "events" | "tests" | "webinars",
+  action: "create" | "edit",
+) {
+  const domainLabel = domain === "education" ? "Обучение" : "ЕДО";
+  const domainListRoute =
+    domain === "education"
+      ? ROUTES.ADMIN_EDUCATION_EVENTS
+      : ROUTES.ADMIN_EDO_EVENTS;
+  const resourceLabels = {
+    courses: "Курсы",
+    events: "Мероприятия",
+    tests: "Тесты",
+    webinars: "Вебинары",
+  };
+  const resourceRoutes = {
+    education: {
+      courses: ROUTES.ADMIN_EDUCATION_COURSE,
+      events: ROUTES.ADMIN_EDUCATION_EVENTS,
+      tests: ROUTES.ADMIN_EDUCATION_TESTS,
+      webinars: ROUTES.ADMIN_EDUCATION_WEBINARS,
+    },
+    edo: {
+      courses: ROUTES.ADMIN_EDO_COURSES,
+      events: ROUTES.ADMIN_EDO_EVENTS,
+      tests: ROUTES.ADMIN_EDO_TESTS,
+      webinars: ROUTES.ADMIN_EDUCATION_WEBINARS,
+    },
+  };
+  const actionLabels = {
+    create: {
+      courses: "Создание курса",
+      events: "Создание мероприятия",
+      tests: "Создание теста",
+      webinars: "Создание вебинара",
+    },
+    edit: {
+      courses: "Редактирование курса",
+      events: "Редактирование мероприятия",
+      tests: "Редактирование теста",
+      webinars: "Редактирование вебинара",
+    },
+  };
+
+  return [
+    { label: "Администрирование", href: ROUTES.ADMIN },
+    { label: domainLabel, href: domainListRoute },
+    {
+      label: resourceLabels[resource],
+      href: resourceRoutes[domain][resource],
+    },
+    { label: actionLabels[action][resource] },
+  ];
+}
 
 function buildBreadcrumbs(pathname: string) {
   const specialRoutes: Array<{
@@ -48,6 +105,14 @@ function buildBreadcrumbs(pathname: string) {
       ],
     },
     {
+      path: ROUTES.ADMIN_ADAPTATION_TEMPLATES_CREATE,
+      crumbs: [
+        { label: "Администрирование", href: ROUTES.ADMIN },
+        { label: "Планы адаптации", href: ROUTES.ADMIN_ADAPTATION_TEMPLATES },
+        { label: "Создание плана адаптации" },
+      ],
+    },
+    {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
       crumbs: [
         { label: "Администрирование", href: ROUTES.ADMIN },
@@ -62,6 +127,62 @@ function buildBreadcrumbs(pathname: string) {
         { label: "Пользователи", href: ROUTES.ADMIN_USERS },
         { label: "Редактирование пользователя" },
       ],
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_COURSE_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("education", "courses", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_COURSE_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("education", "courses", "edit"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_EVENTS_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("education", "events", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_EVENTS_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("education", "events", "edit"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_TESTS_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("education", "tests", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_TESTS_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("education", "tests", "edit"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_WEBINARS_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("education", "webinars", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDUCATION_WEBINARS_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("education", "webinars", "edit"),
+    },
+    {
+      path: ROUTES.ADMIN_EDO_COURSES_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("edo", "courses", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDO_COURSES_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("edo", "courses", "edit"),
+    },
+    {
+      path: ROUTES.ADMIN_EDO_EVENTS_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("edo", "events", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDO_EVENTS_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("edo", "events", "edit"),
+    },
+    {
+      path: ROUTES.ADMIN_EDO_TESTS_CREATE,
+      crumbs: buildAdminResourceBreadcrumbs("edo", "tests", "create"),
+    },
+    {
+      path: ROUTES.ADMIN_EDO_TESTS_EDIT,
+      crumbs: buildAdminResourceBreadcrumbs("edo", "tests", "edit"),
     },
   ];
 

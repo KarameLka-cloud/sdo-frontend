@@ -20,6 +20,10 @@ export const education = createApi({
             ]
           : ["Courses"],
     }),
+    getEducationCourseById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDUCATION_COURSES + id,
+      providesTags: (_result, _error, id) => [{ type: "Courses", id }],
+    }),
     addEducationCourse: builder.mutation({
       query: (course) => ({
         url: API_ENDPOINTS.EDUCATION_COURSES,
@@ -56,6 +60,10 @@ export const education = createApi({
               "Events",
             ]
           : ["Events"],
+    }),
+    getEducationEventById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDUCATION_EVENTS + id,
+      providesTags: (_result, _error, id) => [{ type: "Events", id }],
     }),
     addEducationEvent: builder.mutation({
       query: (event) => ({
@@ -94,6 +102,10 @@ export const education = createApi({
             ]
           : ["Webinars"],
     }),
+    getEducationWebinarById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDUCATION_WEBINARS + id,
+      providesTags: (_result, _error, id) => [{ type: "Webinars", id }],
+    }),
     addEducationWebinar: builder.mutation({
       query: (webinar) => ({
         url: API_ENDPOINTS.EDUCATION_WEBINARS,
@@ -131,6 +143,10 @@ export const education = createApi({
             ]
           : ["Tests"],
     }),
+    getEducationTestById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDUCATION_TESTS + id,
+      providesTags: (_result, _error, id) => [{ type: "Tests", id }],
+    }),
     addEducationTest: builder.mutation({
       query: (test) => ({
         url: API_ENDPOINTS.EDUCATION_TESTS,
@@ -159,18 +175,22 @@ export const education = createApi({
 
 export const {
   useGetEducationCoursesQuery,
+  useGetEducationCourseByIdQuery,
   useAddEducationCourseMutation,
   useUpdateEducationCourseMutation,
   useDeleteEducationCourseMutation,
   useGetEducationEventsQuery,
+  useGetEducationEventByIdQuery,
   useAddEducationEventMutation,
   useUpdateEducationEventMutation,
   useDeleteEducationEventMutation,
   useGetEducationWebinarsQuery,
+  useGetEducationWebinarByIdQuery,
   useAddEducationWebinarMutation,
   useUpdateEducationWebinarMutation,
   useDeleteEducationWebinarMutation,
   useGetEducationTestsQuery,
+  useGetEducationTestByIdQuery,
   useAddEducationTestMutation,
   useUpdateEducationTestMutation,
   useDeleteEducationTestMutation,

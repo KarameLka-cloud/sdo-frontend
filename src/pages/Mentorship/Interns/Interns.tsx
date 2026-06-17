@@ -1,5 +1,5 @@
 import { JSX, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 import {
@@ -9,13 +9,9 @@ import {
   useGetMentorsQuery,
   useGetUsersQuery,
 } from "@/services/store/features/user.ts";
-import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
-import { MoreHorizontalIcon, PencilIcon, PlusIcon, SearchIcon, TrashIcon, XIcon } from "lucide-react";
-import { toast } from "sonner";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -24,20 +20,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
+import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
+import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
+import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
 import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+  INTERNSHIP_ROUTES,
+  buildEditPath,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
 
 interface AdaptationPlan {
   id: number;
@@ -51,6 +41,12 @@ interface AdaptationPlan {
   department_head_user?: { name?: string };
   user?: { name?: string; department?: string };
 }
+
+const DELETE_MESSAGES = {
+  confirm: "Удалить план стажера?",
+  success: "План стажера удалён",
+  error: "Не удалось удалить план",
+};
 
 const resolveRoleUsers = (
   fromApi: UserType[] | undefined,
@@ -116,78 +112,8 @@ const filterBySearch = (
   });
 };
 
-const InternRow = ({
-  plan,
-  mentorName,
-  headName,
-}: {
-  plan: AdaptationPlan;
-  mentorName: string;
-  headName: string;
-}) => {
-  const navigate = useNavigate();
-  const [deletePlan, { isLoading: isDeleting }] =
-    useDeleteAdaptationPlanMutation();
-  const editPath = ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
-    ":planId",
-    String(plan.id),
-  );
-
-  const handleDelete = async () => {
-    const confirmed = window.confirm("Удалить план стажера?");
-    if (!confirmed) return;
-
-    try {
-      await deletePlan(plan.id).unwrap();
-      toast.success("План стажера удалён");
-    } catch {
-      toast.error("Не удалось удалить план");
-    }
-  };
-
-  return (
-    <TableRow
-      className="cursor-pointer"
-      onClick={() => navigate(editPath)}
-    >
-      <TableCell className="font-medium">
-        {plan.user?.name ?? "Пользователь без имени"}
-      </TableCell>
-      <TableCell>{mentorName}</TableCell>
-      <TableCell>{headName}</TableCell>
-      <TableCell
-        className="text-right"
-        onClick={(event) => event.stopPropagation()}
-      >
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="size-8"
-              disabled={isDeleting}
-            >
-              <MoreHorizontalIcon />
-              <span className="sr-only">Открыть меню</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-auto min-w-max">
-            <DropdownMenuItem onClick={() => navigate(editPath)}>
-              <PencilIcon />
-              Редактировать
-            </DropdownMenuItem>
-            <DropdownMenuItem variant="destructive" onClick={handleDelete}>
-              <TrashIcon />
-              Удалить
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </TableCell>
-    </TableRow>
-  );
-};
-
 function Interns(): JSX.Element {
+  const navigate = useNavigate();
   const {
     data: plansData,
     isLoading,
@@ -197,8 +123,10 @@ function Interns(): JSX.Element {
   const { data: mentorsData } = useGetMentorsQuery(undefined);
   const { data: departmentHeadsData } = useGetDepartmentHeadsQuery(undefined);
   const { role, role_name: roleName, id: currentUserId } = useUser();
-
+  const deleteMutation = useDeleteAdaptationPlanMutation();
   const [search, setSearch] = useState("");
+  const { handleDelete, isDeletingItem } =
+    useAdminListDelete<AdaptationPlan>(deleteMutation, DELETE_MESSAGES);
 
   const adaptationPlans = (plansData ?? []) as AdaptationPlan[];
   const users = (usersData ?? []) as UserType[];
@@ -227,43 +155,14 @@ function Interns(): JSX.Element {
 
   return (
     <>
-      <div className="sticky mt-10">
-        <Card>
-          <CardContent>
-            <FieldGroup className="flex flex-row items-end justify-between gap-4">
-              <Button variant="outline" size="sm" asChild>
-                <Link to={ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE}>
-                  <PlusIcon />
-                  Создать план
-                </Link>
-              </Button>
-              <Field className="w-2/4">
-                <InputGroup>
-                  <InputGroupAddon>
-                    <SearchIcon />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    id="interns-search"
-                    placeholder="Имя, отдел, наставник, план..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  {hasSearch && (
-                    <InputGroupAddon align="inline-end">
-                      <InputGroupButton
-                        aria-label="Очистить поиск"
-                        onClick={() => setSearch("")}
-                      >
-                        <XIcon />
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  )}
-                </InputGroup>
-              </Field>
-            </FieldGroup>
-          </CardContent>
-        </Card>
-      </div>
+      <AdminListToolbar
+        createTo={INTERNSHIP_ROUTES.create}
+        createLabel="Создать план"
+        searchId="interns-search"
+        searchPlaceholder="Имя, отдел, наставник, план..."
+        search={search}
+        onSearchChange={setSearch}
+      />
 
       {isError && <DataMessage type="error" />}
       {isLoading && <Loader />}
@@ -280,34 +179,54 @@ function Interns(): JSX.Element {
           </TableHeader>
           <TableBody>
             {filteredPlans.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  {hasSearch ? (
-                    <p className="text-sm text-muted-foreground">
-                      Стажер «{search}» не найден
-                    </p>
-                  ) : (
-                    <DataMessage type="noData" />
-                  )}
-                </TableCell>
-              </TableRow>
+              <AdminTableEmptyRow
+                colSpan={4}
+                hasSearch={hasSearch}
+                notFoundMessage={`Стажер «${search}» не найден`}
+              />
             ) : (
-              filteredPlans.map((plan) => (
-                <InternRow
-                  key={plan.id}
-                  plan={plan}
-                  mentorName={getPersonName(
-                    plan.mentor_user,
-                    plan.mentor,
-                    mentorNames,
-                  )}
-                  headName={getPersonName(
-                    plan.department_head_user,
-                    plan.department_head,
-                    headNames,
-                  )}
-                />
-              ))
+              filteredPlans.map((plan) => {
+                const editPath = buildEditPath(
+                  INTERNSHIP_ROUTES.edit,
+                  plan.id,
+                );
+
+                return (
+                  <TableRow
+                    key={plan.id}
+                    className="cursor-pointer"
+                    onClick={() => navigate(editPath)}
+                  >
+                    <TableCell className="font-medium">
+                      {plan.user?.name ?? "Пользователь без имени"}
+                    </TableCell>
+                    <TableCell>
+                      {getPersonName(
+                        plan.mentor_user,
+                        plan.mentor,
+                        mentorNames,
+                      )}
+                    </TableCell>
+                    <TableCell>
+                      {getPersonName(
+                        plan.department_head_user,
+                        plan.department_head,
+                        headNames,
+                      )}
+                    </TableCell>
+                    <TableCell
+                      className="text-right"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <AdminTableRowActions
+                        editPath={editPath}
+                        onDelete={() => handleDelete(plan)}
+                        isDeleting={isDeletingItem(plan.id)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>

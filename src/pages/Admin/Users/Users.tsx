@@ -1,14 +1,11 @@
 import { JSX, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import Loader from "@/components/ui/custom/Loader";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
 import { isUserInRole, USER_ROLES, type UserRole } from "@/constants/roles.ts";
-import { ROUTES } from "@/constants/routes.ts";
-import { PencilIcon, SearchIcon, XIcon } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -18,14 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/input-group";
+import { Field } from "@/components/ui/field";
 import {
   Select,
   SelectContent,
@@ -33,6 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
+import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
+import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import {
+  USER_ROUTES,
+  buildEditPath,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
 
 const TABS = {
   users: { label: "Все пользователи" },
@@ -56,100 +53,43 @@ const filterByTab = (users: UserType[], tab: UsersTab) => {
   return users.filter((user) => isUserInRole(user, tabConfig.role));
 };
 
-const UserRow = ({ user }: { user: UserType }) => {
-  const navigate = useNavigate();
-  const editPath =
-    user.id != null
-      ? ROUTES.ADMIN_USER_EDIT.replace(":userId", String(user.id))
-      : null;
-
-  return (
-    <TableRow
-      className={editPath ? "cursor-pointer" : undefined}
-      onClick={() => editPath && navigate(editPath)}
-    >
-      <TableCell className="font-medium">{user.name}</TableCell>
-      <TableCell className="text-muted-foreground">{user.department}</TableCell>
-      <TableCell>
-        <Badge variant={user.role_name ? "destructive" : "secondary"}>
-          {user.role_name ?? "Пользователь"}
-        </Badge>
-      </TableCell>
-      <TableCell
-        className="text-right"
-        onClick={(event) => event.stopPropagation()}
-      >
-        {editPath && (
-          <Button variant="outline" size="sm" asChild>
-            <Link to={editPath}>
-              <PencilIcon />
-              Редактировать
-            </Link>
-          </Button>
-        )}
-      </TableCell>
-    </TableRow>
-  );
-};
-
 function Users(): JSX.Element {
+  const navigate = useNavigate();
   const { data, error, isLoading } = useGetUsersQuery("");
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<UsersTab>("users");
 
   const filteredData = useFiltered(filterByTab(data ?? [], activeTab), search);
   const hasSearch = search.trim().length > 0;
+  const tabConfig = TABS[activeTab];
 
   return (
     <>
-      <div className="sticky mt-10">
-        <Card>
-          <CardContent>
-            <FieldGroup className="flex flex-row justify-between">
-              <Field className="w-1/4">
-                <Select
-                  value={activeTab}
-                  onValueChange={(value) => setActiveTab(value as UsersTab)}
-                >
-                  <SelectTrigger id="users-role" className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {TAB_IDS.map((tab) => (
-                      <SelectItem key={tab} value={tab}>
-                        {TABS[tab].label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field className="w-2/4">
-                <InputGroup>
-                  <InputGroupAddon>
-                    <SearchIcon />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    id="users-search"
-                    placeholder="Имя, отдел, роль..."
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  {hasSearch && (
-                    <InputGroupAddon align="inline-end">
-                      <InputGroupButton
-                        aria-label="Очистить поиск"
-                        onClick={() => setSearch("")}
-                      >
-                        <XIcon />
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  )}
-                </InputGroup>
-              </Field>
-            </FieldGroup>
-          </CardContent>
-        </Card>
-      </div>
+      <AdminListToolbar
+        searchId="users-search"
+        searchPlaceholder="Имя, отдел, роль..."
+        search={search}
+        onSearchChange={setSearch}
+        leftSlot={
+          <Field className="w-full min-w-[12rem]">
+            <Select
+              value={activeTab}
+              onValueChange={(value) => setActiveTab(value as UsersTab)}
+            >
+              <SelectTrigger id="users-role" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {TAB_IDS.map((tab) => (
+                  <SelectItem key={tab} value={tab}>
+                    {TABS[tab].label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </Field>
+        }
+      />
 
       {error && <DataMessage type="error" />}
       {isLoading && <Loader />}
@@ -166,28 +106,55 @@ function Users(): JSX.Element {
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={4} className="h-24 text-center">
-                  {hasSearch ? (
+              <AdminTableEmptyRow
+                colSpan={4}
+                hasSearch={hasSearch}
+                notFoundMessage={`Пользователь «${search}» не найден`}
+                emptyContent={
+                  "role" in tabConfig ? (
                     <p className="text-sm text-muted-foreground">
-                      Пользователь «{search}» не найден
+                      Нет пользователей с ролью «{tabConfig.label}»
                     </p>
-                  ) : (
-                    (() => {
-                      const tabConfig = TABS[activeTab];
-                      return "role" in tabConfig ? (
-                        <p className="text-sm text-muted-foreground">
-                          Нет пользователей с ролью «{tabConfig.label}»
-                        </p>
-                      ) : (
-                        <DataMessage type="noData" />
-                      );
-                    })()
-                  )}
-                </TableCell>
-              </TableRow>
+                  ) : undefined
+                }
+              />
             ) : (
-              filteredData.map((user) => <UserRow key={user.id} user={user} />)
+              filteredData.map((user) => {
+                const editPath =
+                  user.id != null
+                    ? buildEditPath(USER_ROUTES.edit, user.id)
+                    : null;
+
+                return (
+                  <TableRow
+                    key={user.id}
+                    className={editPath ? "cursor-pointer" : undefined}
+                    onClick={() => editPath && navigate(editPath)}
+                  >
+                    <TableCell className="font-medium">{user.name}</TableCell>
+                    <TableCell className="text-muted-foreground">
+                      {user.department}
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant={user.role_name ? "destructive" : "secondary"}>
+                        {user.role_name ?? "Пользователь"}
+                      </Badge>
+                    </TableCell>
+                    <TableCell
+                      className="text-right"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      {editPath && (
+                        <AdminTableRowActions
+                          editPath={editPath}
+                          isDeleting={false}
+                          showDelete={false}
+                        />
+                      )}
+                    </TableCell>
+                  </TableRow>
+                );
+              })
             )}
           </TableBody>
         </Table>

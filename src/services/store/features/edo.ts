@@ -20,6 +20,10 @@ export const edo = createApi({
             ]
           : ["Courses"],
     }),
+    getEdoCourseById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDO_COURSES + id,
+      providesTags: (_result, _error, id) => [{ type: "Courses", id }],
+    }),
     addEdoCourse: builder.mutation({
       query: (course) => ({
         url: API_ENDPOINTS.EDO_COURSES,
@@ -56,6 +60,10 @@ export const edo = createApi({
               "Events",
             ]
           : ["Events"],
+    }),
+    getEdoEventById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDO_EVENTS + id,
+      providesTags: (_result, _error, id) => [{ type: "Events", id }],
     }),
     addEdoEvent: builder.mutation({
       query: (event) => ({
@@ -94,6 +102,10 @@ export const edo = createApi({
             ]
           : ["Tests"],
     }),
+    getEdoTestById: builder.query({
+      query: (id: number) => API_ENDPOINTS.EDO_TESTS + id,
+      providesTags: (_result, _error, id) => [{ type: "Tests", id }],
+    }),
     addEdoTest: builder.mutation({
       query: (test) => ({
         url: API_ENDPOINTS.EDO_TESTS,
@@ -122,14 +134,17 @@ export const edo = createApi({
 
 export const {
   useGetEdoCoursesQuery,
+  useGetEdoCourseByIdQuery,
   useAddEdoCourseMutation,
   useUpdateEdoCourseMutation,
   useDeleteEdoCourseMutation,
   useGetEdoEventsQuery,
+  useGetEdoEventByIdQuery,
   useAddEdoEventMutation,
   useUpdateEdoEventMutation,
   useDeleteEdoEventMutation,
   useGetEdoTestsQuery,
+  useGetEdoTestByIdQuery,
   useAddEdoTestMutation,
   useUpdateEdoTestMutation,
   useDeleteEdoTestMutation,

@@ -1,164 +1,132 @@
-import React, { JSX, useState } from "react";
+import { JSX, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { TestType } from "@/interfaces/api/TestType.ts";
-import Input from "@/components/ui/custom/Input";
-import ButtonSubmit from "@/components/ui/custom/ButtonSubmit";
-import AdminResourceRow from "@/components/ui/custom/AdminResourceRow";
-import DataList from "@/components/ui/custom/DataList";
-import AdminStickyToolbar from "@/components/ui/custom/AdminStickyToolbar";
-import { useForm } from "@/hooks/useForm.ts";
-import { useCreateFormStatus } from "@/hooks/useCreateFormStatus.ts";
-import Select from "@/components/ui/custom/Select";
+import DataMessage from "@/components/ui/custom/DataMessage";
+import Loader from "@/components/ui/custom/Loader";
 import { useFiltered } from "@/hooks/useFiltered.ts";
-import { useGetPositionsQuery } from "@/services/store/features/user.ts";
-import FormActionStatus from "@/components/ui/custom/FormActionStatus";
 import convertDate from "@/utils/convertDate.ts";
+import { truncateText } from "@/utils/truncateText.ts";
 import {
   useGetEducationTestsQuery,
-  useAddEducationTestMutation,
   useDeleteEducationTestMutation,
 } from "@/services/store/features/education.ts";
 import {
   useGetEdoTestsQuery,
-  useAddEdoTestMutation,
   useDeleteEdoTestMutation,
 } from "@/services/store/features/edo.ts";
-
-const EMPTY_FORM = {
-  title: "",
-  url: "",
-  position_id: "",
-  note_position: "",
-  date_end: "",
-};
-
-type Domain = "education" | "edo";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
+import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
+import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import {
+  AdminDomain,
+  buildEditPath,
+  TEST_ROUTES,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
 
 const HOOKS = {
   education: {
     useGetQuery: useGetEducationTestsQuery,
-    useAddMutation: useAddEducationTestMutation,
     useDeleteMutation: useDeleteEducationTestMutation,
   },
   edo: {
     useGetQuery: useGetEdoTestsQuery,
-    useAddMutation: useAddEdoTestMutation,
     useDeleteMutation: useDeleteEdoTestMutation,
   },
 } as const;
 
-function AdminTestsPage({ domain }: { domain: Domain }): JSX.Element {
-  const { useGetQuery, useAddMutation, useDeleteMutation } = HOOKS[domain];
+const DELETE_MESSAGES = {
+  confirm: "Удалить тест?",
+  success: "Тест удалён",
+  error: "Не удалось удалить тест",
+};
+
+function AdminTestsPage({ domain }: { domain: AdminDomain }): JSX.Element {
+  const routes = TEST_ROUTES[domain];
+  const { useGetQuery, useDeleteMutation } = HOOKS[domain];
+  const navigate = useNavigate();
   const { data, error, isLoading } = useGetQuery("");
-  const [addTest, { isLoading: addLoading }] = useAddMutation();
-  const [deleteTest] = useDeleteMutation();
-  const { data: positions } = useGetPositionsQuery("");
+  const deleteMutation = useDeleteMutation();
   const [search, setSearch] = useState("");
-  const { type: createStatusType, message: createStatusMessage, submit } =
-    useCreateFormStatus();
+  const { handleDelete, isDeletingItem } = useAdminListDelete<TestType>(
+    deleteMutation,
+    DELETE_MESSAGES,
+  );
+
   const filteredData = useFiltered<TestType>(data, search);
-
-  const { formItems, setFormItems, handleChange } = useForm(EMPTY_FORM);
-
-  const handleAction = async (e: React.FormEvent) => {
-    e.preventDefault();
-    await submit(
-      () => addTest(formItems).unwrap().then(() => undefined),
-      () => setFormItems(EMPTY_FORM),
-    );
-  };
+  const hasSearch = search.trim().length > 0;
 
   return (
     <>
-      <AdminStickyToolbar
+      <AdminListToolbar
+        createTo={routes.create}
+        createLabel="Создать тест"
+        searchId="tests-search"
+        searchPlaceholder="Название, должность, ссылка..."
         search={search}
         onSearchChange={setSearch}
-        form={
-          <form
-            onSubmit={handleAction}
-            className="flex flex-col gap-[0.7rem] rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.9rem]"
-          >
-            <Input
-              type="text"
-              name="title"
-              placeholder="Название"
-              value={formItems.title}
-              onChange={handleChange}
-              className="w-full"
-            />
-            <Input
-              type="text"
-              name="url"
-              placeholder="Ссылка"
-              value={formItems.url}
-              onChange={handleChange}
-              className="w-full"
-            />
-            <div className="flex gap-[0.7rem] max-[900px]:flex-col">
-              {positions && (
-                <Select
-                  name="position_id"
-                  value={formItems.position_id}
-                  onChange={handleChange}
-                  data={positions}
-                  className="w-[30%] rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm max-[900px]:w-full"
-                />
-              )}
-              <Input
-                type="text"
-                name="note_position"
-                placeholder="Примечание по должности (опционально)"
-                value={formItems.note_position}
-                onChange={handleChange}
-                className="w-[70%] max-[900px]:w-full"
-              />
-            </div>
-            <Input
-              type="date"
-              name="date_end"
-              placeholder="Пройти до"
-              value={formItems.date_end}
-              onChange={handleChange}
-              className="w-fit"
-            />
-            <div className="flex items-center gap-3 max-[900px]:flex-col max-[900px]:items-start">
-              <ButtonSubmit loading={addLoading}>Создать</ButtonSubmit>
-              <FormActionStatus
-                type={createStatusType}
-                message={createStatusMessage}
-              />
-            </div>
-          </form>
-        }
       />
 
-      <div className="min-h-0 flex-1 overflow-y-auto pr-1">
-        <DataList<TestType>
-          data={filteredData}
-          error={!!error}
-          isLoading={isLoading}
-          renderItem={(item) => (
-            <AdminResourceRow
-              key={item.id}
-              item={item}
-              deleteMessage="Удалить тест?"
-              mutationDelete={deleteTest}
-              className="not-first:mt-4"
-            >
-              <span className="block text-base">{item.title}</span>
-              <span className="block break-all text-sm text-gray-500">
-                {item.url}
-              </span>
-              <span className="block text-sm italic text-gray-500">
-                {item.position}{" "}
-                {item.note_position && `(${item.note_position})`}
-              </span>
-              <span className="block text-sm text-gray-900">
-                {convertDate(item.date_end)}
-              </span>
-            </AdminResourceRow>
-          )}
-        />
-      </div>
+      {error && <DataMessage type="error" />}
+      {isLoading && <Loader />}
+
+      {data && (
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Название</TableHead>
+              <TableHead>Должность</TableHead>
+              <TableHead>Пройти до</TableHead>
+              <TableHead className="text-right">Действия</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {filteredData.length === 0 ? (
+              <AdminTableEmptyRow
+                colSpan={4}
+                hasSearch={hasSearch}
+                notFoundMessage={`Тест «${search}» не найден`}
+              />
+            ) : (
+              filteredData.map((item) => {
+                const editPath = buildEditPath(routes.edit, item.id);
+
+                return (
+                  <TableRow
+                    key={item.id}
+                    className="cursor-pointer"
+                    onClick={() => navigate(editPath)}
+                  >
+                    <TableCell className="font-medium" title={item.title}>
+                      {truncateText(item.title)}
+                    </TableCell>
+                    <TableCell>{item.position}</TableCell>
+                    <TableCell>{convertDate(item.date_end)}</TableCell>
+                    <TableCell
+                      className="text-right"
+                      onClick={(event) => event.stopPropagation()}
+                    >
+                      <AdminTableRowActions
+                        editPath={editPath}
+                        onDelete={() => handleDelete(item)}
+                        isDeleting={isDeletingItem(item.id)}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })
+            )}
+          </TableBody>
+        </Table>
+      )}
     </>
   );
 }

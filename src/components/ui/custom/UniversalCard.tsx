@@ -66,16 +66,7 @@ function UniversalCard({
           {
             icon: <Building className="h-3.5 w-3.5" />,
             label: "Отдел:",
-            value: (
-              <>
-                {(item as CourseType).department}
-                {(item as CourseType).note_department && (
-                  <span className="text-gray-900 ml-1">
-                    ({(item as CourseType).note_department})
-                  </span>
-                )}
-              </>
-            ),
+            value: (item as CourseType).department,
             show: true,
           },
         );
@@ -104,16 +95,7 @@ function UniversalCard({
           {
             icon: <Building className="h-3.5 w-3.5" />,
             label: "Отдел:",
-            value: (
-              <>
-                {(item as EventType).department}
-                {(item as EventType).note_department && (
-                  <span className="text-gray-900 ml-1">
-                    ({(item as EventType).note_department})
-                  </span>
-                )}
-              </>
-            ),
+            value: (item as EventType).department,
             show: true,
           },
         );
@@ -153,16 +135,7 @@ function UniversalCard({
           {
             icon: <User className="h-3.5 w-3.5" />,
             label: "Сотрудник:",
-            value: (
-              <>
-                {(item as TestType).position}
-                {(item as TestType).note_position && (
-                  <span className="text-gray-900 ml-1">
-                    ({(item as TestType).note_position})
-                  </span>
-                )}
-              </>
-            ),
+            value: (item as TestType).position,
             show: true,
           },
         );
@@ -173,8 +146,6 @@ function UniversalCard({
   };
 
   const fields = getFields();
-  const hasDescription =
-    "description" in item && (item as EventType).description;
 
   const getIconColor = (iconType: string) => {
     const colors: Record<string, string> = {
@@ -206,11 +177,6 @@ function UniversalCard({
         <h3 className="font-semibold text-gray-900 text-base leading-tight">
           {item.title}
         </h3>
-        {hasDescription && (
-          <p className="text-gray-500 text-sm mt-6 leading-relaxed">
-            {(item as EventType).description}
-          </p>
-        )}
       </div>
 
       <Separator

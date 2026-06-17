@@ -1,8 +1,6 @@
 import { FormEvent, JSX, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { ArrowLeftIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Loader from "@/components/ui/custom/Loader";
 import {
   useCreateAdaptationPlanMutation,
   useGetAdaptationPlanTemplatesQuery,
@@ -10,7 +8,6 @@ import {
   useGetMentorsQuery,
   useGetUsersQuery,
 } from "@/services/store/features/user.ts";
-import { ROUTES } from "@/constants/routes.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
 import { Button } from "@/components/ui/button";
@@ -32,7 +29,8 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
+import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
+import { INTERNSHIP_ROUTES } from "@/pages/Admin/shared/adminResourceConfig.ts";
 
 interface AdaptationTemplate {
   id: number;
@@ -59,16 +57,6 @@ const sortTemplates = (a: AdaptationTemplate, b: AdaptationTemplate) => {
     ? shiftA - shiftB
     : a.name.localeCompare(b.name, "ru");
 };
-
-function BackToInternsLink({ className }: { className?: string }) {
-  return (
-    <Button variant="ghost" className={cn("w-fit -ml-2", className)} asChild>
-      <Link to={ROUTES.MENTORSHIP_INTERNS}>
-        <ArrowLeftIcon />К списку стажеров
-      </Link>
-    </Button>
-  );
-}
 
 function PlanCreate(): JSX.Element {
   const navigate = useNavigate();
@@ -138,20 +126,18 @@ function PlanCreate(): JSX.Element {
         department_head: Number(departmentHeadId),
       }).unwrap();
       toast.success("План адаптации создан");
-      navigate(ROUTES.MENTORSHIP_INTERNS);
+      navigate(INTERNSHIP_ROUTES.list);
     } catch {
       toast.error("Не удалось создать план адаптации");
     }
   };
 
-  if (isUsersLoading || isTemplatesLoading) {
-    return <Loader />;
-  }
-
   return (
-    <div className="flex w-full flex-col gap-6">
-      <BackToInternsLink />
-
+    <AdminFormPage
+      backTo={INTERNSHIP_ROUTES.list}
+      backLabel="К списку стажеров"
+      isLoading={isUsersLoading || isTemplatesLoading}
+    >
       <Card>
         <CardHeader>
           <CardTitle>Создание плана адаптации</CardTitle>
@@ -278,7 +264,7 @@ function PlanCreate(): JSX.Element {
           </CardFooter>
         </form>
       </Card>
-    </div>
+    </AdminFormPage>
   );
 }
 

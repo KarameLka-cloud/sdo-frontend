@@ -3,8 +3,9 @@ export interface EventType {
   title: string;
   description: string;
   link?: string;
+  department_id?: number;
   department: string;
   note_department?: string;
-  time: string;
+  time?: string;
   date: string;
 }

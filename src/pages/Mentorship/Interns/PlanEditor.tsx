@@ -1,9 +1,6 @@
-import { JSX, useEffect, useMemo, useState } from "react";
+import { FormEvent, JSX, useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import DataMessage from "@/components/ui/custom/DataMessage";
-import IconButton from "@/components/ui/custom/IconButton";
-import Input from "@/components/ui/custom/Input";
-import Loader from "@/components/ui/custom/Loader";
+import { toast } from "sonner";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
@@ -14,13 +11,36 @@ import {
   useUpdateAdaptationPlanTaskStatusMutation,
 } from "@/services/store/features/user.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import { ROUTES } from "@/constants/routes.ts";
-import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
-import FormActionStatus from "@/components/ui/custom/FormActionStatus";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { formatDayRange } from "@/utils/formatDayRange.ts";
+import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
+import AdminEditFormFooter from "@/pages/Admin/shared/components/AdminEditFormFooter";
+import {
+  INTERNSHIP_ROUTES,
+  parseEntityId,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
 
 interface PlanType {
   id: number;
@@ -57,15 +77,61 @@ interface PlanType {
   }>;
 }
 
-type StatusType = "idle" | "loading" | "success" | "error";
+const DELETE_MESSAGES = {
+  confirm: "Удалить план стажера?",
+  success: "План стажера удалён",
+  error: "Не удалось удалить план",
+};
+
+type EditableCommentKey =
+  | "employee_comment"
+  | "mentor_comment"
+  | "department_head_comment";
+
+interface CommentFieldWithSaveProps {
+  label: string;
+  value: string;
+  savedValue: string;
+  isSaving: boolean;
+  onChange: (value: string) => void;
+  onSave: () => void;
+}
+
+function CommentFieldWithSave({
+  label,
+  value,
+  savedValue,
+  isSaving,
+  onChange,
+  onSave,
+}: CommentFieldWithSaveProps): JSX.Element {
+  const hasChanges = value !== savedValue;
+
+  return (
+    <Field>
+      <FieldLabel>{label}</FieldLabel>
+      <Textarea value={value} onChange={(event) => onChange(event.target.value)} />
+      <Button
+        type="button"
+        size="sm"
+        className="w-fit"
+        disabled={!hasChanges || isSaving}
+        onClick={onSave}
+      >
+        {isSaving && <Spinner />}
+        Сохранить
+      </Button>
+    </Field>
+  );
+}
 
 function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
   const trimmed = (text ?? "").trim();
   return (
     <div
       className={cn(
-        "m-0 min-h-[1.35em] text-sm leading-[1.45] whitespace-pre-wrap break-words text-[var(--mfc-black-color)]",
-        !trimmed && "text-[var(--mfc-gray-color)]",
+        "m-0 min-h-[1.35em] text-sm leading-relaxed whitespace-pre-wrap break-words",
+        !trimmed && "text-muted-foreground",
       )}
     >
       {trimmed || "—"}
@@ -76,14 +142,11 @@ function ReadonlyCommentBlock({ text }: { text: string }): JSX.Element {
 function PlanEditor(): JSX.Element {
   const navigate = useNavigate();
   const { planId } = useParams();
-  const numericPlanId = Number(planId);
+  const numericPlanId = parseEntityId(planId) ?? 0;
 
-  const { data, isLoading, isError, error } = useGetAdaptationPlanByIdQuery(
-    numericPlanId,
-    {
+  const { data, isLoading, isError, error   } = useGetAdaptationPlanByIdQuery(numericPlanId, {
       skip: !numericPlanId,
-    },
-  );
+    });
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: headsData = [] } = useGetDepartmentHeadsQuery(undefined);
 
@@ -91,8 +154,12 @@ function PlanEditor(): JSX.Element {
     useUpdateAdaptationPlanMutation();
   const [updateDay] = useUpdateAdaptationPlanDayMutation();
   const [updateTask] = useUpdateAdaptationPlanTaskStatusMutation();
-  const [deletePlan, { isLoading: isDeleting }] =
-    useDeleteAdaptationPlanMutation();
+  const deleteMutation = useDeleteAdaptationPlanMutation();
+  const { handleDelete, isDeleting } = useAdminEditDelete(
+    deleteMutation,
+    DELETE_MESSAGES,
+    () => navigate(INTERNSHIP_ROUTES.list),
+  );
 
   const { role, role_name: roleName } = useUser();
   const plan = data as PlanType | undefined;
@@ -127,8 +194,7 @@ function PlanEditor(): JSX.Element {
     }>
   >([]);
   const [initialDays, setInitialDays] = useState<typeof days>([]);
-  const [status, setStatus] = useState("");
-  const [statusType, setStatusType] = useState<StatusType>("idle");
+  const [savingCommentKey, setSavingCommentKey] = useState<string | null>(null);
 
   const loadErrorMessage = useMemo(() => {
     if (!error || typeof error !== "object" || !("status" in error)) {
@@ -205,7 +271,56 @@ function PlanEditor(): JSX.Element {
     };
   }, [role, roleName]);
 
-  const handleSaveAll = async () => {
+  const handleSaveComment = async (
+    dayIndex: number,
+    commentKey: EditableCommentKey,
+  ) => {
+    if (!plan) {
+      return;
+    }
+
+    const day = days[dayIndex];
+    const initial = initialDays[dayIndex];
+    const saveKey = `${day.id}-${commentKey}`;
+
+    setSavingCommentKey(saveKey);
+    try {
+      await updateDay({
+        planId: plan.id,
+        dayId: day.id,
+        date_from: day.date_from,
+        date_to: day.date_to || null,
+        completion: day.completion,
+        employee_comment:
+          commentKey === "employee_comment"
+            ? day.employee_comment || null
+            : initial?.employee_comment || null,
+        intern_comment: day.intern_comment || null,
+        mentor_comment:
+          commentKey === "mentor_comment"
+            ? day.mentor_comment || null
+            : initial?.mentor_comment || null,
+        department_head_comment:
+          commentKey === "department_head_comment"
+            ? day.department_head_comment || null
+            : initial?.department_head_comment || null,
+      }).unwrap();
+
+      setInitialDays((previous) => {
+        const next = [...previous];
+        next[dayIndex] = { ...next[dayIndex], [commentKey]: day[commentKey] };
+        return next;
+      });
+      toast.success("Комментарий сохранён");
+    } catch {
+      toast.error("Не удалось сохранить комментарий");
+    } finally {
+      setSavingCommentKey(null);
+    }
+  };
+
+  const handleSaveAll = async (event?: FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
     if (!plan) {
       return;
     }
@@ -215,14 +330,11 @@ function PlanEditor(): JSX.Element {
       !form.departmentHead ||
       !form.startDate
     ) {
-      setStatusType("error");
-      setStatus("Заполните все обязательные поля.");
+      toast.error("Заполните все обязательные поля.");
       return;
     }
 
     try {
-      setStatusType("loading");
-      setStatus(FORM_STATUS_MESSAGES.saveLoading);
       await updatePlan({
         id: plan.id,
         start_date: form.startDate,
@@ -276,179 +388,176 @@ function PlanEditor(): JSX.Element {
 
       await Promise.all([...dayRequests, ...taskRequests]);
       setInitialDays(days);
-      setStatusType("success");
-      setStatus(FORM_STATUS_MESSAGES.saveSuccess);
+      toast.success("План сохранён");
     } catch {
-      setStatusType("error");
-      setStatus(FORM_STATUS_MESSAGES.saveError);
+      toast.error("Не удалось сохранить план");
     }
   };
 
-  const handleDelete = async () => {
-    if (!plan) {
-      return;
-    }
-    const confirmed = window.confirm("Удалить план стажера?");
-    if (!confirmed) {
-      return;
-    }
-
-    try {
-      setStatusType("loading");
-      setStatus(FORM_STATUS_MESSAGES.deleteLoading);
-      await deletePlan(plan.id).unwrap();
-      navigate(ROUTES.MENTORSHIP_INTERNS);
-    } catch {
-      setStatusType("error");
-      setStatus(FORM_STATUS_MESSAGES.deleteError);
-    }
-  };
+  if (!numericPlanId) {
+    return (
+      <AdminFormPage
+        backTo={INTERNSHIP_ROUTES.list}
+        backLabel="К списку стажеров"
+        isError
+      >
+        <></>
+      </AdminFormPage>
+    );
+  }
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <AdminFormPage
+        backTo={INTERNSHIP_ROUTES.list}
+        backLabel="К списку стажеров"
+        isLoading
+      >
+        <></>
+      </AdminFormPage>
+    );
   }
 
   if (isError || !plan) {
     return (
-      <>
-        <DataMessage type="error" />
+      <AdminFormPage
+        backTo={INTERNSHIP_ROUTES.list}
+        backLabel="К списку стажеров"
+        isError
+      >
         {loadErrorMessage && (
-          <p className="mt-[0.3rem] text-[0.86rem] text-[var(--mfc-black-color)]">
-            {loadErrorMessage}
-          </p>
+          <p className="text-sm text-muted-foreground">{loadErrorMessage}</p>
         )}
-      </>
+      </AdminFormPage>
     );
   }
 
   return (
-    <>
-      <div className="flex flex-col gap-[0.9rem]">
-        <div className="flex flex-col gap-3 rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] px-4 py-[0.85rem]">
-          <div className="border-b border-[var(--mfc-create-form-border)] pb-2">
-            <span className="mb-[0.35rem] block text-[0.84rem] font-semibold text-[var(--mfc-gray-color)]">
-              Стажер
-            </span>
-            <div className="text-[1.05rem] leading-snug font-semibold text-[var(--mfc-black-color)]">
-              {plan.user?.name ?? `ID пользователя: ${plan.user_id}`}
-            </div>
-          </div>
+    <AdminFormPage
+      backTo={INTERNSHIP_ROUTES.list}
+      backLabel="К списку стажеров"
+    >
+      <Card>
+        <CardHeader>
+          <CardTitle>Редактирование плана адаптации</CardTitle>
+        </CardHeader>
+        <form onSubmit={handleSaveAll}>
+          <CardContent className="p-4">
+            <FieldGroup className="grid gap-4 sm:grid-cols-2">
+              <Field>
+                <FieldLabel htmlFor="plan-intern">Стажер</FieldLabel>
+                <Input
+                  id="plan-intern"
+                  value={
+                    plan.user?.name ?? `Пользователь ID: ${plan.user_id}`
+                  }
+                  readOnly
+                  disabled
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="plan-start-date">
+                  Дата начала стажировки
+                </FieldLabel>
+                <Input
+                  id="plan-start-date"
+                  type="date"
+                  value={form.startDate}
+                  onChange={(event) =>
+                    setForm({ ...form, startDate: event.target.value })
+                  }
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="plan-schedule">Режим работы</FieldLabel>
+                <Input
+                  id="plan-schedule"
+                  value={plan.template?.work_schedule ?? "—"}
+                  readOnly
+                  disabled
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="plan-template">Шаблон адаптации</FieldLabel>
+                <Input
+                  id="plan-template"
+                  value={
+                    plan.template
+                      ? `${plan.template.name} (смена: ${form.shift})`
+                      : "—"
+                  }
+                  readOnly
+                  disabled
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="plan-mentor">Наставник</FieldLabel>
+                <Select
+                  value={form.mentor ? String(form.mentor) : ""}
+                  onValueChange={(value) =>
+                    setForm({ ...form, mentor: Number(value) })
+                  }
+                >
+                  <SelectTrigger id="plan-mentor" className="w-full">
+                    <SelectValue placeholder="Выберите наставника" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {mentors.map((mentor) => (
+                      <SelectItem key={mentor.id} value={String(mentor.id)}>
+                        {mentor.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="plan-head">Руководитель отдела</FieldLabel>
+                <Select
+                  value={form.departmentHead ? String(form.departmentHead) : ""}
+                  onValueChange={(value) =>
+                    setForm({ ...form, departmentHead: Number(value) })
+                  }
+                >
+                  <SelectTrigger id="plan-head" className="w-full">
+                    <SelectValue placeholder="Выберите руководителя" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {heads.map((head) => (
+                      <SelectItem key={head.id} value={String(head.id)}>
+                        {head.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+            </FieldGroup>
+          </CardContent>
+          <Separator />
+          <AdminEditFormFooter
+            isSaving={isSavingPlan}
+            isDeleting={isDeleting}
+            onDelete={() => handleDelete(plan.id)}
+          />
+        </form>
+      </Card>
 
-          <div className="grid grid-cols-3 gap-[0.6rem] max-[900px]:grid-cols-1">
-            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-              Дата начала
-              <Input
-                type="date"
-                name="startDate"
-                className="w-fit"
-                value={form.startDate}
-                onChange={(event) =>
-                  setForm({ ...form, startDate: event.target.value })
-                }
-              />
-            </label>
-            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-              План адаптации
-              <span className="m-0 font-normal text-[var(--mfc-gray-color)]">
-                {plan.template
-                  ? `${plan.template.name} (${plan.template.work_schedule})`
-                  : "—"}
-              </span>
-            </label>
-            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-              Смена
-              <span className="m-0 font-normal text-[var(--mfc-gray-color)]">
-                {form.shift}
-              </span>
-            </label>
-          </div>
-
-          <div className="grid grid-cols-3 gap-[0.6rem] max-[900px]:grid-cols-1">
-            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-              Наставник
-              <select
-                className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
-                value={form.mentor ?? ""}
-                onChange={(event) =>
-                  setForm({
-                    ...form,
-                    mentor: event.target.value
-                      ? Number(event.target.value)
-                      : null,
-                  })
-                }
-              >
-                <option value="" disabled>
-                  Выберите наставника
-                </option>
-                {mentors.map((mentor) => (
-                  <option key={mentor.id} value={mentor.id}>
-                    {mentor.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-              Руководитель отдела
-              <select
-                className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
-                value={form.departmentHead ?? ""}
-                onChange={(event) =>
-                  setForm({
-                    ...form,
-                    departmentHead: event.target.value
-                      ? Number(event.target.value)
-                      : null,
-                  })
-                }
-              >
-                <option value="" disabled>
-                  Выберите руководителя отдела
-                </option>
-                {heads.map((head) => (
-                  <option key={head.id} value={head.id}>
-                    {head.name}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <div className="mt-[0.15rem] flex flex-wrap items-center gap-3 border-t border-[var(--mfc-create-form-border)] pt-3">
-            <IconButton
-              type="save"
-              onClick={handleSaveAll}
-              disabled={isSavingPlan}
-              className={cn(isSavingPlan && "pointer-events-none opacity-50")}
-            />
-            <div className="flex flex-wrap items-center gap-3">
-              <IconButton
-                type="delete"
-                onClick={handleDelete}
-                disabled={isDeleting}
-                className={cn(isDeleting && "pointer-events-none opacity-50")}
-              />
-              <FormActionStatus type={statusType} message={status} />
-            </div>
-          </div>
-        </div>
-
+      <div className="flex flex-col gap-4">
         {days.map((day, dayIndex) => (
-          <div
-            key={day.id}
-            className="rounded-xl border border-[var(--mfc-create-form-border)] bg-[var(--mfc-create-form-bg)] p-[0.8rem]"
-          >
-            <div className="mb-[0.6rem] inline-flex self-start rounded-lg border border-slate-200 bg-slate-50 px-[0.58rem] py-[0.28rem] text-sm font-semibold text-[var(--mfc-black-color)]">
-              {formatDayRange(day.day_from, day.day_to, day.work_day, "День")}
-            </div>
-            <div className="grid grid-cols-[minmax(0,2fr)_minmax(11rem,1fr)] gap-[0.6rem] max-[900px]:grid-cols-1">
-              <div className="grid grid-cols-2 items-start gap-[0.35rem] max-[900px]:grid-cols-1 max-[900px]:gap-[0.6rem]">
-                <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                  Дата от
+          <Card key={day.id}>
+            <CardHeader className="pb-3">
+              <CardTitle className="text-base">
+                {formatDayRange(day.day_from, day.day_to, day.work_day, "День")}
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-4 p-4 pt-0">
+              <FieldGroup className="grid gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor={`day-date-from-${day.id}`}>
+                    Дата от
+                  </FieldLabel>
                   <Input
+                    id={`day-date-from-${day.id}`}
                     type="date"
-                    name={`dayDateFrom-${day.id}`}
-                    className="w-fit"
                     value={day.date_from}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -461,13 +570,14 @@ function PlanEditor(): JSX.Element {
                       })
                     }
                   />
-                </label>
-                <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                  Дата до (опционально)
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor={`day-date-to-${day.id}`}>
+                    Дата до (опционально)
+                  </FieldLabel>
                   <Input
+                    id={`day-date-to-${day.id}`}
                     type="date"
-                    name={`dayDateTo-${day.id}`}
-                    className="w-fit"
                     value={day.date_to ?? ""}
                     onChange={(event) =>
                       setDays((previous) => {
@@ -480,19 +590,20 @@ function PlanEditor(): JSX.Element {
                       })
                     }
                   />
-                </label>
-              </div>
-              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                Статус дня
-                <select
-                  className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
+                </Field>
+              </FieldGroup>
+              <Field>
+                <FieldLabel htmlFor={`day-status-${day.id}`}>
+                  Статус дня
+                </FieldLabel>
+                <Select
                   value={day.completion}
-                  onChange={(event) =>
+                  onValueChange={(value) =>
                     setDays((previous) => {
                       const next = [...previous];
                       next[dayIndex] = {
                         ...next[dayIndex],
-                        completion: event.target.value as
+                        completion: value as
                           | "в процессе"
                           | "выполнен"
                           | "есть замечания",
@@ -501,120 +612,142 @@ function PlanEditor(): JSX.Element {
                     })
                   }
                 >
-                  <option value="в процессе">В процессе</option>
-                  <option value="выполнен">Выполнен</option>
-                  <option value="есть замечания">Есть замечания</option>
-                </select>
-              </label>
-            </div>
+                  <SelectTrigger id={`day-status-${day.id}`} className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="в процессе">В процессе</SelectItem>
+                    <SelectItem value="выполнен">Выполнен</SelectItem>
+                    <SelectItem value="есть замечания">Есть замечания</SelectItem>
+                  </SelectContent>
+                </Select>
+              </Field>
 
-            <div className="mt-[0.7rem] flex flex-col gap-[0.6rem]">
-              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                Комментарий УПиПК
-                {commentPermissions.canEditEmployee ? (
-                  <textarea
-                    className="min-h-20 w-full resize-y rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] font-[inherit] text-sm"
-                    value={day.employee_comment}
-                    onChange={(event) =>
-                      setDays((previous) => {
-                        const next = [...previous];
-                        next[dayIndex] = {
-                          ...next[dayIndex],
-                          employee_comment: event.target.value,
-                        };
-                        return next;
-                      })
-                    }
-                  />
-                ) : (
+              {commentPermissions.canEditEmployee ? (
+                <CommentFieldWithSave
+                  label="Комментарий УПиПК"
+                  value={day.employee_comment}
+                  savedValue={initialDays[dayIndex]?.employee_comment ?? ""}
+                  isSaving={savingCommentKey === `${day.id}-employee_comment`}
+                  onChange={(value) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        employee_comment: value,
+                      };
+                      return next;
+                    })
+                  }
+                  onSave={() =>
+                    void handleSaveComment(dayIndex, "employee_comment")
+                  }
+                />
+              ) : (
+                <Field>
+                  <FieldLabel>Комментарий УПиПК</FieldLabel>
                   <ReadonlyCommentBlock text={day.employee_comment} />
-                )}
-              </label>
-              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                Комментарий стажера
+                </Field>
+              )}
+              <Field>
+                <FieldLabel>Комментарий стажера</FieldLabel>
                 <ReadonlyCommentBlock text={day.intern_comment} />
-              </label>
-              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                Комментарий наставника
-                {commentPermissions.canEditMentor ? (
-                  <textarea
-                    className="min-h-20 w-full resize-y rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] font-[inherit] text-sm"
-                    value={day.mentor_comment}
-                    onChange={(event) =>
-                      setDays((previous) => {
-                        const next = [...previous];
-                        next[dayIndex] = {
-                          ...next[dayIndex],
-                          mentor_comment: event.target.value,
-                        };
-                        return next;
-                      })
-                    }
-                  />
-                ) : (
+              </Field>
+              {commentPermissions.canEditMentor ? (
+                <CommentFieldWithSave
+                  label="Комментарий наставника"
+                  value={day.mentor_comment}
+                  savedValue={initialDays[dayIndex]?.mentor_comment ?? ""}
+                  isSaving={savingCommentKey === `${day.id}-mentor_comment`}
+                  onChange={(value) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        mentor_comment: value,
+                      };
+                      return next;
+                    })
+                  }
+                  onSave={() =>
+                    void handleSaveComment(dayIndex, "mentor_comment")
+                  }
+                />
+              ) : (
+                <Field>
+                  <FieldLabel>Комментарий наставника</FieldLabel>
                   <ReadonlyCommentBlock text={day.mentor_comment} />
-                )}
-              </label>
-              <label className="flex flex-col gap-1 text-[0.84rem] font-semibold text-[var(--mfc-black-color)] [&_input]:font-normal [&_select]:font-normal [&_textarea]:font-normal">
-                Комментарий руководителя
-                {commentPermissions.canEditDepartmentHead ? (
-                  <textarea
-                    className="min-h-20 w-full resize-y rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] font-[inherit] text-sm"
-                    value={day.department_head_comment}
-                    onChange={(event) =>
-                      setDays((previous) => {
-                        const next = [...previous];
-                        next[dayIndex] = {
-                          ...next[dayIndex],
-                          department_head_comment: event.target.value,
-                        };
-                        return next;
-                      })
-                    }
-                  />
-                ) : (
+                </Field>
+              )}
+              {commentPermissions.canEditDepartmentHead ? (
+                <CommentFieldWithSave
+                  label="Комментарий руководителя"
+                  value={day.department_head_comment}
+                  savedValue={
+                    initialDays[dayIndex]?.department_head_comment ?? ""
+                  }
+                  isSaving={
+                    savingCommentKey === `${day.id}-department_head_comment`
+                  }
+                  onChange={(value) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        department_head_comment: value,
+                      };
+                      return next;
+                    })
+                  }
+                  onSave={() =>
+                    void handleSaveComment(dayIndex, "department_head_comment")
+                  }
+                />
+              ) : (
+                <Field>
+                  <FieldLabel>Комментарий руководителя</FieldLabel>
                   <ReadonlyCommentBlock text={day.department_head_comment} />
-                )}
-              </label>
-            </div>
+                </Field>
+              )}
 
-            <div className="mt-[0.7rem] flex flex-col gap-2">
-              {day.tasks.map((task, taskIndex) => (
-                <div
-                  key={task.id}
-                  className="grid grid-cols-[1fr_11rem] items-center gap-2 max-[900px]:grid-cols-1"
-                >
-                  <span className="text-[0.88rem] text-[var(--mfc-black-color)]">
-                    {task.description}
-                  </span>
-                  <select
-                    className="w-full rounded-lg border border-[var(--mfc-create-field-border)] px-[0.7rem] py-[0.55rem] text-sm"
-                    value={task.status}
-                    onChange={(event) =>
-                      setDays((previous) => {
-                        const next = [...previous];
-                        const tasks = [...next[dayIndex].tasks];
-                        tasks[taskIndex] = {
-                          ...tasks[taskIndex],
-                          status: event.target.value as
-                            | "выполнено"
-                            | "не выполнено",
-                        };
-                        next[dayIndex] = { ...next[dayIndex], tasks };
-                        return next;
-                      })
-                    }
+              <div className="flex flex-col gap-3">
+                {day.tasks.map((task, taskIndex) => (
+                  <div
+                    key={task.id}
+                    className="grid grid-cols-[1fr_11rem] items-center gap-3 max-sm:grid-cols-1"
                   >
-                    <option value="не выполнено">Не выполнено</option>
-                    <option value="выполнено">Выполнено</option>
-                  </select>
-                </div>
-              ))}
-            </div>
-          </div>
+                    <span className="text-sm">{task.description}</span>
+                    <Select
+                      value={task.status}
+                      onValueChange={(value) =>
+                        setDays((previous) => {
+                          const next = [...previous];
+                          const tasks = [...next[dayIndex].tasks];
+                          tasks[taskIndex] = {
+                            ...tasks[taskIndex],
+                            status: value as "выполнено" | "не выполнено",
+                          };
+                          next[dayIndex] = { ...next[dayIndex], tasks };
+                          return next;
+                        })
+                      }
+                    >
+                      <SelectTrigger className="w-full">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="не выполнено">Не выполнено</SelectItem>
+                        <SelectItem value="выполнено">Выполнено</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
         ))}
       </div>
-    </>
+    </AdminFormPage>
   );
 }
 

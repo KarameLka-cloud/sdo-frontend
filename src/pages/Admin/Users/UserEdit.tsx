@@ -1,17 +1,13 @@
 import { FormEvent, JSX, useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { ArrowLeftIcon } from "lucide-react";
+import { useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import Loader from "@/components/ui/custom/Loader";
-import DataMessage from "@/components/ui/custom/DataMessage";
 import {
   useGetUsersQuery,
   useGetRolesQuery,
   useAssignRoleMutation,
   useRevokeRoleMutation,
 } from "@/services/store/features/user.ts";
-import { ROUTES } from "@/constants/routes.ts";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -32,29 +28,18 @@ import {
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Spinner } from "@/components/ui/spinner";
-import { cn } from "@/lib/utils";
+import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
+import {
+  USER_ROUTES,
+  parseEntityId,
+} from "@/pages/Admin/shared/adminResourceConfig.ts";
 
 const NO_ROLE_VALUE = "__no_rights__";
-
-const parseUserId = (value: string | undefined): number | null => {
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
-};
 
 const getInitials = (name?: string) => {
   const [first = "", second = ""] = (name ?? "").split(" ");
   return `${second.charAt(0)}${first.charAt(0)}`.toUpperCase();
 };
-
-function BackToUsersLink({ className }: { className?: string }) {
-  return (
-    <Button variant="ghost" className={cn("w-fit -ml-2", className)} asChild>
-      <Link to={ROUTES.ADMIN_USERS}>
-        <ArrowLeftIcon />К списку пользователей
-      </Link>
-    </Button>
-  );
-}
 
 function UserInfoItem({ label, value }: { label: string; value?: string }) {
   return (
@@ -88,7 +73,6 @@ function UserProfileCard({ user }: { user: UserType }) {
           <UserInfoItem label="Логин" value={user.login} />
           <UserInfoItem label="Описание" value={user.description} />
           <UserInfoItem label="Отдел" value={user.department} />
-          <UserInfoItem label="Номер" value={user.department} />
         </dl>
       </CardContent>
     </Card>
@@ -116,7 +100,7 @@ function UserRoleForm({
   };
 
   return (
-    <Card className="w-1/4">
+    <Card className="max-w-md">
       <CardHeader>
         <CardTitle>Роль</CardTitle>
       </CardHeader>
@@ -161,7 +145,7 @@ function UserRoleForm({
 
 function UserEdit(): JSX.Element {
   const { userId } = useParams();
-  const parsedUserId = parseUserId(userId);
+  const parsedUserId = parseEntityId(userId);
 
   const { data, error, isLoading } = useGetUsersQuery("");
   const { data: rolesData } = useGetRolesQuery("");
@@ -208,45 +192,40 @@ function UserEdit(): JSX.Element {
     }
   };
 
-  if (!parsedUserId) {
+  if (parsedUserId == null) {
     return (
-      <div className="flex flex-col gap-4">
-        <DataMessage type="error" />
-        <BackToUsersLink />
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return <Loader />;
-  }
-
-  if (error) {
-    return <DataMessage type="error" />;
-  }
-
-  if (!user) {
-    return (
-      <div className="flex flex-col gap-4">
-        <DataMessage type="noData" />
-        <BackToUsersLink />
-      </div>
+      <AdminFormPage
+        backTo={USER_ROUTES.list}
+        backLabel="К списку пользователей"
+        isError
+      >
+        <></>
+      </AdminFormPage>
     );
   }
 
   return (
-    <div className="flex w-full flex-col gap-6">
-      <BackToUsersLink />
-      <UserProfileCard user={user} />
-      <UserRoleForm
-        currentRole={currentRole}
-        roles={roles}
-        selectedRole={selectedRole}
-        onRoleChange={setSelectedRole}
-        onSave={handleSaveRole}
-        isSaving={isSaving}
-      />
-    </div>
+    <AdminFormPage
+      backTo={USER_ROUTES.list}
+      backLabel="К списку пользователей"
+      isLoading={isLoading}
+      isError={!!error}
+      isNoData={!isLoading && !error && !user}
+    >
+      {user && (
+        <>
+          <UserProfileCard user={user} />
+          <UserRoleForm
+            currentRole={currentRole}
+            roles={roles}
+            selectedRole={selectedRole}
+            onRoleChange={setSelectedRole}
+            onSave={handleSaveRole}
+            isSaving={isSaving}
+          />
+        </>
+      )}
+    </AdminFormPage>
   );
 }
 
