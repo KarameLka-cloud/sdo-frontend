@@ -1,8 +1,9 @@
 import { JSX, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import DataMessage from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 import {
+  useDeleteAdaptationPlanMutation,
   useGetAdaptationPlansQuery,
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
@@ -12,7 +13,8 @@ import { ROUTES } from "@/constants/routes.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
-import { PencilIcon, PlusIcon, SearchIcon, XIcon } from "lucide-react";
+import { MoreHorizontalIcon, PencilIcon, PlusIcon, SearchIcon, TrashIcon, XIcon } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -23,7 +25,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { Field, FieldGroup } from "@/components/ui/field";
 import {
   InputGroup,
   InputGroupAddon,
@@ -31,12 +33,11 @@ import {
   InputGroupInput,
 } from "@/components/ui/input-group";
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface AdaptationPlan {
   id: number;
@@ -50,11 +51,6 @@ interface AdaptationPlan {
   department_head_user?: { name?: string };
   user?: { name?: string; department?: string };
 }
-
-const ALL_SCHEDULES = "all";
-
-const getWorkSchedule = (plan: AdaptationPlan) =>
-  plan.template?.work_schedule ?? plan.work_schedule ?? "";
 
 const resolveRoleUsers = (
   fromApi: UserType[] | undefined,
@@ -93,11 +89,6 @@ const filterVisiblePlans = (
   );
 };
 
-const filterBySchedule = (plans: AdaptationPlan[], schedule: string) =>
-  schedule === ALL_SCHEDULES
-    ? plans
-    : plans.filter((plan) => getWorkSchedule(plan) === schedule);
-
 const filterBySearch = (
   plans: AdaptationPlan[],
   search: string,
@@ -134,25 +125,63 @@ const InternRow = ({
   mentorName: string;
   headName: string;
 }) => {
+  const navigate = useNavigate();
+  const [deletePlan, { isLoading: isDeleting }] =
+    useDeleteAdaptationPlanMutation();
+  const editPath = ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
+    ":planId",
+    String(plan.id),
+  );
+
+  const handleDelete = async () => {
+    const confirmed = window.confirm("Удалить план стажера?");
+    if (!confirmed) return;
+
+    try {
+      await deletePlan(plan.id).unwrap();
+      toast.success("План стажера удалён");
+    } catch {
+      toast.error("Не удалось удалить план");
+    }
+  };
+
   return (
-    <TableRow>
+    <TableRow
+      className="cursor-pointer"
+      onClick={() => navigate(editPath)}
+    >
       <TableCell className="font-medium">
         {plan.user?.name ?? "Пользователь без имени"}
       </TableCell>
       <TableCell>{mentorName}</TableCell>
       <TableCell>{headName}</TableCell>
-      <TableCell className="text-right">
-        <Button variant="outline" size="sm" asChild>
-          <Link
-            to={ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT.replace(
-              ":planId",
-              String(plan.id),
-            )}
-          >
-            <PencilIcon />
-            Редактировать
-          </Link>
-        </Button>
+      <TableCell
+        className="text-right"
+        onClick={(event) => event.stopPropagation()}
+      >
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="size-8"
+              disabled={isDeleting}
+            >
+              <MoreHorizontalIcon />
+              <span className="sr-only">Открыть меню</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-auto min-w-max">
+            <DropdownMenuItem onClick={() => navigate(editPath)}>
+              <PencilIcon />
+              Редактировать
+            </DropdownMenuItem>
+            <DropdownMenuItem variant="destructive" onClick={handleDelete}>
+              <TrashIcon />
+              Удалить
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </TableCell>
     </TableRow>
   );
@@ -170,7 +199,6 @@ function Interns(): JSX.Element {
   const { role, role_name: roleName, id: currentUserId } = useUser();
 
   const [search, setSearch] = useState("");
-  const [scheduleFilter, setScheduleFilter] = useState(ALL_SCHEDULES);
 
   const adaptationPlans = (plansData ?? []) as AdaptationPlan[];
   const users = (usersData ?? []) as UserType[];
@@ -190,24 +218,26 @@ function Interns(): JSX.Element {
     currentUserId,
   );
   const filteredPlans = filterBySearch(
-    filterBySchedule(visiblePlans, scheduleFilter),
+    visiblePlans,
     search,
     mentorNames,
     headNames,
   );
   const hasSearch = search.trim().length > 0;
-  const workScheduleOptions = [
-    ...new Set(visiblePlans.map(getWorkSchedule).filter(Boolean)),
-  ].sort((a, b) => a.localeCompare(b, "ru"));
 
   return (
     <>
       <div className="sticky mt-10">
         <Card>
           <CardContent>
-            <FieldGroup className="grid gap-4 sm:grid-cols-2">
-              <Field>
-                <FieldLabel htmlFor="interns-search">Поиск</FieldLabel>
+            <FieldGroup className="flex flex-row items-end justify-between gap-4">
+              <Button variant="outline" size="sm" asChild>
+                <Link to={ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE}>
+                  <PlusIcon />
+                  Создать план
+                </Link>
+              </Button>
+              <Field className="w-2/4">
                 <InputGroup>
                   <InputGroupAddon>
                     <SearchIcon />
@@ -230,36 +260,7 @@ function Interns(): JSX.Element {
                   )}
                 </InputGroup>
               </Field>
-              <Field>
-                <FieldLabel htmlFor="interns-schedule">Режим работы</FieldLabel>
-                <Select
-                  value={scheduleFilter}
-                  onValueChange={setScheduleFilter}
-                >
-                  <SelectTrigger id="interns-schedule" className="w-full">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value={ALL_SCHEDULES}>
-                      Все режимы работы
-                    </SelectItem>
-                    {workScheduleOptions.map((schedule) => (
-                      <SelectItem key={schedule} value={schedule}>
-                        {schedule}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
             </FieldGroup>
-            <div className="mt-4">
-              <Button variant="outline" size="sm" asChild>
-                <Link to={ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE}>
-                  <PlusIcon />
-                  Создать план
-                </Link>
-              </Button>
-            </div>
           </CardContent>
         </Card>
       </div>
@@ -280,14 +281,10 @@ function Interns(): JSX.Element {
           <TableBody>
             {filteredPlans.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="h-24 text-center">
+                <TableCell colSpan={4} className="h-24 text-center">
                   {hasSearch ? (
                     <p className="text-sm text-muted-foreground">
                       Стажер «{search}» не найден
-                    </p>
-                  ) : scheduleFilter !== ALL_SCHEDULES ? (
-                    <p className="text-sm text-muted-foreground">
-                      Нет стажеров с режимом работы «{scheduleFilter}»
                     </p>
                   ) : (
                     <DataMessage type="noData" />

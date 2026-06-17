@@ -88,6 +88,7 @@ function UserProfileCard({ user }: { user: UserType }) {
           <UserInfoItem label="Логин" value={user.login} />
           <UserInfoItem label="Описание" value={user.description} />
           <UserInfoItem label="Отдел" value={user.department} />
+          <UserInfoItem label="Номер" value={user.department} />
         </dl>
       </CardContent>
     </Card>
