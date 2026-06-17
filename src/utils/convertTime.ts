@@ -1,3 +1,5 @@
-export const convertTime = (inputTime: string): string => {
-  return `${inputTime.split(":")[0]}:${inputTime.split(":")[1]}`;
+export const convertTime = (inputTime?: string | null): string => {
+  if (!inputTime?.trim()) return "";
+  const [hours, minutes] = inputTime.split(":");
+  return hours && minutes ? `${hours}:${minutes}` : "";
 };

@@ -7,6 +7,7 @@ import { useFiltered } from "@/hooks/useFiltered.ts";
 import convertDate from "@/utils/convertDate.ts";
 import { truncateText } from "@/utils/truncateText.ts";
 import { convertTime } from "@/utils/convertTime.ts";
+import { hasTextValue } from "@/utils/hasTextValue.ts";
 import {
   useGetEducationEventsQuery,
   useDeleteEducationEventMutation,
@@ -87,13 +88,14 @@ function AdminEventsPage({ domain }: { domain: AdminDomain }): JSX.Element {
               <TableHead>Отдел</TableHead>
               <TableHead>Дата</TableHead>
               <TableHead>Время</TableHead>
+              <TableHead>Длительность</TableHead>
               <TableHead className="text-right">Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <AdminTableEmptyRow
-                colSpan={5}
+                colSpan={6}
                 hasSearch={hasSearch}
                 notFoundMessage={`Мероприятие «${search}» не найдено`}
               />
@@ -113,8 +115,9 @@ function AdminEventsPage({ domain }: { domain: AdminDomain }): JSX.Element {
                     <TableCell>{item.department}</TableCell>
                     <TableCell>{convertDate(item.date)}</TableCell>
                     <TableCell>
-                      {item.time ? convertTime(item.time) : "—"}
+                      {hasTextValue(item.time) ? convertTime(item.time) : null}
                     </TableCell>
+                    <TableCell>{item.duration} мин.</TableCell>
                     <TableCell
                       className="text-right"
                       onClick={(event) => event.stopPropagation()}

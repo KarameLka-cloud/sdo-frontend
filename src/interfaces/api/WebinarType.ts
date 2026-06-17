@@ -1,7 +1,8 @@
 export interface WebinarType {
   id: number;
   title: string;
-  time_start: string;
-  time_end: string;
+  link?: string;
+  time?: string;
   date: string;
+  duration: number;
 }

@@ -83,20 +83,22 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     useGetPositionsQuery("");
 
   const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+  const [link, setLink] = useState("");
   const [positionId, setPositionId] = useState("");
   const [notePosition, setNotePosition] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
+  const [date, setDate] = useState("");
+  const [duration, setDuration] = useState("");
 
   const test = testData as TestType | undefined;
 
   useEffect(() => {
     if (!test) return;
     setTitle(test.title);
-    setUrl(test.url);
+    setLink(test.link);
     setPositionId(test.position_id ? String(test.position_id) : "");
     setNotePosition(test.note_position ?? "");
-    setDateEnd(toDateInputValue(test.date_end));
+    setDate(toDateInputValue(test.date));
+    setDuration(String(test.duration));
   }, [test]);
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
@@ -104,18 +106,22 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     if (id == null) return;
 
     if (!title.trim()) return toast.error("Укажите название");
-    if (!url.trim()) return toast.error("Укажите ссылку");
+    if (!link.trim()) return toast.error("Укажите ссылку");
     if (!positionId) return toast.error("Выберите должность");
-    if (!dateEnd) return toast.error("Укажите дату окончания");
+    if (!date) return toast.error("Укажите дату");
+    if (!duration.trim() || Number(duration) < 1) {
+      return toast.error("Укажите длительность в минутах");
+    }
 
     try {
       await updateTest({
         id,
         title: title.trim(),
-        url: url.trim(),
+        link: link.trim(),
         position_id: Number(positionId),
         note_position: notePosition.trim() || undefined,
-        date_end: dateEnd,
+        date,
+        duration: Number(duration),
       }).unwrap();
       toast.success("Тест сохранён");
       navigate(routes.list);
@@ -159,11 +165,11 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="test-url">Ссылка</FieldLabel>
+                <FieldLabel htmlFor="test-link">Ссылка</FieldLabel>
                 <Input
-                  id="test-url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
+                  id="test-link"
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
                 />
               </Field>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -197,15 +203,29 @@ function AdminTestEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                   />
                 </Field>
               </div>
-              <Field>
-                <FieldLabel htmlFor="test-date-end">Пройти до</FieldLabel>
-                <Input
-                  id="test-date-end"
-                  type="date"
-                  value={dateEnd}
-                  onChange={(e) => setDateEnd(e.target.value)}
-                />
-              </Field>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor="test-date">Пройти до</FieldLabel>
+                  <Input
+                    id="test-date"
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="test-duration">
+                    Длительность (мин.)
+                  </FieldLabel>
+                  <Input
+                    id="test-duration"
+                    type="number"
+                    min={1}
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  />
+                </Field>
+              </div>
             </FieldGroup>
           </CardContent>
           <Separator />

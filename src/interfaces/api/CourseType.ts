@@ -1,9 +1,10 @@
 export interface CourseType {
   id: number;
   title: string;
-  url: string;
+  link: string;
   department_id?: number;
   department: string;
   note_department?: string;
-  date_end: string;
+  date: string;
+  duration: number;
 }

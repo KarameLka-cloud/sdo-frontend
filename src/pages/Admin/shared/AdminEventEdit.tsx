@@ -90,18 +90,20 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
   const [noteDepartment, setNoteDepartment] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [duration, setDuration] = useState("");
 
   const event = eventData as EventType | undefined;
 
   useEffect(() => {
     if (!event) return;
     setTitle(event.title);
-    setDescription(event.description);
+    setDescription(event.description ?? "");
     setLink(event.link ?? "");
     setDepartmentId(event.department_id ? String(event.department_id) : "");
     setNoteDepartment(event.note_department ?? "");
     setDate(toDateInputValue(event.date));
     setTime(toTimeInputValue(event.time));
+    setDuration(String(event.duration));
   }, [event]);
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
@@ -109,20 +111,23 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     if (id == null) return;
 
     if (!title.trim()) return toast.error("Укажите название");
-    if (!description.trim()) return toast.error("Укажите описание");
     if (!departmentId) return toast.error("Выберите отдел");
     if (!date) return toast.error("Укажите дату");
+    if (!duration.trim() || Number(duration) < 1) {
+      return toast.error("Укажите длительность в минутах");
+    }
 
     try {
       await updateEvent({
         id,
         title: title.trim(),
-        description: description.trim(),
+        description: description.trim() || undefined,
         link: link.trim() || undefined,
         department_id: Number(departmentId),
         note_department: noteDepartment.trim() || undefined,
         date,
         time: time || undefined,
+        duration: Number(duration),
       }).unwrap();
       toast.success("Мероприятие сохранено");
       navigate(routes.list);
@@ -166,11 +171,14 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="event-description">Описание</FieldLabel>
+                <FieldLabel htmlFor="event-description">
+                  Описание
+                </FieldLabel>
                 <Input
                   id="event-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>
@@ -215,7 +223,7 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                   />
                 </Field>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <Field>
                   <FieldLabel htmlFor="event-date">Дата</FieldLabel>
                   <Input
@@ -233,6 +241,18 @@ function AdminEventEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     placeholder="Опционально"
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="event-duration">
+                    Длительность (мин.)
+                  </FieldLabel>
+                  <Input
+                    id="event-duration"
+                    type="number"
+                    min={1}
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
                   />
                 </Field>
               </div>

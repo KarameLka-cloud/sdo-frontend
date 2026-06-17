@@ -7,6 +7,7 @@ import { useFiltered } from "@/hooks/useFiltered.ts";
 import convertDate from "@/utils/convertDate.ts";
 import { truncateText } from "@/utils/truncateText.ts";
 import { convertTime } from "@/utils/convertTime.ts";
+import { hasTextValue } from "@/utils/hasTextValue.ts";
 import {
   useGetEducationWebinarsQuery,
   useDeleteEducationWebinarMutation,
@@ -53,7 +54,7 @@ function AdminWebinarsPage(): JSX.Element {
         createTo={WEBINAR_ROUTES.create}
         createLabel="Создать вебинар"
         searchId="webinars-search"
-        searchPlaceholder="Название, дата..."
+        searchPlaceholder="Название, дата, ссылка..."
         search={search}
         onSearchChange={setSearch}
       />
@@ -68,13 +69,14 @@ function AdminWebinarsPage(): JSX.Element {
               <TableHead>Название</TableHead>
               <TableHead>Дата</TableHead>
               <TableHead>Время</TableHead>
+              <TableHead>Длительность</TableHead>
               <TableHead className="text-right">Действия</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
               <AdminTableEmptyRow
-                colSpan={4}
+                colSpan={5}
                 hasSearch={hasSearch}
                 notFoundMessage={`Вебинар «${search}» не найден`}
               />
@@ -93,8 +95,9 @@ function AdminWebinarsPage(): JSX.Element {
                     </TableCell>
                     <TableCell>{convertDate(item.date)}</TableCell>
                     <TableCell>
-                      {convertTime(item.time_start)}–{convertTime(item.time_end)}
+                      {hasTextValue(item.time) ? convertTime(item.time) : null}
                     </TableCell>
+                    <TableCell>{item.duration} мин.</TableCell>
                     <TableCell
                       className="text-right"
                       onClick={(event) => event.stopPropagation()}

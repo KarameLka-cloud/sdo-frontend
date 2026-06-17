@@ -83,20 +83,22 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     useGetDepartmentsQuery("");
 
   const [title, setTitle] = useState("");
-  const [url, setUrl] = useState("");
+  const [link, setLink] = useState("");
   const [departmentId, setDepartmentId] = useState("");
   const [noteDepartment, setNoteDepartment] = useState("");
-  const [dateEnd, setDateEnd] = useState("");
+  const [date, setDate] = useState("");
+  const [duration, setDuration] = useState("");
 
   const course = courseData as CourseType | undefined;
 
   useEffect(() => {
     if (!course) return;
     setTitle(course.title);
-    setUrl(course.url);
+    setLink(course.link);
     setDepartmentId(course.department_id ? String(course.department_id) : "");
     setNoteDepartment(course.note_department ?? "");
-    setDateEnd(toDateInputValue(course.date_end));
+    setDate(toDateInputValue(course.date));
+    setDuration(String(course.duration));
   }, [course]);
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
@@ -104,18 +106,22 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
     if (id == null) return;
 
     if (!title.trim()) return toast.error("Укажите название");
-    if (!url.trim()) return toast.error("Укажите ссылку");
+    if (!link.trim()) return toast.error("Укажите ссылку");
     if (!departmentId) return toast.error("Выберите отдел");
-    if (!dateEnd) return toast.error("Укажите дату окончания");
+    if (!date) return toast.error("Укажите дату");
+    if (!duration.trim() || Number(duration) < 1) {
+      return toast.error("Укажите длительность в минутах");
+    }
 
     try {
       await updateCourse({
         id,
         title: title.trim(),
-        url: url.trim(),
+        link: link.trim(),
         department_id: Number(departmentId),
         note_department: noteDepartment.trim() || undefined,
-        date_end: dateEnd,
+        date,
+        duration: Number(duration),
       }).unwrap();
       toast.success("Курс сохранён");
       navigate(routes.list);
@@ -159,11 +165,11 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="course-url">Ссылка</FieldLabel>
+                <FieldLabel htmlFor="course-link">Ссылка</FieldLabel>
                 <Input
-                  id="course-url"
-                  value={url}
-                  onChange={(e) => setUrl(e.target.value)}
+                  id="course-link"
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
                 />
               </Field>
               <div className="grid gap-4 sm:grid-cols-2">
@@ -197,15 +203,29 @@ function AdminCourseEdit({ domain }: { domain: AdminDomain }): JSX.Element {
                   />
                 </Field>
               </div>
-              <Field>
-                <FieldLabel htmlFor="course-date-end">Пройти до</FieldLabel>
-                <Input
-                  id="course-date-end"
-                  type="date"
-                  value={dateEnd}
-                  onChange={(e) => setDateEnd(e.target.value)}
-                />
-              </Field>
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Field>
+                  <FieldLabel htmlFor="course-date">Пройти до</FieldLabel>
+                  <Input
+                    id="course-date"
+                    type="date"
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="course-duration">
+                    Длительность (мин.)
+                  </FieldLabel>
+                  <Input
+                    id="course-duration"
+                    type="number"
+                    min={1}
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                  />
+                </Field>
+              </div>
             </FieldGroup>
           </CardContent>
           <Separator />

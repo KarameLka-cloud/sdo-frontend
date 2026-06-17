@@ -50,24 +50,28 @@ function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
   const [noteDepartment, setNoteDepartment] = useState("");
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
+  const [duration, setDuration] = useState("");
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     if (!title.trim()) return toast.error("Укажите название");
-    if (!description.trim()) return toast.error("Укажите описание");
     if (!departmentId) return toast.error("Выберите отдел");
     if (!date) return toast.error("Укажите дату");
+    if (!duration.trim() || Number(duration) < 1) {
+      return toast.error("Укажите длительность в минутах");
+    }
 
     try {
       await addEvent({
         title: title.trim(),
-        description: description.trim(),
+        description: description.trim() || undefined,
         link: link.trim() || undefined,
         department_id: Number(departmentId),
         note_department: noteDepartment.trim() || undefined,
         date,
         time: time || undefined,
+        duration: Number(duration),
       }).unwrap();
       toast.success("Мероприятие создано");
       navigate(routes.list);
@@ -98,11 +102,14 @@ function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="event-description">Описание</FieldLabel>
+                <FieldLabel htmlFor="event-description">
+                  Описание
+                </FieldLabel>
                 <Input
                   id="event-description"
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
+                  placeholder="Опционально"
                 />
               </Field>
               <Field>
@@ -147,7 +154,7 @@ function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
                   />
                 </Field>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-3">
                 <Field>
                   <FieldLabel htmlFor="event-date">Дата</FieldLabel>
                   <Input
@@ -165,6 +172,18 @@ function AdminEventCreate({ domain }: { domain: AdminDomain }): JSX.Element {
                     value={time}
                     onChange={(e) => setTime(e.target.value)}
                     placeholder="Опционально"
+                  />
+                </Field>
+                <Field>
+                  <FieldLabel htmlFor="event-duration">
+                    Длительность (мин.)
+                  </FieldLabel>
+                  <Input
+                    id="event-duration"
+                    type="number"
+                    min={1}
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
                   />
                 </Field>
               </div>

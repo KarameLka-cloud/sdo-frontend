@@ -1,9 +1,10 @@
 export interface TestType {
   id: number;
   title: string;
-  url: string;
+  link: string;
   position_id?: number;
   position: string;
   note_position?: string;
-  date_end: string;
+  date: string;
+  duration: number;
 }

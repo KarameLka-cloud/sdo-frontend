@@ -52,18 +52,20 @@ function AdminWebinarEdit(): JSX.Element {
   );
 
   const [title, setTitle] = useState("");
+  const [link, setLink] = useState("");
   const [date, setDate] = useState("");
-  const [timeStart, setTimeStart] = useState("");
-  const [timeEnd, setTimeEnd] = useState("");
+  const [time, setTime] = useState("");
+  const [duration, setDuration] = useState("");
 
   const webinar = webinarData as WebinarType | undefined;
 
   useEffect(() => {
     if (!webinar) return;
     setTitle(webinar.title);
+    setLink(webinar.link ?? "");
     setDate(toDateInputValue(webinar.date));
-    setTimeStart(toTimeInputValue(webinar.time_start));
-    setTimeEnd(toTimeInputValue(webinar.time_end));
+    setTime(toTimeInputValue(webinar.time));
+    setDuration(String(webinar.duration));
   }, [webinar]);
 
   const handleSubmit = async (formEvent: FormEvent<HTMLFormElement>) => {
@@ -72,16 +74,18 @@ function AdminWebinarEdit(): JSX.Element {
 
     if (!title.trim()) return toast.error("Укажите название");
     if (!date) return toast.error("Укажите дату");
-    if (!timeStart) return toast.error("Укажите время начала");
-    if (!timeEnd) return toast.error("Укажите время окончания");
+    if (!duration.trim() || Number(duration) < 1) {
+      return toast.error("Укажите длительность в минутах");
+    }
 
     try {
       await updateWebinar({
         id,
         title: title.trim(),
+        link: link.trim() || undefined,
         date,
-        time_start: timeStart,
-        time_end: timeEnd,
+        time: time || undefined,
+        duration: Number(duration),
       }).unwrap();
       toast.success("Вебинар сохранён");
       navigate(WEBINAR_ROUTES.list);
@@ -124,6 +128,15 @@ function AdminWebinarEdit(): JSX.Element {
                   onChange={(e) => setTitle(e.target.value)}
                 />
               </Field>
+              <Field>
+                <FieldLabel htmlFor="webinar-link">Ссылка</FieldLabel>
+                <Input
+                  id="webinar-link"
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  placeholder="Опционально"
+                />
+              </Field>
               <div className="grid gap-4 sm:grid-cols-3">
                 <Field>
                   <FieldLabel htmlFor="webinar-date">Дата</FieldLabel>
@@ -135,25 +148,25 @@ function AdminWebinarEdit(): JSX.Element {
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="webinar-time-start">
-                    Время начала
-                  </FieldLabel>
+                  <FieldLabel htmlFor="webinar-time">Время</FieldLabel>
                   <Input
-                    id="webinar-time-start"
+                    id="webinar-time"
                     type="time"
-                    value={timeStart}
-                    onChange={(e) => setTimeStart(e.target.value)}
+                    value={time}
+                    onChange={(e) => setTime(e.target.value)}
+                    placeholder="Опционально"
                   />
                 </Field>
                 <Field>
-                  <FieldLabel htmlFor="webinar-time-end">
-                    Время окончания
+                  <FieldLabel htmlFor="webinar-duration">
+                    Длительность (мин.)
                   </FieldLabel>
                   <Input
-                    id="webinar-time-end"
-                    type="time"
-                    value={timeEnd}
-                    onChange={(e) => setTimeEnd(e.target.value)}
+                    id="webinar-duration"
+                    type="number"
+                    min={1}
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
                   />
                 </Field>
               </div>

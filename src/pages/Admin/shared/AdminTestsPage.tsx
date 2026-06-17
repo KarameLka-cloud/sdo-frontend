@@ -84,6 +84,7 @@ function AdminTestsPage({ domain }: { domain: AdminDomain }): JSX.Element {
             <TableRow>
               <TableHead>Название</TableHead>
               <TableHead>Должность</TableHead>
+              <TableHead>Длительность</TableHead>
               <TableHead>Пройти до</TableHead>
               <TableHead className="text-right">Действия</TableHead>
             </TableRow>
@@ -91,7 +92,7 @@ function AdminTestsPage({ domain }: { domain: AdminDomain }): JSX.Element {
           <TableBody>
             {filteredData.length === 0 ? (
               <AdminTableEmptyRow
-                colSpan={4}
+                colSpan={5}
                 hasSearch={hasSearch}
                 notFoundMessage={`Тест «${search}» не найден`}
               />
@@ -109,7 +110,8 @@ function AdminTestsPage({ domain }: { domain: AdminDomain }): JSX.Element {
                       {truncateText(item.title)}
                     </TableCell>
                     <TableCell>{item.position}</TableCell>
-                    <TableCell>{convertDate(item.date_end)}</TableCell>
+                    <TableCell>{item.duration} мин.</TableCell>
+                    <TableCell>{convertDate(item.date)}</TableCell>
                     <TableCell
                       className="text-right"
                       onClick={(event) => event.stopPropagation()}

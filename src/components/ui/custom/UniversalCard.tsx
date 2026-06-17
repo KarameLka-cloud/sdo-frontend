@@ -6,10 +6,12 @@ import {
   Timer,
   Clock,
   User,
+  FileText,
 } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 import convertDate from "@/utils/convertDate.ts";
 import { convertTime } from "@/utils/convertTime.ts";
+import { hasTextValue } from "@/utils/hasTextValue.ts";
 import { CourseType } from "@/interfaces/api/CourseType.ts";
 import { EventType } from "@/interfaces/api/EventType.ts";
 import { WebinarType } from "@/interfaces/api/WebinarType.ts";
@@ -35,117 +37,144 @@ function UniversalCard({
   item,
   type,
 }: UniversalCardProps): JSX.Element {
-  const hasLink =
-    ("url" in item && Boolean(item.url)) ||
-    ("link" in item && Boolean(item.link));
-
-  const getLink = () => {
-    if ("url" in item && item.url) return item.url;
-    if ("link" in item && item.link) return item.link;
-    return null;
-  };
+  const link = "link" in item ? item.link : undefined;
+  const hasLink = hasTextValue(link);
 
   const getFields = (): FieldConfig[] => {
     const fields: FieldConfig[] = [];
 
     switch (type) {
-      case "course":
+      case "course": {
+        const course = item as CourseType;
         fields.push(
           {
             icon: <Calendar className="h-3.5 w-3.5" />,
             label: "Пройти до:",
-            value: convertDate((item as CourseType).date_end),
+            value: convertDate(course.date),
             show: true,
           },
           {
             icon: <Timer className="h-3.5 w-3.5" />,
             label: "Время прохождения:",
-            value: "~ мин.",
+            value: `${course.duration} мин.`,
             show: true,
           },
           {
             icon: <Building className="h-3.5 w-3.5" />,
             label: "Отдел:",
-            value: (item as CourseType).department,
+            value: course.department,
             show: true,
+          },
+          {
+            icon: <FileText className="h-3.5 w-3.5" />,
+            label: "Примечание:",
+            value: course.note_department!,
+            show: hasTextValue(course.note_department),
           },
         );
         break;
+      }
 
-      case "event":
+      case "event": {
+        const event = item as EventType;
         fields.push(
           {
             icon: <Calendar className="h-3.5 w-3.5" />,
             label: "Дата:",
-            value: convertDate((item as EventType).date),
+            value: convertDate(event.date),
             show: true,
           },
           {
             icon: <Clock className="h-3.5 w-3.5" />,
             label: "Время:",
-            value: convertTime((item as EventType).time || ""),
-            show: Boolean((item as EventType).time),
+            value: convertTime(event.time),
+            show: hasTextValue(event.time),
           },
           {
             icon: <Timer className="h-3.5 w-3.5" />,
             label: "Время прохождения:",
-            value: "~ мин.",
+            value: `${event.duration} мин.`,
             show: true,
           },
           {
             icon: <Building className="h-3.5 w-3.5" />,
             label: "Отдел:",
-            value: (item as EventType).department,
+            value: event.department,
             show: true,
+          },
+          {
+            icon: <FileText className="h-3.5 w-3.5" />,
+            label: "Примечание:",
+            value: event.note_department!,
+            show: hasTextValue(event.note_department),
           },
         );
         break;
+      }
 
-      case "webinar":
+      case "webinar": {
+        const webinar = item as WebinarType;
         fields.push(
           {
             icon: <Calendar className="h-3.5 w-3.5" />,
             label: "Дата:",
-            value: convertDate((item as WebinarType).date),
+            value: convertDate(webinar.date),
             show: true,
           },
           {
             icon: <Clock className="h-3.5 w-3.5" />,
             label: "Время:",
-            value: `${convertTime((item as WebinarType).time_start)} - ${convertTime((item as WebinarType).time_end)}`,
-            show: Boolean((item as WebinarType).time_start),
+            value: convertTime(webinar.time),
+            show: hasTextValue(webinar.time),
+          },
+          {
+            icon: <Timer className="h-3.5 w-3.5" />,
+            label: "Длительность:",
+            value: `${webinar.duration} мин.`,
+            show: true,
           },
         );
         break;
+      }
 
-      case "test":
+      case "test": {
+        const test = item as TestType;
         fields.push(
           {
             icon: <Calendar className="h-3.5 w-3.5" />,
             label: "Пройти до:",
-            value: convertDate((item as TestType).date_end),
+            value: convertDate(test.date),
             show: true,
           },
           {
             icon: <Timer className="h-3.5 w-3.5" />,
             label: "Время прохождения:",
-            value: "~ мин.",
+            value: `${test.duration} мин.`,
             show: true,
           },
           {
             icon: <User className="h-3.5 w-3.5" />,
             label: "Сотрудник:",
-            value: (item as TestType).position,
+            value: test.position,
             show: true,
+          },
+          {
+            icon: <FileText className="h-3.5 w-3.5" />,
+            label: "Примечание:",
+            value: test.note_position!,
+            show: hasTextValue(test.note_position),
           },
         );
         break;
+      }
     }
 
     return fields.filter((field) => field.show);
   };
 
   const fields = getFields();
+  const description =
+    type === "event" ? (item as EventType).description : undefined;
 
   const getIconColor = (iconType: string) => {
     const colors: Record<string, string> = {
@@ -154,6 +183,7 @@ function UniversalCard({
       building: "bg-emerald-50 text-emerald-600",
       clock: "bg-blue-50 text-blue-600",
       user: "bg-red-50 text-red-600",
+      file: "bg-slate-50 text-slate-600",
     };
     return colors[iconType] || "bg-gray-50 text-gray-600";
   };
@@ -165,6 +195,7 @@ function UniversalCard({
       if (icon.type === Building) return "building";
       if (icon.type === Clock) return "clock";
       if (icon.type === User) return "user";
+      if (icon.type === FileText) return "file";
     }
     return "calendar";
   };
@@ -173,10 +204,13 @@ function UniversalCard({
     <div
       className={`group flex flex-col md:flex-row items-stretch rounded-xl bg-white border border-gray-200 shadow-sm ${className}`}
     >
-      <div className="p-4 w-2/3 flex flex-col justify-center">
+      <div className="p-4 w-2/3 flex flex-col justify-center gap-2">
         <h3 className="font-semibold text-gray-900 text-base leading-tight">
           {item.title}
         </h3>
+        {hasTextValue(description) && (
+          <p className="text-sm text-gray-600 leading-snug">{description}</p>
+        )}
       </div>
 
       <Separator
@@ -205,9 +239,9 @@ function UniversalCard({
           ))}
         </div>
 
-        {hasLink ? (
+        {hasLink && (
           <a
-            href={getLink() || "#"}
+            href={link!.trim()}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 mt-4 bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-500 cursor-pointer"
@@ -215,10 +249,6 @@ function UniversalCard({
             <span>Ссылка</span>
             <ExternalLink className="h-3 w-3 opacity-70" />
           </a>
-        ) : (
-          <div className="mt-4 px-3 py-1.5 text-sm font-medium bg-gray-100 text-gray-400 rounded-lg text-center">
-            Ссылка отсутствует
-          </div>
         )}
       </div>
     </div>
