@@ -1,4 +1,4 @@
-import { JSX, useMemo, useState } from "react";
+import { FormEvent, JSX, useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { Plus, Trash2, X } from "lucide-react";
@@ -30,9 +30,11 @@ import { Spinner } from "@/components/ui/spinner";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import {
   TEMPLATE_ROUTES,
+  WORK_SCHEDULE_OPTIONS,
   parseEntityId,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
+import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
 
 type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
 
@@ -156,15 +158,6 @@ function DayRangeFields({
         />
       </Field>
     </FieldGroup>
-  );
-}
-
-function TemplateInfoItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <dt className="text-sm text-muted-foreground">{label}</dt>
-      <dd className="text-sm font-medium">{value}</dd>
-    </div>
   );
 }
 
@@ -306,6 +299,9 @@ function TemplateTasks(): JSX.Element {
   const [editingGroupIndexes, setEditingGroupIndexes] = useState<number[]>([]);
   const [editingGroupDayFrom, setEditingGroupDayFrom] = useState("");
   const [editingGroupDayTo, setEditingGroupDayTo] = useState("");
+  const [name, setName] = useState("");
+  const [workSchedule, setWorkSchedule] = useState("");
+  const [shift, setShift] = useState("");
 
   const templates = data as AdaptationPlanTemplateType[];
   const template = useMemo(
@@ -317,6 +313,34 @@ function TemplateTasks(): JSX.Element {
     () => (template?.task_blueprint ?? []).map((item) => toFormRule(item)),
     [template],
   );
+
+  const populateForm = useCallback((item: AdaptationPlanTemplateType) => {
+    setName(item.name);
+    setWorkSchedule(item.work_schedule);
+    const [firstShift] = [...item.shifts].sort((a, b) => a - b);
+    setShift(firstShift ? String(firstShift) : "");
+  }, []);
+
+  const isFormPopulated = usePopulateEditForm(
+    templateId,
+    template,
+    !isLoading,
+    populateForm,
+  );
+
+  const workScheduleOptions = useMemo(() => {
+    const options = new Set<string>(WORK_SCHEDULE_OPTIONS);
+
+    templates.forEach((item) => {
+      options.add(item.work_schedule);
+    });
+
+    if (workSchedule) {
+      options.add(workSchedule);
+    }
+
+    return [...options];
+  }, [templates, workSchedule]);
 
   const groupedRules = useMemo<GroupedRuleBlock[]>(() => {
     const map = new Map<string, GroupedRuleBlock>();
@@ -356,22 +380,66 @@ function TemplateTasks(): JSX.Element {
     setEditingGroupDayTo("");
   };
 
-  const saveRules = async (nextRules: TaskRuleForm[]) => {
+  const parseShiftNumber = (): number | null => {
+    const shiftNumber = Number(shift);
+    if (!Number.isInteger(shiftNumber) || shiftNumber < 1) {
+      return null;
+    }
+
+    return shiftNumber;
+  };
+
+  const saveTemplate = async (taskBlueprint: TaskRule[]) => {
     if (!template) {
       return;
     }
 
+    if (!name.trim()) {
+      toast.error("Укажите название шаблона");
+      return;
+    }
+
+    if (!workSchedule) {
+      toast.error("Выберите график работы");
+      return;
+    }
+
+    const shiftNumber = parseShiftNumber();
+    if (shiftNumber === null) {
+      toast.error("Укажите корректный номер смены");
+      return;
+    }
+
+    await updateTemplate({
+      id: template.id,
+      name: name.trim(),
+      work_schedule: workSchedule,
+      shifts: [shiftNumber],
+      task_blueprint: taskBlueprint,
+    }).unwrap();
+  };
+
+  const saveRules = async (nextRules: TaskRuleForm[]) => {
     const payloadRules = nextRules
       .map(toPayloadRule)
       .filter((rule) => rule.description.length > 0);
 
-    await updateTemplate({
-      id: template.id,
-      name: template.name,
-      work_schedule: template.work_schedule,
-      shifts: template.shifts,
-      task_blueprint: payloadRules,
-    }).unwrap();
+    await saveTemplate(payloadRules);
+  };
+
+  const handleSaveMetadata = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const payloadRules = rules
+      .map(toPayloadRule)
+      .filter((rule) => rule.description.length > 0);
+
+    try {
+      await saveTemplate(payloadRules);
+      toast.success("Изменения сохранены");
+    } catch {
+      toast.error("Не удалось сохранить изменения");
+    }
   };
 
   const addCreateRule = () => {
@@ -515,7 +583,7 @@ function TemplateTasks(): JSX.Element {
     );
   }
 
-  if (isLoading) {
+  if (isLoading || (template && !isFormPopulated)) {
     return (
       <AdminFormPage
         backTo={TEMPLATE_ROUTES.list}
@@ -547,34 +615,83 @@ function TemplateTasks(): JSX.Element {
     >
       <Card>
         <CardHeader>
-          <CardTitle>{template.name}</CardTitle>
+          <CardTitle>Редактирование плана адаптации</CardTitle>
           <CardDescription>Шаблон плана адаптации</CardDescription>
         </CardHeader>
         <CardContent className="p-4">
-          <dl className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-            <TemplateInfoItem label="График" value={template.work_schedule} />
-            <TemplateInfoItem
-              label="Смены"
-              value={template.shifts.join(", ")}
-            />
-          </dl>
+          <form
+            id="template-metadata-form"
+            onSubmit={(event) => {
+              void handleSaveMetadata(event);
+            }}
+          >
+            <FieldGroup className="grid gap-4 sm:grid-cols-2">
+              <Field className="sm:col-span-2">
+                <FieldLabel htmlFor="template-name">Название</FieldLabel>
+                <Input
+                  id="template-name"
+                  value={name}
+                  onChange={(event) => setName(event.target.value)}
+                />
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="template-schedule">
+                  График работы
+                </FieldLabel>
+                <Select value={workSchedule} onValueChange={setWorkSchedule}>
+                  <SelectTrigger id="template-schedule" className="w-full">
+                    <SelectValue placeholder="Выберите график" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {workScheduleOptions.map((schedule) => (
+                      <SelectItem key={schedule} value={schedule}>
+                        {schedule}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </Field>
+              <Field>
+                <FieldLabel htmlFor="template-shift">Смена</FieldLabel>
+                <Input
+                  id="template-shift"
+                  type="number"
+                  min={1}
+                  step={1}
+                  value={shift}
+                  onChange={(event) => setShift(event.target.value)}
+                />
+              </Field>
+            </FieldGroup>
+          </form>
         </CardContent>
+        <Separator />
         <CardFooter className="justify-between">
-          {isCreateVisible ? (
-            <Button type="button" variant="outline" onClick={resetCreateForm}>
-              <X className="size-4" />
-              Отмена
-            </Button>
-          ) : (
+          <div className="flex gap-2">
             <Button
-              type="button"
-              variant="outline"
-              onClick={() => setIsCreateVisible(true)}
+              type="submit"
+              form="template-metadata-form"
+              disabled={isSaving}
             >
-              <Plus className="size-4" />
-              Добавить задачи
+              {isSaving && <Spinner />}
+              Сохранить
             </Button>
-          )}
+            {isCreateVisible ? (
+              <Button type="button" variant="outline" onClick={resetCreateForm}>
+                <X className="size-4" />
+                Отмена
+              </Button>
+            ) : (
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setIsCreateVisible(true)}
+              >
+                <Plus className="size-4" />
+                Добавить задачи
+              </Button>
+            )}
+          </div>
           <Button
             type="button"
             variant="destructive"
