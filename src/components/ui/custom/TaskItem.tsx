@@ -32,6 +32,8 @@ function TaskItem({
     setIsSaving(true);
     try {
       await onUpdateTaskStatus?.(dayId, task.id, newStatus);
+    } catch {
+      // Status shown at Adaptation page level.
     } finally {
       setIsSaving(false);
     }

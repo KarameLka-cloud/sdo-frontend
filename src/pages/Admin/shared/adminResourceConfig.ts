@@ -22,18 +22,10 @@ export const WORK_SCHEDULE_OPTIONS = ["5/2", "2/2"] as const;
 export const buildEditPath = (template: string, id: number) =>
   template.replace(/:\w+/, String(id));
 
-export const toDateInputValue = (value?: string | null) =>
-  value ? value.split("T")[0] : "";
-
-export const toTimeInputValue = (value?: string | null) => {
-  if (!value) return "";
-  const [hours, minutes] = value.split(":");
-  return hours && minutes ? `${hours}:${minutes}` : "";
-};
-
-export const parseEntityId = (value: string | undefined): number | null => {
-  const parsed = Number(value);
-  return Number.isInteger(parsed) && parsed > 0 ? parsed : null;
-};
+export {
+  parseEntityId,
+  toDateInputValue,
+  toTimeInputValue,
+} from "@/utils/formValues.ts";
 
 export type { RouteValue };

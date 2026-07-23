@@ -11,6 +11,7 @@ import {
 } from "@/constants/roles.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
 import { useGetUserByDataQuery } from "@/services/store/features/user.ts";
+import { Loader } from "@/components/ui/custom/Loader";
 
 function isUnauthorizedError(error: unknown): boolean {
   return (
@@ -41,7 +42,7 @@ const ProtectedRoute = ({
 
   if (hasToken) {
     if (isLoading) {
-      return;
+      return <Loader />;
     }
     if (error && isUnauthorizedError(error)) {
       Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
@@ -70,7 +71,7 @@ function RoleGuard({ allowedRoles, children }: RoleGuardProps) {
   const { role, role_name: roleName, isLoading } = useUser();
 
   if (isLoading) {
-    return null;
+    return <Loader />;
   }
 
   if (!hasAnyRoleFromUser(role, roleName, allowedRoles)) {

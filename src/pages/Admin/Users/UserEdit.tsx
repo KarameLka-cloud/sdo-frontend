@@ -33,13 +33,9 @@ import {
   USER_ROUTES,
   parseEntityId,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { getInitials } from "@/utils/getInitials.ts";
 
 const NO_ROLE_VALUE = "__no_rights__";
-
-const getInitials = (name?: string) => {
-  const [first = "", second = ""] = (name ?? "").split(" ");
-  return `${second.charAt(0)}${first.charAt(0)}`.toUpperCase();
-};
 
 function UserInfoItem({ label, value }: { label: string; value?: string }) {
   return (

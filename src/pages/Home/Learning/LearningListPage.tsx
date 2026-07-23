@@ -2,7 +2,6 @@ import { JSX, useEffect } from "react";
 import { Navigate, useSearchParams } from "react-router-dom";
 import DataList from "@/components/ui/custom/DataList";
 import UniversalCard from "@/components/ui/custom/UniversalCard";
-import DataMessage from "@/components/ui/custom/DataMessage";
 import {
   LearningCategory,
   LearningType,
@@ -35,10 +34,6 @@ function LearningListContent({
       document.title = previousTitle;
     };
   }, [type]);
-
-  if (error) {
-    return <DataMessage type="error" centered />;
-  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">

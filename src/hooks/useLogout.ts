@@ -23,21 +23,12 @@ export const useLogout = () => {
 
     try {
       await logoutMutation("").unwrap();
-      clearSessionAndRedirect();
-    } catch (error: unknown) {
-      // Если токен истек/невалиден, API вернет 401.
-      if (
-        typeof error === "object" &&
-        error !== null &&
-        "status" in error &&
-        error.status === 401
-      ) {
-        clearSessionAndRedirect();
-        return;
-      }
-
-      clearSessionAndRedirect();
+    } catch {
+      // Always clear local session, even if the API call fails.
     }
+
+    clearSessionAndRedirect();
   };
+
   return { logout };
 };

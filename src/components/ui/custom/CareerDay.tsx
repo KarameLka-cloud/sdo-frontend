@@ -53,12 +53,12 @@ function CareerDay({
 
   const getStatusClass = (completion: string) => {
     const statusMap: Record<string, string> = {
-      "В процессе": "bg-amber-50 text-amber-800 border-amber-300",
-      Выполнен: "bg-green-50 text-green-800 border-green-300",
-      Повторить: "bg-red-50 text-red-800 border-red-300",
-      "Есть замечания": "bg-indigo-50 text-indigo-800 border-indigo-300",
+      "в процессе": "bg-amber-50 text-amber-800 border-amber-300",
+      выполнен: "bg-green-50 text-green-800 border-green-300",
+      повторить: "bg-red-50 text-red-800 border-red-300",
+      "есть замечания": "bg-indigo-50 text-indigo-800 border-indigo-300",
     };
-    return statusMap[completion] || "bg-gray-50 text-gray-800 border-gray-300";
+    return statusMap[completion.toLowerCase()] || "bg-gray-50 text-gray-800 border-gray-300";
   };
 
   return (

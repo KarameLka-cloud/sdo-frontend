@@ -23,7 +23,11 @@ import {
   ADMIN_NAV_LINKS,
 } from "@/constants/navigation";
 import { useUser } from "@/hooks/useUser.ts";
-import { hasAnyRole, USER_ROLES } from "@/constants/roles.ts";
+import {
+  hasAnyRoleFromUser,
+  MENTOR_ACCESS_ROLES,
+  USER_ROLES,
+} from "@/constants/roles.ts";
 
 function isNavLinkActive(targetPath: string, current: string): boolean {
   const targetUrl = new URL(targetPath, "http://local");
@@ -47,13 +51,16 @@ function isNavLinkActive(targetPath: string, current: string): boolean {
 }
 
 function Content(): JSX.Element {
-  const { role } = useUser();
+  const { role, role_name: roleName } = useUser();
   const location = useLocation();
   const current = `${location.pathname}${location.search}`;
 
-  const isAdmin = hasAnyRole(role, [USER_ROLES.ADMIN]);
-  const isMentor = hasAnyRole(role, [USER_ROLES.MENTOR]);
-  const isDepartmentHead = hasAnyRole(role, [USER_ROLES.DEPARTMENT_HEAD]);
+  const isAdmin = hasAnyRoleFromUser(role, roleName, [USER_ROLES.ADMIN]);
+  const hasMentorAccess = hasAnyRoleFromUser(
+    role,
+    roleName,
+    MENTOR_ACCESS_ROLES,
+  );
 
   return (
     <SidebarContent className="pt-10">
@@ -107,7 +114,7 @@ function Content(): JSX.Element {
         ))}
       </SidebarGroup>
 
-      {(isAdmin || isMentor || isDepartmentHead) && (
+      {hasMentorAccess && (
         <SidebarGroup className="group-data-[collapsible=icon]:hidden">
           <SidebarGroupLabel>Наставничество</SidebarGroupLabel>
           {MENTOR_NAV_LINKS.map((item) => (

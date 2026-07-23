@@ -1,4 +1,4 @@
-import { JSX, useCallback, useEffect, useState } from "react";
+import { FormEvent, JSX, useCallback, useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { DepartmentType } from "@/interfaces/api/DepartmentType.ts";

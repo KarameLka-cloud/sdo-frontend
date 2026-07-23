@@ -18,14 +18,15 @@ import {
 } from "@/components/ui/sidebar";
 import { useLogout } from "@/hooks/useLogout.ts";
 import { useUser } from "@/hooks/useUser";
+import { getInitials } from "@/utils/getInitials.ts";
 
 function Footer(): JSX.Element {
   const { isMobile } = useSidebar();
   const { logout } = useLogout();
   const { name, description } = useUser();
 
-  const getShortUserName = (name: string): string => {
-    const [lastName = "", firstName = ""] = name.trim().split(/\s+/);
+  const getShortUserName = (fullName: string): string => {
+    const [lastName = "", firstName = ""] = fullName.trim().split(/\s+/);
 
     if (!lastName) {
       return "";
@@ -36,6 +37,8 @@ function Footer(): JSX.Element {
 
     return `${firstName} ${lastName[0]}.`;
   };
+
+  const initials = getInitials(name);
 
   return (
     <SidebarFooter>
@@ -49,8 +52,7 @@ function Footer(): JSX.Element {
               >
                 <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
                   <span className="text-white text-sm font-semibold">
-                    {name &&
-                      `${name.split(" ")[1].charAt(0).toUpperCase()}${name.split(" ")[0].charAt(0).toUpperCase()}`}
+                    {initials}
                   </span>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
@@ -72,8 +74,7 @@ function Footer(): JSX.Element {
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                   <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
                     <span className="text-white text-sm font-semibold">
-                      {name &&
-                        `${name.split(" ")[1].charAt(0).toUpperCase()}${name.split(" ")[0].charAt(0).toUpperCase()}`}
+                      {initials}
                     </span>
                   </Avatar>
                   <div className="grid flex-1 text-left text-sm leading-tight">
