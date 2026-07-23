@@ -1,15 +1,10 @@
-import { RouteObject } from "react-router-dom";
+import { RouteObject, Navigate } from "react-router-dom";
 import PageTitle from "@/components/PageTitle.tsx";
 import Home from "@/pages/Home/Home";
 import Adaptation from "@/pages/Home/Adaptation/Adaptation.tsx";
-import EducationCourses from "@/pages/Home/Education/Courses";
-import EducationEvents from "@/pages/Home/Education/Events";
-import EducationWebinars from "@/pages/Home/Education/Webinars";
-import EducationTests from "@/pages/Home/Education/Tests";
-import EdoCourses from "@/pages/Home/Edo/Courses";
-import EdoEvents from "@/pages/Home/Edo/Events";
-import EdoTests from "@/pages/Home/Edo/Tests";
+import LearningListPage from "@/pages/Home/Learning/LearningListPage.tsx";
 import { ROUTES } from "@/constants/routes.ts";
+import { buildLearningPath } from "@/constants/learning.ts";
 import MainLayout from "@/layouts/MainLayout";
 
 export const homeRoutes: RouteObject = {
@@ -24,34 +19,42 @@ export const homeRoutes: RouteObject = {
       element: <PageTitle title={"Адаптация"} element={<Adaptation />} />,
     },
     {
-      path: ROUTES.EDUCATION_COURSES,
-      element: <PageTitle title={"Курсы"} element={<EducationCourses />} />,
+      path: ROUTES.LEARNING,
+      element: <LearningListPage />,
     },
     {
-      path: ROUTES.EDUCATION_EVENTS,
+      path: "/education/events",
       element: (
-        <PageTitle title={"Мероприятия"} element={<EducationEvents />} />
+        <Navigate to={buildLearningPath("education", "event")} replace />
       ),
     },
     {
-      path: ROUTES.EDUCATION_WEBINARS,
-      element: <PageTitle title={"Вебинары"} element={<EducationWebinars />} />,
+      path: "/education/courses",
+      element: (
+        <Navigate to={buildLearningPath("education", "course")} replace />
+      ),
     },
     {
-      path: ROUTES.EDUCATION_TESTS,
-      element: <PageTitle title={"Тесты"} element={<EducationTests />} />,
+      path: "/education/webinars",
+      element: (
+        <Navigate to={buildLearningPath("education", "webinar")} replace />
+      ),
     },
     {
-      path: ROUTES.EDO_COURSES,
-      element: <PageTitle title={"Курсы"} element={<EdoCourses />} />,
+      path: "/education/tests",
+      element: <Navigate to={buildLearningPath("education", "test")} replace />,
     },
     {
-      path: ROUTES.EDO_EVENTS,
-      element: <PageTitle title={"Мероприятия"} element={<EdoEvents />} />,
+      path: "/edo/events",
+      element: <Navigate to={buildLearningPath("edo", "event")} replace />,
     },
     {
-      path: ROUTES.EDO_TESTS,
-      element: <PageTitle title={"Тесты"} element={<EdoTests />} />,
+      path: "/edo/courses",
+      element: <Navigate to={buildLearningPath("edo", "course")} replace />,
+    },
+    {
+      path: "/edo/tests",
+      element: <Navigate to={buildLearningPath("edo", "test")} replace />,
     },
   ],
 };

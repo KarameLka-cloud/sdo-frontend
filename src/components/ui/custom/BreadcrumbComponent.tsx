@@ -9,81 +9,20 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import { ROUTES } from "@/constants/routes";
+import {
+  buildAdminLearningPath,
+  buildLearningPath,
+  isLearningCategory,
+  isLearningType,
+  LEARNING_CATEGORY_LABELS,
+  LEARNING_TYPE_LABELS,
+} from "@/constants/learning.ts";
 
-const segmentLabels: Record<string, string> = {
-  home: "Главная",
-  adaptation: "Адаптация",
-  education: "Обучение",
-  edo: "ЕДО",
-  mentorship: "Наставничество",
-  admin: "Администрирование",
-  courses: "Курсы",
-  events: "Мероприятия",
-  webinars: "Вебинары",
-  tests: "Тесты",
-  interns: "Стажеры",
-  templates: "Планы адаптации",
-  edit: "Редактирование",
-  create: "Создание",
-};
+function buildBreadcrumbs(pathname: string, search: string) {
+  const params = new URLSearchParams(search);
+  const category = params.get("category");
+  const type = params.get("type");
 
-function buildAdminResourceBreadcrumbs(
-  domain: "education" | "edo",
-  resource: "courses" | "events" | "tests" | "webinars",
-  action: "create" | "edit",
-) {
-  const domainLabel = domain === "education" ? "Обучение" : "ЕДО";
-  const domainListRoute =
-    domain === "education"
-      ? ROUTES.ADMIN_EDUCATION_EVENTS
-      : ROUTES.ADMIN_EDO_EVENTS;
-  const resourceLabels = {
-    courses: "Курсы",
-    events: "Мероприятия",
-    tests: "Тесты",
-    webinars: "Вебинары",
-  };
-  const resourceRoutes = {
-    education: {
-      courses: ROUTES.ADMIN_EDUCATION_COURSE,
-      events: ROUTES.ADMIN_EDUCATION_EVENTS,
-      tests: ROUTES.ADMIN_EDUCATION_TESTS,
-      webinars: ROUTES.ADMIN_EDUCATION_WEBINARS,
-    },
-    edo: {
-      courses: ROUTES.ADMIN_EDO_COURSES,
-      events: ROUTES.ADMIN_EDO_EVENTS,
-      tests: ROUTES.ADMIN_EDO_TESTS,
-      webinars: ROUTES.ADMIN_EDUCATION_WEBINARS,
-    },
-  };
-  const actionLabels = {
-    create: {
-      courses: "Создание курса",
-      events: "Создание мероприятия",
-      tests: "Создание теста",
-      webinars: "Создание вебинара",
-    },
-    edit: {
-      courses: "Редактирование курса",
-      events: "Редактирование мероприятия",
-      tests: "Редактирование теста",
-      webinars: "Редактирование вебинара",
-    },
-  };
-
-  return [
-    { label: "Администрирование", href: ROUTES.ADMIN },
-    { label: domainLabel, href: domainListRoute },
-    {
-      label: resourceLabels[resource],
-      href: resourceRoutes[domain][resource],
-    },
-    { label: actionLabels[action][resource] },
-  ];
-}
-
-function buildBreadcrumbs(pathname: string) {
   const specialRoutes: Array<{
     path: string;
     crumbs: Array<{ label: string; href?: string }>;
@@ -128,62 +67,6 @@ function buildBreadcrumbs(pathname: string) {
         { label: "Редактирование пользователя" },
       ],
     },
-    {
-      path: ROUTES.ADMIN_EDUCATION_COURSE_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("education", "courses", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_COURSE_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("education", "courses", "edit"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_EVENTS_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("education", "events", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_EVENTS_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("education", "events", "edit"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_TESTS_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("education", "tests", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_TESTS_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("education", "tests", "edit"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_WEBINARS_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("education", "webinars", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_WEBINARS_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("education", "webinars", "edit"),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_COURSES_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("edo", "courses", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_COURSES_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("edo", "courses", "edit"),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_EVENTS_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("edo", "events", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_EVENTS_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("edo", "events", "edit"),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_TESTS_CREATE,
-      crumbs: buildAdminResourceBreadcrumbs("edo", "tests", "create"),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_TESTS_EDIT,
-      crumbs: buildAdminResourceBreadcrumbs("edo", "tests", "edit"),
-    },
   ];
 
   const special = specialRoutes.find((route) =>
@@ -195,52 +78,40 @@ function buildBreadcrumbs(pathname: string) {
   }
 
   const segments = pathname.split("/").filter(Boolean);
-  const crumbs = [{ label: "Главная", href: ROUTES.HOME }];
 
-  if (segments.length === 0) {
+  if (segments.length === 0 || segments[0] === "home") {
     return [{ label: "Главная" }];
   }
 
-  const [firstSegment, secondSegment, thirdSegment] = segments;
-
-  if (firstSegment === "home") {
-    return [{ label: "Главная" }];
-  }
-
-  if (firstSegment === "adaptation") {
+  if (segments[0] === "adaptation") {
     return [{ label: "Главная", href: ROUTES.HOME }, { label: "Адаптация" }];
   }
 
-  if (firstSegment === "education") {
-    return [
+  if (segments[0] === "learning") {
+    const crumbs: Array<{ label: string; href?: string }> = [
       { label: "Главная", href: ROUTES.HOME },
-      { label: "Обучение", href: ROUTES.EDUCATION_EVENTS },
-      { label: segmentLabels[secondSegment] ?? secondSegment },
     ];
+
+    if (isLearningCategory(category)) {
+      crumbs.push({
+        label: LEARNING_CATEGORY_LABELS[category],
+        href: buildLearningPath(category, "event"),
+      });
+    }
+
+    if (isLearningType(type)) {
+      crumbs.push({ label: LEARNING_TYPE_LABELS[type] });
+    }
+
+    return crumbs;
   }
 
-  if (firstSegment === "edo") {
-    return [
-      { label: "Главная", href: ROUTES.HOME },
-      { label: "ЕДО", href: ROUTES.EDO_EVENTS },
-      { label: segmentLabels[secondSegment] ?? secondSegment },
-    ];
-  }
-
-  if (firstSegment === "mentorship") {
-    if (!secondSegment) {
+  if (segments[0] === "mentorship") {
+    if (!segments[1]) {
       return [{ label: "Наставничество" }];
     }
 
-    if (secondSegment === "interns" && thirdSegment === "edit") {
-      return [
-        { label: "Наставничество", href: ROUTES.MENTORSHIP },
-        { label: "Стажеры", href: ROUTES.MENTORSHIP_INTERNS },
-        { label: "Редактирование плана адаптации стажера" },
-      ];
-    }
-
-    if (secondSegment === "interns") {
+    if (segments[1] === "interns") {
       return [
         { label: "Наставничество", href: ROUTES.MENTORSHIP },
         { label: "Стажеры" },
@@ -250,55 +121,68 @@ function buildBreadcrumbs(pathname: string) {
     return [{ label: "Наставничество", href: ROUTES.MENTORSHIP }];
   }
 
-  if (firstSegment === "admin") {
-    if (!secondSegment) {
+  if (segments[0] === "admin") {
+    if (!segments[1]) {
       return [{ label: "Администрирование" }];
     }
 
-    if (secondSegment === "users") {
+    if (segments[1] === "users") {
       return [
         { label: "Администрирование", href: ROUTES.ADMIN },
         { label: "Пользователи" },
       ];
     }
 
-    if (secondSegment === "education") {
-      return [
+    if (segments[1] === "learning") {
+      const crumbs: Array<{ label: string; href?: string }> = [
         { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "Обучение", href: ROUTES.ADMIN_EDUCATION_EVENTS },
-        { label: segmentLabels[thirdSegment] ?? thirdSegment },
       ];
-    }
 
-    if (secondSegment === "edo") {
-      return [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "ЕДО", href: ROUTES.ADMIN_EDO_EVENTS },
-        { label: segmentLabels[thirdSegment] ?? thirdSegment },
-      ];
-    }
-
-    if (secondSegment === "adaptation") {
-      if (thirdSegment === "templates") {
-        return [
-          { label: "Администрирование", href: ROUTES.ADMIN },
-          { label: "Планы адаптации" },
-        ];
+      if (isLearningCategory(category)) {
+        crumbs.push({
+          label: LEARNING_CATEGORY_LABELS[category],
+          href: buildAdminLearningPath(category, "event"),
+        });
       }
+
+      if (isLearningType(type)) {
+        crumbs.push({
+          label: LEARNING_TYPE_LABELS[type],
+          href: buildAdminLearningPath(
+            isLearningCategory(category) ? category : "education",
+            type,
+          ),
+        });
+      }
+
+      if (segments[2] === "create") {
+        crumbs.push({ label: "Создание" });
+      } else if (segments[2] && segments[3] === "edit") {
+        crumbs.push({ label: "Редактирование" });
+      }
+
+      return crumbs;
+    }
+
+    if (segments[1] === "adaptation") {
+      return [
+        { label: "Администрирование", href: ROUTES.ADMIN },
+        { label: "Планы адаптации" },
+      ];
     }
 
     return [{ label: "Администрирование", href: ROUTES.ADMIN }];
   }
 
-  return crumbs;
+  return [{ label: "Главная", href: ROUTES.HOME }];
 }
 
 function BreadcrumbComponent(): JSX.Element {
   const location = useLocation();
 
   const crumbs = useMemo(
-    () => buildBreadcrumbs(location.pathname),
-    [location.pathname],
+    () => buildBreadcrumbs(location.pathname, location.search),
+    [location.pathname, location.search],
   );
 
   return (

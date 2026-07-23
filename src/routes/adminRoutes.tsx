@@ -3,27 +3,9 @@ import PageTitle from "@/components/PageTitle.tsx";
 import { ProtectedRouteAdmin } from "@/components/protected/ProtectedRoutes.tsx";
 import UsersAdmin from "@/pages/Admin/Users/Users.tsx";
 import UserEditAdmin from "@/pages/Admin/Users/UserEdit.tsx";
-import EducationCoursesAdmin from "@/pages/Admin/Education/Courses/Courses.tsx";
-import EducationCourseCreateAdmin from "@/pages/Admin/Education/Courses/CourseCreate.tsx";
-import EducationCourseEditAdmin from "@/pages/Admin/Education/Courses/CourseEdit.tsx";
-import EducationEventsAdmin from "@/pages/Admin/Education/Events/Events.tsx";
-import EducationEventCreateAdmin from "@/pages/Admin/Education/Events/EventCreate.tsx";
-import EducationEventEditAdmin from "@/pages/Admin/Education/Events/EventEdit.tsx";
-import EducationWebinarsAdmin from "@/pages/Admin/Education/Webinars/Webinars.tsx";
-import EducationWebinarCreateAdmin from "@/pages/Admin/Education/Webinars/WebinarCreate.tsx";
-import EducationWebinarEditAdmin from "@/pages/Admin/Education/Webinars/WebinarEdit.tsx";
-import EducationTestsAdmin from "@/pages/Admin/Education/Tests/Tests.tsx";
-import EducationTestCreateAdmin from "@/pages/Admin/Education/Tests/TestCreate.tsx";
-import EducationTestEditAdmin from "@/pages/Admin/Education/Tests/TestEdit.tsx";
-import EdoCoursesAdmin from "@/pages/Admin/Edo/Courses/Courses.tsx";
-import EdoCourseCreateAdmin from "@/pages/Admin/Edo/Courses/CourseCreate.tsx";
-import EdoCourseEditAdmin from "@/pages/Admin/Edo/Courses/CourseEdit.tsx";
-import EdoEventsAdmin from "@/pages/Admin/Edo/Events/Events.tsx";
-import EdoEventCreateAdmin from "@/pages/Admin/Edo/Events/EventCreate.tsx";
-import EdoEventEditAdmin from "@/pages/Admin/Edo/Events/EventEdit.tsx";
-import EdoTestsAdmin from "@/pages/Admin/Edo/Tests/Tests.tsx";
-import EdoTestCreateAdmin from "@/pages/Admin/Edo/Tests/TestCreate.tsx";
-import EdoTestEditAdmin from "@/pages/Admin/Edo/Tests/TestEdit.tsx";
+import AdminLearningListPage from "@/pages/Admin/Learning/AdminLearningListPage.tsx";
+import AdminLearningCreatePage from "@/pages/Admin/Learning/AdminLearningCreatePage.tsx";
+import AdminLearningEditPage from "@/pages/Admin/Learning/AdminLearningEditPage.tsx";
 import AdaptationTemplatesAdmin from "@/pages/Admin/Adaptation/Templates/Templates.tsx";
 import AdaptationTemplateCreateAdmin from "@/pages/Admin/Adaptation/Templates/TemplateCreate.tsx";
 import AdaptationTemplateTasksAdmin from "@/pages/Admin/Adaptation/Templates/TemplateTasks/TemplateTasks.tsx";
@@ -47,161 +29,16 @@ export const adminRoutes: RouteObject = {
       ),
     },
     {
-      path: ROUTES.ADMIN_EDUCATION_COURSE,
-      element: (
-        <PageTitle title={"Курсы"} element={<EducationCoursesAdmin />} />
-      ),
+      path: ROUTES.ADMIN_LEARNING,
+      element: <AdminLearningListPage />,
     },
     {
-      path: ROUTES.ADMIN_EDUCATION_COURSE_CREATE,
-      element: (
-        <PageTitle
-          title={"Создание курса"}
-          element={<EducationCourseCreateAdmin />}
-        />
-      ),
+      path: ROUTES.ADMIN_LEARNING_CREATE,
+      element: <AdminLearningCreatePage />,
     },
     {
-      path: ROUTES.ADMIN_EDUCATION_COURSE_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование курса"}
-          element={<EducationCourseEditAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_EVENTS,
-      element: (
-        <PageTitle title={"Мероприятия"} element={<EducationEventsAdmin />} />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_EVENTS_CREATE,
-      element: (
-        <PageTitle
-          title={"Создание мероприятия"}
-          element={<EducationEventCreateAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_EVENTS_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование мероприятия"}
-          element={<EducationEventEditAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_WEBINARS,
-      element: (
-        <PageTitle title={"Вебинары"} element={<EducationWebinarsAdmin />} />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_WEBINARS_CREATE,
-      element: (
-        <PageTitle
-          title={"Создание вебинара"}
-          element={<EducationWebinarCreateAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_WEBINARS_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование вебинара"}
-          element={<EducationWebinarEditAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_TESTS,
-      element: <PageTitle title={"Тесты"} element={<EducationTestsAdmin />} />,
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_TESTS_CREATE,
-      element: (
-        <PageTitle
-          title={"Создание теста"}
-          element={<EducationTestCreateAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDUCATION_TESTS_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование теста"}
-          element={<EducationTestEditAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_COURSES,
-      element: <PageTitle title={"Курсы"} element={<EdoCoursesAdmin />} />,
-    },
-    {
-      path: ROUTES.ADMIN_EDO_COURSES_CREATE,
-      element: (
-        <PageTitle
-          title={"Создание курса"}
-          element={<EdoCourseCreateAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_COURSES_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование курса"}
-          element={<EdoCourseEditAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_EVENTS,
-      element: <PageTitle title={"Мероприятия"} element={<EdoEventsAdmin />} />,
-    },
-    {
-      path: ROUTES.ADMIN_EDO_EVENTS_CREATE,
-      element: (
-        <PageTitle
-          title={"Создание мероприятия"}
-          element={<EdoEventCreateAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_EVENTS_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование мероприятия"}
-          element={<EdoEventEditAdmin />}
-        />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_TESTS,
-      element: <PageTitle title={"Тесты"} element={<EdoTestsAdmin />} />,
-    },
-    {
-      path: ROUTES.ADMIN_EDO_TESTS_CREATE,
-      element: (
-        <PageTitle title={"Создание теста"} element={<EdoTestCreateAdmin />} />
-      ),
-    },
-    {
-      path: ROUTES.ADMIN_EDO_TESTS_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование теста"}
-          element={<EdoTestEditAdmin />}
-        />
-      ),
+      path: ROUTES.ADMIN_LEARNING_EDIT,
+      element: <AdminLearningEditPage />,
     },
     {
       path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,

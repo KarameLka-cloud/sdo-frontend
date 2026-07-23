@@ -2,6 +2,10 @@ import { ROUTES } from "@constants/routes";
 import type { LucideIcon } from "lucide-react";
 import { Home, Notebook, Album, Users, Brain } from "lucide-react";
 import firstWednesdayData from "@/utils/firstWednesday";
+import {
+  buildAdminLearningPath,
+  buildLearningPath,
+} from "@/constants/learning.ts";
 
 interface NavigationItemChild {
   id: number;
@@ -36,10 +40,22 @@ export const HOME_NAV_LINKS: ReadonlyArray<NavigationItem> = [
     path: "",
     icon: Notebook,
     children: [
-      { id: 1, name: "Мероприятия", path: ROUTES.EDUCATION_EVENTS },
-      { id: 2, name: "Эл. курсы", path: ROUTES.EDUCATION_COURSES },
-      { id: 3, name: "Вебинары", path: ROUTES.EDUCATION_WEBINARS },
-      { id: 4, name: "Тесты", path: ROUTES.EDUCATION_TESTS },
+      {
+        id: 1,
+        name: "Мероприятия",
+        path: buildLearningPath("education", "event"),
+      },
+      {
+        id: 2,
+        name: "Эл. курсы",
+        path: buildLearningPath("education", "course"),
+      },
+      {
+        id: 3,
+        name: "Вебинары",
+        path: buildLearningPath("education", "webinar"),
+      },
+      { id: 4, name: "Тесты", path: buildLearningPath("education", "test") },
     ],
   },
   {
@@ -48,9 +64,9 @@ export const HOME_NAV_LINKS: ReadonlyArray<NavigationItem> = [
     path: "",
     icon: Album,
     children: [
-      { id: 1, name: "Мероприятия", path: ROUTES.EDO_EVENTS },
-      { id: 2, name: "Эл. курсы", path: ROUTES.EDO_COURSES },
-      { id: 3, name: "Тесты", path: ROUTES.EDO_TESTS },
+      { id: 1, name: "Мероприятия", path: buildLearningPath("edo", "event") },
+      { id: 2, name: "Эл. курсы", path: buildLearningPath("edo", "course") },
+      { id: 3, name: "Тесты", path: buildLearningPath("edo", "test") },
     ],
   },
 ];
@@ -80,22 +96,22 @@ export const ADMIN_NAV_LINKS: ReadonlyArray<NavigationItem> = [
       {
         id: 1,
         name: "Мероприятия",
-        path: ROUTES.ADMIN_EDUCATION_EVENTS,
+        path: buildAdminLearningPath("education", "event"),
       },
       {
         id: 2,
         name: "Электронные курсы",
-        path: ROUTES.ADMIN_EDUCATION_COURSE,
+        path: buildAdminLearningPath("education", "course"),
       },
       {
         id: 3,
         name: "Вебинары",
-        path: ROUTES.ADMIN_EDUCATION_WEBINARS,
+        path: buildAdminLearningPath("education", "webinar"),
       },
       {
         id: 4,
         name: "Тесты",
-        path: ROUTES.ADMIN_EDUCATION_TESTS,
+        path: buildAdminLearningPath("education", "test"),
       },
     ],
   },
@@ -108,17 +124,17 @@ export const ADMIN_NAV_LINKS: ReadonlyArray<NavigationItem> = [
       {
         id: 1,
         name: "Мероприятия",
-        path: ROUTES.ADMIN_EDO_EVENTS,
+        path: buildAdminLearningPath("edo", "event"),
       },
       {
         id: 2,
         name: "Электронные курсы",
-        path: ROUTES.ADMIN_EDO_COURSES,
+        path: buildAdminLearningPath("edo", "course"),
       },
       {
         id: 3,
         name: "Тесты",
-        path: ROUTES.ADMIN_EDO_TESTS,
+        path: buildAdminLearningPath("edo", "test"),
       },
     ],
   },

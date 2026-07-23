@@ -1,5 +1,5 @@
 import { JSX } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useLocation } from "react-router-dom";
 import { ChevronRight } from "lucide-react";
 import {
   SidebarContent,
@@ -25,8 +25,31 @@ import {
 import { useUser } from "@/hooks/useUser.ts";
 import { hasAnyRole, USER_ROLES } from "@/constants/roles.ts";
 
+function isNavLinkActive(targetPath: string, current: string): boolean {
+  const targetUrl = new URL(targetPath, "http://local");
+  const currentUrl = new URL(current, "http://local");
+
+  if (targetUrl.pathname !== currentUrl.pathname) {
+    return false;
+  }
+
+  if (!targetUrl.search) {
+    return true;
+  }
+
+  for (const [key, value] of targetUrl.searchParams.entries()) {
+    if (currentUrl.searchParams.get(key) !== value) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 function Content(): JSX.Element {
   const { role } = useUser();
+  const location = useLocation();
+  const current = `${location.pathname}${location.search}`;
 
   const isAdmin = hasAnyRole(role, [USER_ROLES.ADMIN]);
   const isMentor = hasAnyRole(role, [USER_ROLES.MENTOR]);
@@ -52,7 +75,10 @@ function Content(): JSX.Element {
                       <SidebarMenuSub>
                         {item.children?.map((subItem) => (
                           <SidebarMenuSubItem key={subItem.id}>
-                            <SidebarMenuSubButton asChild>
+                            <SidebarMenuSubButton
+                              asChild
+                              isActive={isNavLinkActive(subItem.path, current)}
+                            >
                               <NavLink to={subItem.path}>
                                 <span>{subItem.name}</span>
                               </NavLink>
@@ -66,7 +92,10 @@ function Content(): JSX.Element {
               </SidebarMenu>
             ) : (
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  isActive={isNavLinkActive(item.path, current)}
+                >
                   <NavLink to={item.path}>
                     {item.icon && <item.icon />}
                     <span className="text-sm">{item.name}</span>
@@ -98,7 +127,13 @@ function Content(): JSX.Element {
                         <SidebarMenuSub>
                           {item.children?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.id}>
-                              <SidebarMenuSubButton asChild>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={isNavLinkActive(
+                                  subItem.path,
+                                  current,
+                                )}
+                              >
                                 <NavLink to={subItem.path}>
                                   <span>{subItem.name}</span>
                                 </NavLink>
@@ -112,7 +147,10 @@ function Content(): JSX.Element {
                 </SidebarMenu>
               ) : (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavLinkActive(item.path, current)}
+                  >
                     <NavLink to={item.path}>
                       {item.icon && <item.icon />}
                       <span className="text-sm">{item.name}</span>
@@ -145,7 +183,13 @@ function Content(): JSX.Element {
                         <SidebarMenuSub>
                           {item.children?.map((subItem) => (
                             <SidebarMenuSubItem key={subItem.id}>
-                              <SidebarMenuSubButton asChild>
+                              <SidebarMenuSubButton
+                                asChild
+                                isActive={isNavLinkActive(
+                                  subItem.path,
+                                  current,
+                                )}
+                              >
                                 <NavLink to={subItem.path}>
                                   <span>{subItem.name}</span>
                                 </NavLink>
@@ -159,7 +203,10 @@ function Content(): JSX.Element {
                 </SidebarMenu>
               ) : (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={isNavLinkActive(item.path, current)}
+                  >
                     <NavLink to={item.path}>
                       {item.icon && <item.icon />}
                       <span className="text-sm">{item.name}</span>
