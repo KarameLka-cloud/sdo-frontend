@@ -36,25 +36,25 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
       case "course":
         fields.push(
           {
-            icon: <Calendar className="h-3.5 w-3.5" />,
+            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
             label: "Пройти до:",
             value: convertDate(item.date),
             show: true,
           },
           {
-            icon: <Timer className="h-3.5 w-3.5" />,
+            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
             label: "Время прохождения:",
             value: `${item.duration} мин.`,
             show: true,
           },
           {
-            icon: <Building className="h-3.5 w-3.5" />,
+            icon: <Building className="h-3.5 w-3.5 shrink-0" />,
             label: "Отдел:",
             value: item.department ?? "",
             show: hasTextValue(item.department),
           },
           {
-            icon: <FileText className="h-3.5 w-3.5" />,
+            icon: <FileText className="h-3.5 w-3.5 shrink-0" />,
             label: "Примечание:",
             value: item.note_department ?? "",
             show: hasTextValue(item.note_department),
@@ -65,31 +65,31 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
       case "event":
         fields.push(
           {
-            icon: <Calendar className="h-3.5 w-3.5" />,
+            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
             label: "Дата:",
             value: convertDate(item.date),
             show: true,
           },
           {
-            icon: <Clock className="h-3.5 w-3.5" />,
+            icon: <Clock className="h-3.5 w-3.5 shrink-0" />,
             label: "Время:",
             value: convertTime(item.time ?? ""),
             show: hasTextValue(item.time),
           },
           {
-            icon: <Timer className="h-3.5 w-3.5" />,
+            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
             label: "Время прохождения:",
             value: `${item.duration} мин.`,
             show: true,
           },
           {
-            icon: <Building className="h-3.5 w-3.5" />,
+            icon: <Building className="h-3.5 w-3.5 shrink-0" />,
             label: "Отдел:",
             value: item.department ?? "",
             show: hasTextValue(item.department),
           },
           {
-            icon: <FileText className="h-3.5 w-3.5" />,
+            icon: <FileText className="h-3.5 w-3.5 shrink-0" />,
             label: "Примечание:",
             value: item.note_department ?? "",
             show: hasTextValue(item.note_department),
@@ -100,19 +100,19 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
       case "webinar":
         fields.push(
           {
-            icon: <Calendar className="h-3.5 w-3.5" />,
+            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
             label: "Дата:",
             value: convertDate(item.date),
             show: true,
           },
           {
-            icon: <Clock className="h-3.5 w-3.5" />,
+            icon: <Clock className="h-3.5 w-3.5 shrink-0" />,
             label: "Время:",
             value: convertTime(item.time ?? ""),
             show: hasTextValue(item.time),
           },
           {
-            icon: <Timer className="h-3.5 w-3.5" />,
+            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
             label: "Длительность:",
             value: `${item.duration} мин.`,
             show: true,
@@ -123,25 +123,25 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
       case "test":
         fields.push(
           {
-            icon: <Calendar className="h-3.5 w-3.5" />,
+            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
             label: "Пройти до:",
             value: convertDate(item.date),
             show: true,
           },
           {
-            icon: <Timer className="h-3.5 w-3.5" />,
+            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
             label: "Время прохождения:",
             value: `${item.duration} мин.`,
             show: true,
           },
           {
-            icon: <User className="h-3.5 w-3.5" />,
+            icon: <User className="h-3.5 w-3.5 shrink-0" />,
             label: "Сотрудник:",
             value: item.position ?? "",
             show: hasTextValue(item.position),
           },
           {
-            icon: <FileText className="h-3.5 w-3.5" />,
+            icon: <FileText className="h-3.5 w-3.5 shrink-0" />,
             label: "Примечание:",
             value: item.note_position ?? "",
             show: hasTextValue(item.note_position),
@@ -202,7 +202,7 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
       <div className="w-1/3 p-4 flex flex-col">
         <div className="space-y-2">
           {fields.map((field, index) => (
-            <div key={index} className="flex items-start gap-2 text-sm">
+            <div key={index} className="flex items-center gap-2 text-sm">
               <div
                 className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${getIconColor(
                   getIconType(field.icon),
@@ -210,12 +210,14 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
               >
                 {field.icon}
               </div>
-              <span className="shrink-0 pt-0.5 text-gray-500 text-xs uppercase tracking-wide font-medium">
-                {field.label}
-              </span>
-              <span className="min-w-0 pt-0.5 font-medium text-gray-900 tabular-nums break-words">
-                {field.value}
-              </span>
+              <div className="flex min-w-0 flex-1 items-center gap-2">
+                <span className="shrink-0 text-gray-500 text-xs uppercase tracking-wide font-medium leading-none">
+                  {field.label}
+                </span>
+                <span className="min-w-0 font-medium text-gray-900 tabular-nums break-words leading-snug">
+                  {field.value}
+                </span>
+              </div>
             </div>
           ))}
         </div>
