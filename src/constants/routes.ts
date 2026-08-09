@@ -18,6 +18,3 @@ export const ROUTES = {
   ADMIN_ADAPTATION_TEMPLATES_CREATE: "/admin/adaptation/templates/create",
   ADMIN_ADAPTATION_TEMPLATE_TASKS: "/admin/adaptation/templates/:templateId",
 } as const;
-
-export type RouteKey = keyof typeof ROUTES;
-export type RouteValue = (typeof ROUTES)[RouteKey];

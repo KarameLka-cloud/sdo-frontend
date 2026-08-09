@@ -1,4 +1,4 @@
-import { Spinner } from "../spinner";
+import { Spinner } from "../shadcn/spinner";
 
 export function Loader() {
   return <Spinner className="mx-auto size-8" />;

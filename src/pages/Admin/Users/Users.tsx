@@ -13,16 +13,16 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
-import { Field } from "@/components/ui/field";
+} from "@/components/ui/shadcn/table";
+import { Badge } from "@/components/ui/shadcn/badge";
+import { Field } from "@/components/ui/shadcn/field";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from "@/components/ui/shadcn/select";
 import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
 import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
 import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";

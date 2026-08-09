@@ -13,28 +13,28 @@ import {
   useGetLearningItemByIdQuery,
   useUpdateLearningItemMutation,
 } from "@/services/store/features/learningItems.ts";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/shadcn/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
+import { Input } from "@/components/ui/shadcn/input";
+import { Textarea } from "@/components/ui/shadcn/textarea";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
+} from "@/components/ui/shadcn/select";
+import { Separator } from "@/components/ui/shadcn/separator";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import AdminEditFormFooter from "@/pages/Admin/shared/components/AdminEditFormFooter";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
 import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
+import { buildAdminLearningPath } from "@/constants/learning.ts";
 import {
-  buildAdminLearningPath,
   parseEntityId,
   toDateInputValue,
   toTimeInputValue,
-} from "@/constants/learning.ts";
+} from "@/utils/formValues.ts";
 
 const TITLES = {
   event: "Редактирование мероприятия",

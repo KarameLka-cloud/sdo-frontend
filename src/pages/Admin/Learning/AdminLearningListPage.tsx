@@ -25,7 +25,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/shadcn/table";
 import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
 import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
 import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";

@@ -9,25 +9,25 @@ import {
 } from "@/services/store/features/user.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/shadcn/button";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+} from "@/components/ui/shadcn/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
+import { Input } from "@/components/ui/shadcn/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
+} from "@/components/ui/shadcn/select";
+import { Separator } from "@/components/ui/shadcn/separator";
+import { Spinner } from "@/components/ui/shadcn/spinner";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import { INTERNSHIP_ROUTES } from "@/pages/Admin/shared/adminResourceConfig.ts";
 

@@ -7,7 +7,7 @@ import {
   LearningType,
 } from "@/interfaces/api/LearningItemType.ts";
 
-export type LearningItemsQueryArgs = {
+type LearningItemsQueryArgs = {
   category: LearningCategory;
   type: LearningType;
 };

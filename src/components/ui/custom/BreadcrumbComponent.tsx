@@ -7,7 +7,7 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
+} from "@/components/ui/shadcn/breadcrumb";
 import { ROUTES } from "@/constants/routes";
 import {
   buildAdminLearningPath,
@@ -18,163 +18,171 @@ import {
   LEARNING_TYPE_LABELS,
 } from "@/constants/learning.ts";
 
-function buildBreadcrumbs(pathname: string, search: string) {
+type Crumb = { label: string; href?: string };
+
+/** Подписи сегментов пути */
+const SEGMENT_LABELS: Record<string, string> = {
+  home: "Главная",
+  adaptation: "Адаптация",
+  mentorship: "Наставничество",
+  interns: "Стажеры",
+  admin: "Администрирование",
+  users: "Пользователи",
+  templates: "Планы адаптации",
+  create: "Создание",
+  edit: "Редактирование",
+};
+
+/**
+ * Человекочитаемые заголовки для конечных страниц.
+ * Цепочка до них собирается из URL автоматически.
+ */
+const LEAF_LABELS: Array<{ path: string; label: string }> = [
+  {
+    path: ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE,
+    label: "Создание плана адаптации",
+  },
+  {
+    path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
+    label: "Редактирование плана адаптации стажера",
+  },
+  {
+    path: ROUTES.ADMIN_ADAPTATION_TEMPLATES_CREATE,
+    label: "Создание плана адаптации",
+  },
+  {
+    path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
+    label: "Редактирование плана адаптации",
+  },
+  {
+    path: ROUTES.ADMIN_USER_EDIT,
+    label: "Редактирование пользователя",
+  },
+  {
+    path: ROUTES.ADMIN_LEARNING_CREATE,
+    label: "Создание",
+  },
+  {
+    path: ROUTES.ADMIN_LEARNING_EDIT,
+    label: "Редактирование",
+  },
+];
+
+const isId = (segment: string) => /^\d+$/.test(segment);
+
+/** Сегменты-«прокладки», которые не показывают в крошках */
+const shouldSkip = (segment: string, parent?: string) =>
+  isId(segment) || (segment === "adaptation" && parent === "admin");
+
+function getLeafLabel(pathname: string): string | undefined {
+  return LEAF_LABELS.find((item) =>
+    matchPath({ path: item.path, end: true }, pathname),
+  )?.label;
+}
+
+function withoutLastHref(crumbs: Crumb[]): Crumb[] {
+  if (crumbs.length === 0) {
+    return [{ label: "Главная" }];
+  }
+
+  return crumbs.map((crumb, index) =>
+    index === crumbs.length - 1 ? { label: crumb.label } : crumb,
+  );
+}
+
+/** Learning: подписи берутся из ?category=&type= */
+function buildLearningCrumbs(isAdmin: boolean, search: string): Crumb[] {
   const params = new URLSearchParams(search);
   const category = params.get("category");
   const type = params.get("type");
 
-  const specialRoutes: Array<{
-    path: string;
-    crumbs: Array<{ label: string; href?: string }>;
-  }> = [
-    {
-      path: ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE,
-      crumbs: [
-        { label: "Наставничество", href: ROUTES.MENTORSHIP },
-        { label: "Стажеры", href: ROUTES.MENTORSHIP_INTERNS },
-        { label: "Создание плана адаптации" },
-      ],
-    },
-    {
-      path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
-      crumbs: [
-        { label: "Наставничество", href: ROUTES.MENTORSHIP },
-        { label: "Стажеры", href: ROUTES.MENTORSHIP_INTERNS },
-        { label: "Редактирование плана адаптации стажера" },
-      ],
-    },
-    {
-      path: ROUTES.ADMIN_ADAPTATION_TEMPLATES_CREATE,
-      crumbs: [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "Планы адаптации", href: ROUTES.ADMIN_ADAPTATION_TEMPLATES },
-        { label: "Создание плана адаптации" },
-      ],
-    },
-    {
-      path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
-      crumbs: [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "Планы адаптации", href: ROUTES.ADMIN_ADAPTATION_TEMPLATES },
-        { label: "Редактирование плана адаптации" },
-      ],
-    },
-    {
-      path: ROUTES.ADMIN_USER_EDIT,
-      crumbs: [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "Пользователи", href: ROUTES.ADMIN_USERS },
-        { label: "Редактирование пользователя" },
-      ],
-    },
-  ];
+  const crumbs: Crumb[] = isAdmin
+    ? [{ label: "Администрирование", href: ROUTES.ADMIN }]
+    : [{ label: "Главная", href: ROUTES.HOME }];
 
-  const special = specialRoutes.find((route) =>
-    matchPath({ path: route.path, end: true }, pathname),
-  );
-
-  if (special) {
-    return special.crumbs;
+  if (isLearningCategory(category)) {
+    crumbs.push({
+      label: LEARNING_CATEGORY_LABELS[category],
+      href: isAdmin
+        ? buildAdminLearningPath(category, "event")
+        : buildLearningPath(category, "event"),
+    });
   }
 
+  if (isLearningType(type)) {
+    crumbs.push({
+      label: LEARNING_TYPE_LABELS[type],
+      href: isAdmin
+        ? buildAdminLearningPath(
+            isLearningCategory(category) ? category : "education",
+            type,
+          )
+        : undefined,
+    });
+  }
+
+  return crumbs;
+}
+
+function buildBreadcrumbs(pathname: string, search: string): Crumb[] {
   const segments = pathname.split("/").filter(Boolean);
 
   if (segments.length === 0 || segments[0] === "home") {
     return [{ label: "Главная" }];
   }
 
+  const isLearning =
+    segments[0] === "learning" ||
+    (segments[0] === "admin" && segments[1] === "learning");
+
+  if (isLearning) {
+    const crumbs = buildLearningCrumbs(segments[0] === "admin", search);
+    const leaf = getLeafLabel(pathname);
+    if (leaf) {
+      crumbs.push({ label: leaf });
+    }
+    return withoutLastHref(crumbs);
+  }
+
+  const crumbs: Crumb[] = [];
+
+  // Пользовательский раздел: адаптация начинается с «Главная»
   if (segments[0] === "adaptation") {
-    return [{ label: "Главная", href: ROUTES.HOME }, { label: "Адаптация" }];
+    crumbs.push({ label: "Главная", href: ROUTES.HOME });
   }
 
-  if (segments[0] === "learning") {
-    const crumbs: Array<{ label: string; href?: string }> = [
-      { label: "Главная", href: ROUTES.HOME },
-    ];
+  let path = "";
+  for (let i = 0; i < segments.length; i++) {
+    const segment = segments[i];
+    path += `/${segment}`;
 
-    if (isLearningCategory(category)) {
+    if (shouldSkip(segment, segments[i - 1])) {
+      continue;
+    }
+
+    // create / edit — подменяем на leaf-label, если есть
+    if (segment === "create" || segment === "edit") {
       crumbs.push({
-        label: LEARNING_CATEGORY_LABELS[category],
-        href: buildLearningPath(category, "event"),
+        label: getLeafLabel(pathname) ?? SEGMENT_LABELS[segment] ?? segment,
+        href: path,
       });
+      continue;
     }
 
-    if (isLearningType(type)) {
-      crumbs.push({ label: LEARNING_TYPE_LABELS[type] });
-    }
-
-    return crumbs;
+    crumbs.push({
+      label: SEGMENT_LABELS[segment] ?? segment,
+      href: path,
+    });
   }
 
-  if (segments[0] === "mentorship") {
-    if (!segments[1]) {
-      return [{ label: "Наставничество" }];
-    }
-
-    if (segments[1] === "interns") {
-      return [
-        { label: "Наставничество", href: ROUTES.MENTORSHIP },
-        { label: "Стажеры" },
-      ];
-    }
-
-    return [{ label: "Наставничество", href: ROUTES.MENTORSHIP }];
+  // Страницы вида /users/:id или /templates/:id — добавляем leaf в конец
+  const leaf = getLeafLabel(pathname);
+  const lastSegment = segments[segments.length - 1];
+  if (leaf && isId(lastSegment)) {
+    crumbs.push({ label: leaf });
   }
 
-  if (segments[0] === "admin") {
-    if (!segments[1]) {
-      return [{ label: "Администрирование" }];
-    }
-
-    if (segments[1] === "users") {
-      return [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "Пользователи" },
-      ];
-    }
-
-    if (segments[1] === "learning") {
-      const crumbs: Array<{ label: string; href?: string }> = [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-      ];
-
-      if (isLearningCategory(category)) {
-        crumbs.push({
-          label: LEARNING_CATEGORY_LABELS[category],
-          href: buildAdminLearningPath(category, "event"),
-        });
-      }
-
-      if (isLearningType(type)) {
-        crumbs.push({
-          label: LEARNING_TYPE_LABELS[type],
-          href: buildAdminLearningPath(
-            isLearningCategory(category) ? category : "education",
-            type,
-          ),
-        });
-      }
-
-      if (segments[2] === "create") {
-        crumbs.push({ label: "Создание" });
-      } else if (segments[2] && segments[3] === "edit") {
-        crumbs.push({ label: "Редактирование" });
-      }
-
-      return crumbs;
-    }
-
-    if (segments[1] === "adaptation") {
-      return [
-        { label: "Администрирование", href: ROUTES.ADMIN },
-        { label: "Планы адаптации" },
-      ];
-    }
-
-    return [{ label: "Администрирование", href: ROUTES.ADMIN }];
-  }
-
-  return [{ label: "Главная", href: ROUTES.HOME }];
+  return withoutLastHref(crumbs);
 }
 
 function BreadcrumbComponent(): JSX.Element {

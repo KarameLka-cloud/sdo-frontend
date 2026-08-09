@@ -15,7 +15,7 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
+} from "@/components/ui/shadcn/table";
 import { truncateText } from "@/utils/truncateText.ts";
 import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
 import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";

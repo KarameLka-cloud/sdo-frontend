@@ -1,9 +1,9 @@
 import { JSX } from "react";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { Outlet } from "react-router-dom";
+import { TooltipProvider } from "@/components/ui/shadcn/tooltip";
+import { SidebarProvider } from "@/components/ui/shadcn/sidebar";
 import SidebarNav from "@/components/home/SidebarNav";
 import SidebarMain from "@/components/home/SidebarMain";
-import MainLayout from "./MainLayout";
 
 function HomeLayout(): JSX.Element {
   return (
@@ -11,7 +11,7 @@ function HomeLayout(): JSX.Element {
       <SidebarProvider>
         <SidebarNav />
         <SidebarMain>
-          <MainLayout />
+          <Outlet />
         </SidebarMain>
       </SidebarProvider>
     </TooltipProvider>

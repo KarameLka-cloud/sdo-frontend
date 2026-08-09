@@ -1,4 +1,4 @@
-import { ROUTES, RouteValue } from "@/constants/routes.ts";
+import { ROUTES } from "@/constants/routes.ts";
 
 export const TEMPLATE_ROUTES = {
   list: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
@@ -22,10 +22,4 @@ export const WORK_SCHEDULE_OPTIONS = ["5/2", "2/2"] as const;
 export const buildEditPath = (template: string, id: number) =>
   template.replace(/:\w+/, String(id));
 
-export {
-  parseEntityId,
-  toDateInputValue,
-  toTimeInputValue,
-} from "@/utils/formValues.ts";
-
-export type { RouteValue };
+export { parseEntityId } from "@/utils/formValues.ts";

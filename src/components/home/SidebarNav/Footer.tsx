@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { ChevronsUpDown, LogOut } from "lucide-react";
-import { SidebarFooter } from "@/components/ui/sidebar";
-import { Avatar } from "@/components/ui/avatar";
+import { SidebarFooter } from "@/components/ui/shadcn/sidebar";
+import { Avatar } from "@/components/ui/shadcn/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,13 +9,13 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/components/ui/shadcn/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "@/components/ui/shadcn/sidebar";
 import { useLogout } from "@/hooks/useLogout.ts";
 import { useUser } from "@/hooks/useUser";
 import { getInitials } from "@/utils/getInitials.ts";

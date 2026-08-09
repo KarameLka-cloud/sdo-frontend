@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import DataMessage from "@/components/ui/custom/DataMessage";
-import { TableCell, TableRow } from "@/components/ui/table";
+import { TableCell, TableRow } from "@/components/ui/shadcn/table";
 
 interface AdminTableEmptyRowProps {
   colSpan: number;

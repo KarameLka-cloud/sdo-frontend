@@ -13,20 +13,20 @@ import {
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/shadcn/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/shadcn/card";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
+import { Input } from "@/components/ui/shadcn/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
-import { Textarea } from "@/components/ui/textarea";
+} from "@/components/ui/shadcn/select";
+import { Separator } from "@/components/ui/shadcn/separator";
+import { Spinner } from "@/components/ui/shadcn/spinner";
+import { Textarea } from "@/components/ui/shadcn/textarea";
 import { cn } from "@/lib/utils";
 import { formatDayRange } from "@/utils/formatDayRange.ts";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";

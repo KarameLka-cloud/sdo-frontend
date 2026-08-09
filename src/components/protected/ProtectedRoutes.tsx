@@ -97,4 +97,4 @@ const ProtectedRouteMentor = ({ elementMentor }: ProtectedRouteMentorProps) => (
   <RoleGuard allowedRoles={MENTOR_ACCESS_ROLES}>{elementMentor}</RoleGuard>
 );
 
-export { ProtectedRoute, ProtectedRouteAdmin, ProtectedRouteMentor, RoleGuard };
+export { ProtectedRoute, ProtectedRouteAdmin, ProtectedRouteMentor };

@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { RouterProvider } from "react-router-dom";
 import AppRoutes from "@routes/AppRoutes.tsx";
-import { Toaster } from "@/components/ui/sonner";
+import { Toaster } from "@/components/ui/shadcn/sonner";
 
 function App(): JSX.Element {
   return (

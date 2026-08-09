@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button";
-import { CardFooter } from "@/components/ui/card";
-import { Spinner } from "@/components/ui/spinner";
+import { Button } from "@/components/ui/shadcn/button";
+import { CardFooter } from "@/components/ui/shadcn/card";
+import { Spinner } from "@/components/ui/shadcn/spinner";
 
 interface AdminEditFormFooterProps {
   isSaving: boolean;

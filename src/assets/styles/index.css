@@ -6,46 +6,8 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --mfc-black-color: #101828;
-  --mfc-gray-color: #808080ff;
-  --mfc-red-color: #e04e39;
-  --mfc-dark-red-color: #b83c2e;
-  --mfc-green-color: #228b22ff;
-  --mfc-dark-green-color: #1a6b1a;
-  --mfc-blue-color: #008080ff;
-  --mfc-white-color: #ffffff;
-  --mfc-light-color: #f5eee7;
-  --mfc-middle-color: #e6d2c0;
   --mfc-dark-color: #d2ae8e;
-  --mfc-border-color: #d1d5dc;
-  --mfc-surface-color: #f3f4f6;
   --mfc-focus-ring-color: #2563eb;
-  --mfc-radius-sm: 0.375rem;
-  --mfc-radius-md: 0.5rem;
-  --mfc-shadow-sm: 0 1px 2px rgb(16 24 40 / 12%);
-  --mfc-shadow-md: 0 2px 8px rgb(16 24 40 / 12%);
-  --mfc-transition-fast: 0.2s ease;
-  --mfc-create-form-bg: #ffffff;
-  --mfc-create-form-border: #e5e7eb;
-  --mfc-create-field-border: #d1d5dc;
-  --mfc-create-status-loading-text: #1d4ed8;
-  --mfc-create-status-loading-bg: #eff6ff;
-  --mfc-create-status-loading-border: #bfdbfe;
-  --mfc-create-status-success-text: #166534;
-  --mfc-create-status-success-bg: #f0fdf4;
-  --mfc-create-status-success-border: #bbf7d0;
-  --mfc-create-status-error-text: #b91c1c;
-  --mfc-create-status-error-bg: #fef2f2;
-  --mfc-create-status-error-border: #fecaca;
-  --mfc-sticky-panel-top: 0;
-  --mfc-sticky-panel-z-index: 5;
-  --mfc-sticky-panel-padding: 0.75rem;
-  --mfc-sticky-panel-margin-bottom: 1rem;
-  --mfc-sticky-panel-border: 0.1rem solid var(--mfc-create-form-border);
-  --mfc-sticky-panel-radius: 0.75rem;
-  --mfc-sticky-panel-bg: var(--mfc-create-form-bg);
-  --mfc-sticky-subpanel-top: 4.75rem;
-  --mfc-sticky-subpanel-z-index: 4;
 
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   font-weight: 400;
@@ -87,64 +49,6 @@
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
 }
-
-/* Elegant Scrollbar Theme */
-/* :root {
-  --scrollbar-track: #f8f9fa;
-  --scrollbar-thumb: #dee2e6;
-  --scrollbar-thumb-hover: #adb5bd;
-  --scrollbar-thumb-active: #6c757d;
-  --scrollbar-width: 10px;
-  --scrollbar-radius: 8px;
-}
-
-::-webkit-scrollbar {
-  width: var(--scrollbar-width);
-  height: var(--scrollbar-width);
-}
-
-::-webkit-scrollbar-track {
-  background: var(--scrollbar-track);
-  border-radius: var(--scrollbar-radius);
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--scrollbar-thumb);
-  border-radius: var(--scrollbar-radius);
-  border: 2px solid var(--scrollbar-track);
-  transition: all 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--scrollbar-thumb-hover);
-}
-
-::-webkit-scrollbar-thumb:active {
-  background: var(--scrollbar-thumb-active);
-} */
-
-/* * {
-  box-sizing: border-box;
-  scrollbar-width: thin;
-  scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
-} */
-
-/* body {
-  min-height: 100vh;
-  margin: 0;
-  background-color: var(--mfc-dark-color);
-  color: var(--mfc-black-color);
-} */
-
-/* img {
-  display: block;
-  max-width: 100%;
-  height: auto;
-} */
-
-/* a {
-  text-decoration: none;
-} */
 
 button,
 input,

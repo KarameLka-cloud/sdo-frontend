@@ -58,10 +58,6 @@ export const user = createApi({
       query: (): string => API_ENDPOINTS.ADAPTATION_PLANS,
       providesTags: ["AdaptationPlans"],
     }),
-    getAllAdaptationPlans: builder.query({
-      query: (): string => API_ENDPOINTS.ADAPTATION_ALL_PLANS,
-      providesTags: ["AdaptationPlans"],
-    }),
     getAdaptationPlanById: builder.query({
       query: (id: number): string => `${API_ENDPOINTS.ADAPTATION_PLANS}${id}`,
       providesTags: ["AdaptationPlans"],
@@ -166,7 +162,6 @@ export const {
   useGetDepartmentsQuery,
   useGetPositionsQuery,
   useGetAdaptationPlansQuery,
-  useGetAllAdaptationPlansQuery,
   useGetAdaptationPlanByIdQuery,
   useGetMyAdaptationPlanQuery,
   useCreateAdaptationPlanMutation,

@@ -1,15 +1,15 @@
 import { ReactNode } from "react";
 import { PlusIcon, SearchIcon, XIcon } from "lucide-react";
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
+import { Button } from "@/components/ui/shadcn/button";
+import { Card, CardContent } from "@/components/ui/shadcn/card";
+import { Field, FieldGroup } from "@/components/ui/shadcn/field";
 import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupInput,
-} from "@/components/ui/input-group";
+} from "@/components/ui/shadcn/input-group";
 
 interface AdminListToolbarProps {
   searchId: string;

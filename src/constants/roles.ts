@@ -4,15 +4,6 @@ export const USER_ROLES = {
   DEPARTMENT_HEAD: "DEPARTMENT_HEAD",
 } as const;
 
-export const USER_ROLE_LABELS: Record<
-  (typeof USER_ROLES)[keyof typeof USER_ROLES],
-  string
-> = {
-  [USER_ROLES.ADMIN]: "Администратор",
-  [USER_ROLES.MENTOR]: "Наставник",
-  [USER_ROLES.DEPARTMENT_HEAD]: "Руководитель отдела",
-};
-
 export type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES];
 
 interface UserRoleSource {
@@ -34,27 +25,6 @@ export const MENTOR_ACCESS_ROLES = [
   USER_ROLES.MENTOR,
   USER_ROLES.DEPARTMENT_HEAD,
 ] as const;
-
-export const hasAnyRole = (
-  role: string | undefined,
-  allowedRoles: readonly UserRole[],
-): boolean => {
-  const normalizedRole = normalizeRoleValue(role);
-
-  if (!normalizedRole) {
-    return false;
-  }
-
-  return allowedRoles.some((allowedRole) => {
-    const normalizedAllowedRole = normalizeRoleValue(allowedRole);
-    const aliases = ROLE_ALIASES[allowedRole];
-
-    return (
-      normalizedRole === normalizedAllowedRole ||
-      aliases.includes(normalizedRole)
-    );
-  });
-};
 
 export const hasRole = (
   role: string | undefined,

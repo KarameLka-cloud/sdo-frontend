@@ -2,7 +2,7 @@ import { JSX } from "react";
 
 export type FormActionStatusType = "idle" | "loading" | "success" | "error";
 
-export interface FormActionStatusProps {
+interface FormActionStatusProps {
   type: FormActionStatusType;
   message: string;
   className?: string;

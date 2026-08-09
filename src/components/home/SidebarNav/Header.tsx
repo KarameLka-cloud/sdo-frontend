@@ -1,7 +1,7 @@
 import { JSX } from "react";
 import { NavLink } from "react-router-dom";
 import image_logo_mfc from "@/assets/images/logo_mfc.svg";
-import { SidebarHeader } from "@/components/ui/sidebar";
+import { SidebarHeader } from "@/components/ui/shadcn/sidebar";
 import { ROUTES } from "@/constants/routes.ts";
 
 function Header(): JSX.Element {

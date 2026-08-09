@@ -8,7 +8,7 @@ import {
   User,
   FileText,
 } from "lucide-react";
-import { Separator } from "@/components/ui/separator";
+import { Separator } from "@/components/ui/shadcn/separator";
 import convertDate from "@/utils/convertDate.ts";
 import { convertTime } from "@/utils/convertTime.ts";
 import { hasTextValue } from "@/utils/hasTextValue.ts";

@@ -3,7 +3,7 @@ import Development from "@/components/ui/custom/Development";
 import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
 import CareerDay from "@/components/ui/custom/CareerDay";
 import Loader from "@/components/ui/custom/Loader";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/shadcn/card";
 import {
   useGetMyAdaptationPlanQuery,
   useUpdateMyAdaptationInternCommentMutation,

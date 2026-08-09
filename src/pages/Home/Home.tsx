@@ -1,9 +1,9 @@
 import { JSX } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/shadcn/card";
 import dateNow from "@/utils/dateNow.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
 
 interface AdaptationPlan {
   id?: number;

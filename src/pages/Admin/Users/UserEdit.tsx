@@ -8,26 +8,26 @@ import {
   useAssignRoleMutation,
   useRevokeRoleMutation,
 } from "@/services/store/features/user.ts";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/shadcn/button";
+import { Badge } from "@/components/ui/shadcn/badge";
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Field, FieldGroup } from "@/components/ui/field";
+} from "@/components/ui/shadcn/card";
+import { Field, FieldGroup } from "@/components/ui/shadcn/field";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { Spinner } from "@/components/ui/spinner";
+} from "@/components/ui/shadcn/select";
+import { Avatar, AvatarFallback } from "@/components/ui/shadcn/avatar";
+import { Separator } from "@/components/ui/shadcn/separator";
+import { Spinner } from "@/components/ui/shadcn/spinner";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import {
   USER_ROUTES,

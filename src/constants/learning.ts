@@ -16,17 +16,7 @@ export const LEARNING_TYPE_LABELS: Record<LearningType, string> = {
   test: "Тесты",
 };
 
-export const LEARNING_TYPE_SINGULAR: Record<LearningType, string> = {
-  event: "мероприятие",
-  course: "курс",
-  webinar: "вебинар",
-  test: "тест",
-};
-
-export const LEARNING_TYPES_BY_CATEGORY: Record<
-  LearningCategory,
-  LearningType[]
-> = {
+const LEARNING_TYPES_BY_CATEGORY: Record<LearningCategory, LearningType[]> = {
   education: ["event", "course", "webinar", "test"],
   edo: ["event", "course", "test"],
 };
@@ -70,9 +60,3 @@ export const buildAdminLearningEditPath = (
   type: LearningType,
 ): string =>
   `${ROUTES.ADMIN_LEARNING_EDIT.replace(":id", String(id))}?category=${category}&type=${type}`;
-
-export {
-  parseEntityId,
-  toDateInputValue,
-  toTimeInputValue,
-} from "@/utils/formValues.ts";
