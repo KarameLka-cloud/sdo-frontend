@@ -202,18 +202,18 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
       <div className="w-1/3 p-4 flex flex-col">
         <div className="space-y-2">
           {fields.map((field, index) => (
-            <div key={index} className="flex items-center gap-2 text-sm">
+            <div key={index} className="flex items-start gap-2 text-sm">
               <div
-                className={`flex h-6 w-6 items-center justify-center rounded-md ${getIconColor(
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${getIconColor(
                   getIconType(field.icon),
                 )}`}
               >
                 {field.icon}
               </div>
-              <span className="text-gray-500 text-xs uppercase tracking-wide font-medium">
+              <span className="shrink-0 pt-0.5 text-gray-500 text-xs uppercase tracking-wide font-medium">
                 {field.label}
               </span>
-              <span className="font-medium text-gray-900 tabular-nums">
+              <span className="min-w-0 pt-0.5 font-medium text-gray-900 tabular-nums break-words">
                 {field.value}
               </span>
             </div>
