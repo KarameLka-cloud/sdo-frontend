@@ -1,8 +1,6 @@
-import { FormEvent, JSX, useEffect, useState } from "react";
-import { Navigate, useSearchParams } from "react-router-dom";
+import { FormEvent, JSX, useState } from "react";
+import { Navigate } from "react-router-dom";
 import { toast } from "sonner";
-import { DepartmentType } from "@/interfaces/api/DepartmentType.ts";
-import { PositionType } from "@/interfaces/api/PositionType.ts";
 import {
   LearningCategory,
   LearningType,
@@ -22,49 +20,25 @@ import {
 } from "@/components/ui/shadcn/card";
 import { Separator } from "@/components/ui/shadcn/separator";
 import { Spinner } from "@/components/ui/shadcn/spinner";
-import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
+import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
 import {
   LEARNING_BACK_LABELS,
   buildAdminLearningPath,
-  learningHasTime,
   learningNeedsDepartments,
   learningNeedsPositions,
-  resolveLearningRoute,
 } from "@/constants/learning.ts";
 import LearningItemFormFields from "@/pages/Admin/Learning/LearningItemFormFields";
 import {
   EMPTY_LEARNING_FORM,
+  LEARNING_CREATE_SUBMIT_LABELS,
+  LEARNING_CREATE_TITLES,
+  LEARNING_MESSAGES,
+  toLearningItemPayload,
   validateLearningItemForm,
   type LearningItemFormValues,
 } from "@/pages/Admin/Learning/learningForm.ts";
-
-const TITLES: Record<LearningType, string> = {
-  event: "Создание мероприятия",
-  course: "Создание курса",
-  webinar: "Создание вебинара",
-  test: "Создание теста",
-};
-
-const SUBMIT_LABELS: Record<LearningType, string> = {
-  event: "Создать мероприятие",
-  course: "Создать курс",
-  webinar: "Создать вебинар",
-  test: "Создать тест",
-};
-
-const SUCCESS_MESSAGES: Record<LearningType, string> = {
-  event: "Мероприятие создано",
-  course: "Курс создан",
-  webinar: "Вебинар создан",
-  test: "Тест создан",
-};
-
-const ERROR_MESSAGES: Record<LearningType, string> = {
-  event: "Не удалось создать мероприятие",
-  course: "Не удалось создать курс",
-  webinar: "Не удалось создать вебинар",
-  test: "Не удалось создать тест",
-};
+import { useResolvedLearningRoute } from "@/hooks/useResolvedLearningRoute.ts";
+import PageTitle from "@/components/PageTitle.tsx";
 
 function AdminLearningCreateContent({
   category,
@@ -78,18 +52,10 @@ function AdminLearningCreateContent({
   const needsDepartments = learningNeedsDepartments(type);
   const needsPositions = learningNeedsPositions(type);
 
-  useEffect(() => {
-    const previousTitle = document.title;
-    document.title = `${TITLES[type]} - СДО`;
-    return () => {
-      document.title = previousTitle;
-    };
-  }, [type]);
-
   const { data: departments, isLoading: isDepartmentsLoading } =
-    useGetDepartmentsQuery("", { skip: !needsDepartments });
+    useGetDepartmentsQuery(undefined, { skip: !needsDepartments });
   const { data: positions, isLoading: isPositionsLoading } =
-    useGetPositionsQuery("", { skip: !needsPositions });
+    useGetPositionsQuery(undefined, { skip: !needsPositions });
 
   const [values, setValues] =
     useState<LearningItemFormValues>(EMPTY_LEARNING_FORM);
@@ -103,75 +69,58 @@ function AdminLearningCreateContent({
     if (validationError) return toast.error(validationError);
 
     try {
-      await addItem({
-        category,
-        type,
-        title: values.title.trim(),
-        description: values.description.trim() || undefined,
-        link: values.link.trim() || undefined,
-        department_id: needsDepartments
-          ? Number(values.departmentId)
-          : undefined,
-        note_department: needsDepartments
-          ? values.noteDepartment.trim() || undefined
-          : undefined,
-        position_id: needsPositions ? Number(values.positionId) : undefined,
-        note_position: needsPositions
-          ? values.notePosition.trim() || undefined
-          : undefined,
-        date: values.date,
-        time: learningHasTime(type) ? values.time || undefined : undefined,
-        duration: Number(values.duration),
-      }).unwrap();
-      toast.success(SUCCESS_MESSAGES[type]);
+      await addItem(
+        toLearningItemPayload(values, { category, type, mode: "create" }),
+      ).unwrap();
+      toast.success(LEARNING_MESSAGES.create.success[type]);
     } catch {
-      toast.error(ERROR_MESSAGES[type]);
+      toast.error(LEARNING_MESSAGES.create.error[type]);
     }
   };
 
   return (
-    <AdminFormPage
-      backTo={listPath}
-      backLabel={LEARNING_BACK_LABELS[type]}
-      isLoading={
-        (needsDepartments && isDepartmentsLoading) ||
-        (needsPositions && isPositionsLoading)
+    <PageTitle
+      title={LEARNING_CREATE_TITLES[type]}
+      element={
+        <ResourceFormPage
+          backTo={listPath}
+          backLabel={LEARNING_BACK_LABELS[type]}
+          isLoading={
+            (needsDepartments && isDepartmentsLoading) ||
+            (needsPositions && isPositionsLoading)
+          }
+        >
+          <Card>
+            <CardHeader>
+              <CardTitle>{LEARNING_CREATE_TITLES[type]}</CardTitle>
+            </CardHeader>
+            <form onSubmit={handleSubmit}>
+              <CardContent className="p-4">
+                <LearningItemFormFields
+                  type={type}
+                  values={values}
+                  onChange={patchValues}
+                  departments={departments ?? []}
+                  positions={positions ?? []}
+                />
+              </CardContent>
+              <Separator />
+              <CardFooter>
+                <Button type="submit" disabled={isCreating}>
+                  {isCreating && <Spinner />}
+                  {LEARNING_CREATE_SUBMIT_LABELS[type]}
+                </Button>
+              </CardFooter>
+            </form>
+          </Card>
+        </ResourceFormPage>
       }
-    >
-      <Card>
-        <CardHeader>
-          <CardTitle>{TITLES[type]}</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="p-4">
-            <LearningItemFormFields
-              type={type}
-              values={values}
-              onChange={patchValues}
-              departments={(departments ?? []) as DepartmentType[]}
-              positions={(positions ?? []) as PositionType[]}
-            />
-          </CardContent>
-          <Separator />
-          <CardFooter>
-            <Button type="submit" disabled={isCreating}>
-              {isCreating && <Spinner />}
-              {SUBMIT_LABELS[type]}
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </AdminFormPage>
+    />
   );
 }
 
 function AdminLearningCreatePage(): JSX.Element {
-  const [searchParams] = useSearchParams();
-  const route = resolveLearningRoute(
-    searchParams.get("category"),
-    searchParams.get("type"),
-    buildAdminLearningPath,
-  );
+  const route = useResolvedLearningRoute(buildAdminLearningPath);
 
   if ("redirect" in route) {
     return <Navigate to={route.redirect} replace />;

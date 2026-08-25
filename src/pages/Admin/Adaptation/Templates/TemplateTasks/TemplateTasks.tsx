@@ -1,81 +1,33 @@
 import { FormEvent, JSX, useCallback, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { Plus, Trash2, X } from "lucide-react";
 import {
   useDeleteAdaptationPlanTemplateMutation,
-  useGetAdaptationPlanTemplatesQuery,
+  useGetAdaptationPlanTemplateByIdQuery,
   useUpdateAdaptationPlanTemplateMutation,
 } from "@/services/store/features/user.ts";
-import { Button } from "@/components/ui/shadcn/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/shadcn/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
-import { Input } from "@/components/ui/shadcn/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/shadcn/select";
-import { Separator } from "@/components/ui/shadcn/separator";
-import { Spinner } from "@/components/ui/shadcn/spinner";
-import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
+import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
 import {
   TEMPLATE_ROUTES,
   WORK_SCHEDULE_OPTIONS,
   parseEntityId,
-} from "@/pages/Admin/shared/adminResourceConfig.ts";
-import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
-import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
+} from "@/components/resource-list/resourceRoutes";
+import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
+import { usePopulateEditForm } from "@/components/resource-list/usePopulateEditForm";
+import { firstShift } from "@/utils/formatShifts.ts";
+import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
+import CreateTaskRulesCard from "./CreateTaskRulesCard";
+import TaskRuleGroup from "./TaskRuleGroup";
+import TemplateMetadataCard from "./TemplateMetadataCard";
 import {
-  AdaptationPlanTemplateType,
-  AdaptationPlanTemplateTask,
-} from "@/interfaces/api/AdaptationPlanTemplateType.ts";
-
-type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
-
-type ResponsibleRoleForm = ResponsibleRole | "";
-
-type TaskRule = AdaptationPlanTemplateTask & {
-  responsible_role: ResponsibleRole;
-  links: string[];
-};
-
-interface TaskRuleForm {
-  description: string;
-  responsible_role: ResponsibleRoleForm;
-  day_from?: string;
-  day_to?: string;
-  links: string;
-}
-
-interface GroupedRuleBlock {
-  key: string;
-  title: string;
-  dayFrom: string;
-  dayTo: string;
-  items: Array<{ rule: TaskRuleForm; index: number }>;
-}
-
-const EMPTY_RULE: TaskRuleForm = {
-  description: "",
-  responsible_role: "",
-  links: "",
-};
-
-const RESPONSIBLE_ROLE_OPTIONS: ResponsibleRole[] = [
-  "Наставник",
-  "Сотрудник УПиПК",
-  "Руководитель отдела",
-];
+  EMPTY_RULE,
+  GroupedRuleBlock,
+  TaskRule,
+  TaskRuleForm,
+  groupTaskRules,
+  toFormRule,
+  toPayloadRule,
+} from "./taskRuleForm";
 
 const DELETE_MESSAGES = {
   confirm: "Удалить шаблон адаптации?",
@@ -83,201 +35,26 @@ const DELETE_MESSAGES = {
   error: "Не удалось удалить шаблон",
 };
 
-function toFormRule(rule: AdaptationPlanTemplateTask): TaskRuleForm {
-  return {
-    description: rule.description,
-    responsible_role: rule.responsible_role as ResponsibleRoleForm,
-    day_from: rule.day_from ? String(rule.day_from) : "",
-    day_to: rule.day_to ? String(rule.day_to) : "",
-    links: (rule.links ?? []).join(", "),
-  };
-}
-
-function toPayloadRule(rule: TaskRuleForm): TaskRule {
-  const responsible_role = rule.responsible_role;
-  if (!responsible_role) {
-    throw new Error("Responsible role required");
-  }
-
-  return {
-    description: rule.description.trim(),
-    responsible_role,
-    day_from: rule.day_from ? Number(rule.day_from) : null,
-    day_to: rule.day_to ? Number(rule.day_to) : null,
-    links: rule.links
-      .split(",")
-      .map((link) => link.trim())
-      .filter(Boolean),
-  };
-}
-
-interface DayRangeFieldsProps {
-  dayFrom: string;
-  dayTo: string;
-  onDayFromChange: (value: string) => void;
-  onDayToChange: (value: string) => void;
-  idPrefix: string;
-}
-
-function DayRangeFields({
-  dayFrom,
-  dayTo,
-  onDayFromChange,
-  onDayToChange,
-  idPrefix,
-}: DayRangeFieldsProps): JSX.Element {
-  return (
-    <FieldGroup className="grid gap-4 sm:grid-cols-2">
-      <Field>
-        <FieldLabel htmlFor={`${idPrefix}-day-from`}>День</FieldLabel>
-        <Input
-          id={`${idPrefix}-day-from`}
-          type="number"
-          min={1}
-          value={dayFrom}
-          onChange={(event) => onDayFromChange(event.target.value)}
-        />
-      </Field>
-      <Field>
-        <FieldLabel htmlFor={`${idPrefix}-day-to`}>
-          До дня (опционально)
-        </FieldLabel>
-        <Input
-          id={`${idPrefix}-day-to`}
-          type="number"
-          min={1}
-          value={dayTo}
-          onChange={(event) => onDayToChange(event.target.value)}
-        />
-      </Field>
-    </FieldGroup>
-  );
-}
-
-function ReadonlyFieldValue({ value }: { value: string }): JSX.Element {
-  return (
-    <p className="text-sm leading-relaxed">
-      {value.trim() || <span className="text-muted-foreground">—</span>}
-    </p>
-  );
-}
-
-interface RuleRowFieldsProps {
-  rule: TaskRuleForm;
-  idPrefix: string;
-  onChange: (nextRule: TaskRuleForm) => void;
-  onRemove: () => void;
-}
-
-function RuleRowFields({
-  rule,
-  idPrefix,
-  onChange,
-  onRemove,
-}: RuleRowFieldsProps): JSX.Element {
-  return (
-    <div className="rounded-lg border p-4">
-      <FieldGroup className="grid gap-4">
-        <Field>
-          <FieldLabel htmlFor={`${idPrefix}-description`}>
-            Описание задачи
-          </FieldLabel>
-          <Input
-            id={`${idPrefix}-description`}
-            value={rule.description}
-            onChange={(event) =>
-              onChange({ ...rule, description: event.target.value })
-            }
-          />
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field>
-            <FieldLabel htmlFor={`${idPrefix}-role`}>Ответственный</FieldLabel>
-            <Select
-              value={rule.responsible_role || undefined}
-              onValueChange={(value) =>
-                onChange({
-                  ...rule,
-                  responsible_role: value as ResponsibleRole,
-                })
-              }
-            >
-              <SelectTrigger id={`${idPrefix}-role`} className="w-full">
-                <SelectValue placeholder="Выберите ответственного" />
-              </SelectTrigger>
-              <SelectContent>
-                {RESPONSIBLE_ROLE_OPTIONS.map((role) => (
-                  <SelectItem key={role} value={role}>
-                    {role}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-          <Field>
-            <FieldLabel htmlFor={`${idPrefix}-links`}>Ссылки</FieldLabel>
-            <Input
-              id={`${idPrefix}-links`}
-              value={rule.links}
-              onChange={(event) =>
-                onChange({ ...rule, links: event.target.value })
-              }
-              placeholder="Через запятую"
-            />
-          </Field>
-        </div>
-        <div className="flex justify-end">
-          <Button type="button" variant="outline" size="sm" onClick={onRemove}>
-            <Trash2 className="size-4" />
-            Удалить задачу
-          </Button>
-        </div>
-      </FieldGroup>
-    </div>
-  );
-}
-
-function RuleRowReadonly({ rule }: { rule: TaskRuleForm }): JSX.Element {
-  return (
-    <div className="rounded-lg border p-4">
-      <FieldGroup className="grid gap-4">
-        <Field>
-          <FieldLabel>Описание задачи</FieldLabel>
-          <ReadonlyFieldValue value={rule.description} />
-        </Field>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <Field>
-            <FieldLabel>Ответственный</FieldLabel>
-            <ReadonlyFieldValue value={rule.responsible_role} />
-          </Field>
-          <Field>
-            <FieldLabel>Ссылки</FieldLabel>
-            <ReadonlyFieldValue value={rule.links} />
-          </Field>
-        </div>
-      </FieldGroup>
-    </div>
-  );
-}
-
 function TemplateTasks(): JSX.Element {
   const navigate = useNavigate();
   const { templateId: templateIdParam } = useParams();
   const templateId = parseEntityId(templateIdParam) ?? 0;
 
   const {
-    data = [],
+    data: template,
     isLoading,
     isError,
-  } = useGetAdaptationPlanTemplatesQuery(undefined);
+  } = useGetAdaptationPlanTemplateByIdQuery(templateId, {
+    skip: templateId <= 0,
+  });
   const [updateTemplate, { isLoading: isSaving }] =
     useUpdateAdaptationPlanTemplateMutation();
   const deleteMutation = useDeleteAdaptationPlanTemplateMutation();
-  const { handleDelete, isDeleting } = useAdminEditDelete(
-    deleteMutation,
-    DELETE_MESSAGES,
-    () => navigate(TEMPLATE_ROUTES.list),
-  );
+  const { handleDelete, isDeleting } = useConfirmDelete(deleteMutation, {
+    messages: DELETE_MESSAGES,
+    onSuccess: () => navigate(TEMPLATE_ROUTES.list),
+    trackId: false,
+  });
 
   const [isCreateVisible, setIsCreateVisible] = useState(false);
   const [createRules, setCreateRules] = useState<TaskRuleForm[]>([
@@ -296,12 +73,6 @@ function TemplateTasks(): JSX.Element {
   const [workSchedule, setWorkSchedule] = useState("");
   const [shift, setShift] = useState("");
 
-  const templates = data as AdaptationPlanTemplateType[];
-  const template = useMemo(
-    () => templates.find((item) => item.id === templateId),
-    [templates, templateId],
-  );
-
   const rules = useMemo(
     () => (template?.task_blueprint ?? []).map((item) => toFormRule(item)),
     [template],
@@ -310,8 +81,8 @@ function TemplateTasks(): JSX.Element {
   const populateForm = useCallback((item: AdaptationPlanTemplateType) => {
     setName(item.name);
     setWorkSchedule(item.work_schedule);
-    const [firstShift] = [...item.shifts].sort((a, b) => a - b);
-    setShift(firstShift ? String(firstShift) : "");
+    const shiftValue = firstShift(item.shifts);
+    setShift(shiftValue != null ? String(shiftValue) : "");
   }, []);
 
   const isFormPopulated = usePopulateEditForm(
@@ -323,40 +94,16 @@ function TemplateTasks(): JSX.Element {
 
   const workScheduleOptions = useMemo(() => {
     const options = new Set<string>(WORK_SCHEDULE_OPTIONS);
-
-    templates.forEach((item) => {
-      options.add(item.work_schedule);
-    });
-
+    if (template?.work_schedule) {
+      options.add(template.work_schedule);
+    }
     if (workSchedule) {
       options.add(workSchedule);
     }
-
     return [...options];
-  }, [templates, workSchedule]);
+  }, [template, workSchedule]);
 
-  const groupedRules = useMemo<GroupedRuleBlock[]>(() => {
-    const map = new Map<string, GroupedRuleBlock>();
-
-    rules.forEach((rule, index) => {
-      const dayFrom = rule.day_from || "";
-      const dayTo = rule.day_to || "";
-      const key = `${dayFrom}:${dayTo}`;
-
-      if (!map.has(key)) {
-        const title = dayFrom
-          ? dayTo
-            ? `Дни ${dayFrom}-${dayTo}`
-            : `День ${dayFrom}`
-          : "Все дни";
-        map.set(key, { key, title, dayFrom, dayTo, items: [] });
-      }
-
-      map.get(key)?.items.push({ rule, index });
-    });
-
-    return Array.from(map.values());
-  }, [rules]);
+  const groupedRules = useMemo(() => groupTaskRules(rules), [rules]);
 
   const resetCreateForm = () => {
     setIsCreateVisible(false);
@@ -378,7 +125,6 @@ function TemplateTasks(): JSX.Element {
     if (!Number.isInteger(shiftNumber) || shiftNumber < 1) {
       return null;
     }
-
     return shiftNumber;
   };
 
@@ -566,288 +312,109 @@ function TemplateTasks(): JSX.Element {
 
   if (!templateId) {
     return (
-      <AdminFormPage
+      <ResourceFormPage
         backTo={TEMPLATE_ROUTES.list}
         backLabel="К списку планов адаптации"
         isError
       >
         <></>
-      </AdminFormPage>
+      </ResourceFormPage>
     );
   }
 
   if (isLoading || (template && !isFormPopulated)) {
     return (
-      <AdminFormPage
+      <ResourceFormPage
         backTo={TEMPLATE_ROUTES.list}
         backLabel="К списку планов адаптации"
         isLoading
       >
         <></>
-      </AdminFormPage>
+      </ResourceFormPage>
     );
   }
 
   if (isError || !template) {
     return (
-      <AdminFormPage
+      <ResourceFormPage
         backTo={TEMPLATE_ROUTES.list}
         backLabel="К списку планов адаптации"
         isNoData={!isError}
         isError={isError}
       >
         <></>
-      </AdminFormPage>
+      </ResourceFormPage>
     );
   }
 
   return (
-    <AdminFormPage
+    <ResourceFormPage
       backTo={TEMPLATE_ROUTES.list}
       backLabel="К списку планов адаптации"
     >
-      <Card>
-        <CardHeader>
-          <CardTitle>Редактирование плана адаптации</CardTitle>
-          <CardDescription>Шаблон плана адаптации</CardDescription>
-        </CardHeader>
-        <CardContent className="p-4">
-          <form
-            id="template-metadata-form"
-            onSubmit={(event) => {
-              void handleSaveMetadata(event);
-            }}
-          >
-            <FieldGroup className="grid gap-4 sm:grid-cols-2">
-              <Field className="sm:col-span-2">
-                <FieldLabel htmlFor="template-name">Название</FieldLabel>
-                <Input
-                  id="template-name"
-                  value={name}
-                  onChange={(event) => setName(event.target.value)}
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="template-schedule">
-                  График работы
-                </FieldLabel>
-                <Select value={workSchedule} onValueChange={setWorkSchedule}>
-                  <SelectTrigger id="template-schedule" className="w-full">
-                    <SelectValue placeholder="Выберите график" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {workScheduleOptions.map((schedule) => (
-                      <SelectItem key={schedule} value={schedule}>
-                        {schedule}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="template-shift">Смена</FieldLabel>
-                <Input
-                  id="template-shift"
-                  type="number"
-                  min={1}
-                  step={1}
-                  value={shift}
-                  onChange={(event) => setShift(event.target.value)}
-                />
-              </Field>
-            </FieldGroup>
-          </form>
-        </CardContent>
-        <Separator />
-        <CardFooter className="justify-between">
-          <div className="flex gap-2">
-            <Button
-              type="submit"
-              form="template-metadata-form"
-              disabled={isSaving}
-            >
-              {isSaving && <Spinner />}
-              Сохранить
-            </Button>
-            {isCreateVisible ? (
-              <Button type="button" variant="outline" onClick={resetCreateForm}>
-                <X className="size-4" />
-                Отмена
-              </Button>
-            ) : (
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => setIsCreateVisible(true)}
-              >
-                <Plus className="size-4" />
-                Добавить задачи
-              </Button>
-            )}
-          </div>
-          <Button
-            type="button"
-            variant="destructive"
-            disabled={isDeleting || isSaving}
-            onClick={() => handleDelete(template.id)}
-          >
-            {isDeleting && <Spinner />}
-            Удалить план
-          </Button>
-        </CardFooter>
-      </Card>
+      <TemplateMetadataCard
+        name={name}
+        workSchedule={workSchedule}
+        shift={shift}
+        workScheduleOptions={workScheduleOptions}
+        isSaving={isSaving}
+        isDeleting={isDeleting}
+        isCreateVisible={isCreateVisible}
+        onNameChange={setName}
+        onWorkScheduleChange={setWorkSchedule}
+        onShiftChange={setShift}
+        onSubmit={(event) => {
+          void handleSaveMetadata(event);
+        }}
+        onShowCreate={() => setIsCreateVisible(true)}
+        onCancelCreate={resetCreateForm}
+        onDelete={() => handleDelete(template.id)}
+      />
 
       {isCreateVisible && (
-        <Card>
-          <CardHeader>
-            <CardTitle>Новые задачи</CardTitle>
-          </CardHeader>
-          <form
-            onSubmit={(event) => {
-              event.preventDefault();
-              void saveCreateRules();
-            }}
-          >
-            <CardContent className="p-4">
-              <FieldGroup className="grid gap-4">
-                <DayRangeFields
-                  idPrefix="create"
-                  dayFrom={createDayFrom}
-                  dayTo={createDayTo}
-                  onDayFromChange={setCreateDayFrom}
-                  onDayToChange={setCreateDayTo}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  className="w-fit"
-                  onClick={addCreateRule}
-                >
-                  <Plus className="size-4" />
-                  Задача
-                </Button>
-                {createRules.map((rule, index) => (
-                  <RuleRowFields
-                    key={`create-rule-${index}`}
-                    idPrefix={`create-rule-${index}`}
-                    rule={rule}
-                    onChange={(nextRule) => updateCreateRule(index, nextRule)}
-                    onRemove={() => removeCreateRule(index)}
-                  />
-                ))}
-              </FieldGroup>
-            </CardContent>
-            <Separator />
-            <CardFooter>
-              <Button type="submit" disabled={isSaving}>
-                {isSaving && <Spinner />}
-                Сохранить
-              </Button>
-            </CardFooter>
-          </form>
-        </Card>
+        <CreateTaskRulesCard
+          dayFrom={createDayFrom}
+          dayTo={createDayTo}
+          rules={createRules}
+          isSaving={isSaving}
+          onDayFromChange={setCreateDayFrom}
+          onDayToChange={setCreateDayTo}
+          onAddRule={addCreateRule}
+          onUpdateRule={updateCreateRule}
+          onRemoveRule={removeCreateRule}
+          onSave={() => {
+            void saveCreateRules();
+          }}
+        />
       )}
 
       <div className="flex flex-col gap-4">
         {groupedRules.map((group) => (
-          <Card key={`rule-group-${group.key}`}>
-            <CardHeader>
-              <CardTitle className="text-base">{group.title}</CardTitle>
-            </CardHeader>
-            {editingGroupKey === group.key ? (
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  void saveEditGroup();
-                }}
-              >
-                <CardContent className="p-4">
-                  <FieldGroup className="grid gap-4">
-                    <DayRangeFields
-                      idPrefix={`edit-${group.key}`}
-                      dayFrom={editingGroupDayFrom}
-                      dayTo={editingGroupDayTo}
-                      onDayFromChange={setEditingGroupDayFrom}
-                      onDayToChange={setEditingGroupDayTo}
-                    />
-                    <Button
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      className="w-fit"
-                      onClick={addEditingGroupRule}
-                    >
-                      <Plus className="size-4" />
-                      Задача
-                    </Button>
-                    {editingGroupRules.map((rule, index) => (
-                      <RuleRowFields
-                        key={`edit-rule-${group.key}-${index}`}
-                        idPrefix={`edit-rule-${group.key}-${index}`}
-                        rule={rule}
-                        onChange={(nextRule) =>
-                          updateEditingGroupRule(index, nextRule)
-                        }
-                        onRemove={() => removeEditingGroupRule(index)}
-                      />
-                    ))}
-                  </FieldGroup>
-                </CardContent>
-                <Separator />
-                <CardFooter className="justify-between">
-                  <div className="flex gap-2">
-                    <Button type="submit" disabled={isSaving}>
-                      {isSaving && <Spinner />}
-                      Сохранить
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={resetEditGroup}
-                      disabled={isSaving}
-                    >
-                      Отмена
-                    </Button>
-                  </div>
-                  <Button
-                    type="button"
-                    variant="destructive"
-                    onClick={() => deleteGroup(editingGroupIndexes)}
-                    disabled={isSaving}
-                  >
-                    Удалить группу
-                  </Button>
-                </CardFooter>
-              </form>
-            ) : (
-              <>
-                <CardContent className="p-4">
-                  <FieldGroup className="grid gap-4">
-                    {group.items.map((item, index) => (
-                      <RuleRowReadonly
-                        key={`group-item-${group.key}-${index}`}
-                        rule={item.rule}
-                      />
-                    ))}
-                  </FieldGroup>
-                </CardContent>
-                <Separator />
-                <CardFooter>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() => startEditGroup(group)}
-                  >
-                    Редактировать
-                  </Button>
-                </CardFooter>
-              </>
-            )}
-          </Card>
+          <TaskRuleGroup
+            key={`rule-group-${group.key}`}
+            group={group}
+            isEditing={editingGroupKey === group.key}
+            isSaving={isSaving}
+            editingRules={editingGroupRules}
+            editingDayFrom={editingGroupDayFrom}
+            editingDayTo={editingGroupDayTo}
+            onStartEdit={() => startEditGroup(group)}
+            onCancelEdit={resetEditGroup}
+            onSaveEdit={() => {
+              void saveEditGroup();
+            }}
+            onDeleteGroup={() => {
+              void deleteGroup(editingGroupIndexes);
+            }}
+            onDayFromChange={setEditingGroupDayFrom}
+            onDayToChange={setEditingGroupDayTo}
+            onAddRule={addEditingGroupRule}
+            onUpdateRule={updateEditingGroupRule}
+            onRemoveRule={removeEditingGroupRule}
+          />
         ))}
       </div>
-    </AdminFormPage>
+    </ResourceFormPage>
   );
 }
 

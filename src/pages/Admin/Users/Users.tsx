@@ -1,9 +1,5 @@
 import { JSX, useState } from "react";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import Loader from "@/components/ui/custom/Loader";
-import DataMessage, {
-  DataStateCenter,
-} from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
 import { isUserInRole, USER_ROLES, type UserRole } from "@/constants/roles.ts";
@@ -24,9 +20,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
-import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
-import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar";
+import ResourceTableRowActions from "@/components/resource-list/ResourceTableRowActions";
+import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
+import QueryState from "@/components/resource-list/QueryState";
 import UserEditDialog from "@/pages/Admin/Users/UserEditDialog";
 
 const TABS = {
@@ -52,12 +49,12 @@ const filterByTab = (users: UserType[], tab: UsersTab) => {
 };
 
 function Users(): JSX.Element {
-  const { data, error, isLoading } = useGetUsersQuery("");
+  const { data, error, isLoading } = useGetUsersQuery(undefined);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<UsersTab>("users");
   const [editingUserId, setEditingUserId] = useState<number | null>(null);
 
-  const users = (data as UserType[] | undefined) ?? [];
+  const users = data ?? [];
   const filteredData = useFiltered(filterByTab(users, activeTab), search);
   const hasSearch = search.trim().length > 0;
   const tabConfig = TABS[activeTab];
@@ -68,7 +65,7 @@ function Users(): JSX.Element {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <AdminListToolbar
+      <ResourceListToolbar
         searchId="users-search"
         searchPlaceholder="Имя, отдел, роль..."
         search={search}
@@ -94,14 +91,7 @@ function Users(): JSX.Element {
         }
       />
 
-      {error && <DataMessage type="error" centered />}
-      {isLoading && (
-        <DataStateCenter>
-          <Loader />
-        </DataStateCenter>
-      )}
-
-      {data && (
+      <QueryState isLoading={isLoading} isError={Boolean(error)} hasData={Boolean(data)}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -113,7 +103,7 @@ function Users(): JSX.Element {
           </TableHeader>
           <TableBody>
             {filteredData.length === 0 ? (
-              <AdminTableEmptyRow
+              <ResourceTableEmptyRow
                 colSpan={4}
                 hasSearch={hasSearch}
                 notFoundMessage={`Пользователь «${search}» не найден`}
@@ -151,7 +141,7 @@ function Users(): JSX.Element {
                       onClick={(event) => event.stopPropagation()}
                     >
                       {canEdit && (
-                        <AdminTableRowActions
+                        <ResourceTableRowActions
                           onEdit={() => setEditingUserId(user.id ?? null)}
                           isDeleting={false}
                           showDelete={false}
@@ -164,7 +154,7 @@ function Users(): JSX.Element {
             )}
           </TableBody>
         </Table>
-      )}
+      </QueryState>
 
       <UserEditDialog
         user={editingUser}

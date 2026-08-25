@@ -8,9 +8,6 @@ export const useUser = () => {
 
   const { data, isLoading } = useGetUserByDataQuery(undefined, {
     skip: !token,
-    refetchOnMountOrArgChange: true,
-    refetchOnFocus: true,
-    refetchOnReconnect: true,
   });
 
   const user = (data as UserType | undefined) ?? {};

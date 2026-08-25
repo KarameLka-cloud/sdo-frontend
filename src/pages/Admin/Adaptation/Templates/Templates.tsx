@@ -1,10 +1,6 @@
-import { JSX, useMemo, useState } from "react";
+import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import DataMessage, {
-  DataStateCenter,
-} from "@/components/ui/custom/DataMessage";
-import Loader from "@/components/ui/custom/Loader";
 import {
   useCreateAdaptationPlanTemplateMutation,
   useDeleteAdaptationPlanTemplateMutation,
@@ -19,16 +15,19 @@ import {
   TableRow,
 } from "@/components/ui/shadcn/table";
 import { truncateText } from "@/utils/truncateText.ts";
-import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
-import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
-import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar";
+import ResourceTableRowActions from "@/components/resource-list/ResourceTableRowActions";
+import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
+import QueryState from "@/components/resource-list/QueryState";
 import {
   TEMPLATE_ROUTES,
   buildEditPath,
-} from "@/pages/Admin/shared/adminResourceConfig.ts";
-import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
+} from "@/components/resource-list/resourceRoutes";
+import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import TemplateCreateDialog from "@/pages/Admin/Adaptation/Templates/TemplateCreateDialog";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
+import { useFiltered } from "@/hooks/useFiltered.ts";
+import { formatShifts } from "@/utils/formatShifts.ts";
 
 const buildCopyName = (name: string) => `${name} (копия)`;
 
@@ -47,11 +46,9 @@ function Templates(): JSX.Element {
   const [search, setSearch] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [copyingId, setCopyingId] = useState<number | null>(null);
-  const { handleDelete, isDeletingItem } =
-    useAdminListDelete<AdaptationPlanTemplateType>(
-      deleteMutation,
-      DELETE_MESSAGES,
-    );
+  const { handleDelete, isDeletingItem } = useConfirmDelete(deleteMutation, {
+    messages: DELETE_MESSAGES,
+  });
 
   const handleCopy = async (template: AdaptationPlanTemplateType) => {
     setCopyingId(template.id);
@@ -71,27 +68,14 @@ function Templates(): JSX.Element {
   };
 
   const hasSearch = search.trim().length > 0;
-
-  const filteredTemplates = useMemo(() => {
-    const templates = (data ?? []) as AdaptationPlanTemplateType[];
-    if (!hasSearch) return templates;
-
-    const searchLower = search.toLowerCase();
-    return templates.filter((template) => {
-      const values = [
-        template.name,
-        template.work_schedule,
-        template.shifts.join(", "),
-      ];
-      return values.some((value) =>
-        String(value).toLowerCase().includes(searchLower),
-      );
-    });
-  }, [data, hasSearch, search]);
+  const filteredTemplates = useFiltered<AdaptationPlanTemplateType>(
+    data,
+    search,
+  );
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <AdminListToolbar
+      <ResourceListToolbar
         onCreate={() => setIsCreateOpen(true)}
         createLabel="Создать план"
         searchId="templates-search"
@@ -100,14 +84,7 @@ function Templates(): JSX.Element {
         onSearchChange={setSearch}
       />
 
-      {isError && <DataMessage type="error" centered />}
-      {isLoading && (
-        <DataStateCenter>
-          <Loader />
-        </DataStateCenter>
-      )}
-
-      {data && (
+      <QueryState isLoading={isLoading} isError={isError} hasData={Boolean(data)}>
         <Table>
           <TableHeader>
             <TableRow>
@@ -119,7 +96,7 @@ function Templates(): JSX.Element {
           </TableHeader>
           <TableBody>
             {filteredTemplates.length === 0 ? (
-              <AdminTableEmptyRow
+              <ResourceTableEmptyRow
                 colSpan={4}
                 hasSearch={hasSearch}
                 notFoundMessage={`План «${search}» не найден`}
@@ -141,14 +118,12 @@ function Templates(): JSX.Element {
                       {truncateText(template.name)}
                     </TableCell>
                     <TableCell>{template.work_schedule}</TableCell>
-                    <TableCell>
-                      {[...template.shifts].sort((a, b) => a - b).join(", ")}
-                    </TableCell>
+                    <TableCell>{formatShifts(template.shifts)}</TableCell>
                     <TableCell
                       className="text-right"
                       onClick={(event) => event.stopPropagation()}
                     >
-                      <AdminTableRowActions
+                      <ResourceTableRowActions
                         editPath={editPath}
                         onCopy={() => void handleCopy(template)}
                         onDelete={() => handleDelete(template)}
@@ -162,7 +137,7 @@ function Templates(): JSX.Element {
             )}
           </TableBody>
         </Table>
-      )}
+      </QueryState>
 
       <TemplateCreateDialog
         open={isCreateOpen}

@@ -45,7 +45,7 @@ function UserEditDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { data: rolesData } = useGetRolesQuery("", { skip: !open });
+  const { data: rolesData } = useGetRolesQuery(undefined, { skip: !open });
   const [assignRole, { isLoading: isAssigning }] = useAssignRoleMutation();
   const [revokeRole, { isLoading: isRevoking }] = useRevokeRoleMutation();
   const [selectedRole, setSelectedRole] = useState(NO_ROLE_VALUE);

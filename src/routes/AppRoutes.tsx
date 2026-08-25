@@ -48,7 +48,7 @@ const AppRoutes = createBrowserRouter([
   },
   {
     path: ROUTES.SERVICES,
-    element: <Navigate to={ROUTES.EMPLOYEE_DIRECTORY} replace />,
+    element: <Navigate to={ROUTES.EMPLOYEES} replace />,
   },
   {
     path: "*",

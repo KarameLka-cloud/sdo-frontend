@@ -1,9 +1,5 @@
 import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DataMessage, {
-  DataStateCenter,
-} from "@/components/ui/custom/DataMessage";
-import Loader from "@/components/ui/custom/Loader";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlansQuery,
@@ -22,29 +18,19 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/shadcn/table";
-import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
-import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
-import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar";
+import ResourceTableRowActions from "@/components/resource-list/ResourceTableRowActions";
+import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
+import QueryState from "@/components/resource-list/QueryState";
 import {
   INTERNSHIP_ROUTES,
   buildEditPath,
-} from "@/pages/Admin/shared/adminResourceConfig.ts";
-import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
+} from "@/components/resource-list/resourceRoutes";
+import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import PlanCreateDialog from "@/pages/Mentorship/Interns/PlanCreateDialog";
 import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
-
-interface AdaptationPlan {
-  id: number;
-  user_id: number;
-  start_date?: string;
-  mentor: number;
-  department_head: number;
-  work_schedule?: string;
-  template?: { name?: string; work_schedule?: string };
-  mentor_user?: { name?: string };
-  department_head_user?: { name?: string };
-  user?: { name?: string; department?: string };
-}
+import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
+import { useFiltered } from "@/hooks/useFiltered.ts";
 
 const DELETE_MESSAGES = {
   confirm: "Удалить план стажера?",
@@ -66,7 +52,7 @@ const getPersonName = (
 ) => embedded?.name ?? lookup.get(id) ?? "Не назначен";
 
 const filterVisiblePlans = (
-  plans: AdaptationPlan[],
+  plans: AdaptationPlanType[],
   isAdmin: boolean,
   currentUserId?: number,
 ) => {
@@ -76,33 +62,6 @@ const filterVisiblePlans = (
     (plan) =>
       plan.mentor === currentUserId || plan.department_head === currentUserId,
   );
-};
-
-const filterBySearch = (
-  plans: AdaptationPlan[],
-  search: string,
-  mentorNames: Map<number, string>,
-  headNames: Map<number, string>,
-) => {
-  const query = search.trim().toLowerCase();
-  if (!query) return plans;
-
-  return plans.filter((plan) => {
-    const values = [
-      plan.user?.name,
-      plan.user?.department,
-      plan.template?.name,
-      getPersonName(plan.mentor_user, plan.mentor, mentorNames),
-      getPersonName(plan.department_head_user, plan.department_head, headNames),
-      plan.user_id,
-    ];
-
-    return values.some((value) =>
-      String(value ?? "")
-        .toLowerCase()
-        .includes(query),
-    );
-  });
 };
 
 function Interns(): JSX.Element {
@@ -119,13 +78,12 @@ function Interns(): JSX.Element {
   const deleteMutation = useDeleteAdaptationPlanMutation();
   const [search, setSearch] = useState("");
   const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const { handleDelete, isDeletingItem } = useAdminListDelete<AdaptationPlan>(
-    deleteMutation,
-    DELETE_MESSAGES,
-  );
+  const { handleDelete, isDeletingItem } = useConfirmDelete(deleteMutation, {
+    messages: DELETE_MESSAGES,
+  });
 
-  const adaptationPlans = (plansData ?? []) as AdaptationPlan[];
-  const users = (usersData ?? []) as UserType[];
+  const adaptationPlans = plansData ?? [];
+  const users = usersData ?? [];
   const mentors = resolveRoleUsers(mentorsData, users, USER_ROLES.MENTOR);
   const departmentHeads = resolveRoleUsers(
     departmentHeadsData,
@@ -141,17 +99,23 @@ function Interns(): JSX.Element {
     isAdmin,
     currentUserId,
   );
-  const filteredPlans = filterBySearch(
-    visiblePlans,
-    search,
-    mentorNames,
-    headNames,
+  const filteredPlans = useFiltered(visiblePlans, search, (plan) =>
+    [
+      plan.user?.name,
+      plan.user?.department,
+      plan.template?.name,
+      getPersonName(plan.mentor_user, plan.mentor, mentorNames),
+      getPersonName(plan.department_head_user, plan.department_head, headNames),
+      plan.user_id,
+    ]
+      .map((value) => String(value ?? ""))
+      .join(" "),
   );
   const hasSearch = search.trim().length > 0;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <AdminListToolbar
+      <ResourceListToolbar
         onCreate={() => setIsCreateOpen(true)}
         createLabel="Создать план"
         searchId="interns-search"
@@ -160,14 +124,11 @@ function Interns(): JSX.Element {
         onSearchChange={setSearch}
       />
 
-      {isError && <DataMessage type="error" centered />}
-      {isLoading && (
-        <DataStateCenter>
-          <Loader />
-        </DataStateCenter>
-      )}
-
-      {plansData && (
+      <QueryState
+        isLoading={isLoading}
+        isError={isError}
+        hasData={Boolean(plansData)}
+      >
         <Table>
           <TableHeader>
             <TableRow>
@@ -179,7 +140,7 @@ function Interns(): JSX.Element {
           </TableHeader>
           <TableBody>
             {filteredPlans.length === 0 ? (
-              <AdminTableEmptyRow
+              <ResourceTableEmptyRow
                 colSpan={4}
                 hasSearch={hasSearch}
                 notFoundMessage={`Стажер «${search}» не найден`}
@@ -215,7 +176,7 @@ function Interns(): JSX.Element {
                       className="text-right"
                       onClick={(event) => event.stopPropagation()}
                     >
-                      <AdminTableRowActions
+                      <ResourceTableRowActions
                         editPath={editPath}
                         onDelete={() => handleDelete(plan)}
                         isDeleting={isDeletingItem(plan.id)}
@@ -227,7 +188,7 @@ function Interns(): JSX.Element {
             )}
           </TableBody>
         </Table>
-      )}
+      </QueryState>
 
       <PlanCreateDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>

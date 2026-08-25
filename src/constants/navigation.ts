@@ -84,7 +84,7 @@ export const SERVICES_NAV_LINKS: ReadonlyArray<NavigationItem> = [
   {
     id: 1,
     name: "Справочник сотрудника",
-    path: ROUTES.EMPLOYEE_DIRECTORY,
+    path: ROUTES.EMPLOYEES,
     icon: BookUser,
   },
 ];

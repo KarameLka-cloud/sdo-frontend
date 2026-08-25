@@ -20,37 +20,7 @@ import {
   AdaptationDayType,
   TaskStatus,
 } from "@/interfaces/api/AdaptationDayType.ts";
-
-interface AdaptationPlan {
-  id?: number;
-  start_date: string;
-  work_schedule: string;
-  shift: number;
-  mentor: number;
-  department_head: number;
-  mentor_user?: { name?: string };
-  department_head_user?: { name?: string };
-  days?: {
-    id: number;
-    work_day: number;
-    day_from?: number | null;
-    day_to?: number | null;
-    date_from: string;
-    date_to?: string | null;
-    completion: AdaptationDayType["completion"];
-    employee_comment?: string | null;
-    intern_comment?: string | null;
-    mentor_comment?: string | null;
-    department_head_comment?: string | null;
-    tasks?: {
-      id: number;
-      description: string;
-      status: TaskStatus;
-      responsible_role?: AdaptationDayType["tasks"][number]["responsibleRole"];
-      links?: string[] | null;
-    }[];
-  }[];
-}
+import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
 
 const INFO_BADGE_CLASS =
   "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100";
@@ -60,7 +30,7 @@ function formatDayDate(dateFrom: string, dateTo?: string | null): string {
   return dateTo ? `${from} - ${convertDate(dateTo)}` : from;
 }
 
-function mapPlanDays(plan: AdaptationPlan): AdaptationDayType[] {
+function mapPlanDays(plan: AdaptationPlanType): AdaptationDayType[] {
   return (plan.days ?? []).map((day) => ({
     id: day.id,
     workDay: day.work_day,
@@ -109,9 +79,8 @@ function Adaptation(): JSX.Element {
     type: FormActionStatusType;
     message: string;
   }>({ type: "idle", message: "" });
-  const { data, isLoading, isError } = useGetMyAdaptationPlanQuery(undefined);
+  const { data: plan, isLoading, isError } = useGetMyAdaptationPlanQuery(undefined);
 
-  const plan = data as AdaptationPlan | undefined;
   const hasPlan = Boolean(plan?.id && plan.id > 0);
 
   const handleUpdateInternComment = async (

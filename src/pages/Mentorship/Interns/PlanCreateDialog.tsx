@@ -32,6 +32,7 @@ import SearchableCombobox from "@/components/ui/custom/SearchableCombobox";
 import DatePickerField from "@/components/ui/custom/DatePickerField";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
+import { firstShift, formatShifts } from "@/utils/formatShifts.ts";
 
 const sortTemplates = (
   a: AdaptationPlanTemplateType,
@@ -122,8 +123,8 @@ function PlanCreateDialog({
       return toast.error("Выберите шаблон с подходящим режимом работы");
     }
 
-    const selectedShift = [...template.shifts].sort((a, b) => a - b)[0];
-    if (!selectedShift) {
+    const selectedShift = firstShift(template.shifts);
+    if (selectedShift == null) {
       return toast.error("У выбранного шаблона не найдены смены");
     }
     if (!mentorId) return toast.error("Выберите наставника");
@@ -218,7 +219,7 @@ function PlanCreateDialog({
                     {filteredTemplates.map((template) => (
                       <SelectItem key={template.id} value={String(template.id)}>
                         {template.name} (смена:{" "}
-                        {[...template.shifts].sort((a, b) => a - b).join(", ")})
+                        {formatShifts(template.shifts)})
                       </SelectItem>
                     ))}
                   </SelectContent>

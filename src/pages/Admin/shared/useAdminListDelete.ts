@@ -1,40 +1,12 @@
-import { useState } from "react";
-import { toast } from "sonner";
-import { useConfirm } from "@/hooks/useConfirm.ts";
+import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 
-interface DeleteMessages {
-  confirm: string;
-  success: string;
-  error: string;
-}
-
+/** @deprecated Use useConfirmDelete from @/components/resource-list/useConfirmDelete */
 export function useAdminListDelete<T extends { id: number }>(
   deleteMutation: readonly [
     (id: number) => { unwrap: () => Promise<unknown> },
     { isLoading: boolean },
   ],
-  messages: DeleteMessages,
+  messages: { confirm: string; success: string; error: string },
 ) {
-  const [deleteItem, { isLoading: isDeleting }] = deleteMutation;
-  const [deletingId, setDeletingId] = useState<number | null>(null);
-  const confirm = useConfirm();
-
-  const handleDelete = async (item: T) => {
-    const confirmed = await confirm({ title: messages.confirm });
-    if (!confirmed) return;
-
-    setDeletingId(item.id);
-    try {
-      await deleteItem(item.id).unwrap();
-      toast.success(messages.success);
-    } catch {
-      toast.error(messages.error);
-    } finally {
-      setDeletingId(null);
-    }
-  };
-
-  const isDeletingItem = (id: number) => isDeleting && deletingId === id;
-
-  return { handleDelete, isDeletingItem };
+  return useConfirmDelete(deleteMutation, { messages, trackId: true });
 }

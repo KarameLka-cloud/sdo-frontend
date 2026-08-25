@@ -8,7 +8,7 @@ export const servicesRoutes: RouteObject = {
   element: <MainLayout />,
   children: [
     {
-      path: ROUTES.EMPLOYEE_DIRECTORY,
+      path: ROUTES.EMPLOYEES,
       element: (
         <PageTitle
           title={"Справочник сотрудника"}

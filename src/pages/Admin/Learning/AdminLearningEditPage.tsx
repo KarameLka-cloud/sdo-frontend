@@ -1,8 +1,6 @@
-import { FormEvent, JSX, useCallback, useEffect, useState } from "react";
+import { FormEvent, JSX, useCallback, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { DepartmentType } from "@/interfaces/api/DepartmentType.ts";
-import { PositionType } from "@/interfaces/api/PositionType.ts";
 import { LearningItemType } from "@/interfaces/api/LearningItemType.ts";
 import {
   useGetDepartmentsQuery,
@@ -20,15 +18,14 @@ import {
   CardTitle,
 } from "@/components/ui/shadcn/card";
 import { Separator } from "@/components/ui/shadcn/separator";
-import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
-import AdminEditFormFooter from "@/pages/Admin/shared/components/AdminEditFormFooter";
-import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
-import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
+import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
+import ResourceEditFormFooter from "@/components/resource-list/ResourceEditFormFooter";
+import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
+import { usePopulateEditForm } from "@/components/resource-list/usePopulateEditForm";
 import {
   LEARNING_BACK_LABELS,
   LEARNING_DELETE_MESSAGES,
   buildAdminLearningPath,
-  learningHasTime,
   learningNeedsDepartments,
   learningNeedsPositions,
 } from "@/constants/learning.ts";
@@ -40,30 +37,13 @@ import {
 import LearningItemFormFields from "@/pages/Admin/Learning/LearningItemFormFields";
 import {
   EMPTY_LEARNING_FORM,
+  LEARNING_EDIT_TITLES,
+  LEARNING_MESSAGES,
+  toLearningItemPayload,
   validateLearningItemForm,
   type LearningItemFormValues,
 } from "@/pages/Admin/Learning/learningForm.ts";
-
-const TITLES = {
-  event: "Редактирование мероприятия",
-  course: "Редактирование курса",
-  webinar: "Редактирование вебинара",
-  test: "Редактирование теста",
-} as const;
-
-const SUCCESS_MESSAGES = {
-  event: "Мероприятие сохранено",
-  course: "Курс сохранён",
-  webinar: "Вебинар сохранён",
-  test: "Тест сохранён",
-} as const;
-
-const ERROR_MESSAGES = {
-  event: "Не удалось сохранить мероприятие",
-  course: "Не удалось сохранить курс",
-  webinar: "Не удалось сохранить вебинар",
-  test: "Не удалось сохранить тест",
-} as const;
+import PageTitle from "@/components/PageTitle.tsx";
 
 function AdminLearningEditPage(): JSX.Element {
   const navigate = useNavigate();
@@ -80,7 +60,7 @@ function AdminLearningEditPage(): JSX.Element {
   const deleteMutation = useDeleteLearningItemMutation();
 
   const item =
-    itemData && itemData.id === id ? (itemData as LearningItemType) : undefined;
+    itemData && itemData.id === id ? itemData : undefined;
   const type = item?.type;
   const category = item?.category;
   const listPath =
@@ -88,28 +68,21 @@ function AdminLearningEditPage(): JSX.Element {
       ? buildAdminLearningPath(category, type)
       : buildAdminLearningPath("education", "event");
 
-  useEffect(() => {
-    if (!type) return;
-    const previousTitle = document.title;
-    document.title = `${TITLES[type]} - СДО`;
-    return () => {
-      document.title = previousTitle;
-    };
-  }, [type]);
-
-  const { handleDelete, isDeleting } = useAdminEditDelete(
-    deleteMutation,
-    type ? LEARNING_DELETE_MESSAGES[type] : LEARNING_DELETE_MESSAGES.event,
-    () => navigate(listPath),
-  );
+  const { handleDelete, isDeleting } = useConfirmDelete(deleteMutation, {
+    messages: type
+      ? LEARNING_DELETE_MESSAGES[type]
+      : LEARNING_DELETE_MESSAGES.event,
+    onSuccess: () => navigate(listPath),
+    trackId: false,
+  });
 
   const needsDepartments = type ? learningNeedsDepartments(type) : false;
   const needsPositions = type ? learningNeedsPositions(type) : false;
 
   const { data: departments, isLoading: isDepartmentsLoading } =
-    useGetDepartmentsQuery("", { skip: !type || !needsDepartments });
+    useGetDepartmentsQuery(undefined, { skip: !type || !needsDepartments });
   const { data: positions, isLoading: isPositionsLoading } =
-    useGetPositionsQuery("", { skip: !type || !needsPositions });
+    useGetPositionsQuery(undefined, { skip: !type || !needsPositions });
 
   const [values, setValues] =
     useState<LearningItemFormValues>(EMPTY_LEARNING_FORM);
@@ -151,73 +124,67 @@ function AdminLearningEditPage(): JSX.Element {
     if (validationError) return toast.error(validationError);
 
     try {
-      await updateItem({
-        id,
-        category,
-        type,
-        title: values.title.trim(),
-        description: values.description.trim() || undefined,
-        link: values.link.trim() || undefined,
-        department_id: needsDepartments ? Number(values.departmentId) : null,
-        note_department: needsDepartments
-          ? values.noteDepartment.trim() || undefined
-          : null,
-        position_id: needsPositions ? Number(values.positionId) : null,
-        note_position: needsPositions
-          ? values.notePosition.trim() || undefined
-          : null,
-        date: values.date,
-        time: learningHasTime(type) ? values.time || undefined : null,
-        duration: Number(values.duration),
-      }).unwrap();
-      toast.success(SUCCESS_MESSAGES[type]);
+      await updateItem(
+        toLearningItemPayload(values, {
+          category,
+          type,
+          id,
+          mode: "update",
+        }),
+      ).unwrap();
+      toast.success(LEARNING_MESSAGES.update.success[type]);
       navigate(listPath);
     } catch {
-      toast.error(ERROR_MESSAGES[type]);
+      toast.error(LEARNING_MESSAGES.update.error[type]);
     }
   };
 
   if (id == null) {
-    return <AdminFormPage backTo={listPath} backLabel="К списку" isError />;
+    return <ResourceFormPage backTo={listPath} backLabel="К списку" isError />;
   }
 
   return (
-    <AdminFormPage
-      backTo={listPath}
-      backLabel={type ? LEARNING_BACK_LABELS[type] : "К списку"}
-      isLoading={
-        isLoading ||
-        (needsDepartments && isDepartmentsLoading) ||
-        (needsPositions && isPositionsLoading) ||
-        !isFormPopulated
+    <PageTitle
+      title={type ? LEARNING_EDIT_TITLES[type] : "Редактирование"}
+      element={
+        <ResourceFormPage
+          backTo={listPath}
+          backLabel={type ? LEARNING_BACK_LABELS[type] : "К списку"}
+          isLoading={
+            isLoading ||
+            (needsDepartments && isDepartmentsLoading) ||
+            (needsPositions && isPositionsLoading) ||
+            !isFormPopulated
+          }
+          isError={isError || !item || !type}
+        >
+          {type && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{LEARNING_EDIT_TITLES[type]}</CardTitle>
+              </CardHeader>
+              <form onSubmit={handleSubmit}>
+                <CardContent className="p-4">
+                  <LearningItemFormFields
+                    type={type}
+                    values={values}
+                    onChange={patchValues}
+                    departments={departments ?? []}
+                    positions={positions ?? []}
+                  />
+                </CardContent>
+                <Separator />
+                <ResourceEditFormFooter
+                  isSaving={isUpdating}
+                  isDeleting={isDeleting}
+                  onDelete={() => handleDelete(id)}
+                />
+              </form>
+            </Card>
+          )}
+        </ResourceFormPage>
       }
-      isError={isError || !item || !type}
-    >
-      {type && (
-        <Card>
-          <CardHeader>
-            <CardTitle>{TITLES[type]}</CardTitle>
-          </CardHeader>
-          <form onSubmit={handleSubmit}>
-            <CardContent className="p-4">
-              <LearningItemFormFields
-                type={type}
-                values={values}
-                onChange={patchValues}
-                departments={(departments ?? []) as DepartmentType[]}
-                positions={(positions ?? []) as PositionType[]}
-              />
-            </CardContent>
-            <Separator />
-            <AdminEditFormFooter
-              isSaving={isUpdating}
-              isDeleting={isDeleting}
-              onDelete={() => handleDelete(id)}
-            />
-          </form>
-        </Card>
-      )}
-    </AdminFormPage>
+    />
   );
 }
 

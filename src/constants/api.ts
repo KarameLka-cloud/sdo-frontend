@@ -15,7 +15,7 @@ export const API_ENDPOINTS = {
   ADAPTATION_MY_PLAN: "api/mentorship/adaptation-plans/my",
   ADAPTATION_MY_PLAN_DAYS: "api/mentorship/adaptation-plans/my/days/",
   ADAPTATION_PLAN_TEMPLATES: "api/mentorship/adaptation-plan-templates/",
-  EMPLOYEE_DIRECTORY_SEARCH: "api/employee-directory/search",
+  EMPLOYEES_SEARCH: "api/employees/search",
 } as const;
 
 export const COOKIE_NAMES = {

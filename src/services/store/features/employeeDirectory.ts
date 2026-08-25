@@ -12,7 +12,7 @@ export const employeeDirectory = createApi({
       { q: string; withPhoto?: boolean }
     >({
       query: ({ q, withPhoto = true }) => ({
-        url: API_ENDPOINTS.EMPLOYEE_DIRECTORY_SEARCH,
+        url: API_ENDPOINTS.EMPLOYEES_SEARCH,
         params: {
           q,
           with_photo: withPhoto ? 1 : 0,
@@ -22,5 +22,4 @@ export const employeeDirectory = createApi({
   }),
 });
 
-export const { useSearchEmployeesQuery, useLazySearchEmployeesQuery } =
-  employeeDirectory;
+export const { useSearchEmployeesQuery } = employeeDirectory;

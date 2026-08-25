@@ -4,16 +4,12 @@ import dateNow from "@/utils/dateNow.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
-
-interface AdaptationPlan {
-  id?: number;
-  days?: { tasks?: { status?: string }[] }[];
-}
+import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
 
 const RADIUS = 45;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
 
-function getAdaptationProgress(plan?: AdaptationPlan | null) {
+function getAdaptationProgress(plan?: AdaptationPlanType | null) {
   const tasks = (plan?.days ?? []).flatMap((day) => day.tasks ?? []);
   if (tasks.length === 0) return null;
 
@@ -80,7 +76,7 @@ function Home(): JSX.Element {
   const { name, department, description } = useUser();
   const { data: plan, isLoading } = useGetMyAdaptationPlanQuery(undefined);
 
-  const adaptationPlan = plan as AdaptationPlan | undefined;
+  const adaptationPlan = plan ?? undefined;
   const progress = getAdaptationProgress(adaptationPlan);
   const hasPlan = Boolean(adaptationPlan?.id && adaptationPlan.id > 0);
 

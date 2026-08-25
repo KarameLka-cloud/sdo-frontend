@@ -1,5 +1,4 @@
-import { JSX, useEffect, useMemo, useState } from "react";
-import { SearchIcon, XIcon } from "lucide-react";
+import { JSX, useState } from "react";
 import DataMessage, {
   DataStateCenter,
 } from "@/components/ui/custom/DataMessage";
@@ -10,14 +9,6 @@ import type {
   EmployeeDirectoryAttributeKey,
   EmployeeDirectoryEntry,
 } from "@/interfaces/api/EmployeeDirectoryType.ts";
-import { Card, CardContent } from "@/components/ui/shadcn/card";
-import { Field, FieldGroup } from "@/components/ui/shadcn/field";
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@/components/ui/shadcn/input-group";
 import {
   Table,
   TableBody,
@@ -38,7 +29,10 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shadcn/dialog";
-import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
+import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar";
+import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
+import { useDebouncedValue } from "@/hooks/useDebouncedValue.ts";
+import { getInitials } from "@/utils/getInitials.ts";
 
 const DEFAULT_ATTRIBUTES: EmployeeDirectoryAttributes = {
   cn: "Имя:",
@@ -66,16 +60,6 @@ const SEARCH_DEBOUNCE_MS = 400;
 function photoSrc(photo?: string): string | undefined {
   if (!photo) return undefined;
   return `data:image/jpeg;base64,${photo}`;
-}
-
-function initials(name?: string): string {
-  if (!name) return "?";
-  return name
-    .split(/\s+/)
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase() ?? "")
-    .join("");
 }
 
 function EmployeeInfoItem({ label, value }: { label: string; value?: string }) {
@@ -110,7 +94,7 @@ function EmployeeDetailDialog({
                 src={photoSrc(employee.thumbnailphoto)}
                 alt={employee.cn ?? "Сотрудник"}
               />
-              <AvatarFallback>{initials(employee.cn)}</AvatarFallback>
+              <AvatarFallback>{getInitials(employee.cn) || "?"}</AvatarFallback>
             </Avatar>
             <div className="min-w-0 space-y-1">
               <DialogTitle className="truncate">
@@ -139,16 +123,8 @@ function EmployeeDetailDialog({
 
 function EmployeeDirectory(): JSX.Element {
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search.trim(), SEARCH_DEBOUNCE_MS);
   const [selected, setSelected] = useState<EmployeeDirectoryEntry | null>(null);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => {
-      setDebouncedSearch(search.trim());
-    }, SEARCH_DEBOUNCE_MS);
-
-    return () => window.clearTimeout(timer);
-  }, [search]);
 
   const canSearch = debouncedSearch.length >= MIN_QUERY_LENGTH;
 
@@ -166,44 +142,14 @@ function EmployeeDirectory(): JSX.Element {
   const showError = canSearch && isError;
   const showResults = canSearch && !isFetching && !isError && !isUninitialized;
 
-  const resultKey = useMemo(
-    () => employees.map((item) => `${item.cn}-${item.mail}-${item.telephonenumber}`),
-    [employees],
-  );
-
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="sticky mt-10">
-        <Card>
-          <CardContent>
-            <FieldGroup className="flex flex-row items-end justify-end gap-4">
-              <Field className="w-full md:w-2/4">
-                <InputGroup>
-                  <InputGroupAddon>
-                    <SearchIcon />
-                  </InputGroupAddon>
-                  <InputGroupInput
-                    id="employee-directory-search"
-                    placeholder="Например: Менеджер + Иркутск 1"
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                  />
-                  {hasSearch && (
-                    <InputGroupAddon align="inline-end">
-                      <InputGroupButton
-                        aria-label="Очистить поиск"
-                        onClick={() => setSearch("")}
-                      >
-                        <XIcon />
-                      </InputGroupButton>
-                    </InputGroupAddon>
-                  )}
-                </InputGroup>
-              </Field>
-            </FieldGroup>
-          </CardContent>
-        </Card>
-      </div>
+      <ResourceListToolbar
+        searchId="employees-search"
+        searchPlaceholder="Например: Менеджер + Иркутск 1"
+        search={search}
+        onSearchChange={setSearch}
+      />
 
       {showHint && (
         <DataStateCenter>
@@ -227,13 +173,13 @@ function EmployeeDirectory(): JSX.Element {
             <TableRow>
               <TableHead className="w-14" />
               <TableHead>ФИО</TableHead>
-              <TableHead>Телефон</TableHead>
               <TableHead>Эл. почта</TableHead>
+              <TableHead>Телефон</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {employees.length === 0 ? (
-              <AdminTableEmptyRow
+              <ResourceTableEmptyRow
                 colSpan={4}
                 hasSearch={hasSearch}
                 notFoundMessage={`Сотрудник «${debouncedSearch}» не найден`}
@@ -241,7 +187,7 @@ function EmployeeDirectory(): JSX.Element {
             ) : (
               employees.map((employee, index) => (
                 <TableRow
-                  key={`${resultKey[index]}-${index}`}
+                  key={`${employee.cn}-${employee.mail}-${index}`}
                   className="cursor-pointer"
                   onClick={() => setSelected(employee)}
                 >
@@ -251,14 +197,16 @@ function EmployeeDirectory(): JSX.Element {
                         src={photoSrc(employee.thumbnailphoto)}
                         alt={employee.cn ?? "Сотрудник"}
                       />
-                      <AvatarFallback>{initials(employee.cn)}</AvatarFallback>
+                      <AvatarFallback>
+                        {getInitials(employee.cn) || "?"}
+                      </AvatarFallback>
                     </Avatar>
                   </TableCell>
                   <TableCell className="font-medium">
                     {employee.cn ?? "—"}
                   </TableCell>
-                  <TableCell>{employee.telephonenumber ?? "—"}</TableCell>
                   <TableCell>{employee.mail ?? "—"}</TableCell>
+                  <TableCell>{employee.telephonenumber ?? "—"}</TableCell>
                 </TableRow>
               ))
             )}
