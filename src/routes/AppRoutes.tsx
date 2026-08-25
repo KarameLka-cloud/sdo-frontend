@@ -12,6 +12,7 @@ import { hasAnyRoleFromUser, MENTOR_ACCESS_ROLES } from "@/constants/roles.ts";
 import { homeRoutes } from "./homeRoutes.tsx";
 import { adminRoutes } from "./adminRoutes.tsx";
 import { mentorshipRoutes } from "./mentorshipRoutes.tsx";
+import { servicesRoutes } from "./servicesRoutes.tsx";
 
 function MentorshipRedirect() {
   const token = Cookie.get(COOKIE_NAMES.AUTH_TOKEN);
@@ -46,6 +47,10 @@ const AppRoutes = createBrowserRouter([
     element: <MentorshipRedirect />,
   },
   {
+    path: ROUTES.SERVICES,
+    element: <Navigate to={ROUTES.EMPLOYEE_DIRECTORY} replace />,
+  },
+  {
     path: "*",
     element: <Navigate to={ROUTES.HOME} replace />,
   },
@@ -60,7 +65,7 @@ const AppRoutes = createBrowserRouter([
   },
   {
     element: <ProtectedRoute elementHome={<HomeLayout />} route={"home"} />,
-    children: [homeRoutes, adminRoutes, mentorshipRoutes],
+    children: [homeRoutes, adminRoutes, mentorshipRoutes, servicesRoutes],
   },
 ]);
 

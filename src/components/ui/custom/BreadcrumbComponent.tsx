@@ -26,6 +26,8 @@ const SEGMENT_LABELS: Record<string, string> = {
   adaptation: "Адаптация",
   mentorship: "Наставничество",
   interns: "Стажеры",
+  services: "Дополнительные сервисы",
+  "employee-directory": "Справочник сотрудника",
   admin: "Администрирование",
   users: "Пользователи",
   templates: "Планы адаптации",

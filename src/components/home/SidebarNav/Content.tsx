@@ -20,6 +20,7 @@ import {
 import {
   HOME_NAV_LINKS,
   MENTOR_NAV_LINKS,
+  SERVICES_NAV_LINKS,
   ADMIN_NAV_LINKS,
   type NavigationItem,
 } from "@/constants/navigation";
@@ -152,6 +153,12 @@ function Content(): JSX.Element {
           hideOnIconCollapse
         />
       )}
+      <NavLinks
+        items={SERVICES_NAV_LINKS}
+        current={current}
+        label="Дополнительные сервисы"
+        hideOnIconCollapse
+      />
       {isAdmin && (
         <NavLinks
           items={ADMIN_NAV_LINKS}

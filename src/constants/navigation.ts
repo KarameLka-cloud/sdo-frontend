@@ -1,6 +1,6 @@
 import { ROUTES } from "@constants/routes";
 import type { LucideIcon } from "lucide-react";
-import { Home, Notebook, Album, Users, Brain } from "lucide-react";
+import { Home, Notebook, Album, Users, Brain, BookUser } from "lucide-react";
 import firstWednesdayData from "@/utils/firstWednesday";
 import {
   buildAdminLearningPath,
@@ -77,6 +77,15 @@ export const MENTOR_NAV_LINKS: ReadonlyArray<NavigationItem> = [
     name: "Стажеры",
     path: ROUTES.MENTORSHIP_INTERNS,
     icon: Users,
+  },
+];
+
+export const SERVICES_NAV_LINKS: ReadonlyArray<NavigationItem> = [
+  {
+    id: 1,
+    name: "Справочник сотрудника",
+    path: ROUTES.EMPLOYEE_DIRECTORY,
+    icon: BookUser,
   },
 ];
 

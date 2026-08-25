@@ -7,6 +7,8 @@ export const ROUTES = {
   MENTORSHIP: "/mentorship",
   MENTORSHIP_INTERNS: "/mentorship/interns",
   MENTORSHIP_INTERNS_PLAN_EDIT: "/mentorship/interns/:planId/edit",
+  SERVICES: "/services",
+  EMPLOYEE_DIRECTORY: "/services/employee-directory",
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
   ADMIN_LEARNING: "/admin/learning",
