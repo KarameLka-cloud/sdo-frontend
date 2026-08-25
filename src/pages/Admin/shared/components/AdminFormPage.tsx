@@ -1,7 +1,10 @@
 import { ReactNode } from "react";
 import Loader from "@/components/ui/custom/Loader";
-import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
+import DataMessage, {
+  DataStateCenter,
+} from "@/components/ui/custom/DataMessage";
 import AdminBackLink from "@/pages/Admin/shared/components/AdminBackLink";
+import { cn } from "@/lib/utils";
 
 interface AdminFormPageProps {
   backTo: string;
@@ -9,7 +12,7 @@ interface AdminFormPageProps {
   isLoading?: boolean;
   isError?: boolean;
   isNoData?: boolean;
-  children: ReactNode;
+  children?: ReactNode;
 }
 
 function AdminFormPage({
@@ -20,39 +23,28 @@ function AdminFormPage({
   isNoData = false,
   children,
 }: AdminFormPageProps) {
-  if (isError) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
-        <AdminBackLink to={backTo} label={backLabel} />
-        <DataMessage type="error" centered />
-      </div>
-    );
-  }
-
-  if (isNoData) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
-        <AdminBackLink to={backTo} label={backLabel} />
-        <DataMessage type="noData" centered />
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="flex min-h-0 w-full flex-1 flex-col gap-6">
-        <AdminBackLink to={backTo} label={backLabel} />
-        <DataStateCenter>
-          <Loader />
-        </DataStateCenter>
-      </div>
-    );
-  }
+  const isBlocked = isError || isNoData || isLoading;
+  const content = isError ? (
+    <DataMessage type="error" centered />
+  ) : isNoData ? (
+    <DataMessage type="noData" centered />
+  ) : isLoading ? (
+    <DataStateCenter>
+      <Loader />
+    </DataStateCenter>
+  ) : (
+    children
+  );
 
   return (
-    <div className="flex w-full flex-col gap-6">
+    <div
+      className={cn(
+        "flex w-full flex-col gap-6",
+        isBlocked && "min-h-0 flex-1",
+      )}
+    >
       <AdminBackLink to={backTo} label={backLabel} />
-      {children}
+      {content}
     </div>
   );
 }

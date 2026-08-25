@@ -1,8 +1,9 @@
 import { JSX, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import Loader from "@/components/ui/custom/Loader";
-import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
+import DataMessage, {
+  DataStateCenter,
+} from "@/components/ui/custom/DataMessage";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/user.ts";
 import { isUserInRole, USER_ROLES, type UserRole } from "@/constants/roles.ts";
@@ -26,10 +27,7 @@ import {
 import AdminListToolbar from "@/pages/Admin/shared/components/AdminListToolbar";
 import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowActions";
 import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
-import {
-  USER_ROUTES,
-  buildEditPath,
-} from "@/pages/Admin/shared/adminResourceConfig.ts";
+import UserEditDialog from "@/pages/Admin/Users/UserEditDialog";
 
 const TABS = {
   users: { label: "Все пользователи" },
@@ -54,14 +52,19 @@ const filterByTab = (users: UserType[], tab: UsersTab) => {
 };
 
 function Users(): JSX.Element {
-  const navigate = useNavigate();
   const { data, error, isLoading } = useGetUsersQuery("");
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<UsersTab>("users");
+  const [editingUserId, setEditingUserId] = useState<number | null>(null);
 
-  const filteredData = useFiltered(filterByTab(data ?? [], activeTab), search);
+  const users = (data as UserType[] | undefined) ?? [];
+  const filteredData = useFiltered(filterByTab(users, activeTab), search);
   const hasSearch = search.trim().length > 0;
   const tabConfig = TABS[activeTab];
+  const editingUser =
+    editingUserId != null
+      ? (users.find((user) => user.id === editingUserId) ?? null)
+      : null;
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -124,23 +127,22 @@ function Users(): JSX.Element {
               />
             ) : (
               filteredData.map((user) => {
-                const editPath =
-                  user.id != null
-                    ? buildEditPath(USER_ROUTES.edit, user.id)
-                    : null;
+                const canEdit = user.id != null;
 
                 return (
                   <TableRow
                     key={user.id}
-                    className={editPath ? "cursor-pointer" : undefined}
-                    onClick={() => editPath && navigate(editPath)}
+                    className={canEdit ? "cursor-pointer" : undefined}
+                    onClick={() => canEdit && setEditingUserId(user.id ?? null)}
                   >
                     <TableCell className="font-medium">{user.name}</TableCell>
                     <TableCell className="text-muted-foreground">
                       {user.department}
                     </TableCell>
                     <TableCell>
-                      <Badge variant={user.role_name ? "destructive" : "secondary"}>
+                      <Badge
+                        variant={user.role_name ? "destructive" : "secondary"}
+                      >
                         {user.role_name ?? "Пользователь"}
                       </Badge>
                     </TableCell>
@@ -148,9 +150,9 @@ function Users(): JSX.Element {
                       className="text-right"
                       onClick={(event) => event.stopPropagation()}
                     >
-                      {editPath && (
+                      {canEdit && (
                         <AdminTableRowActions
-                          editPath={editPath}
+                          onEdit={() => setEditingUserId(user.id ?? null)}
                           isDeleting={false}
                           showDelete={false}
                         />
@@ -163,6 +165,14 @@ function Users(): JSX.Element {
           </TableBody>
         </Table>
       )}
+
+      <UserEditDialog
+        user={editingUser}
+        open={editingUserId != null}
+        onOpenChange={(open) => {
+          if (!open) setEditingUserId(null);
+        }}
+      />
     </div>
   );
 }

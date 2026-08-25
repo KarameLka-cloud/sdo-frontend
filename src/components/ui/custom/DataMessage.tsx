@@ -17,7 +17,7 @@ export function DataStateCenter({
   return (
     <div
       className={cn(
-        "flex w-full flex-1 items-center justify-center py-8 min-h-[calc(100dvh-12rem)]",
+        "flex w-full flex-1 items-center justify-center py-8",
         className,
       )}
     >

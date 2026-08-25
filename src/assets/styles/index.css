@@ -3,8 +3,6 @@
 @import "shadcn/tailwind.css";
 @import "@fontsource-variable/geist";
 
-@custom-variant dark (&:is(.dark *));
-
 :root {
   --mfc-dark-color: #d2ae8e;
   --mfc-focus-ring-color: #2563eb;
@@ -57,13 +55,14 @@ textarea {
   font: inherit;
 }
 
-button:focus-visible,
+input:focus,
 input:focus-visible,
+select:focus,
 select:focus-visible,
-textarea:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--mfc-focus-ring-color);
-  outline-offset: 2px;
+textarea:focus,
+textarea:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 @media (prefers-reduced-motion: reduce) {

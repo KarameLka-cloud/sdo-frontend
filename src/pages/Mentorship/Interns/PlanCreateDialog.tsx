@@ -1,4 +1,4 @@
-import { FormEvent, JSX, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
 import {
   useCreateAdaptationPlanMutation,
@@ -8,17 +8,9 @@ import {
   useGetUsersQuery,
 } from "@/services/store/features/user.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import { isUserInRole, USER_ROLES } from "@/constants/roles.ts";
+import { USER_ROLES } from "@/constants/roles.ts";
 import { Button } from "@/components/ui/shadcn/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/shadcn/card";
-import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
-import { Input } from "@/components/ui/shadcn/input";
+import { Field, FieldLabel } from "@/components/ui/shadcn/field";
 import {
   Select,
   SelectContent,
@@ -26,30 +18,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import { Separator } from "@/components/ui/shadcn/separator";
 import { Spinner } from "@/components/ui/shadcn/spinner";
-import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
-import { INTERNSHIP_ROUTES } from "@/pages/Admin/shared/adminResourceConfig.ts";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/shadcn/dialog";
+import Loader from "@/components/ui/custom/Loader";
+import SearchableCombobox from "@/components/ui/custom/SearchableCombobox";
+import DatePickerField from "@/components/ui/custom/DatePickerField";
+import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
+import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
 
-interface AdaptationTemplate {
-  id: number;
-  name: string;
-  work_schedule: string;
-  shifts: number[];
-}
-
-const resolveRoleUsers = (
-  fromApi: UserType[] | undefined,
-  allUsers: UserType[],
-  role: (typeof USER_ROLES)[keyof typeof USER_ROLES],
+const sortTemplates = (
+  a: AdaptationPlanTemplateType,
+  b: AdaptationPlanTemplateType,
 ) => {
-  const list = (fromApi ?? []) as UserType[];
-  return list.length
-    ? list
-    : allUsers.filter((user) => isUserInRole(user, role));
-};
-
-const sortTemplates = (a: AdaptationTemplate, b: AdaptationTemplate) => {
   const shiftA = Math.min(...a.shifts);
   const shiftB = Math.min(...b.shifts);
   return shiftA !== shiftB
@@ -57,15 +44,33 @@ const sortTemplates = (a: AdaptationTemplate, b: AdaptationTemplate) => {
     : a.name.localeCompare(b.name, "ru");
 };
 
-function PlanCreate(): JSX.Element {
+const toUserOptions = (list: UserType[]) =>
+  list
+    .filter((user) => user.id != null)
+    .map((user) => ({
+      value: String(user.id),
+      label: user.name ?? "",
+    }));
+
+function PlanCreateDialog({
+  open,
+  onOpenChange,
+}: {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}) {
   const [createAdaptationPlan, { isLoading: isCreating }] =
     useCreateAdaptationPlanMutation();
-  const { data: usersData, isLoading: isUsersLoading } =
-    useGetUsersQuery(undefined);
+  const { data: usersData, isLoading: isUsersLoading } = useGetUsersQuery(
+    undefined,
+    { skip: !open },
+  );
   const { data: templatesData, isLoading: isTemplatesLoading } =
-    useGetAdaptationPlanTemplatesQuery(undefined);
-  const { data: mentorsData } = useGetMentorsQuery(undefined);
-  const { data: departmentHeadsData } = useGetDepartmentHeadsQuery(undefined);
+    useGetAdaptationPlanTemplatesQuery(undefined, { skip: !open });
+  const { data: mentorsData } = useGetMentorsQuery(undefined, { skip: !open });
+  const { data: departmentHeadsData } = useGetDepartmentHeadsQuery(undefined, {
+    skip: !open,
+  });
 
   const [userId, setUserId] = useState("");
   const [startDate, setStartDate] = useState("");
@@ -75,7 +80,7 @@ function PlanCreate(): JSX.Element {
   const [departmentHeadId, setDepartmentHeadId] = useState("");
 
   const users = (usersData ?? []) as UserType[];
-  const templates = (templatesData ?? []) as AdaptationTemplate[];
+  const templates = (templatesData ?? []) as AdaptationPlanTemplateType[];
   const mentors = resolveRoleUsers(mentorsData, users, USER_ROLES.MENTOR);
   const departmentHeads = resolveRoleUsers(
     departmentHeadsData,
@@ -90,6 +95,18 @@ function PlanCreate(): JSX.Element {
         .filter((template) => template.work_schedule === workSchedule)
         .sort(sortTemplates)
     : [];
+  const isLoading = isUsersLoading || isTemplatesLoading;
+
+  useEffect(() => {
+    if (!open) {
+      setUserId("");
+      setStartDate("");
+      setWorkSchedule("");
+      setTemplateId("");
+      setMentorId("");
+      setDepartmentHeadId("");
+    }
+  }, [open]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -124,52 +141,46 @@ function PlanCreate(): JSX.Element {
         department_head: Number(departmentHeadId),
       }).unwrap();
       toast.success("План адаптации создан");
+      onOpenChange(false);
     } catch {
       toast.error("Не удалось создать план адаптации");
     }
   };
 
   return (
-    <AdminFormPage
-      backTo={INTERNSHIP_ROUTES.list}
-      backLabel="К списку стажеров"
-      isLoading={isUsersLoading || isTemplatesLoading}
-    >
-      <Card>
-        <CardHeader>
-          <CardTitle>Создание плана адаптации</CardTitle>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="p-4">
-            <FieldGroup className="grid gap-4 sm:grid-cols-2">
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-2xl">
+        <DialogHeader>
+          <DialogTitle>Создание плана адаптации</DialogTitle>
+          <DialogDescription className="sr-only">
+            Заполните данные стажера, шаблон и ответственных для нового плана
+          </DialogDescription>
+        </DialogHeader>
+        {isLoading ? (
+          <div className="flex justify-center py-8">
+            <Loader />
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <div className="grid gap-4 sm:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor="plan-user">Стажер</FieldLabel>
-                <Select value={userId} onValueChange={setUserId}>
-                  <SelectTrigger id="plan-user" className="w-full">
-                    <SelectValue placeholder="Выберите пользователя" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {users
-                      .filter((user) => user.id != null)
-                      .map((user) => (
-                        <SelectItem key={user.id} value={String(user.id)}>
-                          {user.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="plan-start-date">
-                  Дата начала стажировки
-                </FieldLabel>
-                <Input
-                  id="plan-start-date"
-                  type="date"
-                  value={startDate}
-                  onChange={(e) => setStartDate(e.target.value)}
+                <SearchableCombobox
+                  id="plan-user"
+                  value={userId}
+                  onValueChange={setUserId}
+                  options={toUserOptions(users)}
+                  placeholder="Выберите пользователя"
+                  searchPlaceholder="Поиск стажера..."
+                  emptyMessage="Стажер не найден"
                 />
               </Field>
+              <DatePickerField
+                dateId="plan-start-date"
+                dateLabel="Дата начала стажировки"
+                date={startDate}
+                onDateChange={setStartDate}
+              />
               <Field>
                 <FieldLabel htmlFor="plan-schedule">Режим работы</FieldLabel>
                 <Select
@@ -182,7 +193,7 @@ function PlanCreate(): JSX.Element {
                   <SelectTrigger id="plan-schedule" className="w-full">
                     <SelectValue placeholder="Выберите режим работы" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[60]">
                     {workSchedules.map((schedule) => (
                       <SelectItem key={schedule} value={schedule}>
                         {schedule}
@@ -203,7 +214,7 @@ function PlanCreate(): JSX.Element {
                   <SelectTrigger id="plan-template" className="w-full">
                     <SelectValue placeholder="Выберите шаблон" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="z-[60]">
                     {filteredTemplates.map((template) => (
                       <SelectItem key={template.id} value={String(template.id)}>
                         {template.name} (смена:{" "}
@@ -215,54 +226,40 @@ function PlanCreate(): JSX.Element {
               </Field>
               <Field>
                 <FieldLabel htmlFor="plan-mentor">Наставник</FieldLabel>
-                <Select value={mentorId} onValueChange={setMentorId}>
-                  <SelectTrigger id="plan-mentor" className="w-full">
-                    <SelectValue placeholder="Выберите наставника" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {mentors
-                      .filter((mentor) => mentor.id != null)
-                      .map((mentor) => (
-                        <SelectItem key={mentor.id} value={String(mentor.id)}>
-                          {mentor.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                <SearchableCombobox
+                  id="plan-mentor"
+                  value={mentorId}
+                  onValueChange={setMentorId}
+                  options={toUserOptions(mentors)}
+                  placeholder="Выберите наставника"
+                  searchPlaceholder="Поиск наставника..."
+                  emptyMessage="Наставник не найден"
+                />
               </Field>
               <Field>
                 <FieldLabel htmlFor="plan-head">Руководитель отдела</FieldLabel>
-                <Select
+                <SearchableCombobox
+                  id="plan-head"
                   value={departmentHeadId}
                   onValueChange={setDepartmentHeadId}
-                >
-                  <SelectTrigger id="plan-head" className="w-full">
-                    <SelectValue placeholder="Выберите руководителя" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {departmentHeads
-                      .filter((head) => head.id != null)
-                      .map((head) => (
-                        <SelectItem key={head.id} value={String(head.id)}>
-                          {head.name}
-                        </SelectItem>
-                      ))}
-                  </SelectContent>
-                </Select>
+                  options={toUserOptions(departmentHeads)}
+                  placeholder="Выберите руководителя"
+                  searchPlaceholder="Поиск руководителя..."
+                  emptyMessage="Руководитель не найден"
+                />
               </Field>
-            </FieldGroup>
-          </CardContent>
-          <Separator />
-          <CardFooter>
-            <Button type="submit" disabled={isCreating}>
-              {isCreating && <Spinner />}
-              Создать план
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
-    </AdminFormPage>
+            </div>
+            <DialogFooter>
+              <Button type="submit" disabled={isCreating}>
+                {isCreating && <Spinner />}
+                Создать план
+              </Button>
+            </DialogFooter>
+          </form>
+        )}
+      </DialogContent>
+    </Dialog>
   );
 }
 
-export default PlanCreate;
+export default PlanCreateDialog;

@@ -20,24 +20,42 @@ import { useLogout } from "@/hooks/useLogout.ts";
 import { useUser } from "@/hooks/useUser";
 import { getInitials } from "@/utils/getInitials.ts";
 
+function getShortUserName(fullName: string): string {
+  const [lastName = "", firstName = ""] = fullName.trim().split(/\s+/);
+
+  if (!lastName) return "";
+  if (!firstName) return lastName;
+
+  return `${firstName} ${lastName[0]}.`;
+}
+
+function UserIdentity({
+  name,
+  description,
+  initials,
+}: {
+  name: string;
+  description: string;
+  initials: string;
+}): JSX.Element {
+  return (
+    <>
+      <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
+        <span className="text-white text-sm font-semibold">{initials}</span>
+      </Avatar>
+      <div className="grid flex-1 text-left text-sm leading-tight">
+        <span className="truncate font-medium">{name}</span>
+        <span className="truncate text-xs">{description}</span>
+      </div>
+    </>
+  );
+}
+
 function Footer(): JSX.Element {
   const { isMobile } = useSidebar();
   const { logout } = useLogout();
   const { name, description } = useUser();
-
-  const getShortUserName = (fullName: string): string => {
-    const [lastName = "", firstName = ""] = fullName.trim().split(/\s+/);
-
-    if (!lastName) {
-      return "";
-    }
-    if (!firstName) {
-      return lastName;
-    }
-
-    return `${firstName} ${lastName[0]}.`;
-  };
-
+  const shortName = getShortUserName(name);
   const initials = getInitials(name);
 
   return (
@@ -50,17 +68,11 @@ function Footer(): JSX.Element {
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
-                  <span className="text-white text-sm font-semibold">
-                    {initials}
-                  </span>
-                </Avatar>
-                <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">
-                    {getShortUserName(name)}
-                  </span>
-                  <span className="truncate text-xs">{description}</span>
-                </div>
+                <UserIdentity
+                  name={shortName}
+                  description={description}
+                  initials={initials}
+                />
                 <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>
             </DropdownMenuTrigger>
@@ -72,17 +84,11 @@ function Footer(): JSX.Element {
             >
               <DropdownMenuLabel className="p-0 font-normal">
                 <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-                  <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
-                    <span className="text-white text-sm font-semibold">
-                      {initials}
-                    </span>
-                  </Avatar>
-                  <div className="grid flex-1 text-left text-sm leading-tight">
-                    <span className="truncate font-medium">
-                      {getShortUserName(name)}
-                    </span>
-                    <span className="truncate text-xs">{description}</span>
-                  </div>
+                  <UserIdentity
+                    name={shortName}
+                    description={description}
+                    initials={initials}
+                  />
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator />

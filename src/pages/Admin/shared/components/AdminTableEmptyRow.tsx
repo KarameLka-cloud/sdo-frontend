@@ -18,11 +18,11 @@ function AdminTableEmptyRow({
   return (
     <TableRow>
       <TableCell colSpan={colSpan} className="p-0">
-        <div className="flex min-h-[calc(100dvh-14rem)] items-center justify-center px-4 py-8">
+        <div className="flex items-center justify-center px-4 py-16">
           {hasSearch ? (
             <p className="text-sm text-muted-foreground">{notFoundMessage}</p>
           ) : (
-            emptyContent ?? <DataMessage type="noData" />
+            (emptyContent ?? <DataMessage type="noData" />)
           )}
         </div>
       </TableCell>

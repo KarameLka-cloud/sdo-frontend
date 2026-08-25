@@ -39,24 +39,12 @@ const SEGMENT_LABELS: Record<string, string> = {
  */
 const LEAF_LABELS: Array<{ path: string; label: string }> = [
   {
-    path: ROUTES.MENTORSHIP_INTERNS_PLAN_CREATE,
-    label: "Создание плана адаптации",
-  },
-  {
     path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
     label: "Редактирование плана адаптации стажера",
   },
   {
-    path: ROUTES.ADMIN_ADAPTATION_TEMPLATES_CREATE,
-    label: "Создание плана адаптации",
-  },
-  {
     path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
     label: "Редактирование плана адаптации",
-  },
-  {
-    path: ROUTES.ADMIN_USER_EDIT,
-    label: "Редактирование пользователя",
   },
   {
     path: ROUTES.ADMIN_LEARNING_CREATE,

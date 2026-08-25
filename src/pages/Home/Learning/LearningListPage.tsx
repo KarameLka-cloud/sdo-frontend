@@ -7,11 +7,9 @@ import {
   LearningType,
 } from "@/interfaces/api/LearningItemType.ts";
 import {
-  buildLearningPath,
-  isLearningCategory,
-  isLearningType,
-  isValidLearningPair,
   LEARNING_TYPE_LABELS,
+  buildLearningPath,
+  resolveLearningRoute,
 } from "@/constants/learning.ts";
 import { useGetLearningItemsQuery } from "@/services/store/features/learningItems.ts";
 
@@ -49,18 +47,17 @@ function LearningListContent({
 
 function LearningListPage(): JSX.Element {
   const [searchParams] = useSearchParams();
-  const categoryParam = searchParams.get("category");
-  const typeParam = searchParams.get("type");
+  const route = resolveLearningRoute(
+    searchParams.get("category"),
+    searchParams.get("type"),
+    buildLearningPath,
+  );
 
-  if (!isLearningCategory(categoryParam) || !isLearningType(typeParam)) {
-    return <Navigate to={buildLearningPath("education", "event")} replace />;
+  if ("redirect" in route) {
+    return <Navigate to={route.redirect} replace />;
   }
 
-  if (!isValidLearningPair(categoryParam, typeParam)) {
-    return <Navigate to={buildLearningPath(categoryParam, "event")} replace />;
-  }
-
-  return <LearningListContent category={categoryParam} type={typeParam} />;
+  return <LearningListContent category={route.category} type={route.type} />;
 }
 
 export default LearningListPage;

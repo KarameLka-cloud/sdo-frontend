@@ -21,6 +21,7 @@ import {
   HOME_NAV_LINKS,
   MENTOR_NAV_LINKS,
   ADMIN_NAV_LINKS,
+  type NavigationItem,
 } from "@/constants/navigation";
 import { useUser } from "@/hooks/useUser.ts";
 import {
@@ -50,6 +51,84 @@ function isNavLinkActive(targetPath: string, current: string): boolean {
   return true;
 }
 
+function NavItem({
+  item,
+  current,
+}: {
+  item: NavigationItem;
+  current: string;
+}): JSX.Element {
+  if (item.children) {
+    return (
+      <Collapsible asChild className="group/collapsible">
+        <SidebarMenuItem>
+          <CollapsibleTrigger asChild>
+            <SidebarMenuButton>
+              <item.icon />
+              <span className="text-sm">{item.name}</span>
+              <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+            </SidebarMenuButton>
+          </CollapsibleTrigger>
+          <CollapsibleContent>
+            <SidebarMenuSub>
+              {item.children.map((subItem) => (
+                <SidebarMenuSubItem key={subItem.id}>
+                  <SidebarMenuSubButton
+                    asChild
+                    isActive={isNavLinkActive(subItem.path, current)}
+                  >
+                    <NavLink to={subItem.path}>
+                      <span>{subItem.name}</span>
+                    </NavLink>
+                  </SidebarMenuSubButton>
+                </SidebarMenuSubItem>
+              ))}
+            </SidebarMenuSub>
+          </CollapsibleContent>
+        </SidebarMenuItem>
+      </Collapsible>
+    );
+  }
+
+  return (
+    <SidebarMenuItem>
+      <SidebarMenuButton asChild isActive={isNavLinkActive(item.path, current)}>
+        <NavLink to={item.path}>
+          <item.icon />
+          <span className="text-sm">{item.name}</span>
+        </NavLink>
+      </SidebarMenuButton>
+    </SidebarMenuItem>
+  );
+}
+
+function NavLinks({
+  items,
+  current,
+  label,
+  hideOnIconCollapse = false,
+}: {
+  items: ReadonlyArray<NavigationItem>;
+  current: string;
+  label?: string;
+  hideOnIconCollapse?: boolean;
+}): JSX.Element {
+  return (
+    <SidebarGroup
+      className={
+        hideOnIconCollapse ? "group-data-[collapsible=icon]:hidden" : undefined
+      }
+    >
+      {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
+      {items.map((item) => (
+        <SidebarMenu key={item.id}>
+          <NavItem item={item} current={current} />
+        </SidebarMenu>
+      ))}
+    </SidebarGroup>
+  );
+}
+
 function Content(): JSX.Element {
   const { role, role_name: roleName } = useUser();
   const location = useLocation();
@@ -64,166 +143,22 @@ function Content(): JSX.Element {
 
   return (
     <SidebarContent className="pt-10">
-      <SidebarGroup>
-        {HOME_NAV_LINKS.map((item) => (
-          <SidebarMenu key={item.id}>
-            {item.children ? (
-              <SidebarMenu>
-                <Collapsible asChild className="group/collapsible">
-                  <SidebarMenuItem>
-                    <CollapsibleTrigger asChild>
-                      <SidebarMenuButton>
-                        {item.icon && <item.icon />}
-                        <span className="text-sm">{item.name}</span>
-                        <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                      </SidebarMenuButton>
-                    </CollapsibleTrigger>
-                    <CollapsibleContent>
-                      <SidebarMenuSub>
-                        {item.children?.map((subItem) => (
-                          <SidebarMenuSubItem key={subItem.id}>
-                            <SidebarMenuSubButton
-                              asChild
-                              isActive={isNavLinkActive(subItem.path, current)}
-                            >
-                              <NavLink to={subItem.path}>
-                                <span>{subItem.name}</span>
-                              </NavLink>
-                            </SidebarMenuSubButton>
-                          </SidebarMenuSubItem>
-                        ))}
-                      </SidebarMenuSub>
-                    </CollapsibleContent>
-                  </SidebarMenuItem>
-                </Collapsible>
-              </SidebarMenu>
-            ) : (
-              <SidebarMenuItem>
-                <SidebarMenuButton
-                  asChild
-                  isActive={isNavLinkActive(item.path, current)}
-                >
-                  <NavLink to={item.path}>
-                    {item.icon && <item.icon />}
-                    <span className="text-sm">{item.name}</span>
-                  </NavLink>
-                </SidebarMenuButton>
-              </SidebarMenuItem>
-            )}
-          </SidebarMenu>
-        ))}
-      </SidebarGroup>
-
+      <NavLinks items={HOME_NAV_LINKS} current={current} />
       {hasMentorAccess && (
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarGroupLabel>Наставничество</SidebarGroupLabel>
-          {MENTOR_NAV_LINKS.map((item) => (
-            <SidebarMenu key={item.id}>
-              {item.children ? (
-                <SidebarMenu>
-                  <Collapsible asChild className="group/collapsible">
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton>
-                          {item.icon && <item.icon />}
-                          <span className="text-sm">{item.name}</span>
-                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.children?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.id}>
-                              <SidebarMenuSubButton
-                                asChild
-                                isActive={isNavLinkActive(
-                                  subItem.path,
-                                  current,
-                                )}
-                              >
-                                <NavLink to={subItem.path}>
-                                  <span>{subItem.name}</span>
-                                </NavLink>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                </SidebarMenu>
-              ) : (
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavLinkActive(item.path, current)}
-                  >
-                    <NavLink to={item.path}>
-                      {item.icon && <item.icon />}
-                      <span className="text-sm">{item.name}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-          ))}
-        </SidebarGroup>
+        <NavLinks
+          items={MENTOR_NAV_LINKS}
+          current={current}
+          label="Наставничество"
+          hideOnIconCollapse
+        />
       )}
-
       {isAdmin && (
-        <SidebarGroup className="group-data-[collapsible=icon]:hidden">
-          <SidebarGroupLabel>Администрирование</SidebarGroupLabel>
-          {ADMIN_NAV_LINKS.map((item) => (
-            <SidebarMenu key={item.id}>
-              {item.children ? (
-                <SidebarMenu>
-                  <Collapsible asChild className="group/collapsible">
-                    <SidebarMenuItem>
-                      <CollapsibleTrigger asChild>
-                        <SidebarMenuButton>
-                          {item.icon && <item.icon />}
-                          <span className="text-sm">{item.name}</span>
-                          <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-                        </SidebarMenuButton>
-                      </CollapsibleTrigger>
-                      <CollapsibleContent>
-                        <SidebarMenuSub>
-                          {item.children?.map((subItem) => (
-                            <SidebarMenuSubItem key={subItem.id}>
-                              <SidebarMenuSubButton
-                                asChild
-                                isActive={isNavLinkActive(
-                                  subItem.path,
-                                  current,
-                                )}
-                              >
-                                <NavLink to={subItem.path}>
-                                  <span>{subItem.name}</span>
-                                </NavLink>
-                              </SidebarMenuSubButton>
-                            </SidebarMenuSubItem>
-                          ))}
-                        </SidebarMenuSub>
-                      </CollapsibleContent>
-                    </SidebarMenuItem>
-                  </Collapsible>
-                </SidebarMenu>
-              ) : (
-                <SidebarMenuItem>
-                  <SidebarMenuButton
-                    asChild
-                    isActive={isNavLinkActive(item.path, current)}
-                  >
-                    <NavLink to={item.path}>
-                      {item.icon && <item.icon />}
-                      <span className="text-sm">{item.name}</span>
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              )}
-            </SidebarMenu>
-          ))}
-        </SidebarGroup>
+        <NavLinks
+          items={ADMIN_NAV_LINKS}
+          current={current}
+          label="Администрирование"
+          hideOnIconCollapse
+        />
       )}
     </SidebarContent>
   );

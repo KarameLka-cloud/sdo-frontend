@@ -10,10 +10,9 @@ type DataListProps<T> = {
   emptyMessage?: JSX.Element;
   errorMessage?: JSX.Element;
   loader?: JSX.Element;
-  maxItems?: number;
 };
 
-export function DataList<T>({
+function DataList<T>({
   data,
   isLoading,
   error,
@@ -25,7 +24,6 @@ export function DataList<T>({
       <Loader />
     </DataStateCenter>
   ),
-  maxItems,
 }: DataListProps<T>) {
   if (error) return errorMessage;
   if (isLoading) return loader;
@@ -34,9 +32,7 @@ export function DataList<T>({
     return emptyMessage;
   }
 
-  const items = maxItems ? data.slice(0, maxItems) : data;
-
-  return <>{items.map((item, index) => renderItem(item, index))}</>;
+  return <>{data.map((item, index) => renderItem(item, index))}</>;
 }
 
 export default DataList;

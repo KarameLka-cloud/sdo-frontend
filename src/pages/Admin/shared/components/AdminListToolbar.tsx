@@ -17,6 +17,7 @@ interface AdminListToolbarProps {
   search: string;
   onSearchChange: (value: string) => void;
   createTo?: string;
+  onCreate?: () => void;
   createLabel?: string;
   leftSlot?: ReactNode;
 }
@@ -27,27 +28,33 @@ function AdminListToolbar({
   search,
   onSearchChange,
   createTo,
+  onCreate,
   createLabel,
   leftSlot,
 }: AdminListToolbarProps) {
   const hasSearch = search.trim().length > 0;
+
+  const createButton =
+    createLabel && onCreate ? (
+      <Button type="button" variant="outline" size="sm" onClick={onCreate}>
+        <PlusIcon />
+        {createLabel}
+      </Button>
+    ) : createLabel && createTo ? (
+      <Button variant="outline" size="sm" asChild>
+        <Link to={createTo}>
+          <PlusIcon />
+          {createLabel}
+        </Link>
+      </Button>
+    ) : null;
 
   return (
     <div className="sticky mt-10">
       <Card>
         <CardContent>
           <FieldGroup className="flex flex-row items-end justify-between gap-4">
-            <div className="shrink-0">
-              {leftSlot ??
-                (createTo && createLabel ? (
-                  <Button variant="outline" size="sm" asChild>
-                    <Link to={createTo}>
-                      <PlusIcon />
-                      {createLabel}
-                    </Link>
-                  </Button>
-                ) : null)}
-            </div>
+            <div className="shrink-0">{leftSlot ?? createButton}</div>
             <Field className="w-2/4">
               <InputGroup>
                 <InputGroupAddon>

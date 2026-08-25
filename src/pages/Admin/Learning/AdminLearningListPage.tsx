@@ -31,40 +31,13 @@ import AdminTableRowActions from "@/pages/Admin/shared/components/AdminTableRowA
 import AdminTableEmptyRow from "@/pages/Admin/shared/components/AdminTableEmptyRow";
 import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
 import {
+  LEARNING_DELETE_MESSAGES,
+  LEARNING_TYPE_LABELS,
   buildAdminLearningCreatePath,
   buildAdminLearningEditPath,
   buildAdminLearningPath,
-  isLearningCategory,
-  isLearningType,
-  isValidLearningPair,
-  LEARNING_TYPE_LABELS,
+  resolveLearningRoute,
 } from "@/constants/learning.ts";
-
-const DELETE_MESSAGES: Record<
-  LearningType,
-  { confirm: string; success: string; error: string }
-> = {
-  event: {
-    confirm: "Удалить мероприятие?",
-    success: "Мероприятие удалено",
-    error: "Не удалось удалить мероприятие",
-  },
-  course: {
-    confirm: "Удалить курс?",
-    success: "Курс удалён",
-    error: "Не удалось удалить курс",
-  },
-  webinar: {
-    confirm: "Удалить вебинар?",
-    success: "Вебинар удалён",
-    error: "Не удалось удалить вебинар",
-  },
-  test: {
-    confirm: "Удалить тест?",
-    success: "Тест удалён",
-    error: "Не удалось удалить тест",
-  },
-};
 
 const CREATE_LABELS: Record<LearningType, string> = {
   event: "Создать мероприятие",
@@ -89,7 +62,7 @@ function AdminLearningListContent({
   const [search, setSearch] = useState("");
   const { handleDelete, isDeletingItem } = useAdminListDelete<LearningItemType>(
     deleteMutation,
-    DELETE_MESSAGES[type],
+    LEARNING_DELETE_MESSAGES[type],
   );
 
   const filteredData = useFiltered<LearningItemType>(data, search);
@@ -239,22 +212,19 @@ function AdminLearningListContent({
 
 function AdminLearningListPage(): JSX.Element {
   const [searchParams] = useSearchParams();
-  const categoryParam = searchParams.get("category");
-  const typeParam = searchParams.get("type");
+  const route = resolveLearningRoute(
+    searchParams.get("category"),
+    searchParams.get("type"),
+    buildAdminLearningPath,
+  );
 
-  if (!isLearningCategory(categoryParam) || !isLearningType(typeParam)) {
-    return (
-      <Navigate to={buildAdminLearningPath("education", "event")} replace />
-    );
+  if ("redirect" in route) {
+    return <Navigate to={route.redirect} replace />;
   }
 
-  if (!isValidLearningPair(categoryParam, typeParam)) {
-    return (
-      <Navigate to={buildAdminLearningPath(categoryParam, "event")} replace />
-    );
-  }
-
-  return <AdminLearningListContent category={categoryParam} type={typeParam} />;
+  return (
+    <AdminLearningListContent category={route.category} type={route.type} />
+  );
 }
 
 export default AdminLearningListPage;

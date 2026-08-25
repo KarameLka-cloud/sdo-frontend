@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import { cn } from "@/lib/utils";
 
 export type FormActionStatusType = "idle" | "loading" | "success" | "error";
 
@@ -7,6 +8,12 @@ interface FormActionStatusProps {
   message: string;
   className?: string;
 }
+
+const VARIANT_CLASS: Record<Exclude<FormActionStatusType, "idle">, string> = {
+  error: "text-red-700 bg-red-50 border-red-200",
+  success: "text-green-700 bg-green-50 border-green-200",
+  loading: "text-blue-700 bg-blue-50 border-blue-200",
+};
 
 function FormActionStatus({
   type,
@@ -17,28 +24,13 @@ function FormActionStatus({
     return null;
   }
 
-  const variantClass = (() => {
-    switch (type) {
-      case "error":
-        return "text-red-700 bg-red-50 border-red-200";
-      case "success":
-        return "text-green-700 bg-green-50 border-green-200";
-      case "loading":
-        return "text-blue-700 bg-blue-50 border-blue-200";
-      default:
-        return "";
-    }
-  })();
-
   return (
     <span
-      className={[
-        "text-sm font-medium py-1.5 px-2.5 rounded-lg inline-block max-w-[min(100%,22rem)] leading-tight",
-        variantClass,
+      className={cn(
+        "text-sm font-medium py-1.5 px-2.5 rounded-lg inline-block max-w-[min(100%,22rem)] leading-tight border",
+        VARIANT_CLASS[type],
         className,
-      ]
-        .filter(Boolean)
-        .join(" ")}
+      )}
     >
       {message}
     </span>

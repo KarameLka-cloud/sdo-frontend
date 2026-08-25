@@ -1,6 +1,8 @@
 import { JSX, useState } from "react";
 import Development from "@/components/ui/custom/Development";
-import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
+import DataMessage, {
+  DataStateCenter,
+} from "@/components/ui/custom/DataMessage";
 import CareerDay from "@/components/ui/custom/CareerDay";
 import Loader from "@/components/ui/custom/Loader";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
@@ -59,8 +61,6 @@ function formatDayDate(dateFrom: string, dateTo?: string | null): string {
 }
 
 function mapPlanDays(plan: AdaptationPlan): AdaptationDayType[] {
-  const mentorName = plan.mentor_user?.name ?? "Наставник";
-
   return (plan.days ?? []).map((day) => ({
     id: day.id,
     workDay: day.work_day,
@@ -68,7 +68,6 @@ function mapPlanDays(plan: AdaptationPlan): AdaptationDayType[] {
     dayTo: day.day_to ?? undefined,
     date: formatDayDate(day.date_from, day.date_to),
     completion: day.completion,
-    responsible: mentorName,
     employeeComment: day.employee_comment ?? "",
     internComment: day.intern_comment ?? "",
     mentorComment: day.mentor_comment ?? "",
@@ -93,7 +92,10 @@ async function runSave(
   setSaveStatus({ type: "loading", message: FORM_STATUS_MESSAGES.saveLoading });
   try {
     await action();
-    setSaveStatus({ type: "success", message: FORM_STATUS_MESSAGES.saveSuccess });
+    setSaveStatus({
+      type: "success",
+      message: FORM_STATUS_MESSAGES.saveSuccess,
+    });
   } catch {
     setSaveStatus({ type: "error", message: FORM_STATUS_MESSAGES.saveError });
     throw new Error("Save failed");

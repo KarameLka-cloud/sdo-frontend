@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "sonner";
+import { useConfirm } from "@/hooks/useConfirm.ts";
 
 interface DeleteMessages {
   confirm: string;
@@ -16,9 +17,10 @@ export function useAdminListDelete<T extends { id: number }>(
 ) {
   const [deleteItem, { isLoading: isDeleting }] = deleteMutation;
   const [deletingId, setDeletingId] = useState<number | null>(null);
+  const confirm = useConfirm();
 
   const handleDelete = async (item: T) => {
-    const confirmed = window.confirm(messages.confirm);
+    const confirmed = await confirm({ title: messages.confirm });
     if (!confirmed) return;
 
     setDeletingId(item.id);

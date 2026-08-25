@@ -1,5 +1,10 @@
 import { useNavigate } from "react-router-dom";
-import { MoreHorizontalIcon, CopyIcon, PencilIcon, TrashIcon } from "lucide-react";
+import {
+  MoreHorizontalIcon,
+  CopyIcon,
+  PencilIcon,
+  TrashIcon,
+} from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   DropdownMenu,
@@ -9,7 +14,8 @@ import {
 } from "@/components/ui/shadcn/dropdown-menu";
 
 interface AdminTableRowActionsProps {
-  editPath: string;
+  editPath?: string;
+  onEdit?: () => void;
   onDelete?: () => void;
   onCopy?: () => void;
   isDeleting: boolean;
@@ -19,6 +25,7 @@ interface AdminTableRowActionsProps {
 
 function AdminTableRowActions({
   editPath,
+  onEdit,
   onDelete,
   onCopy,
   isDeleting,
@@ -42,7 +49,17 @@ function AdminTableRowActions({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-auto min-w-max">
-        <DropdownMenuItem onClick={() => navigate(editPath)}>
+        <DropdownMenuItem
+          onClick={() => {
+            if (onEdit) {
+              onEdit();
+              return;
+            }
+            if (editPath) {
+              navigate(editPath);
+            }
+          }}
+        >
           <PencilIcon />
           Редактировать
         </DropdownMenuItem>
@@ -53,13 +70,7 @@ function AdminTableRowActions({
           </DropdownMenuItem>
         )}
         {showDelete && onDelete && (
-          <DropdownMenuItem
-            variant="destructive"
-            onSelect={(event) => {
-              event.preventDefault();
-              onDelete();
-            }}
-          >
+          <DropdownMenuItem variant="destructive" onSelect={onDelete}>
             <TrashIcon />
             Удалить
           </DropdownMenuItem>

@@ -35,26 +35,19 @@ import {
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminEditDelete } from "@/pages/Admin/shared/useAdminEditDelete.ts";
 import { usePopulateEditForm } from "@/pages/Admin/shared/usePopulateEditForm.ts";
+import {
+  AdaptationPlanTemplateType,
+  AdaptationPlanTemplateTask,
+} from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 
 type ResponsibleRole = "Руководитель отдела" | "Наставник" | "Сотрудник УПиПК";
 
 type ResponsibleRoleForm = ResponsibleRole | "";
 
-interface TaskRule {
-  description: string;
+type TaskRule = AdaptationPlanTemplateTask & {
   responsible_role: ResponsibleRole;
-  day_from?: number | null;
-  day_to?: number | null;
   links: string[];
-}
-
-interface AdaptationPlanTemplateType {
-  id: number;
-  name: string;
-  work_schedule: string;
-  shifts: number[];
-  task_blueprint?: TaskRule[];
-}
+};
 
 interface TaskRuleForm {
   description: string;
@@ -90,10 +83,10 @@ const DELETE_MESSAGES = {
   error: "Не удалось удалить шаблон",
 };
 
-function toFormRule(rule: TaskRule): TaskRuleForm {
+function toFormRule(rule: AdaptationPlanTemplateTask): TaskRuleForm {
   return {
     description: rule.description,
-    responsible_role: rule.responsible_role,
+    responsible_role: rule.responsible_role as ResponsibleRoleForm,
     day_from: rule.day_from ? String(rule.day_from) : "",
     day_to: rule.day_to ? String(rule.day_to) : "",
     links: (rule.links ?? []).join(", "),

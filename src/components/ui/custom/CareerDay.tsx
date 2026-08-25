@@ -58,7 +58,10 @@ function CareerDay({
       повторить: "bg-red-50 text-red-800 border-red-300",
       "есть замечания": "bg-indigo-50 text-indigo-800 border-indigo-300",
     };
-    return statusMap[completion.toLowerCase()] || "bg-gray-50 text-gray-800 border-gray-300";
+    return (
+      statusMap[completion.toLowerCase()] ||
+      "bg-gray-50 text-gray-800 border-gray-300"
+    );
   };
 
   return (
@@ -128,7 +131,7 @@ function CareerDay({
             className="flex items-center justify-between gap-4 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer text-left transition-all duration-200 hover:bg-gray-100"
             aria-expanded={isCommentsExpanded}
           >
-            <span className="m-0 text-[0.95rem] font-semibold text-gray-900 uppercase tracking-wider group-hover:text-blue-600">
+            <span className="m-0 text-[0.95rem] font-semibold text-gray-900 uppercase tracking-wider">
               Комментарии
             </span>
             <span
@@ -163,7 +166,7 @@ function CareerDay({
                       <textarea
                         value={editedInternComment}
                         onChange={(e) => setEditedInternComment(e.target.value)}
-                        className="w-full box-border p-3 border border-gray-300 rounded-lg text-sm font-inherit text-gray-900 resize-y min-h-25 leading-relaxed focus:outline-none focus:border-blue-600 focus:ring-2 focus:ring-blue-600/10"
+                        className="w-full box-border p-3 border border-gray-300 rounded-lg text-sm font-inherit text-gray-900 resize-y min-h-25 leading-relaxed focus:outline-none focus:ring-0"
                         placeholder="Введите комментарий..."
                       />
                       <div className="flex gap-2 justify-start items-center flex-wrap">

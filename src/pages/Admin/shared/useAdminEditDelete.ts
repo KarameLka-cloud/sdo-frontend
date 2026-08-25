@@ -1,4 +1,5 @@
 import { toast } from "sonner";
+import { useConfirm } from "@/hooks/useConfirm.ts";
 
 interface DeleteMessages {
   confirm: string;
@@ -15,9 +16,10 @@ export function useAdminEditDelete(
   onSuccess: () => void,
 ) {
   const [deleteItem, { isLoading: isDeleting }] = deleteMutation;
+  const confirm = useConfirm();
 
   const handleDelete = async (id: number) => {
-    const confirmed = window.confirm(messages.confirm);
+    const confirmed = await confirm({ title: messages.confirm });
     if (!confirmed) return;
 
     try {

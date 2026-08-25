@@ -14,7 +14,12 @@ import { UserType } from "@/interfaces/api/UserType.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { Button } from "@/components/ui/shadcn/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/shadcn/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/shadcn/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
 import { Input } from "@/components/ui/shadcn/input";
 import {
@@ -29,6 +34,7 @@ import { Spinner } from "@/components/ui/shadcn/spinner";
 import { Textarea } from "@/components/ui/shadcn/textarea";
 import { cn } from "@/lib/utils";
 import { formatDayRange } from "@/utils/formatDayRange.ts";
+import DatePickerField from "@/components/ui/custom/DatePickerField";
 import AdminFormPage from "@/pages/Admin/shared/components/AdminFormPage";
 import AdminEditFormFooter from "@/pages/Admin/shared/components/AdminEditFormFooter";
 import {
@@ -454,19 +460,12 @@ function PlanEditor(): JSX.Element {
                   disabled
                 />
               </Field>
-              <Field>
-                <FieldLabel htmlFor="plan-start-date">
-                  Дата начала стажировки
-                </FieldLabel>
-                <Input
-                  id="plan-start-date"
-                  type="date"
-                  value={form.startDate}
-                  onChange={(event) =>
-                    setForm({ ...form, startDate: event.target.value })
-                  }
-                />
-              </Field>
+              <DatePickerField
+                dateId="plan-start-date"
+                dateLabel="Дата начала стажировки"
+                date={form.startDate}
+                onDateChange={(value) => setForm({ ...form, startDate: value })}
+              />
               <Field>
                 <FieldLabel htmlFor="plan-schedule">Режим работы</FieldLabel>
                 <Input
@@ -552,46 +551,36 @@ function PlanEditor(): JSX.Element {
             </CardHeader>
             <CardContent className="p-4">
               <FieldGroup className="grid gap-4 sm:grid-cols-2">
-                <Field>
-                  <FieldLabel htmlFor={`day-date-from-${day.id}`}>
-                    Дата от
-                  </FieldLabel>
-                  <Input
-                    id={`day-date-from-${day.id}`}
-                    type="date"
-                    value={day.date_from}
-                    onChange={(event) =>
-                      setDays((previous) => {
-                        const next = [...previous];
-                        next[dayIndex] = {
-                          ...next[dayIndex],
-                          date_from: event.target.value,
-                        };
-                        return next;
-                      })
-                    }
-                  />
-                </Field>
-                <Field>
-                  <FieldLabel htmlFor={`day-date-to-${day.id}`}>
-                    Дата до (опционально)
-                  </FieldLabel>
-                  <Input
-                    id={`day-date-to-${day.id}`}
-                    type="date"
-                    value={day.date_to ?? ""}
-                    onChange={(event) =>
-                      setDays((previous) => {
-                        const next = [...previous];
-                        next[dayIndex] = {
-                          ...next[dayIndex],
-                          date_to: event.target.value || null,
-                        };
-                        return next;
-                      })
-                    }
-                  />
-                </Field>
+                <DatePickerField
+                  dateId={`day-date-from-${day.id}`}
+                  dateLabel="Дата от"
+                  date={day.date_from}
+                  onDateChange={(value) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        date_from: value,
+                      };
+                      return next;
+                    })
+                  }
+                />
+                <DatePickerField
+                  dateId={`day-date-to-${day.id}`}
+                  dateLabel="Дата до (опционально)"
+                  date={day.date_to ?? ""}
+                  onDateChange={(value) =>
+                    setDays((previous) => {
+                      const next = [...previous];
+                      next[dayIndex] = {
+                        ...next[dayIndex],
+                        date_to: value || null,
+                      };
+                      return next;
+                    })
+                  }
+                />
               </FieldGroup>
               <Field>
                 <FieldLabel htmlFor={`day-status-${day.id}`}>

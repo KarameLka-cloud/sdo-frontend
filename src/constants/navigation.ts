@@ -13,7 +13,7 @@ interface NavigationItemChild {
   path: string;
 }
 
-interface NavigationItem {
+export interface NavigationItem {
   id: number;
   name: string;
   path: string;

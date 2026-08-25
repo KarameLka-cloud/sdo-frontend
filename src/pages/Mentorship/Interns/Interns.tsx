@@ -1,6 +1,8 @@
 import { JSX, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
+import DataMessage, {
+  DataStateCenter,
+} from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 import {
   useDeleteAdaptationPlanMutation,
@@ -11,7 +13,7 @@ import {
 } from "@/services/store/features/user.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import { hasRole, isUserInRole, USER_ROLES } from "@/constants/roles.ts";
+import { hasRole, USER_ROLES } from "@/constants/roles.ts";
 import {
   Table,
   TableBody,
@@ -28,6 +30,8 @@ import {
   buildEditPath,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
+import PlanCreateDialog from "@/pages/Mentorship/Interns/PlanCreateDialog";
+import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
 
 interface AdaptationPlan {
   id: number;
@@ -46,17 +50,6 @@ const DELETE_MESSAGES = {
   confirm: "Удалить план стажера?",
   success: "План стажера удалён",
   error: "Не удалось удалить план",
-};
-
-const resolveRoleUsers = (
-  fromApi: UserType[] | undefined,
-  allUsers: UserType[],
-  role: (typeof USER_ROLES)[keyof typeof USER_ROLES],
-) => {
-  const list = (fromApi ?? []) as UserType[];
-  return list.length
-    ? list
-    : allUsers.filter((user) => isUserInRole(user, role));
 };
 
 const buildNameLookup = (users: UserType[]) =>
@@ -125,8 +118,11 @@ function Interns(): JSX.Element {
   const { role, role_name: roleName, id: currentUserId } = useUser();
   const deleteMutation = useDeleteAdaptationPlanMutation();
   const [search, setSearch] = useState("");
-  const { handleDelete, isDeletingItem } =
-    useAdminListDelete<AdaptationPlan>(deleteMutation, DELETE_MESSAGES);
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const { handleDelete, isDeletingItem } = useAdminListDelete<AdaptationPlan>(
+    deleteMutation,
+    DELETE_MESSAGES,
+  );
 
   const adaptationPlans = (plansData ?? []) as AdaptationPlan[];
   const users = (usersData ?? []) as UserType[];
@@ -156,7 +152,7 @@ function Interns(): JSX.Element {
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <AdminListToolbar
-        createTo={INTERNSHIP_ROUTES.create}
+        onCreate={() => setIsCreateOpen(true)}
         createLabel="Создать план"
         searchId="interns-search"
         searchPlaceholder="Имя, отдел, наставник, план..."
@@ -190,10 +186,7 @@ function Interns(): JSX.Element {
               />
             ) : (
               filteredPlans.map((plan) => {
-                const editPath = buildEditPath(
-                  INTERNSHIP_ROUTES.edit,
-                  plan.id,
-                );
+                const editPath = buildEditPath(INTERNSHIP_ROUTES.edit, plan.id);
 
                 return (
                   <TableRow
@@ -235,6 +228,8 @@ function Interns(): JSX.Element {
           </TableBody>
         </Table>
       )}
+
+      <PlanCreateDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
     </div>
   );
 }

@@ -1,7 +1,9 @@
 import { JSX, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import DataMessage, { DataStateCenter } from "@/components/ui/custom/DataMessage";
+import DataMessage, {
+  DataStateCenter,
+} from "@/components/ui/custom/DataMessage";
 import Loader from "@/components/ui/custom/Loader";
 import {
   useCreateAdaptationPlanTemplateMutation,
@@ -25,20 +27,8 @@ import {
   buildEditPath,
 } from "@/pages/Admin/shared/adminResourceConfig.ts";
 import { useAdminListDelete } from "@/pages/Admin/shared/useAdminListDelete.ts";
-
-interface AdaptationPlanTemplateType {
-  id: number;
-  name: string;
-  work_schedule: string;
-  shifts: number[];
-  task_blueprint?: Array<{
-    description: string;
-    responsible_role: string;
-    day_from?: number | null;
-    day_to?: number | null;
-    links?: string[];
-  }>;
-}
+import TemplateCreateDialog from "@/pages/Admin/Adaptation/Templates/TemplateCreateDialog";
+import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 
 const buildCopyName = (name: string) => `${name} (копия)`;
 
@@ -55,6 +45,7 @@ function Templates(): JSX.Element {
   const [createTemplate] = useCreateAdaptationPlanTemplateMutation();
   const deleteMutation = useDeleteAdaptationPlanTemplateMutation();
   const [search, setSearch] = useState("");
+  const [isCreateOpen, setIsCreateOpen] = useState(false);
   const [copyingId, setCopyingId] = useState<number | null>(null);
   const { handleDelete, isDeletingItem } =
     useAdminListDelete<AdaptationPlanTemplateType>(
@@ -79,10 +70,10 @@ function Templates(): JSX.Element {
     }
   };
 
-  const templates = (data ?? []) as AdaptationPlanTemplateType[];
   const hasSearch = search.trim().length > 0;
 
   const filteredTemplates = useMemo(() => {
+    const templates = (data ?? []) as AdaptationPlanTemplateType[];
     if (!hasSearch) return templates;
 
     const searchLower = search.toLowerCase();
@@ -96,12 +87,12 @@ function Templates(): JSX.Element {
         String(value).toLowerCase().includes(searchLower),
       );
     });
-  }, [hasSearch, search, templates]);
+  }, [data, hasSearch, search]);
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
       <AdminListToolbar
-        createTo={TEMPLATE_ROUTES.create}
+        onCreate={() => setIsCreateOpen(true)}
         createLabel="Создать план"
         searchId="templates-search"
         searchPlaceholder="Название, график, смена..."
@@ -135,7 +126,10 @@ function Templates(): JSX.Element {
               />
             ) : (
               filteredTemplates.map((template) => {
-                const editPath = buildEditPath(TEMPLATE_ROUTES.edit, template.id);
+                const editPath = buildEditPath(
+                  TEMPLATE_ROUTES.edit,
+                  template.id,
+                );
 
                 return (
                   <TableRow
@@ -169,6 +163,11 @@ function Templates(): JSX.Element {
           </TableBody>
         </Table>
       )}
+
+      <TemplateCreateDialog
+        open={isCreateOpen}
+        onOpenChange={setIsCreateOpen}
+      />
     </div>
   );
 }

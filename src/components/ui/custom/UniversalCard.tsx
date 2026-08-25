@@ -7,6 +7,7 @@ import {
   Clock,
   User,
   FileText,
+  type LucideIcon,
 } from "lucide-react";
 import { Separator } from "@/components/ui/shadcn/separator";
 import convertDate from "@/utils/convertDate.ts";
@@ -19,165 +20,114 @@ interface UniversalCardProps {
   item: LearningItemType;
 }
 
+type IconType = "calendar" | "timer" | "building" | "clock" | "user" | "file";
+
 interface FieldConfig {
   icon: ReactNode;
+  iconType: IconType;
   label: string;
   value: string | ReactNode;
   show: boolean;
 }
 
+const ICON_COLORS: Record<IconType, string> = {
+  calendar: "bg-purple-50 text-purple-600",
+  timer: "bg-amber-50 text-amber-600",
+  building: "bg-emerald-50 text-emerald-600",
+  clock: "bg-blue-50 text-blue-600",
+  user: "bg-red-50 text-red-600",
+  file: "bg-slate-50 text-slate-600",
+};
+
+function field(
+  iconType: IconType,
+  Icon: LucideIcon,
+  label: string,
+  value: string | ReactNode,
+  show = true,
+): FieldConfig {
+  return {
+    icon: <Icon className="h-3.5 w-3.5 shrink-0" />,
+    iconType,
+    label,
+    value,
+    show,
+  };
+}
+
+function getFields(item: LearningItemType): FieldConfig[] {
+  const departmentFields = [
+    field(
+      "building",
+      Building,
+      "Отдел:",
+      item.department ?? "",
+      hasTextValue(item.department),
+    ),
+    field(
+      "file",
+      FileText,
+      "Примечание:",
+      item.note_department ?? "",
+      hasTextValue(item.note_department),
+    ),
+  ];
+
+  const fieldsByType: Record<LearningItemType["type"], FieldConfig[]> = {
+    course: [
+      field("calendar", Calendar, "Пройти до:", convertDate(item.date)),
+      field("timer", Timer, "Время прохождения:", `${item.duration} мин.`),
+      ...departmentFields,
+    ],
+    event: [
+      field("calendar", Calendar, "Дата:", convertDate(item.date)),
+      field(
+        "clock",
+        Clock,
+        "Время:",
+        convertTime(item.time ?? ""),
+        hasTextValue(item.time),
+      ),
+      field("timer", Timer, "Время прохождения:", `${item.duration} мин.`),
+      ...departmentFields,
+    ],
+    webinar: [
+      field("calendar", Calendar, "Дата:", convertDate(item.date)),
+      field(
+        "clock",
+        Clock,
+        "Время:",
+        convertTime(item.time ?? ""),
+        hasTextValue(item.time),
+      ),
+      field("timer", Timer, "Длительность:", `${item.duration} мин.`),
+    ],
+    test: [
+      field("calendar", Calendar, "Пройти до:", convertDate(item.date)),
+      field("timer", Timer, "Время прохождения:", `${item.duration} мин.`),
+      field(
+        "user",
+        User,
+        "Сотрудник:",
+        item.position ?? "",
+        hasTextValue(item.position),
+      ),
+      field(
+        "file",
+        FileText,
+        "Примечание:",
+        item.note_position ?? "",
+        hasTextValue(item.note_position),
+      ),
+    ],
+  };
+
+  return fieldsByType[item.type].filter((itemField) => itemField.show);
+}
+
 function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
   const hasLink = hasTextValue(item.link);
-
-  const getFields = (): FieldConfig[] => {
-    const fields: FieldConfig[] = [];
-
-    switch (item.type) {
-      case "course":
-        fields.push(
-          {
-            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
-            label: "Пройти до:",
-            value: convertDate(item.date),
-            show: true,
-          },
-          {
-            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
-            label: "Время прохождения:",
-            value: `${item.duration} мин.`,
-            show: true,
-          },
-          {
-            icon: <Building className="h-3.5 w-3.5 shrink-0" />,
-            label: "Отдел:",
-            value: item.department ?? "",
-            show: hasTextValue(item.department),
-          },
-          {
-            icon: <FileText className="h-3.5 w-3.5 shrink-0" />,
-            label: "Примечание:",
-            value: item.note_department ?? "",
-            show: hasTextValue(item.note_department),
-          },
-        );
-        break;
-
-      case "event":
-        fields.push(
-          {
-            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
-            label: "Дата:",
-            value: convertDate(item.date),
-            show: true,
-          },
-          {
-            icon: <Clock className="h-3.5 w-3.5 shrink-0" />,
-            label: "Время:",
-            value: convertTime(item.time ?? ""),
-            show: hasTextValue(item.time),
-          },
-          {
-            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
-            label: "Время прохождения:",
-            value: `${item.duration} мин.`,
-            show: true,
-          },
-          {
-            icon: <Building className="h-3.5 w-3.5 shrink-0" />,
-            label: "Отдел:",
-            value: item.department ?? "",
-            show: hasTextValue(item.department),
-          },
-          {
-            icon: <FileText className="h-3.5 w-3.5 shrink-0" />,
-            label: "Примечание:",
-            value: item.note_department ?? "",
-            show: hasTextValue(item.note_department),
-          },
-        );
-        break;
-
-      case "webinar":
-        fields.push(
-          {
-            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
-            label: "Дата:",
-            value: convertDate(item.date),
-            show: true,
-          },
-          {
-            icon: <Clock className="h-3.5 w-3.5 shrink-0" />,
-            label: "Время:",
-            value: convertTime(item.time ?? ""),
-            show: hasTextValue(item.time),
-          },
-          {
-            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
-            label: "Длительность:",
-            value: `${item.duration} мин.`,
-            show: true,
-          },
-        );
-        break;
-
-      case "test":
-        fields.push(
-          {
-            icon: <Calendar className="h-3.5 w-3.5 shrink-0" />,
-            label: "Пройти до:",
-            value: convertDate(item.date),
-            show: true,
-          },
-          {
-            icon: <Timer className="h-3.5 w-3.5 shrink-0" />,
-            label: "Время прохождения:",
-            value: `${item.duration} мин.`,
-            show: true,
-          },
-          {
-            icon: <User className="h-3.5 w-3.5 shrink-0" />,
-            label: "Сотрудник:",
-            value: item.position ?? "",
-            show: hasTextValue(item.position),
-          },
-          {
-            icon: <FileText className="h-3.5 w-3.5 shrink-0" />,
-            label: "Примечание:",
-            value: item.note_position ?? "",
-            show: hasTextValue(item.note_position),
-          },
-        );
-        break;
-    }
-
-    return fields.filter((field) => field.show);
-  };
-
-  const fields = getFields();
-
-  const getIconColor = (iconType: string) => {
-    const colors: Record<string, string> = {
-      calendar: "bg-purple-50 text-purple-600",
-      timer: "bg-amber-50 text-amber-600",
-      building: "bg-emerald-50 text-emerald-600",
-      clock: "bg-blue-50 text-blue-600",
-      user: "bg-red-50 text-red-600",
-      file: "bg-slate-50 text-slate-600",
-    };
-    return colors[iconType] || "bg-gray-50 text-gray-600";
-  };
-
-  const getIconType = (icon: ReactNode): string => {
-    if (icon && typeof icon === "object" && "type" in icon) {
-      if (icon.type === Calendar) return "calendar";
-      if (icon.type === Timer) return "timer";
-      if (icon.type === Building) return "building";
-      if (icon.type === Clock) return "clock";
-      if (icon.type === User) return "user";
-      if (icon.type === FileText) return "file";
-    }
-    return "calendar";
-  };
+  const fields = getFields(item);
 
   return (
     <div
@@ -204,9 +154,7 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
           {fields.map((field, index) => (
             <div key={index} className="flex items-center gap-2 text-sm">
               <div
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${getIconColor(
-                  getIconType(field.icon),
-                )}`}
+                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-md ${ICON_COLORS[field.iconType]}`}
               >
                 {field.icon}
               </div>
@@ -229,7 +177,7 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
             rel="noopener noreferrer"
             className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 mt-4 bg-gray-900 text-white hover:bg-gray-800 focus-visible:ring-gray-500 cursor-pointer"
           >
-            <span>Ссылка</span>
+            <span>Перейти</span>
             <ExternalLink className="h-3 w-3 opacity-70" />
           </a>
         ) : (
@@ -238,7 +186,7 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
             disabled
             className="inline-flex items-center justify-center gap-2 rounded-lg px-3 py-1.5 text-sm font-medium mt-4 bg-gray-100 text-gray-400 cursor-not-allowed"
           >
-            <span>Ссылка</span>
+            <span>Перейти</span>
             <ExternalLink className="h-3 w-3 opacity-70" />
           </button>
         )}
