@@ -129,7 +129,6 @@ function LearningItemFormDialog({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent
         className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
-        onOpenAutoFocus={(event) => event.preventDefault()}
       >
         <DialogHeader className="px-4 pt-4">
           <DialogTitle>

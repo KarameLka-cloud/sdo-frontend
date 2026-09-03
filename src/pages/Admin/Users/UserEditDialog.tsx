@@ -55,35 +55,30 @@ function UserEditDialog({
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
-  const { data: roleOptions } = useGetRolesQuery(undefined, { skip: !open });
+  const { data: roleOptions } = useGetRolesQuery();
   const [assignRole, { isLoading: isAssigning }] = useAssignRoleMutation();
   const [revokeRole, { isLoading: isRevoking }] = useRevokeRoleMutation();
-  const [selectedRole, setSelectedRole] = useState(NO_ROLE_VALUE);
+  const [roleOverride, setRoleOverride] = useState<string | null>(null);
 
   const roles = roleOptions ?? [];
-  const currentRole = resolveAssignedRole(user, roles);
+  const assignedRole = resolveAssignedRole(user, roles);
+  const waitingForRoles =
+    Boolean(user?.role || user?.role_name) && roles.length === 0;
+  const selectedRole = roleOverride ?? assignedRole;
   const isSaving = isAssigning || isRevoking;
 
   useEffect(() => {
-    if (!open) {
-      setSelectedRole(NO_ROLE_VALUE);
-      return;
-    }
-
-    if (!user) return;
-    if ((user.role || user.role_name) && roles.length === 0) return;
-
-    setSelectedRole(resolveAssignedRole(user, roles));
-  }, [user, open, roles]);
+    setRoleOverride(null);
+  }, [open, user?.id]);
 
   const handleSaveRole = async () => {
     if (!user?.id) return;
 
     if (selectedRole === NO_ROLE_VALUE) {
-      if (currentRole === NO_ROLE_VALUE) return;
+      if (assignedRole === NO_ROLE_VALUE) return;
 
       try {
-        await revokeRole({ user_id: user.id, role: currentRole }).unwrap();
+        await revokeRole({ user_id: user.id, role: assignedRole }).unwrap();
         toast.success("Права отозваны");
       } catch {
         toast.error("Не удалось отозвать права");
@@ -91,7 +86,7 @@ function UserEditDialog({
       return;
     }
 
-    if (selectedRole === currentRole) return;
+    if (selectedRole === assignedRole) return;
 
     try {
       await assignRole({ user_id: user.id, role: selectedRole }).unwrap();
@@ -147,31 +142,47 @@ function UserEditDialog({
                     >
                       Роль
                     </FieldLabel>
-                    <Select
-                      key={`${user.id}-${roles.length}`}
-                      value={selectedRole}
-                      onValueChange={setSelectedRole}
-                      disabled={isSaving}
-                    >
-                      <SelectTrigger id="user-role" className="w-full">
-                        <SelectValue placeholder="Выберите роль" />
-                      </SelectTrigger>
-                      <SelectContent className="z-[60]">
-                        <SelectItem value={NO_ROLE_VALUE}>Нет прав</SelectItem>
-                        {roles.map((role: { name: string; label: string }) => (
-                          <SelectItem key={role.name} value={role.name}>
-                            {role.label}
+                    {waitingForRoles ? (
+                      <Select disabled>
+                        <SelectTrigger id="user-role" className="w-full">
+                          <SelectValue
+                            placeholder={user.role_name ?? "Загрузка..."}
+                          />
+                        </SelectTrigger>
+                      </Select>
+                    ) : (
+                      <Select
+                        key={`${user.id}-${assignedRole}`}
+                        value={selectedRole}
+                        onValueChange={setRoleOverride}
+                        disabled={isSaving}
+                      >
+                        <SelectTrigger id="user-role" className="w-full">
+                          <SelectValue placeholder="Выберите роль" />
+                        </SelectTrigger>
+                        <SelectContent className="z-[60]">
+                          <SelectItem value={NO_ROLE_VALUE}>
+                            Нет прав
                           </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                          {roles.map((role: { name: string; label: string }) => (
+                            <SelectItem key={role.name} value={role.name}>
+                              {role.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
                   </Field>
                 </div>
               </div>
               <DialogFooter>
                 <Button
                   type="submit"
-                  disabled={selectedRole === currentRole || isSaving}
+                  disabled={
+                    waitingForRoles ||
+                    selectedRole === assignedRole ||
+                    isSaving
+                  }
                 >
                   {isSaving && <Spinner />}
                   Сохранить
