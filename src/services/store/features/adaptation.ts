@@ -1,31 +1,26 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { API_ENDPOINTS } from "@constants/api.ts";
-import { baseQuery } from "../baseQuery.ts";
-import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
+import { API_ENDPOINTS } from "@/constants/api.ts";
+import { baseApi } from "../baseApi.ts";
+import type {
+  AdaptationPlanDayType,
+  AdaptationPlanTaskType,
+  AdaptationPlanType,
+} from "@/interfaces/api/AdaptationPlanType.ts";
 import type {
   AdaptationPlanTemplateTask,
   AdaptationPlanTemplateType,
 } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
-import type { UserType } from "@/interfaces/api/UserType.ts";
-import type { DepartmentType } from "@/interfaces/api/DepartmentType.ts";
-import type { PositionType } from "@/interfaces/api/PositionType.ts";
+import type { TaskStatus } from "@/interfaces/api/AdaptationPlanType.ts";
 
-export type RoleOption = {
-  name: string;
-  label: string;
-};
-
-type RolesResponse = {
-  success: boolean;
-  data: RoleOption[];
-};
-
-type AssignRoleBody = {
+export interface AdaptationPlanBody {
   user_id: number;
-  role: string;
-};
+  mentor: number;
+  department_head: number;
+  adaptation_plan_template_id: number;
+  shift: number;
+  start_date: string;
+}
 
-type AdaptationPlanDayUpdateBody = {
+export interface AdaptationPlanDayBody {
   planId: number;
   dayId: number;
   date_from: string;
@@ -35,182 +30,139 @@ type AdaptationPlanDayUpdateBody = {
   intern_comment?: string | null;
   mentor_comment?: string | null;
   department_head_comment?: string | null;
-};
+}
 
-type AdaptationPlanTaskStatusBody = {
-  planId: number;
-  dayId: number;
-  taskId: number;
-  status: string;
-};
-
-type MyInternCommentBody = {
-  dayId: number;
-  intern_comment?: string | null;
-};
-
-type MyTaskStatusBody = {
-  dayId: number;
-  taskId: number;
-  status: string;
-};
-
-type AdaptationPlanTemplateBody = {
+export interface AdaptationPlanTemplateBody {
   name: string;
   work_schedule: string;
   shifts: number[];
   task_blueprint?: AdaptationPlanTemplateTask[];
-};
+}
 
-export const user = createApi({
-  reducerPath: "user",
-  tagTypes: ["Users", "AdaptationPlans", "AdaptationPlanTemplates"],
-  baseQuery,
+const PLAN_LIST_TAG = { type: "AdaptationPlans" as const, id: "LIST" };
+
+/**
+ * A mutation on one plan must refresh that plan and the roster, but it must
+ * not touch other plans — the plan editor rebuilds its form from every
+ * refetch, so a wider tag would discard the user's unsaved edits.
+ */
+const planTags = (id: number) => [
+  { type: "AdaptationPlans" as const, id },
+  PLAN_LIST_TAG,
+];
+
+export const adaptationApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    // —— users / roles ——
-    getUserByData: builder.query<UserType, void>({
-      query: () => API_ENDPOINTS.ME,
-    }),
-    getUsers: builder.query<UserType[], void>({
-      query: () => API_ENDPOINTS.USERS,
+    getAdaptationPlans: builder.query<AdaptationPlanType[], void>({
+      query: () => API_ENDPOINTS.ADAPTATION_PLANS,
       providesTags: (result) =>
         result
           ? [
-              ...result
-                .filter((item): item is UserType & { id: number } => item.id != null)
-                .map(({ id }) => ({ type: "Users" as const, id })),
-              "Users",
+              ...result.map(({ id }) => ({
+                type: "AdaptationPlans" as const,
+                id,
+              })),
+              PLAN_LIST_TAG,
             ]
-          : ["Users"],
-    }),
-    getMentors: builder.query<UserType[], void>({
-      query: () => API_ENDPOINTS.MENTORS,
-    }),
-    getDepartmentHeads: builder.query<UserType[], void>({
-      query: () => API_ENDPOINTS.DEPARTMENT_HEADS,
-    }),
-    getRoles: builder.query<RolesResponse, void>({
-      query: () => API_ENDPOINTS.ROLES,
-    }),
-    assignRole: builder.mutation<{ message?: string }, AssignRoleBody>({
-      query: (body) => ({
-        url: API_ENDPOINTS.ASSIGN_ROLE,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Users"],
-    }),
-    revokeRole: builder.mutation<{ message?: string }, AssignRoleBody>({
-      query: (body) => ({
-        url: API_ENDPOINTS.REVOKE_ROLE,
-        method: "POST",
-        body,
-      }),
-      invalidatesTags: ["Users"],
-    }),
-
-    // —— org ——
-    getDepartments: builder.query<DepartmentType[], void>({
-      query: () => API_ENDPOINTS.DEPARTMENTS,
-    }),
-    getPositions: builder.query<PositionType[], void>({
-      query: () => API_ENDPOINTS.POSITIONS,
-    }),
-
-    // —— adaptation plans ——
-    getAdaptationPlans: builder.query<AdaptationPlanType[], void>({
-      query: () => API_ENDPOINTS.ADAPTATION_PLANS,
-      providesTags: ["AdaptationPlans"],
+          : [PLAN_LIST_TAG],
     }),
     getAdaptationPlanById: builder.query<AdaptationPlanType, number>({
       query: (id) => `${API_ENDPOINTS.ADAPTATION_PLANS}${id}`,
-      providesTags: (_result, _error, id) => [
-        { type: "AdaptationPlans", id },
-        "AdaptationPlans",
-      ],
+      providesTags: (_result, _error, id) => [{ type: "AdaptationPlans", id }],
     }),
     getMyAdaptationPlan: builder.query<AdaptationPlanType | null, void>({
       query: () => API_ENDPOINTS.ADAPTATION_MY_PLAN,
-      providesTags: ["AdaptationPlans"],
+      providesTags: ["MyAdaptationPlan"],
     }),
     createAdaptationPlan: builder.mutation<
       AdaptationPlanType,
-      Record<string, unknown>
+      AdaptationPlanBody
     >({
       query: (body) => ({
         url: API_ENDPOINTS.ADAPTATION_PLANS,
         method: "POST",
         body,
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: [PLAN_LIST_TAG],
     }),
     updateAdaptationPlan: builder.mutation<
       AdaptationPlanType,
-      { id: number } & Record<string, unknown>
+      Partial<AdaptationPlanBody> & { id: number }
     >({
       query: ({ id, ...body }) => ({
         url: `${API_ENDPOINTS.ADAPTATION_PLANS}${id}`,
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: (_result, _error, { id }) => planTags(id),
     }),
     deleteAdaptationPlan: builder.mutation<{ message: string }, number>({
       query: (id) => ({
         url: `${API_ENDPOINTS.ADAPTATION_PLANS}${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: (_result, _error, id) => planTags(id),
     }),
     updateAdaptationPlanDay: builder.mutation<
-      unknown,
-      AdaptationPlanDayUpdateBody
+      AdaptationPlanDayType,
+      AdaptationPlanDayBody
     >({
       query: ({ planId, dayId, ...body }) => ({
         url: `${API_ENDPOINTS.ADAPTATION_PLANS}${planId}/days/${dayId}`,
         method: "PATCH",
         body,
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: (_result, _error, { planId }) => planTags(planId),
     }),
     updateAdaptationPlanTaskStatus: builder.mutation<
-      unknown,
-      AdaptationPlanTaskStatusBody
+      AdaptationPlanTaskType,
+      { planId: number; dayId: number; taskId: number; status: TaskStatus }
     >({
       query: ({ planId, dayId, taskId, status }) => ({
         url: `${API_ENDPOINTS.ADAPTATION_PLANS}${planId}/days/${dayId}/tasks/${taskId}/status`,
         method: "PATCH",
         body: { status },
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: (_result, _error, { planId }) => planTags(planId),
     }),
     updateMyAdaptationInternComment: builder.mutation<
-      unknown,
-      MyInternCommentBody
+      AdaptationPlanDayType,
+      { dayId: number; intern_comment?: string | null }
     >({
       query: ({ dayId, intern_comment }) => ({
         url: `${API_ENDPOINTS.ADAPTATION_MY_PLAN_DAYS}${dayId}/intern-comment`,
         method: "PATCH",
         body: { intern_comment },
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: ["MyAdaptationPlan"],
     }),
-    updateMyAdaptationTaskStatus: builder.mutation<unknown, MyTaskStatusBody>({
+    updateMyAdaptationTaskStatus: builder.mutation<
+      AdaptationPlanTaskType,
+      { dayId: number; taskId: number; status: TaskStatus }
+    >({
       query: ({ dayId, taskId, status }) => ({
         url: `${API_ENDPOINTS.ADAPTATION_MY_PLAN_DAYS}${dayId}/tasks/${taskId}/status`,
         method: "PATCH",
         body: { status },
       }),
-      invalidatesTags: ["AdaptationPlans"],
+      invalidatesTags: ["MyAdaptationPlan"],
     }),
 
-    // —— adaptation templates ——
     getAdaptationPlanTemplates: builder.query<
       AdaptationPlanTemplateType[],
       void
     >({
       query: () => API_ENDPOINTS.ADAPTATION_PLAN_TEMPLATES,
-      providesTags: ["AdaptationPlanTemplates"],
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({
+                type: "AdaptationPlanTemplates" as const,
+                id,
+              })),
+              "AdaptationPlanTemplates" as const,
+            ]
+          : ["AdaptationPlanTemplates"],
     }),
     getAdaptationPlanTemplateById: builder.query<
       AdaptationPlanTemplateType,
@@ -235,14 +187,19 @@ export const user = createApi({
     }),
     updateAdaptationPlanTemplate: builder.mutation<
       AdaptationPlanTemplateType,
-      { id: number } & AdaptationPlanTemplateBody
+      AdaptationPlanTemplateBody & { id: number }
     >({
       query: ({ id, ...body }) => ({
         url: `${API_ENDPOINTS.ADAPTATION_PLAN_TEMPLATES}${id}`,
         method: "PUT",
         body,
       }),
-      invalidatesTags: ["AdaptationPlanTemplates"],
+      // Templates drive plan generation, so plans may change too.
+      invalidatesTags: [
+        "AdaptationPlanTemplates",
+        PLAN_LIST_TAG,
+        "MyAdaptationPlan",
+      ],
     }),
     deleteAdaptationPlanTemplate: builder.mutation<{ message: string }, number>(
       {
@@ -257,15 +214,6 @@ export const user = createApi({
 });
 
 export const {
-  useGetUserByDataQuery,
-  useGetUsersQuery,
-  useGetMentorsQuery,
-  useGetDepartmentHeadsQuery,
-  useGetRolesQuery,
-  useAssignRoleMutation,
-  useRevokeRoleMutation,
-  useGetDepartmentsQuery,
-  useGetPositionsQuery,
   useGetAdaptationPlansQuery,
   useGetAdaptationPlanByIdQuery,
   useGetMyAdaptationPlanQuery,
@@ -281,4 +229,4 @@ export const {
   useCreateAdaptationPlanTemplateMutation,
   useUpdateAdaptationPlanTemplateMutation,
   useDeleteAdaptationPlanTemplateMutation,
-} = user;
+} = adaptationApi;

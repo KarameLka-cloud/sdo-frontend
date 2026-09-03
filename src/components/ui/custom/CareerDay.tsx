@@ -1,14 +1,37 @@
 import { JSX, useEffect, useState } from "react";
-import {
-  AdaptationDayType,
+import { ChevronRight } from "lucide-react";
+import type {
+  AdaptationPlanDayType,
   TaskStatus,
-} from "@/interfaces/api/AdaptationDayType.ts";
-import IconButton from "@/components/ui/custom/IconButton";
+} from "@/interfaces/api/AdaptationPlanType.ts";
+import { Card, CardContent } from "@/components/ui/shadcn/card";
+import { Button } from "@/components/ui/shadcn/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/shadcn/collapsible";
+import { Field, FieldLabel } from "@/components/ui/shadcn/field";
+import ReadonlyFieldValue from "@/components/ui/custom/ReadonlyFieldValue";
 import TaskItem from "@/components/ui/custom/TaskItem";
-import { formatDayRange } from "@/utils/formatDayRange.ts";
+import CommentFieldWithSave from "@/pages/Mentorship/Interns/plan-editor/CommentFieldWithSave";
+import {
+  capitalizeFirst,
+  COMPLETION_CHIP_CLASS,
+  COMPLETION_VALUE_CLASS,
+  DAY_META_CHIP_CLASS,
+} from "@/components/adaptation/dayCardMeta";
+import { cn } from "@/lib/utils";
+import convertDate from "@/utils/convertDate.ts";
+import { formatDayRange, isDaySpan } from "@/utils/formatDayRange.ts";
+
+const READONLY_COMMENT_FIELDS = [
+  { key: "mentor_comment", label: "Комментарий наставника" },
+  { key: "department_head_comment", label: "Комментарий руководителя" },
+] as const;
 
 interface CareerDayProps {
-  day: AdaptationDayType;
+  day: AdaptationPlanDayType;
   onUpdateInternComment?: (
     dayId: number | undefined,
     comment: string,
@@ -20,204 +43,154 @@ interface CareerDayProps {
   ) => Promise<void> | void;
 }
 
+function MetaPair({
+  label,
+  value,
+  valueClassName,
+}: {
+  label: string;
+  value: string;
+  valueClassName?: string;
+}): JSX.Element {
+  return (
+    <div className="flex min-w-0 items-baseline gap-2">
+      <dt className="shrink-0 text-xs text-muted-foreground">{label}</dt>
+      <dd
+        className={cn(
+          "m-0 min-w-0 text-sm font-medium wrap-break-word",
+          valueClassName,
+        )}
+      >
+        {value || "—"}
+      </dd>
+    </div>
+  );
+}
+
 function CareerDay({
   day,
   onUpdateInternComment,
   onUpdateTaskStatus,
 }: CareerDayProps): JSX.Element {
-  const [isEditingInternComment, setIsEditingInternComment] = useState(false);
-  const [editedInternComment, setEditedInternComment] = useState(
-    day.internComment || "",
-  );
-  const [isCommentsExpanded, setIsCommentsExpanded] = useState(false);
+  const savedInternComment = day.intern_comment ?? "";
+  const [internComment, setInternComment] = useState(savedInternComment);
+  const [isSavingComment, setIsSavingComment] = useState(false);
 
   useEffect(() => {
-    setEditedInternComment(day.internComment || "");
-  }, [day.internComment]);
+    setInternComment(savedInternComment);
+  }, [savedInternComment]);
+
+  const hasSpan = isDaySpan(day.day_from, day.day_to, day.work_day);
 
   const handleSaveInternComment = async () => {
+    setIsSavingComment(true);
     try {
-      await onUpdateInternComment?.(day.id, editedInternComment);
-      setIsEditingInternComment(false);
+      await onUpdateInternComment?.(day.id, internComment);
     } catch {
       // Status shown at Adaptation page level.
+    } finally {
+      setIsSavingComment(false);
     }
   };
 
-  const handleCancelInternComment = () => {
-    setEditedInternComment(day.internComment || "");
-    setIsEditingInternComment(false);
-  };
-
-  const dayRangeLabel = formatDayRange(day.dayFrom, day.dayTo, day.workDay);
-
-  const getStatusClass = (completion: string) => {
-    const statusMap: Record<string, string> = {
-      "в процессе": "bg-amber-50 text-amber-800 border-amber-300",
-      выполнен: "bg-green-50 text-green-800 border-green-300",
-      повторить: "bg-red-50 text-red-800 border-red-300",
-      "есть замечания": "bg-indigo-50 text-indigo-800 border-indigo-300",
-    };
-    return (
-      statusMap[completion.toLowerCase()] ||
-      "bg-gray-50 text-gray-800 border-gray-300"
-    );
-  };
-
   return (
-    <div className="flex flex-col gap-6 p-6 mb-6 rounded-2xl bg-white border border-gray-200 shadow-sm transition-shadow duration-300 hover:shadow-md">
-      {/* Header */}
-      <div className="grid grid-cols-1 md:grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-4 items-stretch pb-4 border-b border-gray-200">
-        <div className="flex flex-col justify-center gap-1.5 min-h-20 p-3 rounded-xl bg-gray-50/50 border border-gray-200">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            День
-          </span>
-          <span className="text-[0.95rem] font-medium text-gray-900">
-            {dayRangeLabel}
-          </span>
-        </div>
-
-        <div className="flex flex-col justify-center gap-1.5 min-h-20 p-3 rounded-xl bg-gray-50/50 border border-gray-200">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Дата
-          </span>
-          <span className="text-[0.95rem] font-medium text-gray-900">
-            {day.date}
-          </span>
-        </div>
-
-        <div className="flex flex-col justify-center gap-1.5 min-h-20 p-3 rounded-xl bg-gray-50/50 border border-gray-200">
-          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-            Статус дня
-          </span>
-          <span
-            className={`inline-block w-fit px-3 py-1.5 rounded-lg text-sm font-semibold capitalize tracking-wide border ${getStatusClass(day.completion)}`}
+    <Card>
+      <CardContent className="p-4">
+        <dl className="flex flex-wrap items-stretch gap-2">
+          <div className={DAY_META_CHIP_CLASS}>
+            <MetaPair
+              label="День"
+              value={formatDayRange(day.day_from, day.day_to, day.work_day)}
+            />
+          </div>
+          <div className={DAY_META_CHIP_CLASS}>
+            {hasSpan ? (
+              <>
+                <MetaPair
+                  label="Дата начала"
+                  value={convertDate(day.date_from)}
+                />
+                <MetaPair
+                  label="Дата окончания"
+                  value={day.date_to ? convertDate(day.date_to) : ""}
+                />
+              </>
+            ) : (
+              <MetaPair label="Дата" value={convertDate(day.date_from)} />
+            )}
+          </div>
+          <div
+            className={cn(
+              DAY_META_CHIP_CLASS,
+              COMPLETION_CHIP_CLASS[day.completion],
+              "ml-auto",
+            )}
           >
-            {day.completion}
-          </span>
-        </div>
-      </div>
+            <MetaPair
+              label="Статус дня"
+              value={capitalizeFirst(day.completion)}
+              valueClassName={COMPLETION_VALUE_CLASS[day.completion]}
+            />
+          </div>
+        </dl>
 
-      {/* Content */}
-      <div className="flex flex-col gap-6">
-        {/* Information Section */}
-        <div className="flex flex-col gap-4">
-          <h3 className="m-0 text-[0.95rem] font-semibold text-gray-900 uppercase tracking-wider">
-            Информация
-          </h3>
-          <div className="flex flex-col gap-3">
-            {Array.isArray(day.tasks) && day.tasks.length > 0 ? (
-              day.tasks.map((task, index) => (
+        <div className="mt-4 flex flex-col gap-2">
+          {day.tasks && day.tasks.length > 0 ? (
+            day.tasks.map((task, index) => (
+              <div
+                key={task.id ?? index}
+                className="rounded-lg bg-muted/60 p-3"
+              >
                 <TaskItem
-                  key={task.id ?? index}
                   task={task}
                   dayId={day.id}
                   onUpdateTaskStatus={onUpdateTaskStatus}
                 />
-              ))
-            ) : (
-              <p className="m-0 text-sm text-gray-500 p-3 bg-gray-50 border border-dashed border-gray-300 rounded-lg">
-                На этот день задачи не назначены
-              </p>
-            )}
-          </div>
-        </div>
-
-        {/* Comments Section */}
-        <div className="flex flex-col gap-4">
-          <button
-            type="button"
-            onClick={() => setIsCommentsExpanded(!isCommentsExpanded)}
-            className="flex items-center justify-between gap-4 p-3 bg-gray-50 border border-gray-200 rounded-lg cursor-pointer text-left transition-all duration-200 hover:bg-gray-100"
-            aria-expanded={isCommentsExpanded}
-          >
-            <span className="m-0 text-[0.95rem] font-semibold text-gray-900 uppercase tracking-wider">
-              Комментарии
-            </span>
-            <span
-              className={`text-xs text-gray-500 inline-flex items-center shrink-0 transition-transform duration-300 ${
-                isCommentsExpanded ? "rotate-180" : ""
-              }`}
-            >
-              ▼
-            </span>
-          </button>
-
-          {isCommentsExpanded && (
-            <div className="flex flex-col gap-4">
-              {/* Employee Comment */}
-              <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Комментарий сотрудника УПиПК
-                </span>
-                <p className="m-0 text-sm text-gray-900 leading-relaxed py-2">
-                  {day.employeeComment || "Нет комментария"}
-                </p>
               </div>
-
-              {/* Intern Comment */}
-              {day.internComment !== undefined && (
-                <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                  <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                    Комментарий стажера
-                  </span>
-                  {isEditingInternComment ? (
-                    <div className="flex flex-col gap-3">
-                      <textarea
-                        value={editedInternComment}
-                        onChange={(e) => setEditedInternComment(e.target.value)}
-                        className="w-full box-border p-3 border border-gray-300 rounded-lg text-sm font-inherit text-gray-900 resize-y min-h-25 leading-relaxed focus:outline-none focus:ring-0"
-                        placeholder="Введите комментарий..."
-                      />
-                      <div className="flex gap-2 justify-start items-center flex-wrap">
-                        <IconButton
-                          type="save"
-                          onClick={() => void handleSaveInternComment()}
-                        />
-                        <IconButton
-                          type="close"
-                          onClick={handleCancelInternComment}
-                        />
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col items-start gap-2">
-                      <p className="m-0 text-sm text-gray-900 leading-relaxed py-2">
-                        {editedInternComment || "Нет комментария"}
-                      </p>
-                      <IconButton
-                        type="edit"
-                        onClick={() => setIsEditingInternComment(true)}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Mentor Comment */}
-              <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Комментарий наставника
-                </span>
-                <p className="m-0 text-sm text-gray-900 leading-relaxed py-2">
-                  {day.mentorComment || "Нет комментария"}
-                </p>
-              </div>
-
-              {/* Department Head Comment */}
-              <div className="flex flex-col gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
-                  Комментарий руководителя отдела
-                </span>
-                <p className="m-0 text-sm text-gray-900 leading-relaxed py-2">
-                  {day.departmentHeadComment || "Нет комментария"}
-                </p>
-              </div>
-            </div>
+            ))
+          ) : (
+            <p className="m-0 text-sm text-muted-foreground">
+              На этот день задачи не назначены
+            </p>
           )}
         </div>
-      </div>
-    </div>
+
+        <Collapsible className="group/collapsible mt-4">
+          <CollapsibleTrigger asChild>
+            <Button
+              type="button"
+              variant="ghost"
+              className="h-9 w-full justify-between rounded-lg bg-muted/60 px-3 font-semibold text-foreground hover:bg-muted"
+            >
+              Комментарии
+              <ChevronRight className="size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+            </Button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="flex flex-col gap-4 pt-2">
+            <Field>
+              <FieldLabel>Комментарий УПиПК</FieldLabel>
+              <ReadonlyFieldValue value={day.employee_comment ?? ""} />
+            </Field>
+
+            <CommentFieldWithSave
+              label="Комментарий стажера"
+              value={internComment}
+              savedValue={savedInternComment}
+              isSaving={isSavingComment}
+              onChange={setInternComment}
+              onSave={() => void handleSaveInternComment()}
+            />
+
+            {READONLY_COMMENT_FIELDS.map((field) => (
+              <Field key={field.key}>
+                <FieldLabel>{field.label}</FieldLabel>
+                <ReadonlyFieldValue value={day[field.key] ?? ""} />
+              </Field>
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
+      </CardContent>
+    </Card>
   );
 }
 

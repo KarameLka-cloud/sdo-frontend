@@ -1,16 +1,18 @@
-import { FormEvent, JSX, useEffect, useMemo, useState } from "react";
+import { FormEvent, JSX, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
   useDeleteAdaptationPlanMutation,
   useGetAdaptationPlanByIdQuery,
-  useGetDepartmentHeadsQuery,
-  useGetMentorsQuery,
   useUpdateAdaptationPlanDayMutation,
   useUpdateAdaptationPlanMutation,
   useUpdateAdaptationPlanTaskStatusMutation,
-} from "@/services/store/features/user.ts";
-import { UserType } from "@/interfaces/api/UserType.ts";
+} from "@/services/store/features/adaptation.ts";
+import {
+  useGetDepartmentHeadsQuery,
+  useGetMentorsQuery,
+  useGetUsersQuery,
+} from "@/services/store/features/users.ts";
 import { USER_ROLES, hasRole } from "@/constants/roles.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
@@ -20,21 +22,22 @@ import {
 } from "@/components/resource-list/resourceRoutes";
 import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import PlanDayCard from "@/pages/Mentorship/Interns/plan-editor/PlanDayCard";
-import PlanMetaForm from "@/pages/Mentorship/Interns/plan-editor/PlanMetaForm";
-import {
-  getEffectiveDayFields,
-  isDayDirty,
-} from "@/pages/Mentorship/Interns/plan-editor/isDayDirty";
+import PlanMetaForm, {
+  resolvePlanMetaForm,
+} from "@/pages/Mentorship/Interns/plan-editor/PlanMetaForm";
+import { getEffectiveDayFields } from "@/pages/Mentorship/Interns/plan-editor/isDayDirty";
 import type {
+  CommentFieldKey,
   EditableCommentKey,
   EditablePlanDay,
 } from "@/pages/Mentorship/Interns/plan-editor/types.ts";
-
-const DELETE_MESSAGES = {
-  confirm: "Удалить план стажера?",
-  success: "План стажера удалён",
-  error: "Не удалось удалить план",
-};
+import type { TaskStatus } from "@/interfaces/api/AdaptationPlanType.ts";
+import { PLAN_DELETE_MESSAGES } from "@/constants/deleteMessages.ts";
+import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
+import { toDateInputValue } from "@/utils/formValues.ts";
+import { compareDayRanges } from "@/utils/formatDayRange.ts";
+import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
+import { withAssignedUser } from "@/utils/userSelectOptions.ts";
 
 function PlanEditor(): JSX.Element {
   const navigate = useNavigate();
@@ -49,6 +52,7 @@ function PlanEditor(): JSX.Element {
   );
   const { data: mentorsData = [] } = useGetMentorsQuery(undefined);
   const { data: headsData = [] } = useGetDepartmentHeadsQuery(undefined);
+  const { data: usersData = [] } = useGetUsersQuery(undefined);
 
   const [updatePlan, { isLoading: isSavingPlan }] =
     useUpdateAdaptationPlanMutation();
@@ -56,15 +60,32 @@ function PlanEditor(): JSX.Element {
   const [updateTask] = useUpdateAdaptationPlanTaskStatusMutation();
   const deleteMutation = useDeleteAdaptationPlanMutation();
   const { handleDelete, isDeleting } = useConfirmDelete(deleteMutation, {
-    messages: DELETE_MESSAGES,
+    messages: PLAN_DELETE_MESSAGES,
     onSuccess: () => navigate(INTERNSHIP_ROUTES.list),
     trackId: false,
   });
 
   const { role, role_name: roleName } = useUser();
   const plan = data;
-  const mentors = mentorsData as UserType[];
-  const heads = headsData as UserType[];
+
+  const mentors = useMemo(
+    () =>
+      withAssignedUser(
+        resolveRoleUsers(mentorsData, usersData, USER_ROLES.MENTOR),
+        plan?.mentor_user,
+        plan?.mentor,
+      ),
+    [mentorsData, usersData, plan?.mentor, plan?.mentor_user],
+  );
+  const heads = useMemo(
+    () =>
+      withAssignedUser(
+        resolveRoleUsers(headsData, usersData, USER_ROLES.DEPARTMENT_HEAD),
+        plan?.department_head_user,
+        plan?.department_head,
+      ),
+    [headsData, usersData, plan?.department_head, plan?.department_head_user],
+  );
 
   const [form, setForm] = useState({
     startDate: "",
@@ -76,6 +97,8 @@ function PlanEditor(): JSX.Element {
   const [days, setDays] = useState<EditablePlanDay[]>([]);
   const [initialDays, setInitialDays] = useState<EditablePlanDay[]>([]);
   const [savingCommentKey, setSavingCommentKey] = useState<string | null>(null);
+  const [savingTaskKey, setSavingTaskKey] = useState<string | null>(null);
+  const [savingDayId, setSavingDayId] = useState<number | null>(null);
 
   const loadErrorMessage = useMemo(() => {
     if (!error || typeof error !== "object" || !("status" in error)) {
@@ -100,41 +123,65 @@ function PlanEditor(): JSX.Element {
     return "Не удалось загрузить план.";
   }, [error]);
 
+  // Saving a comment refetches the plan. Seeding the form on every refetch
+  // would throw away edits the user has not saved yet, so the form is filled
+  // once per plan and stays the source of truth afterwards.
+  const seededPlanId = useRef<number | null>(null);
+
   useEffect(() => {
-    if (!plan) {
+    seededPlanId.current = null;
+  }, [numericPlanId]);
+
+  useEffect(() => {
+    if (!plan || plan.id !== numericPlanId) {
       return;
     }
+    if (seededPlanId.current === plan.id) {
+      return;
+    }
+    seededPlanId.current = plan.id;
 
     setForm({
-      startDate: plan.start_date ?? "",
+      startDate: toDateInputValue(plan.start_date),
       templateId: plan.adaptation_plan_template_id ?? plan.template?.id ?? null,
       shift: plan.shift ?? 1,
-      mentor: plan.mentor ?? null,
-      departmentHead: plan.department_head ?? null,
+      mentor: plan.mentor ?? plan.mentor_user?.id ?? null,
+      departmentHead: plan.department_head ?? plan.department_head_user?.id ?? null,
     });
 
-    const mappedDays: EditablePlanDay[] = (plan.days ?? []).map((day) => ({
-      id: day.id,
-      work_day: day.work_day,
-      day_from: day.day_from ?? null,
-      day_to: day.day_to ?? null,
-      date_from: day.date_from,
-      date_to: day.date_to ?? null,
-      completion: day.completion,
-      employee_comment: day.employee_comment ?? "",
-      intern_comment: day.intern_comment ?? "",
-      mentor_comment: day.mentor_comment ?? "",
-      department_head_comment: day.department_head_comment ?? "",
-      tasks: (day.tasks ?? []).map((task) => ({
-        id: task.id,
-        description: task.description,
-        status: task.status,
-      })),
-    }));
+    const mappedDays: EditablePlanDay[] = (plan.days ?? [])
+      .map((day) => ({
+        id: day.id,
+        work_day: day.work_day,
+        day_from: day.day_from ?? null,
+        day_to: day.day_to ?? null,
+        date_from: day.date_from,
+        date_to: day.date_to ?? null,
+        completion: day.completion,
+        employee_comment: day.employee_comment ?? "",
+        intern_comment: day.intern_comment ?? "",
+        mentor_comment: day.mentor_comment ?? "",
+        department_head_comment: day.department_head_comment ?? "",
+        tasks: (day.tasks ?? []).map((task) => ({
+          id: task.id,
+          description: task.description,
+          status: task.status,
+          responsible_role: task.responsible_role,
+          links: task.links,
+        })),
+      }))
+      .sort((left, right) =>
+        compareDayRanges(
+          left.day_from ?? left.work_day,
+          left.day_to,
+          right.day_from ?? right.work_day,
+          right.day_to,
+        ),
+      );
 
     setDays(mappedDays);
     setInitialDays(mappedDays);
-  }, [plan]);
+  }, [plan, numericPlanId]);
 
   const commentPermissions = useMemo(() => {
     const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
@@ -147,8 +194,10 @@ function PlanEditor(): JSX.Element {
 
     return {
       canEditEmployee: isAdmin,
-      canEditDepartmentHead: !isAdmin && isDepartmentHead,
+      // Interns edit this on /adaptation; staff on this page never can.
+      canEditIntern: false,
       canEditMentor: !isAdmin && !isDepartmentHead && isMentor,
+      canEditDepartmentHead: !isAdmin && isDepartmentHead,
     };
   }, [role, roleName]);
 
@@ -176,7 +225,7 @@ function PlanEditor(): JSX.Element {
           commentKey === "employee_comment"
             ? day.employee_comment || null
             : initial?.employee_comment || null,
-        intern_comment: day.intern_comment || null,
+        intern_comment: initial?.intern_comment || null,
         mentor_comment:
           commentKey === "mentor_comment"
             ? day.mentor_comment || null
@@ -200,17 +249,136 @@ function PlanEditor(): JSX.Element {
     }
   };
 
+  const handleDayFieldChange = async (
+    dayIndex: number,
+    patch: Partial<Pick<EditablePlanDay, "date_from" | "date_to" | "completion">>,
+  ) => {
+    if (!plan) {
+      return;
+    }
+
+    const previousDay = days[dayIndex];
+    const nextDay = { ...previousDay, ...patch };
+    const initial = initialDays[dayIndex];
+
+    setDays((previous) => {
+      const next = [...previous];
+      next[dayIndex] = nextDay;
+      return next;
+    });
+
+    setSavingDayId(nextDay.id);
+    try {
+      const fields = getEffectiveDayFields(nextDay, initial, commentPermissions);
+      await updateDay({
+        planId: plan.id,
+        dayId: nextDay.id,
+        date_from: fields.date_from,
+        date_to: fields.date_to,
+        completion: fields.completion,
+        employee_comment: fields.employee_comment || null,
+        intern_comment: fields.intern_comment || null,
+        mentor_comment: fields.mentor_comment || null,
+        department_head_comment: fields.department_head_comment || null,
+      }).unwrap();
+
+      setInitialDays((previous) => {
+        const next = [...previous];
+        next[dayIndex] = {
+          ...next[dayIndex],
+          date_from: nextDay.date_from,
+          date_to: nextDay.date_to,
+          completion: nextDay.completion,
+        };
+        return next;
+      });
+      toast.success(FORM_STATUS_MESSAGES.saveSuccess);
+    } catch {
+      setDays((previous) => {
+        const next = [...previous];
+        next[dayIndex] = previousDay;
+        return next;
+      });
+      toast.error(FORM_STATUS_MESSAGES.saveError);
+    } finally {
+      setSavingDayId(null);
+    }
+  };
+
+  const handleTaskStatusChange = async (
+    dayIndex: number,
+    taskIndex: number,
+    status: TaskStatus,
+  ) => {
+    if (!plan) {
+      return;
+    }
+
+    const previousDay = days[dayIndex];
+    const previousTask = previousDay.tasks[taskIndex];
+    if (previousTask.status === status) {
+      return;
+    }
+
+    const nextTasks = [...previousDay.tasks];
+    nextTasks[taskIndex] = { ...nextTasks[taskIndex], status };
+    const nextDay = { ...previousDay, tasks: nextTasks };
+
+    setDays((previous) => {
+      const next = [...previous];
+      next[dayIndex] = nextDay;
+      return next;
+    });
+
+    const saveKey = `${previousDay.id}-${previousTask.id}`;
+    setSavingTaskKey(saveKey);
+    try {
+      await updateTask({
+        planId: plan.id,
+        dayId: previousDay.id,
+        taskId: previousTask.id,
+        status,
+      }).unwrap();
+
+      setInitialDays((previous) => {
+        const next = [...previous];
+        const tasks = [...next[dayIndex].tasks];
+        tasks[taskIndex] = { ...tasks[taskIndex], status };
+        next[dayIndex] = { ...next[dayIndex], tasks };
+        return next;
+      });
+      toast.success(FORM_STATUS_MESSAGES.saveSuccess);
+    } catch {
+      setDays((previous) => {
+        const next = [...previous];
+        next[dayIndex] = previousDay;
+        return next;
+      });
+      toast.error(FORM_STATUS_MESSAGES.saveError);
+    } finally {
+      setSavingTaskKey(null);
+    }
+  };
+
+  const handleCommentChange = (
+    dayIndex: number,
+    commentKey: CommentFieldKey,
+    value: string,
+  ) => {
+    setDays((previous) => {
+      const next = [...previous];
+      next[dayIndex] = { ...next[dayIndex], [commentKey]: value };
+      return next;
+    });
+  };
+
   const handleSaveAll = async (event?: FormEvent<HTMLFormElement>) => {
     event?.preventDefault();
     if (!plan) {
       return;
     }
-    if (
-      !form.templateId ||
-      !form.mentor ||
-      !form.departmentHead ||
-      !form.startDate
-    ) {
+    const meta = resolvePlanMetaForm(form, plan);
+    if (!meta.startDate || meta.mentor == null || meta.departmentHead == null) {
       toast.error("Заполните все обязательные поля.");
       return;
     }
@@ -218,57 +386,17 @@ function PlanEditor(): JSX.Element {
     try {
       await updatePlan({
         id: plan.id,
-        start_date: form.startDate,
-        adaptation_plan_template_id: form.templateId,
-        shift: form.shift,
-        mentor: form.mentor,
-        department_head: form.departmentHead,
+        start_date: meta.startDate,
+        ...(meta.templateId
+          ? { adaptation_plan_template_id: meta.templateId }
+          : {}),
+        shift: meta.shift,
+        mentor: meta.mentor,
+        department_head: meta.departmentHead,
       }).unwrap();
-
-      const dayRequests = days.flatMap((day, dayIndex) => {
-        const initial = initialDays[dayIndex];
-        if (!isDayDirty(day, initial, commentPermissions)) {
-          return [];
-        }
-
-        const fields = getEffectiveDayFields(day, initial, commentPermissions);
-        return [
-          updateDay({
-            planId: plan.id,
-            dayId: day.id,
-            date_from: fields.date_from,
-            date_to: fields.date_to,
-            completion: fields.completion,
-            employee_comment: fields.employee_comment || null,
-            intern_comment: fields.intern_comment || null,
-            mentor_comment: fields.mentor_comment || null,
-            department_head_comment: fields.department_head_comment || null,
-          }).unwrap(),
-        ];
-      });
-
-      const taskRequests: Array<Promise<unknown>> = [];
-      days.forEach((day, dayIndex) => {
-        day.tasks.forEach((task, taskIndex) => {
-          const initialTask = initialDays[dayIndex]?.tasks?.[taskIndex];
-          if (!initialTask || initialTask.status !== task.status) {
-            taskRequests.push(
-              updateTask({
-                planId: plan.id,
-                dayId: day.id,
-                taskId: task.id,
-                status: task.status,
-              }).unwrap(),
-            );
-          }
-        });
-      });
-
-      await Promise.all([...dayRequests, ...taskRequests]);
-      setInitialDays(days);
-      toast.success("План сохранён");
+      toast.success("Параметры плана сохранены");
     } catch {
-      toast.error("Не удалось сохранить план");
+      toast.error("Не удалось сохранить параметры плана.");
     }
   };
 
@@ -337,21 +465,14 @@ function PlanEditor(): JSX.Element {
             initialDay={initialDays[dayIndex]}
             commentPermissions={commentPermissions}
             savingCommentKey={savingCommentKey}
-            onDayChange={(patch) =>
-              setDays((previous) => {
-                const next = [...previous];
-                next[dayIndex] = { ...next[dayIndex], ...patch };
-                return next;
-              })
+            savingTaskKey={savingTaskKey}
+            isSavingDayFields={savingDayId === day.id}
+            onDayFieldChange={(patch) => void handleDayFieldChange(dayIndex, patch)}
+            onCommentChange={(commentKey, value) =>
+              handleCommentChange(dayIndex, commentKey, value)
             }
             onTaskStatusChange={(taskIndex, status) =>
-              setDays((previous) => {
-                const next = [...previous];
-                const tasks = [...next[dayIndex].tasks];
-                tasks[taskIndex] = { ...tasks[taskIndex], status };
-                next[dayIndex] = { ...next[dayIndex], tasks };
-                return next;
-              })
+              void handleTaskStatusChange(dayIndex, taskIndex, status)
             }
             onSaveComment={(commentKey) =>
               void handleSaveComment(dayIndex, commentKey)

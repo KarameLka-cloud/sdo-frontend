@@ -26,7 +26,11 @@ export function getEffectiveDayFields(
         ? day.employee_comment
         : (initial?.employee_comment ?? ""),
     ),
-    intern_comment: normalizeComment(day.intern_comment),
+    intern_comment: normalizeComment(
+      permissions.canEditIntern
+        ? day.intern_comment
+        : (initial?.intern_comment ?? ""),
+    ),
     mentor_comment: normalizeComment(
       permissions.canEditMentor
         ? day.mentor_comment

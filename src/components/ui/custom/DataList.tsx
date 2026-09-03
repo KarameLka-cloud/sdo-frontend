@@ -1,4 +1,4 @@
-import { JSX } from "react";
+import { Fragment, JSX, Key } from "react";
 import DataMessage, { DataStateCenter } from "./DataMessage.tsx";
 import Loader from "./Loader.tsx";
 
@@ -7,6 +7,8 @@ type DataListProps<T> = {
   isLoading?: boolean;
   error?: boolean;
   renderItem: (item: T, index: number) => JSX.Element;
+  /** Stable identity per item; falls back to the array index. */
+  getItemKey?: (item: T, index: number) => Key;
   emptyMessage?: JSX.Element;
   errorMessage?: JSX.Element;
   loader?: JSX.Element;
@@ -17,6 +19,7 @@ function DataList<T>({
   isLoading,
   error,
   renderItem,
+  getItemKey,
   emptyMessage = <DataMessage type="noData" centered />,
   errorMessage = <DataMessage type="error" centered />,
   loader = (
@@ -32,7 +35,15 @@ function DataList<T>({
     return emptyMessage;
   }
 
-  return <>{data.map((item, index) => renderItem(item, index))}</>;
+  return (
+    <>
+      {data.map((item, index) => (
+        <Fragment key={getItemKey?.(item, index) ?? index}>
+          {renderItem(item, index)}
+        </Fragment>
+      ))}
+    </>
+  );
 }
 
 export default DataList;

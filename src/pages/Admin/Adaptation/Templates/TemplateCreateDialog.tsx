@@ -1,6 +1,6 @@
 import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
-import { useCreateAdaptationPlanTemplateMutation } from "@/services/store/features/user.ts";
+import { useCreateAdaptationPlanTemplateMutation } from "@/services/store/features/adaptation.ts";
 import { Button } from "@/components/ui/shadcn/button";
 import { Field, FieldLabel } from "@/components/ui/shadcn/field";
 import { Input } from "@/components/ui/shadcn/input";
@@ -20,7 +20,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shadcn/dialog";
-import { WORK_SCHEDULE_OPTIONS } from "@/pages/Admin/shared/adminResourceConfig.ts";
+import { WORK_SCHEDULE_OPTIONS } from "@/components/resource-list/resourceRoutes.ts";
 
 function TemplateCreateDialog({
   open,
@@ -70,15 +70,19 @@ function TemplateCreateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+        <DialogHeader className="px-4 pt-4">
           <DialogTitle>Создание плана адаптации</DialogTitle>
           <DialogDescription className="sr-only">
             Укажите название, график работы и смену нового плана адаптации
           </DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-          <div className="grid gap-4 sm:grid-cols-2">
+        <form
+          onSubmit={handleSubmit}
+          className="flex min-h-0 flex-1 flex-col"
+        >
+          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+            <div className="grid gap-4 sm:grid-cols-2">
             <Field className="sm:col-span-2">
               <FieldLabel htmlFor="template-name">Название</FieldLabel>
               <Input
@@ -113,6 +117,7 @@ function TemplateCreateDialog({
                 onChange={(e) => setShift(e.target.value)}
               />
             </Field>
+          </div>
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isCreating}>

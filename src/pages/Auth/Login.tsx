@@ -51,8 +51,10 @@ function Login(): JSX.Element {
             <Field>
               <FieldLabel htmlFor="login">Логин</FieldLabel>
               <Input
+                id="login"
                 type="text"
                 name="login"
+                autoComplete="username"
                 value={formItems.login}
                 onChange={handleChange}
                 placeholder="i.ivanov"
@@ -62,8 +64,10 @@ function Login(): JSX.Element {
             <Field>
               <FieldLabel htmlFor="password">Пароль</FieldLabel>
               <Input
+                id="password"
                 type="password"
                 name="password"
+                autoComplete="current-password"
                 value={formItems.password}
                 onChange={handleChange}
                 placeholder="********"

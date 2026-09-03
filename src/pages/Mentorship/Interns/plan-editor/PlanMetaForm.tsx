@@ -8,22 +8,51 @@ import {
 } from "@/components/ui/shadcn/card";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/shadcn/field";
 import { Input } from "@/components/ui/shadcn/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/shadcn/select";
-import { Separator } from "@/components/ui/shadcn/separator";
 import DatePickerField from "@/components/ui/custom/DatePickerField";
+import SearchableCombobox from "@/components/ui/custom/SearchableCombobox";
 import ResourceEditFormFooter from "@/components/resource-list/ResourceEditFormFooter";
+import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
+import { toDateInputValue } from "@/utils/formValues.ts";
+import { toUserOptions } from "@/utils/userSelectOptions.ts";
 
 export interface PlanMetaFormValues {
   startDate: string;
+  templateId: number | null;
   shift: number;
   mentor: number | null;
   departmentHead: number | null;
+}
+
+/** Merge editable form state with loaded plan data for validation and save. */
+export function resolvePlanMetaForm(
+  form: PlanMetaFormValues,
+  plan: Pick<
+    AdaptationPlanType,
+    | "start_date"
+    | "adaptation_plan_template_id"
+    | "shift"
+    | "mentor"
+    | "department_head"
+    | "department_head_user"
+    | "mentor_user"
+    | "template"
+  >,
+): PlanMetaFormValues {
+  return {
+    startDate: form.startDate || toDateInputValue(plan.start_date),
+    templateId:
+      form.templateId ??
+      plan.adaptation_plan_template_id ??
+      plan.template?.id ??
+      null,
+    shift: form.shift ?? plan.shift ?? 1,
+    mentor: form.mentor ?? plan.mentor ?? plan.mentor_user?.id ?? null,
+    departmentHead:
+      form.departmentHead ??
+      plan.department_head ??
+      plan.department_head_user?.id ??
+      null,
+  };
 }
 
 interface PlanMetaFormProps {
@@ -102,47 +131,40 @@ function PlanMetaForm({
             </Field>
             <Field>
               <FieldLabel htmlFor="plan-mentor">Наставник</FieldLabel>
-              <Select
+              <SearchableCombobox
+                id="plan-mentor"
                 value={form.mentor ? String(form.mentor) : ""}
                 onValueChange={(value) =>
-                  onFormChange({ ...form, mentor: Number(value) })
+                  onFormChange({
+                    ...form,
+                    mentor: value ? Number(value) : null,
+                  })
                 }
-              >
-                <SelectTrigger id="plan-mentor" className="w-full">
-                  <SelectValue placeholder="Выберите наставника" />
-                </SelectTrigger>
-                <SelectContent>
-                  {mentors.map((mentor) => (
-                    <SelectItem key={mentor.id} value={String(mentor.id)}>
-                      {mentor.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={toUserOptions(mentors)}
+                placeholder="Выберите наставника"
+                searchPlaceholder="Поиск наставника..."
+                emptyMessage="Наставник не найден"
+              />
             </Field>
             <Field>
               <FieldLabel htmlFor="plan-head">Руководитель отдела</FieldLabel>
-              <Select
+              <SearchableCombobox
+                id="plan-head"
                 value={form.departmentHead ? String(form.departmentHead) : ""}
                 onValueChange={(value) =>
-                  onFormChange({ ...form, departmentHead: Number(value) })
+                  onFormChange({
+                    ...form,
+                    departmentHead: value ? Number(value) : null,
+                  })
                 }
-              >
-                <SelectTrigger id="plan-head" className="w-full">
-                  <SelectValue placeholder="Выберите руководителя" />
-                </SelectTrigger>
-                <SelectContent>
-                  {heads.map((head) => (
-                    <SelectItem key={head.id} value={String(head.id)}>
-                      {head.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+                options={toUserOptions(heads)}
+                placeholder="Выберите руководителя"
+                searchPlaceholder="Поиск руководителя..."
+                emptyMessage="Руководитель не найден"
+              />
             </Field>
           </FieldGroup>
         </CardContent>
-        <Separator />
         <ResourceEditFormFooter
           isSaving={isSaving}
           isDeleting={isDeleting}

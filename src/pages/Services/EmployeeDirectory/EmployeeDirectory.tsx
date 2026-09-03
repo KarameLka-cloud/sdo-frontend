@@ -33,6 +33,7 @@ import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar"
 import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
 import { useDebouncedValue } from "@/hooks/useDebouncedValue.ts";
 import { getInitials } from "@/utils/getInitials.ts";
+import InfoItem from "@/components/ui/custom/InfoItem";
 
 const DEFAULT_ATTRIBUTES: EmployeeDirectoryAttributes = {
   cn: "Имя:",
@@ -60,15 +61,6 @@ const SEARCH_DEBOUNCE_MS = 400;
 function photoSrc(photo?: string): string | undefined {
   if (!photo) return undefined;
   return `data:image/jpeg;base64,${photo}`;
-}
-
-function EmployeeInfoItem({ label, value }: { label: string; value?: string }) {
-  return (
-    <div className="flex flex-col gap-1">
-      <dt className="text-sm text-muted-foreground">{label.replace(/:$/, "")}</dt>
-      <dd className="text-sm font-medium break-words">{value || "—"}</dd>
-    </div>
-  );
 }
 
 function EmployeeDetailDialog({
@@ -109,7 +101,7 @@ function EmployeeDetailDialog({
 
         <dl className="grid gap-4 sm:grid-cols-2">
           {ATTRIBUTE_ORDER.map((key) => (
-            <EmployeeInfoItem
+            <InfoItem
               key={key}
               label={attributes[key] ?? DEFAULT_ATTRIBUTES[key]}
               value={employee[key]}
@@ -173,6 +165,7 @@ function EmployeeDirectory(): JSX.Element {
             <TableRow>
               <TableHead className="w-14" />
               <TableHead>ФИО</TableHead>
+              <TableHead>Должность</TableHead>
               <TableHead>Эл. почта</TableHead>
               <TableHead>Телефон</TableHead>
             </TableRow>
@@ -180,7 +173,7 @@ function EmployeeDirectory(): JSX.Element {
           <TableBody>
             {employees.length === 0 ? (
               <ResourceTableEmptyRow
-                colSpan={4}
+                colSpan={5}
                 hasSearch={hasSearch}
                 notFoundMessage={`Сотрудник «${debouncedSearch}» не найден`}
               />
@@ -205,6 +198,7 @@ function EmployeeDirectory(): JSX.Element {
                   <TableCell className="font-medium">
                     {employee.cn ?? "—"}
                   </TableCell>
+                  <TableCell>{employee.description ?? "—"}</TableCell>
                   <TableCell>{employee.mail ?? "—"}</TableCell>
                   <TableCell>{employee.telephonenumber ?? "—"}</TableCell>
                 </TableRow>

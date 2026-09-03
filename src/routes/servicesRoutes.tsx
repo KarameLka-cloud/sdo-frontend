@@ -1,19 +1,17 @@
 import { RouteObject } from "react-router-dom";
-import PageTitle from "@/components/PageTitle.tsx";
-import EmployeeDirectory from "@/pages/Services/EmployeeDirectory/EmployeeDirectory.tsx";
 import { ROUTES } from "@/constants/routes.ts";
 import MainLayout from "@/layouts/MainLayout";
+import { lazyPage } from "./lazyPage.tsx";
 
 export const servicesRoutes: RouteObject = {
   element: <MainLayout />,
   children: [
     {
       path: ROUTES.EMPLOYEES,
-      element: (
-        <PageTitle
-          title={"Справочник сотрудника"}
-          element={<EmployeeDirectory />}
-        />
+      element: lazyPage(
+        () =>
+          import("@/pages/Services/EmployeeDirectory/EmployeeDirectory.tsx"),
+        "Справочник сотрудника",
       ),
     },
   ],

@@ -1,33 +1,29 @@
 import Cookie from "js-cookie";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "@/services/store/features/auth.ts";
+import { baseApi } from "@/services/store/baseApi.ts";
 import { ROUTES } from "@/constants/routes.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
 
 export const useLogout = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [logoutMutation] = useLogoutMutation();
 
-  const clearSessionAndRedirect = () => {
-    Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
-    navigate(ROUTES.LOGIN);
-  };
-
   const logout = async () => {
-    const token = Cookie.get(COOKIE_NAMES.AUTH_TOKEN);
-
-    if (!token) {
-      clearSessionAndRedirect();
-      return;
+    if (Cookie.get(COOKIE_NAMES.AUTH_TOKEN)) {
+      try {
+        await logoutMutation().unwrap();
+      } catch {
+        // Always clear the local session, even if the API call fails.
+      }
     }
 
-    try {
-      await logoutMutation("").unwrap();
-    } catch {
-      // Always clear local session, even if the API call fails.
-    }
-
-    clearSessionAndRedirect();
+    Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
+    // Drop every cached response so the next sign-in starts clean.
+    dispatch(baseApi.util.resetApiState());
+    navigate(ROUTES.LOGIN);
   };
 
   return { logout };

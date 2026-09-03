@@ -1,25 +1,24 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { auth } from "./features/auth.ts";
-import { user } from "./features/user.ts";
-import { learningItems } from "./features/learningItems.ts";
-import { employeeDirectory } from "./features/employeeDirectory.ts";
+import { baseApi } from "./baseApi.ts";
+
+// Endpoint modules must be imported for their `injectEndpoints` side effect.
+import "./features/auth.ts";
+import "./features/users.ts";
+import "./features/organization.ts";
+import "./features/adaptation.ts";
+import "./features/learningItems.ts";
+import "./features/employeeDirectory.ts";
 
 export const store = configureStore({
   reducer: {
-    [auth.reducerPath]: auth.reducer,
-    [user.reducerPath]: user.reducer,
-    [learningItems.reducerPath]: learningItems.reducer,
-    [employeeDirectory.reducerPath]: employeeDirectory.reducer,
+    [baseApi.reducerPath]: baseApi.reducer,
   },
-
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      auth.middleware,
-      user.middleware,
-      learningItems.middleware,
-      employeeDirectory.middleware,
-    ),
+    getDefaultMiddleware().concat(baseApi.middleware),
 });
 
 setupListeners(store.dispatch);
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

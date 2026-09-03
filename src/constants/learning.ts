@@ -16,13 +16,6 @@ export const LEARNING_TYPE_LABELS: Record<LearningType, string> = {
   test: "Тесты",
 };
 
-export const LEARNING_BACK_LABELS: Record<LearningType, string> = {
-  event: "К списку мероприятий",
-  course: "К списку курсов",
-  webinar: "К списку вебинаров",
-  test: "К списку тестов",
-};
-
 export const LEARNING_DELETE_MESSAGES: Record<
   LearningType,
   { confirm: string; success: string; error: string }
@@ -104,16 +97,3 @@ export const buildAdminLearningPath = (
   category: LearningCategory,
   type: LearningType,
 ): string => `${ROUTES.ADMIN_LEARNING}?category=${category}&type=${type}`;
-
-export const buildAdminLearningCreatePath = (
-  category: LearningCategory,
-  type: LearningType,
-): string =>
-  `${ROUTES.ADMIN_LEARNING_CREATE}?category=${category}&type=${type}`;
-
-export const buildAdminLearningEditPath = (
-  id: number,
-  category: LearningCategory,
-  type: LearningType,
-): string =>
-  `${ROUTES.ADMIN_LEARNING_EDIT.replace(":id", String(id))}?category=${category}&type=${type}`;

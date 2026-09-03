@@ -5,7 +5,7 @@ import {
   useDeleteAdaptationPlanTemplateMutation,
   useGetAdaptationPlanTemplateByIdQuery,
   useUpdateAdaptationPlanTemplateMutation,
-} from "@/services/store/features/user.ts";
+} from "@/services/store/features/adaptation.ts";
 import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
 import {
   TEMPLATE_ROUTES,
@@ -16,7 +16,7 @@ import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import { usePopulateEditForm } from "@/components/resource-list/usePopulateEditForm";
 import { firstShift } from "@/utils/formatShifts.ts";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
-import CreateTaskRulesCard from "./CreateTaskRulesCard";
+import TaskDayFormDialog from "./TaskDayFormDialog";
 import TaskRuleGroup from "./TaskRuleGroup";
 import TemplateMetadataCard from "./TemplateMetadataCard";
 import {
@@ -28,12 +28,7 @@ import {
   toFormRule,
   toPayloadRule,
 } from "./taskRuleForm";
-
-const DELETE_MESSAGES = {
-  confirm: "Удалить шаблон адаптации?",
-  success: "Шаблон адаптации удалён",
-  error: "Не удалось удалить шаблон",
-};
+import { TEMPLATE_EDITOR_DELETE_MESSAGES } from "@/constants/deleteMessages.ts";
 
 function TemplateTasks(): JSX.Element {
   const navigate = useNavigate();
@@ -51,7 +46,7 @@ function TemplateTasks(): JSX.Element {
     useUpdateAdaptationPlanTemplateMutation();
   const deleteMutation = useDeleteAdaptationPlanTemplateMutation();
   const { handleDelete, isDeleting } = useConfirmDelete(deleteMutation, {
-    messages: DELETE_MESSAGES,
+    messages: TEMPLATE_EDITOR_DELETE_MESSAGES,
     onSuccess: () => navigate(TEMPLATE_ROUTES.list),
     trackId: false,
   });
@@ -359,58 +354,72 @@ function TemplateTasks(): JSX.Element {
         workScheduleOptions={workScheduleOptions}
         isSaving={isSaving}
         isDeleting={isDeleting}
-        isCreateVisible={isCreateVisible}
         onNameChange={setName}
         onWorkScheduleChange={setWorkSchedule}
         onShiftChange={setShift}
         onSubmit={(event) => {
           void handleSaveMetadata(event);
         }}
-        onShowCreate={() => setIsCreateVisible(true)}
-        onCancelCreate={resetCreateForm}
+        onShowCreate={() => {
+          resetEditGroup();
+          setIsCreateVisible(true);
+        }}
         onDelete={() => handleDelete(template.id)}
       />
 
-      {isCreateVisible && (
-        <CreateTaskRulesCard
-          dayFrom={createDayFrom}
-          dayTo={createDayTo}
-          rules={createRules}
-          isSaving={isSaving}
-          onDayFromChange={setCreateDayFrom}
-          onDayToChange={setCreateDayTo}
-          onAddRule={addCreateRule}
-          onUpdateRule={updateCreateRule}
-          onRemoveRule={removeCreateRule}
-          onSave={() => {
-            void saveCreateRules();
-          }}
-        />
-      )}
+      <TaskDayFormDialog
+        open={isCreateVisible || editingGroupKey !== null}
+        onOpenChange={(open) => {
+          if (!open) {
+            resetCreateForm();
+            resetEditGroup();
+          }
+        }}
+        isEdit={editingGroupKey !== null}
+        dayFrom={editingGroupKey !== null ? editingGroupDayFrom : createDayFrom}
+        dayTo={editingGroupKey !== null ? editingGroupDayTo : createDayTo}
+        rules={editingGroupKey !== null ? editingGroupRules : createRules}
+        isSaving={isSaving}
+        onDayFromChange={
+          editingGroupKey !== null ? setEditingGroupDayFrom : setCreateDayFrom
+        }
+        onDayToChange={
+          editingGroupKey !== null ? setEditingGroupDayTo : setCreateDayTo
+        }
+        onAddRule={
+          editingGroupKey !== null ? addEditingGroupRule : addCreateRule
+        }
+        onUpdateRule={
+          editingGroupKey !== null ? updateEditingGroupRule : updateCreateRule
+        }
+        onRemoveRule={
+          editingGroupKey !== null ? removeEditingGroupRule : removeCreateRule
+        }
+        onSave={() => {
+          if (editingGroupKey !== null) {
+            void saveEditGroup();
+            return;
+          }
+          void saveCreateRules();
+        }}
+        onDelete={
+          editingGroupKey !== null
+            ? () => {
+                void deleteGroup(editingGroupIndexes);
+              }
+            : undefined
+        }
+      />
 
       <div className="flex flex-col gap-4">
         {groupedRules.map((group) => (
           <TaskRuleGroup
             key={`rule-group-${group.key}`}
             group={group}
-            isEditing={editingGroupKey === group.key}
-            isSaving={isSaving}
-            editingRules={editingGroupRules}
-            editingDayFrom={editingGroupDayFrom}
-            editingDayTo={editingGroupDayTo}
-            onStartEdit={() => startEditGroup(group)}
-            onCancelEdit={resetEditGroup}
-            onSaveEdit={() => {
-              void saveEditGroup();
+            onStartEdit={() => {
+              resetCreateForm();
+              startEditGroup(group);
             }}
-            onDeleteGroup={() => {
-              void deleteGroup(editingGroupIndexes);
-            }}
-            onDayFromChange={setEditingGroupDayFrom}
-            onDayToChange={setEditingGroupDayTo}
-            onAddRule={addEditingGroupRule}
-            onUpdateRule={updateEditingGroupRule}
-            onRemoveRule={removeEditingGroupRule}
           />
         ))}
       </div>

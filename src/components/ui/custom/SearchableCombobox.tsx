@@ -1,5 +1,6 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { SearchIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/shadcn/button";
 import { InputGroupAddon } from "@/components/ui/shadcn/input-group";
 import {
@@ -18,6 +19,8 @@ export type SearchableComboboxOption = {
   label: string;
 };
 
+const DIALOG_CONTENT_SELECTOR = '[data-slot="dialog-content"]';
+
 type SearchableComboboxProps = {
   id?: string;
   value: string;
@@ -27,6 +30,8 @@ type SearchableComboboxProps = {
   searchPlaceholder?: string;
   emptyMessage?: string;
   disabled?: boolean;
+  className?: string;
+  sizeToContent?: boolean;
 };
 
 function SearchableCombobox({
@@ -38,11 +43,25 @@ function SearchableCombobox({
   searchPlaceholder = "Поиск...",
   emptyMessage = "Ничего не найдено",
   disabled,
+  className,
+  sizeToContent = false,
 }: SearchableComboboxProps) {
   const selected = useMemo(
     () => options.find((option) => option.value === value) ?? null,
     [options, value],
   );
+
+  // Radix's modal dialog kills pointer events outside its subtree and traps
+  // focus inside it, so a Base UI popup portaled to <body> renders but stays
+  // unclickable. Keep the popup inside the dialog when there is one.
+  const [dialogContainer, setDialogContainer] = useState<HTMLElement | null>(
+    null,
+  );
+  const captureTrigger = useCallback((node: HTMLButtonElement | null) => {
+    setDialogContainer(
+      node?.closest<HTMLElement>(DIALOG_CONTENT_SELECTOR) ?? null,
+    );
+  }, []);
 
   return (
     <Combobox
@@ -56,20 +75,26 @@ function SearchableCombobox({
     >
       <ComboboxTrigger
         id={id}
+        ref={captureTrigger}
         disabled={disabled}
+        className={sizeToContent ? "w-fit" : undefined}
         render={
           <Button
             type="button"
             variant="outline"
-            className="w-full justify-between font-normal data-placeholder:text-muted-foreground"
+            className={cn(
+              "justify-between font-normal data-placeholder:text-muted-foreground",
+              sizeToContent ? "w-fit" : "w-full",
+              className,
+            )}
           />
         }
       >
-        <span className="min-w-0 truncate">
+        <span className={sizeToContent ? undefined : "min-w-0 truncate"}>
           <ComboboxValue placeholder={placeholder} />
         </span>
       </ComboboxTrigger>
-      <ComboboxContent>
+      <ComboboxContent container={dialogContainer ?? undefined}>
         <ComboboxInput
           showTrigger={false}
           placeholder={searchPlaceholder}

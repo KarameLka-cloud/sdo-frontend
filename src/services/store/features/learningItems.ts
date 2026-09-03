@@ -1,21 +1,17 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { API_ENDPOINTS } from "@constants/api.ts";
-import { baseQuery } from "../baseQuery.ts";
-import {
+import { API_ENDPOINTS } from "@/constants/api.ts";
+import { baseApi } from "../baseApi.ts";
+import type {
   LearningCategory,
   LearningItemType,
   LearningType,
 } from "@/interfaces/api/LearningItemType.ts";
 
-type LearningItemsQueryArgs = {
+interface LearningItemsQueryArgs {
   category: LearningCategory;
   type: LearningType;
-};
+}
 
-export const learningItems = createApi({
-  reducerPath: "learningItems",
-  tagTypes: ["LearningItems"],
-  baseQuery,
+export const learningItemsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getLearningItems: builder.query<LearningItemType[], LearningItemsQueryArgs>(
       {
@@ -23,18 +19,14 @@ export const learningItems = createApi({
           url: API_ENDPOINTS.LEARNING_ITEMS,
           params: { category, type },
         }),
-        providesTags: (result, _error, arg) =>
+        providesTags: (result) =>
           result
             ? [
                 ...result.map(({ id }) => ({
                   type: "LearningItems" as const,
                   id,
                 })),
-                {
-                  type: "LearningItems" as const,
-                  id: `${arg.category}:${arg.type}`,
-                },
-                "LearningItems",
+                "LearningItems" as const,
               ]
             : ["LearningItems"],
       },
@@ -81,4 +73,4 @@ export const {
   useAddLearningItemMutation,
   useUpdateLearningItemMutation,
   useDeleteLearningItemMutation,
-} = learningItems;
+} = learningItemsApi;

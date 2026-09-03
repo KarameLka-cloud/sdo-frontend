@@ -2,7 +2,7 @@ import { JSX } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/shadcn/card";
 import dateNow from "@/utils/dateNow.ts";
 import { useUser } from "@/hooks/useUser.ts";
-import { useGetMyAdaptationPlanQuery } from "@/services/store/features/user.ts";
+import { useGetMyAdaptationPlanQuery } from "@/services/store/features/adaptation.ts";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
 
@@ -73,7 +73,7 @@ const CircularProgress = ({ percent }: { percent: number }): JSX.Element => {
 };
 
 function Home(): JSX.Element {
-  const { name, department, description } = useUser();
+  const { name, department, description, isLoading: isUserLoading } = useUser();
   const { data: plan, isLoading } = useGetMyAdaptationPlanQuery(undefined);
 
   const adaptationPlan = plan ?? undefined;
@@ -91,21 +91,29 @@ function Home(): JSX.Element {
             <CardTitle>{dateNow()}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-3">
-              <div className="text-3xl font-semibold text-foreground">
-                Привет, {shortName} 👋
+            {isUserLoading ? (
+              <div className="space-y-3">
+                <Skeleton className="h-9 w-64" />
+                <Skeleton className="h-5 w-40" />
+                <Skeleton className="h-4 w-32" />
               </div>
-              {description && (
-                <div className="text-base font-medium text-primary">
-                  {description}
+            ) : (
+              <div className="space-y-3">
+                <div className="text-3xl font-semibold text-foreground">
+                  Привет, {shortName} 👋
                 </div>
-              )}
-              {department && (
-                <div className="text-sm text-muted-foreground">
-                  {department}
-                </div>
-              )}
-            </div>
+                {description && (
+                  <div className="text-base font-medium text-primary">
+                    {description}
+                  </div>
+                )}
+                {department && (
+                  <div className="text-sm text-muted-foreground">
+                    {department}
+                  </div>
+                )}
+              </div>
+            )}
           </CardContent>
         </Card>
 

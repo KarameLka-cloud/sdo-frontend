@@ -12,8 +12,6 @@ export const ROUTES = {
   ADMIN: "/admin",
   ADMIN_USERS: "/admin/users",
   ADMIN_LEARNING: "/admin/learning",
-  ADMIN_LEARNING_CREATE: "/admin/learning/create",
-  ADMIN_LEARNING_EDIT: "/admin/learning/:id/edit",
   ADMIN_ADAPTATION_TEMPLATES: "/admin/adaptation/templates",
   ADMIN_ADAPTATION_TEMPLATE_TASKS: "/admin/adaptation/templates/:templateId",
 } as const;

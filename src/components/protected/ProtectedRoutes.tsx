@@ -10,8 +10,6 @@ import {
   type UserRole,
 } from "@/constants/roles.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
-import { useGetUserByDataQuery } from "@/services/store/features/user.ts";
-import { Loader } from "@/components/ui/custom/Loader";
 
 function isUnauthorizedError(error: unknown): boolean {
   return (
@@ -35,15 +33,9 @@ const ProtectedRoute = ({
   elementLogin,
   route,
 }: ProtectedRoutePropsType) => {
-  const hasToken = Boolean(Cookie.get(COOKIE_NAMES.AUTH_TOKEN));
-  const { isLoading, error } = useGetUserByDataQuery(undefined, {
-    skip: !hasToken,
-  });
+  const { hasToken, isLoading, error } = useUser();
 
   if (hasToken) {
-    if (isLoading) {
-      return <Loader />;
-    }
     if (error && isUnauthorizedError(error)) {
       Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
       if (route === "login") {
@@ -52,7 +44,9 @@ const ProtectedRoute = ({
       return <Navigate to={ROUTES.LOGIN} replace />;
     }
     if (route === "login") {
-      return <Navigate to={ROUTES.HOME} replace />;
+      // Until the session check resolves we cannot tell the form from the
+      // redirect, so render nothing instead of flashing the login screen.
+      return isLoading ? null : <Navigate to={ROUTES.HOME} replace />;
     }
     return elementHome;
   }
@@ -70,8 +64,10 @@ interface RoleGuardProps {
 function RoleGuard({ allowedRoles, children }: RoleGuardProps) {
   const { role, role_name: roleName, isLoading } = useUser();
 
+  // Rendering the guarded page before the role is known would expose it to
+  // users who are about to be redirected away.
   if (isLoading) {
-    return <Loader />;
+    return null;
   }
 
   if (!hasAnyRoleFromUser(role, roleName, allowedRoles)) {

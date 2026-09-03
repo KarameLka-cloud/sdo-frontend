@@ -16,6 +16,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/shadcn/sidebar";
+import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import { useLogout } from "@/hooks/useLogout.ts";
 import { useUser } from "@/hooks/useUser";
 import { getInitials } from "@/utils/getInitials.ts";
@@ -33,20 +34,29 @@ function UserIdentity({
   name,
   description,
   initials,
+  isLoading,
 }: {
   name: string;
   description: string;
   initials: string;
+  isLoading?: boolean;
 }): JSX.Element {
   return (
     <>
       <Avatar className="w-10 h-10 rounded-full bg-linear-to-br from-blue-500 to-purple-600 flex items-center justify-center shadow-md">
         <span className="text-white text-sm font-semibold">{initials}</span>
       </Avatar>
-      <div className="grid flex-1 text-left text-sm leading-tight">
-        <span className="truncate font-medium">{name}</span>
-        <span className="truncate text-xs">{description}</span>
-      </div>
+      {isLoading ? (
+        <div className="grid flex-1 gap-1.5">
+          <Skeleton className="h-3.5 w-24" />
+          <Skeleton className="h-3 w-16" />
+        </div>
+      ) : (
+        <div className="grid flex-1 text-left text-sm leading-tight">
+          <span className="truncate font-medium">{name}</span>
+          <span className="truncate text-xs">{description}</span>
+        </div>
+      )}
     </>
   );
 }
@@ -54,7 +64,7 @@ function UserIdentity({
 function Footer(): JSX.Element {
   const { isMobile } = useSidebar();
   const { logout } = useLogout();
-  const { name, description } = useUser();
+  const { name, description, isLoading } = useUser();
   const shortName = getShortUserName(name);
   const initials = getInitials(name);
 
@@ -72,6 +82,7 @@ function Footer(): JSX.Element {
                   name={shortName}
                   description={description}
                   initials={initials}
+                  isLoading={isLoading}
                 />
                 <ChevronsUpDown className="ml-auto size-4" />
               </SidebarMenuButton>

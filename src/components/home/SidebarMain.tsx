@@ -1,7 +1,7 @@
 import React, { JSX } from "react";
 import { SidebarInset, SidebarTrigger } from "@/components/ui/shadcn/sidebar";
 import { Separator } from "@/components/ui/shadcn/separator";
-import BreadcrumbComponent from "@components/ui/custom/BreadcrumbComponent";
+import BreadcrumbComponent from "@/components/ui/custom/BreadcrumbComponent";
 
 function SidebarMain({ children }: { children: React.ReactNode }): JSX.Element {
   return (

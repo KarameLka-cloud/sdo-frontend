@@ -1,4 +1,4 @@
-import { ROUTES } from "@constants/routes";
+import { ROUTES } from "@/constants/routes";
 import type { LucideIcon } from "lucide-react";
 import { Home, Notebook, Album, Users, Brain, BookUser } from "lucide-react";
 import firstWednesdayData from "@/utils/firstWednesday";

@@ -35,6 +35,7 @@ function LearningListContent({
             data={data}
             error={!!error}
             isLoading={isLoading}
+            getItemKey={(item) => item.id}
             renderItem={(item) => (
               <UniversalCard item={item} className="mt-4" />
             )}

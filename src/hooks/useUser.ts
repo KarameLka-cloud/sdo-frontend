@@ -1,24 +1,23 @@
 import Cookie from "js-cookie";
-import { UserType } from "@/interfaces/api/UserType.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
-import { useGetUserByDataQuery } from "@/services/store/features/user.ts";
+import { useGetCurrentUserQuery } from "@/services/store/features/users.ts";
 
+/** Single source of truth for the signed-in user; skipped when no token is set. */
 export const useUser = () => {
-  const token = Cookie.get(COOKIE_NAMES.AUTH_TOKEN);
-
-  const { data, isLoading } = useGetUserByDataQuery(undefined, {
-    skip: !token,
+  const hasToken = Boolean(Cookie.get(COOKIE_NAMES.AUTH_TOKEN));
+  const { data, isLoading, error } = useGetCurrentUserQuery(undefined, {
+    skip: !hasToken,
   });
 
-  const user = (data as UserType | undefined) ?? {};
-
   return {
-    id: user.id,
-    name: user.name || "",
-    department: user.department || "",
-    description: user.description || "",
-    role: user.role || "",
-    role_name: user.role_name || "",
+    id: data?.id,
+    name: data?.name ?? "",
+    department: data?.department ?? "",
+    description: data?.description ?? "",
+    role: data?.role ?? "",
+    role_name: data?.role_name ?? "",
+    hasToken,
     isLoading,
+    error,
   };
 };

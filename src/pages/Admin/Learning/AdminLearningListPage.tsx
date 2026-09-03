@@ -1,5 +1,5 @@
-import { JSX, useMemo, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { JSX, useState } from "react";
+import { Navigate } from "react-router-dom";
 import {
   LearningCategory,
   LearningItemType,
@@ -14,34 +14,97 @@ import {
   useDeleteLearningItemMutation,
   useGetLearningItemsQuery,
 } from "@/services/store/features/learningItems.ts";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/shadcn/table";
-import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar";
+import ResourceListPage, {
+  type ResourceColumn,
+} from "@/components/resource-list/ResourceListPage";
 import ResourceTableRowActions from "@/components/resource-list/ResourceTableRowActions";
-import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
-import QueryState from "@/components/resource-list/QueryState";
 import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import {
   LEARNING_DELETE_MESSAGES,
   LEARNING_TYPE_LABELS,
-  buildAdminLearningCreatePath,
-  buildAdminLearningEditPath,
   buildAdminLearningPath,
 } from "@/constants/learning.ts";
 import { useResolvedLearningRoute } from "@/hooks/useResolvedLearningRoute.ts";
 import PageTitle from "@/components/PageTitle.tsx";
+import LearningItemFormDialog from "@/pages/Admin/Learning/LearningItemFormDialog";
 
 const CREATE_LABELS: Record<LearningType, string> = {
   event: "Создать мероприятие",
   course: "Создать курс",
   webinar: "Создать вебинар",
   test: "Создать тест",
+};
+
+const COLUMN_DEFS = {
+  title: {
+    key: "title",
+    label: "Название",
+    className: "font-medium",
+    cellTitle: (item: LearningItemType) => item.title,
+    render: (item: LearningItemType) => truncateText(item.title),
+  },
+  department: {
+    key: "department",
+    label: "Отдел",
+    render: (item: LearningItemType) => item.department,
+  },
+  position: {
+    key: "position",
+    label: "Должность",
+    render: (item: LearningItemType) => item.position,
+  },
+  date: {
+    key: "date",
+    label: "Дата",
+    render: (item: LearningItemType) => convertDate(item.date),
+  },
+  deadline: {
+    key: "date",
+    label: "Пройти до",
+    render: (item: LearningItemType) => convertDate(item.date),
+  },
+  time: {
+    key: "time",
+    label: "Время",
+    render: (item: LearningItemType) =>
+      hasTextValue(item.time) ? convertTime(item.time!) : null,
+  },
+  duration: {
+    key: "duration",
+    label: "Длительность",
+    render: (item: LearningItemType) => `${item.duration} мин.`,
+  },
+} satisfies Record<string, ResourceColumn<LearningItemType>>;
+
+const COLUMNS_BY_TYPE: Record<
+  LearningType,
+  ResourceColumn<LearningItemType>[]
+> = {
+  event: [
+    COLUMN_DEFS.title,
+    COLUMN_DEFS.department,
+    COLUMN_DEFS.date,
+    COLUMN_DEFS.time,
+    COLUMN_DEFS.duration,
+  ],
+  course: [
+    COLUMN_DEFS.title,
+    COLUMN_DEFS.department,
+    COLUMN_DEFS.duration,
+    COLUMN_DEFS.deadline,
+  ],
+  webinar: [
+    COLUMN_DEFS.title,
+    COLUMN_DEFS.date,
+    COLUMN_DEFS.time,
+    COLUMN_DEFS.duration,
+  ],
+  test: [
+    COLUMN_DEFS.title,
+    COLUMN_DEFS.position,
+    COLUMN_DEFS.duration,
+    COLUMN_DEFS.deadline,
+  ],
 };
 
 function AdminLearningListContent({
@@ -51,153 +114,68 @@ function AdminLearningListContent({
   category: LearningCategory;
   type: LearningType;
 }): JSX.Element {
-  const navigate = useNavigate();
   const { data, error, isLoading } = useGetLearningItemsQuery({
     category,
     type,
   });
-  const deleteMutation = useDeleteLearningItemMutation();
   const [search, setSearch] = useState("");
-  const { handleDelete, isDeletingItem } = useConfirmDelete(deleteMutation, {
-    messages: LEARNING_DELETE_MESSAGES[type],
-  });
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [editingItem, setEditingItem] = useState<LearningItemType | null>(null);
+  const { handleDelete, isDeletingItem } = useConfirmDelete(
+    useDeleteLearningItemMutation(),
+    { messages: LEARNING_DELETE_MESSAGES[type] },
+  );
 
   const filteredData = useFiltered<LearningItemType>(data, search);
-  const hasSearch = search.trim().length > 0;
 
-  const columns = useMemo(() => {
-    switch (type) {
-      case "event":
-        return [
-          { key: "title", label: "Название" },
-          { key: "department", label: "Отдел" },
-          { key: "date", label: "Дата" },
-          { key: "time", label: "Время" },
-          { key: "duration", label: "Длительность" },
-        ];
-      case "course":
-        return [
-          { key: "title", label: "Название" },
-          { key: "department", label: "Отдел" },
-          { key: "duration", label: "Длительность" },
-          { key: "date", label: "Пройти до" },
-        ];
-      case "webinar":
-        return [
-          { key: "title", label: "Название" },
-          { key: "date", label: "Дата" },
-          { key: "time", label: "Время" },
-          { key: "duration", label: "Длительность" },
-        ];
-      case "test":
-        return [
-          { key: "title", label: "Название" },
-          { key: "position", label: "Должность" },
-          { key: "duration", label: "Длительность" },
-          { key: "date", label: "Пройти до" },
-        ];
-    }
-  }, [type]);
+  const openCreate = () => {
+    setEditingItem(null);
+    setIsFormOpen(true);
+  };
 
-  const renderCell = (item: LearningItemType, key: string) => {
-    switch (key) {
-      case "title":
-        return truncateText(item.title);
-      case "department":
-        return item.department;
-      case "position":
-        return item.position;
-      case "date":
-        return convertDate(item.date);
-      case "time":
-        return hasTextValue(item.time) ? convertTime(item.time!) : null;
-      case "duration":
-        return `${item.duration} мин.`;
-      default:
-        return null;
-    }
+  const openEdit = (item: LearningItemType) => {
+    setEditingItem(item);
+    setIsFormOpen(true);
   };
 
   return (
     <PageTitle
       title={LEARNING_TYPE_LABELS[type]}
       element={
-        <div className="flex min-h-0 flex-1 flex-col">
-          <ResourceListToolbar
-            createTo={buildAdminLearningCreatePath(category, type)}
-            createLabel={CREATE_LABELS[type]}
-            searchId={`${type}-search`}
-            searchPlaceholder="Поиск..."
-            search={search}
-            onSearchChange={setSearch}
+        <ResourceListPage
+          searchId={`${type}-search`}
+          searchPlaceholder="Поиск..."
+          search={search}
+          onSearchChange={setSearch}
+          onCreate={openCreate}
+          createLabel={CREATE_LABELS[type]}
+          isLoading={isLoading}
+          isError={Boolean(error)}
+          hasData={Boolean(data)}
+          items={filteredData}
+          columns={COLUMNS_BY_TYPE[type]}
+          getRowKey={(item) => item.id}
+          onRowClick={openEdit}
+          renderActions={(item) => (
+            <ResourceTableRowActions
+              onEdit={() => openEdit(item)}
+              onDelete={() => handleDelete(item)}
+              isDeleting={isDeletingItem(item.id)}
+            />
+          )}
+          notFoundMessage={`«${search}» не найдено`}
+        >
+          <LearningItemFormDialog
+            open={isFormOpen}
+            onOpenChange={(open) => {
+              setIsFormOpen(open);
+              if (!open) setEditingItem(null);
+            }}
+            category={category}
+            type={type}
+            item={editingItem}
           />
-
-          <QueryState
-            isLoading={isLoading}
-            isError={Boolean(error)}
-            hasData={Boolean(data)}
-          >
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  {columns.map((column) => (
-                    <TableHead key={column.key}>{column.label}</TableHead>
-                  ))}
-                  <TableHead className="text-right">Действия</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {filteredData.length === 0 ? (
-                  <ResourceTableEmptyRow
-                    colSpan={columns.length + 1}
-                    hasSearch={hasSearch}
-                    notFoundMessage={`«${search}» не найдено`}
-                  />
-                ) : (
-                  filteredData.map((item) => {
-                    const editPath = buildAdminLearningEditPath(
-                      item.id,
-                      category,
-                      type,
-                    );
-
-                    return (
-                      <TableRow
-                        key={item.id}
-                        className="cursor-pointer"
-                        onClick={() => navigate(editPath)}
-                      >
-                        {columns.map((column) => (
-                          <TableCell
-                            key={column.key}
-                            className={
-                              column.key === "title" ? "font-medium" : undefined
-                            }
-                            title={
-                              column.key === "title" ? item.title : undefined
-                            }
-                          >
-                            {renderCell(item, column.key)}
-                          </TableCell>
-                        ))}
-                        <TableCell
-                          className="text-right"
-                          onClick={(event) => event.stopPropagation()}
-                        >
-                          <ResourceTableRowActions
-                            editPath={editPath}
-                            onDelete={() => handleDelete(item)}
-                            isDeleting={isDeletingItem(item.id)}
-                          />
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
-              </TableBody>
-            </Table>
-          </QueryState>
-        </div>
+        </ResourceListPage>
       }
     />
   );
@@ -211,7 +189,11 @@ function AdminLearningListPage(): JSX.Element {
   }
 
   return (
-    <AdminLearningListContent category={route.category} type={route.type} />
+    <AdminLearningListContent
+      key={`${route.category}-${route.type}`}
+      category={route.category}
+      type={route.type}
+    />
   );
 }
 

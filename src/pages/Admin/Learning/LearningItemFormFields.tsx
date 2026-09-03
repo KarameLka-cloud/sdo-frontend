@@ -69,7 +69,7 @@ function LearningItemFormFields({
       </Field>
 
       {needsDepartments && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid w-full grid-cols-[30%_minmax(0,1fr)] gap-4">
           <Field>
             <FieldLabel htmlFor="learning-department">Отдел</FieldLabel>
             <SearchableCombobox
@@ -100,7 +100,7 @@ function LearningItemFormFields({
       )}
 
       {needsPositions && (
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid w-full grid-cols-[30%_minmax(0,1fr)] gap-4">
           <Field>
             <FieldLabel htmlFor="learning-position">Должность</FieldLabel>
             <Select
@@ -110,7 +110,7 @@ function LearningItemFormFields({
               <SelectTrigger id="learning-position" className="w-full">
                 <SelectValue placeholder="Выберите должность" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-[60]">
                 {positions.map((position) => (
                   <SelectItem key={position.id} value={String(position.id)}>
                     {position.name}
@@ -132,7 +132,7 @@ function LearningItemFormFields({
       )}
 
       <div
-        className={`grid gap-4 ${hasTime ? "sm:grid-cols-3" : "sm:grid-cols-2"}`}
+        className={`grid w-full gap-4 ${hasTime ? "grid-cols-3" : "grid-cols-2"}`}
       >
         <DatePickerField
           dateId="learning-date"

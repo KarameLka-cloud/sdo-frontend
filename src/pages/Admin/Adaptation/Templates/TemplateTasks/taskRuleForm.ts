@@ -1,6 +1,7 @@
 import {
   AdaptationPlanTemplateTask,
 } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
+import { compareDayRanges } from "@/utils/formatDayRange.ts";
 
 export type ResponsibleRole =
   | "Руководитель отдела"
@@ -81,7 +82,7 @@ export function groupTaskRules(rules: TaskRuleForm[]): GroupedRuleBlock[] {
     if (!map.has(key)) {
       const title = dayFrom
         ? dayTo
-          ? `Дни ${dayFrom}-${dayTo}`
+          ? `День ${dayFrom}-${dayTo}`
           : `День ${dayFrom}`
         : "Все дни";
       map.set(key, { key, title, dayFrom, dayTo, items: [] });
@@ -90,5 +91,12 @@ export function groupTaskRules(rules: TaskRuleForm[]): GroupedRuleBlock[] {
     map.get(key)?.items.push({ rule, index });
   });
 
-  return Array.from(map.values());
+  return Array.from(map.values()).sort((left, right) =>
+    compareDayRanges(
+      left.dayFrom ? Number(left.dayFrom) : null,
+      left.dayTo ? Number(left.dayTo) : null,
+      right.dayFrom ? Number(right.dayFrom) : null,
+      right.dayTo ? Number(right.dayTo) : null,
+    ),
+  );
 }

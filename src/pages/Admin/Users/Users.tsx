@@ -1,16 +1,8 @@
 import { JSX, useState } from "react";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { useFiltered } from "@/hooks/useFiltered.ts";
-import { useGetUsersQuery } from "@/services/store/features/user.ts";
+import { useGetUsersQuery } from "@/services/store/features/users.ts";
 import { isUserInRole, USER_ROLES, type UserRole } from "@/constants/roles.ts";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/shadcn/table";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Field } from "@/components/ui/shadcn/field";
 import {
@@ -20,10 +12,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import ResourceListToolbar from "@/components/resource-list/ResourceListToolbar";
+import ResourceListPage, {
+  type ResourceColumn,
+} from "@/components/resource-list/ResourceListPage";
 import ResourceTableRowActions from "@/components/resource-list/ResourceTableRowActions";
-import ResourceTableEmptyRow from "@/components/resource-list/ResourceTableEmptyRow";
-import QueryState from "@/components/resource-list/QueryState";
 import UserEditDialog from "@/pages/Admin/Users/UserEditDialog";
 
 const TABS = {
@@ -40,11 +32,33 @@ type UsersTab = keyof typeof TABS;
 
 const TAB_IDS = Object.keys(TABS) as UsersTab[];
 
+const COLUMNS: ResourceColumn<UserType>[] = [
+  {
+    key: "name",
+    label: "Имя пользователя",
+    className: "font-medium",
+    render: (user) => user.name,
+  },
+  {
+    key: "department",
+    label: "Отдел",
+    className: "text-muted-foreground",
+    render: (user) => user.department,
+  },
+  {
+    key: "role",
+    label: "Роль",
+    render: (user) => (
+      <Badge variant={user.role_name ? "destructive" : "secondary"}>
+        {user.role_name ?? "Пользователь"}
+      </Badge>
+    ),
+  },
+];
+
 const filterByTab = (users: UserType[], tab: UsersTab) => {
   const tabConfig = TABS[tab];
-  if (!("role" in tabConfig) || !tabConfig.role) {
-    return users;
-  }
+  if (!("role" in tabConfig) || !tabConfig.role) return users;
   return users.filter((user) => isUserInRole(user, tabConfig.role));
 };
 
@@ -56,7 +70,6 @@ function Users(): JSX.Element {
 
   const users = data ?? [];
   const filteredData = useFiltered(filterByTab(users, activeTab), search);
-  const hasSearch = search.trim().length > 0;
   const tabConfig = TABS[activeTab];
   const editingUser =
     editingUserId != null
@@ -64,98 +77,55 @@ function Users(): JSX.Element {
       : null;
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col">
-      <ResourceListToolbar
-        searchId="users-search"
-        searchPlaceholder="Имя, отдел, роль..."
-        search={search}
-        onSearchChange={setSearch}
-        leftSlot={
-          <Field className="min-w-48">
-            <Select
-              value={activeTab}
-              onValueChange={(value) => setActiveTab(value as UsersTab)}
-            >
-              <SelectTrigger id="users-role" size="sm" className="w-56">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                {TAB_IDS.map((tab) => (
-                  <SelectItem key={tab} value={tab}>
-                    {TABS[tab].label}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </Field>
-        }
-      />
-
-      <QueryState isLoading={isLoading} isError={Boolean(error)} hasData={Boolean(data)}>
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Имя пользователя</TableHead>
-              <TableHead>Отдел</TableHead>
-              <TableHead>Роль</TableHead>
-              <TableHead className="text-right">Действия</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredData.length === 0 ? (
-              <ResourceTableEmptyRow
-                colSpan={4}
-                hasSearch={hasSearch}
-                notFoundMessage={`Пользователь «${search}» не найден`}
-                emptyContent={
-                  "role" in tabConfig ? (
-                    <p className="text-sm text-muted-foreground">
-                      Нет пользователей с ролью «{tabConfig.label}»
-                    </p>
-                  ) : undefined
-                }
-              />
-            ) : (
-              filteredData.map((user) => {
-                const canEdit = user.id != null;
-
-                return (
-                  <TableRow
-                    key={user.id}
-                    className={canEdit ? "cursor-pointer" : undefined}
-                    onClick={() => canEdit && setEditingUserId(user.id ?? null)}
-                  >
-                    <TableCell className="font-medium">{user.name}</TableCell>
-                    <TableCell className="text-muted-foreground">
-                      {user.department}
-                    </TableCell>
-                    <TableCell>
-                      <Badge
-                        variant={user.role_name ? "destructive" : "secondary"}
-                      >
-                        {user.role_name ?? "Пользователь"}
-                      </Badge>
-                    </TableCell>
-                    <TableCell
-                      className="text-right"
-                      onClick={(event) => event.stopPropagation()}
-                    >
-                      {canEdit && (
-                        <ResourceTableRowActions
-                          onEdit={() => setEditingUserId(user.id ?? null)}
-                          isDeleting={false}
-                          showDelete={false}
-                        />
-                      )}
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
-      </QueryState>
-
+    <ResourceListPage
+      searchId="users-search"
+      searchPlaceholder="Имя, отдел, роль..."
+      search={search}
+      onSearchChange={setSearch}
+      toolbarLeftSlot={
+        <Field className="min-w-48">
+          <Select
+            value={activeTab}
+            onValueChange={(value) => setActiveTab(value as UsersTab)}
+          >
+            <SelectTrigger id="users-role" size="sm" className="w-56">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              {TAB_IDS.map((tab) => (
+                <SelectItem key={tab} value={tab}>
+                  {TABS[tab].label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </Field>
+      }
+      isLoading={isLoading}
+      isError={Boolean(error)}
+      hasData={Boolean(data)}
+      items={filteredData}
+      columns={COLUMNS}
+      getRowKey={(user) => user.id ?? user.login ?? user.name ?? ""}
+      onRowClick={(user) => user.id != null && setEditingUserId(user.id)}
+      renderActions={(user) =>
+        user.id != null && (
+          <ResourceTableRowActions
+            onEdit={() => setEditingUserId(user.id ?? null)}
+            isDeleting={false}
+            showDelete={false}
+          />
+        )
+      }
+      notFoundMessage={`Пользователь «${search}» не найден`}
+      emptyContent={
+        "role" in tabConfig ? (
+          <p className="text-sm text-muted-foreground">
+            Нет пользователей с ролью «{tabConfig.label}»
+          </p>
+        ) : undefined
+      }
+    >
       <UserEditDialog
         user={editingUser}
         open={editingUserId != null}
@@ -163,7 +133,7 @@ function Users(): JSX.Element {
           if (!open) setEditingUserId(null);
         }}
       />
-    </div>
+    </ResourceListPage>
   );
 }
 

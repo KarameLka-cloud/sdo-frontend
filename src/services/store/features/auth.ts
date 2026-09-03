@@ -1,19 +1,25 @@
-import { createApi } from "@reduxjs/toolkit/query/react";
-import { API_ENDPOINTS } from "@constants/api.ts";
-import { baseQuery } from "../baseQuery.ts";
+import { API_ENDPOINTS } from "@/constants/api.ts";
+import { baseApi } from "../baseApi.ts";
 
-export const auth = createApi({
-  reducerPath: "auth",
-  baseQuery,
+export interface LoginCredentials {
+  login: string;
+  password: string;
+}
+
+export interface LoginResponse {
+  auth_token: string;
+}
+
+export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    login: builder.mutation({
+    login: builder.mutation<LoginResponse, LoginCredentials>({
       query: (credentials) => ({
         url: API_ENDPOINTS.AUTH_LOGIN,
         method: "POST",
         body: credentials,
       }),
     }),
-    logout: builder.mutation({
+    logout: builder.mutation<{ message?: string }, void>({
       query: () => ({
         url: API_ENDPOINTS.AUTH_LOGOUT,
         method: "POST",
@@ -22,4 +28,4 @@ export const auth = createApi({
   }),
 });
 
-export const { useLoginMutation, useLogoutMutation } = auth;
+export const { useLoginMutation, useLogoutMutation } = authApi;

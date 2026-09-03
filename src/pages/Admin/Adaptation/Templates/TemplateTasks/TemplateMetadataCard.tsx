@@ -1,5 +1,5 @@
 import { FormEvent, JSX } from "react";
-import { Plus, X } from "lucide-react";
+import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/shadcn/button";
 import {
   Card,
@@ -18,7 +18,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/shadcn/select";
-import { Separator } from "@/components/ui/shadcn/separator";
 import { Spinner } from "@/components/ui/shadcn/spinner";
 
 interface TemplateMetadataCardProps {
@@ -28,13 +27,11 @@ interface TemplateMetadataCardProps {
   workScheduleOptions: string[];
   isSaving: boolean;
   isDeleting: boolean;
-  isCreateVisible: boolean;
   onNameChange: (value: string) => void;
   onWorkScheduleChange: (value: string) => void;
   onShiftChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   onShowCreate: () => void;
-  onCancelCreate: () => void;
   onDelete: () => void;
 }
 
@@ -45,13 +42,11 @@ function TemplateMetadataCard({
   workScheduleOptions,
   isSaving,
   isDeleting,
-  isCreateVisible,
   onNameChange,
   onWorkScheduleChange,
   onShiftChange,
   onSubmit,
   onShowCreate,
-  onCancelCreate,
   onDelete,
 }: TemplateMetadataCardProps): JSX.Element {
   return (
@@ -100,7 +95,6 @@ function TemplateMetadataCard({
           </FieldGroup>
         </form>
       </CardContent>
-      <Separator />
       <CardFooter className="justify-between">
         <div className="flex gap-2">
           <Button
@@ -111,17 +105,10 @@ function TemplateMetadataCard({
             {isSaving && <Spinner />}
             Сохранить
           </Button>
-          {isCreateVisible ? (
-            <Button type="button" variant="outline" onClick={onCancelCreate}>
-              <X className="size-4" />
-              Отмена
-            </Button>
-          ) : (
-            <Button type="button" variant="outline" onClick={onShowCreate}>
-              <Plus className="size-4" />
-              Добавить задачи
-            </Button>
-          )}
+          <Button type="button" variant="outline" onClick={onShowCreate}>
+            <Plus className="size-4" />
+            Добавить день
+          </Button>
         </div>
         <Button
           type="button"

@@ -1,25 +1,24 @@
 import { RouteObject } from "react-router-dom";
-import PageTitle from "@/components/PageTitle.tsx";
 import { ProtectedRouteMentor } from "@/components/protected/ProtectedRoutes.tsx";
-import Interns from "@/pages/Mentorship/Interns/Interns.tsx";
-import InternPlanEditor from "@/pages/Mentorship/Interns/PlanEditor";
 import { ROUTES } from "@/constants/routes.ts";
 import MainLayout from "@/layouts/MainLayout";
+import { lazyPage } from "./lazyPage.tsx";
 
 export const mentorshipRoutes: RouteObject = {
   element: <ProtectedRouteMentor elementMentor={<MainLayout />} />,
   children: [
     {
       path: ROUTES.MENTORSHIP_INTERNS,
-      element: <PageTitle title={"Стажеры"} element={<Interns />} />,
+      element: lazyPage(
+        () => import("@/pages/Mentorship/Interns/Interns.tsx"),
+        "Стажеры",
+      ),
     },
     {
       path: ROUTES.MENTORSHIP_INTERNS_PLAN_EDIT,
-      element: (
-        <PageTitle
-          title={"Редактирование плана адаптации стажера"}
-          element={<InternPlanEditor />}
-        />
+      element: lazyPage(
+        () => import("@/pages/Mentorship/Interns/PlanEditor"),
+        "Редактирование плана адаптации стажера",
       ),
     },
   ],

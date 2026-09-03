@@ -48,14 +48,6 @@ const LEAF_LABELS: Array<{ path: string; label: string }> = [
     path: ROUTES.ADMIN_ADAPTATION_TEMPLATE_TASKS,
     label: "Редактирование плана адаптации",
   },
-  {
-    path: ROUTES.ADMIN_LEARNING_CREATE,
-    label: "Создание",
-  },
-  {
-    path: ROUTES.ADMIN_LEARNING_EDIT,
-    label: "Редактирование",
-  },
 ];
 
 const isId = (segment: string) => /^\d+$/.test(segment);

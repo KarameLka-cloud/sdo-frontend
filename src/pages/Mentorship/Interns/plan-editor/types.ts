@@ -1,23 +1,29 @@
 import type {
   CompletionStatus,
+  ResponsibleRole,
   TaskStatus,
-} from "@/interfaces/api/AdaptationDayType.ts";
+} from "@/interfaces/api/AdaptationPlanType.ts";
 
 export type EditableCommentKey =
   | "employee_comment"
   | "mentor_comment"
   | "department_head_comment";
 
+export type CommentFieldKey = EditableCommentKey | "intern_comment";
+
 export interface CommentPermissions {
   canEditEmployee: boolean;
-  canEditDepartmentHead: boolean;
+  canEditIntern: boolean;
   canEditMentor: boolean;
+  canEditDepartmentHead: boolean;
 }
 
 export interface EditablePlanTask {
   id: number;
   description: string;
   status: TaskStatus;
+  responsible_role?: ResponsibleRole;
+  links?: string[] | null;
 }
 
 export interface EditablePlanDay {

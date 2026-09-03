@@ -3,10 +3,12 @@ import { toast } from "sonner";
 import {
   useCreateAdaptationPlanMutation,
   useGetAdaptationPlanTemplatesQuery,
+} from "@/services/store/features/adaptation.ts";
+import {
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
   useGetUsersQuery,
-} from "@/services/store/features/user.ts";
+} from "@/services/store/features/users.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { USER_ROLES } from "@/constants/roles.ts";
 import { Button } from "@/components/ui/shadcn/button";
@@ -80,8 +82,8 @@ function PlanCreateDialog({
   const [mentorId, setMentorId] = useState("");
   const [departmentHeadId, setDepartmentHeadId] = useState("");
 
-  const users = (usersData ?? []) as UserType[];
-  const templates = (templatesData ?? []) as AdaptationPlanTemplateType[];
+  const users = usersData ?? [];
+  const templates = templatesData ?? [];
   const mentors = resolveRoleUsers(mentorsData, users, USER_ROLES.MENTOR);
   const departmentHeads = resolveRoleUsers(
     departmentHeadsData,
@@ -150,8 +152,8 @@ function PlanCreateDialog({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
+        <DialogHeader className="px-4 pt-4">
           <DialogTitle>Создание плана адаптации</DialogTitle>
           <DialogDescription className="sr-only">
             Заполните данные стажера, шаблон и ответственных для нового плана
@@ -162,8 +164,12 @@ function PlanCreateDialog({
             <Loader />
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+          <form
+            onSubmit={handleSubmit}
+            className="flex min-h-0 flex-1 flex-col"
+          >
+            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+              <div className="grid gap-4 sm:grid-cols-2">
               <Field>
                 <FieldLabel htmlFor="plan-user">Стажер</FieldLabel>
                 <SearchableCombobox
@@ -249,6 +255,7 @@ function PlanCreateDialog({
                   emptyMessage="Руководитель не найден"
                 />
               </Field>
+            </div>
             </div>
             <DialogFooter>
               <Button type="submit" disabled={isCreating}>

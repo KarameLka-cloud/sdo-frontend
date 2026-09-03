@@ -1,4 +1,5 @@
-import { JSX, useState } from "react";
+import { JSX } from "react";
+import { toast } from "sonner";
 import Development from "@/components/ui/custom/Development";
 import DataMessage, {
   DataStateCenter,
@@ -6,79 +7,20 @@ import DataMessage, {
 import CareerDay from "@/components/ui/custom/CareerDay";
 import Loader from "@/components/ui/custom/Loader";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
+import { DAY_META_CHIP_CLASS } from "@/components/adaptation/dayCardMeta";
 import {
   useGetMyAdaptationPlanQuery,
   useUpdateMyAdaptationInternCommentMutation,
   useUpdateMyAdaptationTaskStatusMutation,
-} from "@/services/store/features/user.ts";
+} from "@/services/store/features/adaptation.ts";
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
-import FormActionStatus, {
-  type FormActionStatusType,
-} from "@/components/ui/custom/FormActionStatus";
 import convertDate from "@/utils/convertDate.ts";
-import {
-  AdaptationDayType,
-  TaskStatus,
-} from "@/interfaces/api/AdaptationDayType.ts";
-import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
-
-const INFO_BADGE_CLASS =
-  "inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-slate-50 border border-gray-100";
-
-function formatDayDate(dateFrom: string, dateTo?: string | null): string {
-  const from = convertDate(dateFrom);
-  return dateTo ? `${from} - ${convertDate(dateTo)}` : from;
-}
-
-function mapPlanDays(plan: AdaptationPlanType): AdaptationDayType[] {
-  return (plan.days ?? []).map((day) => ({
-    id: day.id,
-    workDay: day.work_day,
-    dayFrom: day.day_from ?? undefined,
-    dayTo: day.day_to ?? undefined,
-    date: formatDayDate(day.date_from, day.date_to),
-    completion: day.completion,
-    employeeComment: day.employee_comment ?? "",
-    internComment: day.intern_comment ?? "",
-    mentorComment: day.mentor_comment ?? "",
-    departmentHeadComment: day.department_head_comment ?? "",
-    tasks: (day.tasks ?? []).map((task) => ({
-      id: task.id,
-      description: task.description,
-      status: task.status,
-      responsibleRole: task.responsible_role,
-      links: task.links ?? [],
-    })),
-  }));
-}
-
-async function runSave(
-  setSaveStatus: (status: {
-    type: FormActionStatusType;
-    message: string;
-  }) => void,
-  action: () => Promise<unknown>,
-): Promise<void> {
-  setSaveStatus({ type: "loading", message: FORM_STATUS_MESSAGES.saveLoading });
-  try {
-    await action();
-    setSaveStatus({
-      type: "success",
-      message: FORM_STATUS_MESSAGES.saveSuccess,
-    });
-  } catch {
-    setSaveStatus({ type: "error", message: FORM_STATUS_MESSAGES.saveError });
-    throw new Error("Save failed");
-  }
-}
+import type { TaskStatus } from "@/interfaces/api/AdaptationPlanType.ts";
+import { compareDayRanges } from "@/utils/formatDayRange.ts";
 
 function Adaptation(): JSX.Element {
   const [updateInternComment] = useUpdateMyAdaptationInternCommentMutation();
   const [updateTaskStatus] = useUpdateMyAdaptationTaskStatusMutation();
-  const [saveStatus, setSaveStatus] = useState<{
-    type: FormActionStatusType;
-    message: string;
-  }>({ type: "idle", message: "" });
   const { data: plan, isLoading, isError } = useGetMyAdaptationPlanQuery(undefined);
 
   const hasPlan = Boolean(plan?.id && plan.id > 0);
@@ -89,9 +31,13 @@ function Adaptation(): JSX.Element {
   ): Promise<void> => {
     if (!dayId) return;
 
-    await runSave(setSaveStatus, () =>
-      updateInternComment({ dayId, intern_comment: comment }).unwrap(),
-    );
+    try {
+      await updateInternComment({ dayId, intern_comment: comment }).unwrap();
+      toast.success("Комментарий сохранён");
+    } catch {
+      toast.error(FORM_STATUS_MESSAGES.saveError);
+      throw new Error("Save failed");
+    }
   };
 
   const handleUpdateTaskStatus = async (
@@ -101,9 +47,13 @@ function Adaptation(): JSX.Element {
   ): Promise<void> => {
     if (!dayId || !taskId) return;
 
-    await runSave(setSaveStatus, () =>
-      updateTaskStatus({ dayId, taskId, status }).unwrap(),
-    );
+    try {
+      await updateTaskStatus({ dayId, taskId, status }).unwrap();
+      toast.success(FORM_STATUS_MESSAGES.saveSuccess);
+    } catch {
+      toast.error(FORM_STATUS_MESSAGES.saveError);
+      throw new Error("Save failed");
+    }
   };
 
   if (isLoading) {
@@ -116,60 +66,61 @@ function Adaptation(): JSX.Element {
   if (isError) return <DataMessage type="error" centered />;
   if (!hasPlan || !plan) return <Development />;
 
-  const adaptationDays = mapPlanDays(plan);
+  const adaptationDays = [...(plan.days ?? [])].sort((left, right) =>
+    compareDayRanges(
+      left.day_from ?? left.work_day,
+      left.day_to,
+      right.day_from ?? right.work_day,
+      right.day_to,
+    ),
+  );
   const planInfo = [
-    ["Начало стажировки:", convertDate(plan.start_date)],
-    ["График:", plan.work_schedule],
-    ["Смена:", plan.shift],
-    ["Наставник:", plan.mentor_user?.name ?? `ID: ${plan.mentor}`],
-    [
-      "Руководитель отдела:",
-      plan.department_head_user?.name ?? `ID: ${plan.department_head}`,
-    ],
+    { label: "Начало стажировки", value: convertDate(plan.start_date) },
+    { label: "График", value: plan.work_schedule ?? "—" },
+    { label: "Смена", value: String(plan.shift ?? "—") },
+    {
+      label: "Наставник",
+      value: plan.mentor_user?.name ?? `ID: ${plan.mentor}`,
+    },
+    {
+      label: "Руководитель отдела",
+      value:
+        plan.department_head_user?.name ?? `ID: ${plan.department_head}`,
+    },
   ] as const;
 
   return (
-    <>
-      <div className="sticky top-0 z-10 mb-4">
-        <Card>
-          <CardContent>
-            <div className="flex flex-wrap items-center gap-2">
-              {planInfo.map(([label, value]) => (
-                <div key={label} className={INFO_BADGE_CLASS}>
-                  <span className="text-xs font-semibold text-slate-600">
-                    {label}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-900">
-                    {value}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+    <div className="flex flex-col gap-4 pt-4">
+      <Card className="py-0">
+        <CardContent className="p-4">
+          <dl className="flex flex-wrap items-stretch gap-2">
+            {planInfo.map(({ label, value }) => (
+              <div key={label} className={DAY_META_CHIP_CLASS}>
+                <dt className="shrink-0 text-xs text-muted-foreground">
+                  {label}
+                </dt>
+                <dd className="m-0 min-w-0 text-sm font-medium wrap-break-word">
+                  {String(value ?? "—")}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </CardContent>
+      </Card>
 
-      <FormActionStatus
-        type={saveStatus.type}
-        message={saveStatus.message}
-        className="mb-4"
-      />
-
-      <div className="flex flex-col gap-0">
-        {adaptationDays.length > 0 ? (
-          adaptationDays.map((day) => (
-            <CareerDay
-              key={day.id}
-              day={day}
-              onUpdateInternComment={handleUpdateInternComment}
-              onUpdateTaskStatus={handleUpdateTaskStatus}
-            />
-          ))
-        ) : (
-          <Development />
-        )}
-      </div>
-    </>
+      {adaptationDays.length > 0 ? (
+        adaptationDays.map((day) => (
+          <CareerDay
+            key={day.id}
+            day={day}
+            onUpdateInternComment={handleUpdateInternComment}
+            onUpdateTaskStatus={handleUpdateTaskStatus}
+          />
+        ))
+      ) : (
+        <Development />
+      )}
+    </div>
   );
 }
 

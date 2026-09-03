@@ -1,8 +1,15 @@
-import type {
-  CompletionStatus,
-  ResponsibleRole,
-  TaskStatus,
-} from "@/interfaces/api/AdaptationDayType.ts";
+/** Mirrors App\Enums\CompletionStatus on the backend. */
+export type CompletionStatus = "в процессе" | "выполнен" | "есть замечания";
+
+/** Mirrors App\Enums\TaskStatus on the backend. */
+export type TaskStatus = "выполнено" | "не выполнено";
+
+/** Mirrors App\Enums\ResponsibleRole on the backend. */
+export type ResponsibleRole =
+  | "Руководитель отдела"
+  | "Наставник"
+  | "Сотрудник УПиПК"
+  | "Стажер";
 
 export interface AdaptationPlanUserRef {
   id?: number;
@@ -53,7 +60,5 @@ export interface AdaptationPlanType {
   template?: AdaptationPlanTemplateRef;
   mentor_user?: AdaptationPlanUserRef;
   department_head_user?: AdaptationPlanUserRef;
-  mentorUser?: AdaptationPlanUserRef;
-  departmentHeadUser?: AdaptationPlanUserRef;
   days?: AdaptationPlanDayType[];
 }

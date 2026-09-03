@@ -1,5 +1,6 @@
 import {
   LearningCategory,
+  LearningItemType,
   LearningType,
 } from "@/interfaces/api/LearningItemType.ts";
 import {
@@ -7,6 +8,7 @@ import {
   learningNeedsDepartments,
   learningNeedsPositions,
 } from "@/constants/learning.ts";
+import { toDateInputValue, toTimeInputValue } from "@/utils/formValues.ts";
 
 export type LearningItemFormValues = {
   title: string;
@@ -33,6 +35,24 @@ export const EMPTY_LEARNING_FORM: LearningItemFormValues = {
   time: "",
   duration: "",
 };
+
+export function toLearningItemFormValues(
+  value: LearningItemType,
+): LearningItemFormValues {
+  return {
+    title: value.title ?? "",
+    description: value.description ?? "",
+    link: value.link ?? "",
+    departmentId:
+      value.department_id != null ? String(value.department_id) : "",
+    noteDepartment: value.note_department ?? "",
+    positionId: value.position_id != null ? String(value.position_id) : "",
+    notePosition: value.note_position ?? "",
+    date: toDateInputValue(value.date),
+    time: toTimeInputValue(value.time),
+    duration: value.duration != null ? String(value.duration) : "",
+  };
+}
 
 export const LEARNING_CREATE_TITLES: Record<LearningType, string> = {
   event: "Создание мероприятия",
@@ -113,21 +133,19 @@ export function validateLearningItemForm(
 type ToPayloadOptions = {
   category: LearningCategory;
   type: LearningType;
-  id?: number;
   /** For updates, unset org fields become null; for create they become undefined. */
   mode: "create" | "update";
 };
 
 export function toLearningItemPayload(
   values: LearningItemFormValues,
-  { category, type, id, mode }: ToPayloadOptions,
+  { category, type, mode }: ToPayloadOptions,
 ) {
   const needsDepartments = learningNeedsDepartments(type);
   const needsPositions = learningNeedsPositions(type);
   const emptyOrg = mode === "update" ? null : undefined;
 
   return {
-    ...(id != null ? { id } : {}),
     category,
     type,
     title: values.title.trim(),

@@ -60,7 +60,7 @@ export function RuleRowFields({
               <SelectTrigger id={`${idPrefix}-role`} className="w-full">
                 <SelectValue placeholder="Выберите ответственного" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-[60]">
                 {RESPONSIBLE_ROLE_OPTIONS.map((role) => (
                   <SelectItem key={role} value={role}>
                     {role}
