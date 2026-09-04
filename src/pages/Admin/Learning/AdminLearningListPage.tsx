@@ -31,6 +31,7 @@ import { useResolvedLearningRoute } from "@/hooks/useResolvedLearningRoute.ts";
 import PageTitle from "@/components/PageTitle.tsx";
 import LearningItemFormDialog from "@/pages/Admin/Learning/LearningItemFormDialog";
 
+const COLUMN_DEFS = {
   title: {
     key: "title",
     label: "Название",
