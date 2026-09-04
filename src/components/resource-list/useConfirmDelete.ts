@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useConfirm } from "@/hooks/useConfirm.ts";
+import { getApiErrorMessage } from "@/utils/apiError.ts";
 
 interface DeleteMessages {
   confirm: string;
@@ -14,20 +15,6 @@ type DeleteMutation = readonly [
 ];
 
 /** Server-supplied reason, e.g. "template is still used by N plans". */
-const errorMessageOf = (error: unknown): string | undefined => {
-  if (typeof error !== "object" || error === null || !("data" in error)) {
-    return undefined;
-  }
-
-  const data = (error as { data?: unknown }).data;
-  if (typeof data !== "object" || data === null) {
-    return undefined;
-  }
-
-  const message = (data as { message?: unknown }).message;
-  return typeof message === "string" && message ? message : undefined;
-};
-
 interface UseConfirmDeleteOptions {
   messages: DeleteMessages;
   onSuccess?: () => void;
@@ -53,7 +40,7 @@ export function useConfirmDelete(
       toast.success(messages.success);
       onSuccess?.();
     } catch (error) {
-      toast.error(errorMessageOf(error) ?? messages.error);
+      toast.error(getApiErrorMessage(error) ?? messages.error);
     } finally {
       if (trackId) setDeletingId(null);
     }

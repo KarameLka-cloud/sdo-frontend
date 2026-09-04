@@ -1,14 +1,3 @@
-import convertDate from "@/utils/convertDate.ts";
-
-/** "01.02.2026" for a single day, "01.02.2026 - 03.02.2026" for a span. */
-export function formatDateRange(
-  dateFrom: string,
-  dateTo?: string | null,
-): string {
-  const from = convertDate(dateFrom);
-  return dateTo ? `${from} - ${convertDate(dateTo)}` : from;
-}
-
 export function formatDayRange(
   dayFrom: number | null | undefined,
   dayTo: number | null | undefined,

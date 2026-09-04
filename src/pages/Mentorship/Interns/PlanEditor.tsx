@@ -25,7 +25,7 @@ import PlanDayCard from "@/pages/Mentorship/Interns/plan-editor/PlanDayCard";
 import PlanMetaForm, {
   resolvePlanMetaForm,
 } from "@/pages/Mentorship/Interns/plan-editor/PlanMetaForm";
-import { getEffectiveDayFields } from "@/pages/Mentorship/Interns/plan-editor/isDayDirty";
+import { getEffectiveDayFields } from "@/pages/Mentorship/Interns/plan-editor/dayFormFields";
 import type {
   CommentFieldKey,
   EditableCommentKey,
@@ -37,6 +37,7 @@ import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import { toDateInputValue } from "@/utils/formValues.ts";
 import { compareDayRanges } from "@/utils/formatDayRange.ts";
 import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
+import { getApiErrorMessage, getApiErrorStatus } from "@/utils/apiError.ts";
 import { withAssignedUser } from "@/utils/userSelectOptions.ts";
 
 function PlanEditor(): JSX.Element {
@@ -101,26 +102,15 @@ function PlanEditor(): JSX.Element {
   const [savingDayId, setSavingDayId] = useState<number | null>(null);
 
   const loadErrorMessage = useMemo(() => {
-    if (!error || typeof error !== "object" || !("status" in error)) {
+    if (!error) {
       return "";
     }
 
-    if (error.status === 403) {
+    if (getApiErrorStatus(error) === 403) {
       return "Недостаточно прав для просмотра или редактирования этого плана.";
     }
 
-    if (
-      "data" in error &&
-      typeof error.data === "object" &&
-      error.data !== null
-    ) {
-      const message = (error.data as { message?: string }).message;
-      if (message) {
-        return message;
-      }
-    }
-
-    return "Не удалось загрузить план.";
+    return getApiErrorMessage(error) ?? "Не удалось загрузить план.";
   }, [error]);
 
   // Saving a comment refetches the plan. Seeding the form on every refetch

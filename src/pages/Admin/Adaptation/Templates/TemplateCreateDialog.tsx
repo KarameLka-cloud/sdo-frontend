@@ -21,6 +21,7 @@ import {
   DialogTitle,
 } from "@/components/ui/shadcn/dialog";
 import { WORK_SCHEDULE_OPTIONS } from "@/components/resource-list/resourceRoutes.ts";
+import { parsePositiveInt } from "@/utils/formValues.ts";
 
 function TemplateCreateDialog({
   open,
@@ -50,8 +51,8 @@ function TemplateCreateDialog({
     if (!name.trim()) return toast.error("Укажите название шаблона");
     if (!workSchedule) return toast.error("Выберите график работы");
 
-    const shiftNumber = Number(shift);
-    if (!Number.isInteger(shiftNumber) || shiftNumber < 1) {
+    const shiftNumber = parsePositiveInt(shift);
+    if (shiftNumber === null) {
       return toast.error("Укажите корректный номер смены");
     }
 

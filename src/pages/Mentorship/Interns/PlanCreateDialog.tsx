@@ -9,7 +9,6 @@ import {
   useGetMentorsQuery,
   useGetUsersQuery,
 } from "@/services/store/features/users.ts";
-import { UserType } from "@/interfaces/api/UserType.ts";
 import { USER_ROLES } from "@/constants/roles.ts";
 import { Button } from "@/components/ui/shadcn/button";
 import { Field, FieldLabel } from "@/components/ui/shadcn/field";
@@ -35,25 +34,18 @@ import DatePickerField from "@/components/ui/custom/DatePickerField";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
 import { firstShift, formatShifts } from "@/utils/formatShifts.ts";
+import { toUserOptions } from "@/utils/userSelectOptions.ts";
 
 const sortTemplates = (
   a: AdaptationPlanTemplateType,
   b: AdaptationPlanTemplateType,
 ) => {
-  const shiftA = Math.min(...a.shifts);
-  const shiftB = Math.min(...b.shifts);
+  const shiftA = firstShift(a.shifts) ?? 0;
+  const shiftB = firstShift(b.shifts) ?? 0;
   return shiftA !== shiftB
     ? shiftA - shiftB
     : a.name.localeCompare(b.name, "ru");
 };
-
-const toUserOptions = (list: UserType[]) =>
-  list
-    .filter((user) => user.id != null)
-    .map((user) => ({
-      value: String(user.id),
-      label: user.name ?? "",
-    }));
 
 function PlanCreateDialog({
   open,

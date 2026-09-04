@@ -24,18 +24,13 @@ import {
   LEARNING_TYPE_LABELS,
   buildAdminLearningPath,
 } from "@/constants/learning.ts";
+import {
+  LEARNING_CREATE_SUBMIT_LABELS,
+} from "@/pages/Admin/Learning/learningForm.ts";
 import { useResolvedLearningRoute } from "@/hooks/useResolvedLearningRoute.ts";
 import PageTitle from "@/components/PageTitle.tsx";
 import LearningItemFormDialog from "@/pages/Admin/Learning/LearningItemFormDialog";
 
-const CREATE_LABELS: Record<LearningType, string> = {
-  event: "Создать мероприятие",
-  course: "Создать курс",
-  webinar: "Создать вебинар",
-  test: "Создать тест",
-};
-
-const COLUMN_DEFS = {
   title: {
     key: "title",
     label: "Название",
@@ -59,7 +54,7 @@ const COLUMN_DEFS = {
     render: (item: LearningItemType) => convertDate(item.date),
   },
   deadline: {
-    key: "date",
+    key: "deadline",
     label: "Пройти до",
     render: (item: LearningItemType) => convertDate(item.date),
   },
@@ -148,7 +143,7 @@ function AdminLearningListContent({
           search={search}
           onSearchChange={setSearch}
           onCreate={openCreate}
-          createLabel={CREATE_LABELS[type]}
+          createLabel={LEARNING_CREATE_SUBMIT_LABELS[type]}
           isLoading={isLoading}
           isError={Boolean(error)}
           hasData={Boolean(data)}

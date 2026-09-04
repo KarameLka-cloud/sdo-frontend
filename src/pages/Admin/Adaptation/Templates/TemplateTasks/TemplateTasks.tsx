@@ -15,19 +15,21 @@ import {
 import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import { usePopulateEditForm } from "@/components/resource-list/usePopulateEditForm";
 import { firstShift } from "@/utils/formatShifts.ts";
+import { parsePositiveInt } from "@/utils/formValues.ts";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 import TaskDayFormDialog from "./TaskDayFormDialog";
 import TaskRuleGroup from "./TaskRuleGroup";
 import TemplateMetadataCard from "./TemplateMetadataCard";
 import {
-  EMPTY_RULE,
   GroupedRuleBlock,
   TaskRule,
   TaskRuleForm,
   groupTaskRules,
+  prepareDraftRules,
   toFormRule,
   toPayloadRule,
 } from "./taskRuleForm";
+import { useTaskRuleDraft } from "./useTaskRuleDraft";
 import { TEMPLATE_EDITOR_DELETE_MESSAGES } from "@/constants/deleteMessages.ts";
 
 function TemplateTasks(): JSX.Element {
@@ -51,19 +53,20 @@ function TemplateTasks(): JSX.Element {
     trackId: false,
   });
 
-  const [isCreateVisible, setIsCreateVisible] = useState(false);
-  const [createRules, setCreateRules] = useState<TaskRuleForm[]>([
-    { ...EMPTY_RULE },
-  ]);
-  const [createDayFrom, setCreateDayFrom] = useState("");
-  const [createDayTo, setCreateDayTo] = useState("");
-  const [editingGroupKey, setEditingGroupKey] = useState<string | null>(null);
-  const [editingGroupRules, setEditingGroupRules] = useState<TaskRuleForm[]>(
-    [],
-  );
-  const [editingGroupIndexes, setEditingGroupIndexes] = useState<number[]>([]);
-  const [editingGroupDayFrom, setEditingGroupDayFrom] = useState("");
-  const [editingGroupDayTo, setEditingGroupDayTo] = useState("");
+  const {
+    draft,
+    isOpen: isDraftOpen,
+    isEdit,
+    close: closeDraft,
+    startCreate,
+    startEdit,
+    addRule,
+    updateRule,
+    removeRule,
+    setDayFrom,
+    setDayTo,
+  } = useTaskRuleDraft();
+
   const [name, setName] = useState("");
   const [workSchedule, setWorkSchedule] = useState("");
   const [shift, setShift] = useState("");
@@ -100,29 +103,6 @@ function TemplateTasks(): JSX.Element {
 
   const groupedRules = useMemo(() => groupTaskRules(rules), [rules]);
 
-  const resetCreateForm = () => {
-    setIsCreateVisible(false);
-    setCreateRules([{ ...EMPTY_RULE }]);
-    setCreateDayFrom("");
-    setCreateDayTo("");
-  };
-
-  const resetEditGroup = () => {
-    setEditingGroupKey(null);
-    setEditingGroupRules([]);
-    setEditingGroupIndexes([]);
-    setEditingGroupDayFrom("");
-    setEditingGroupDayTo("");
-  };
-
-  const parseShiftNumber = (): number | null => {
-    const shiftNumber = Number(shift);
-    if (!Number.isInteger(shiftNumber) || shiftNumber < 1) {
-      return null;
-    }
-    return shiftNumber;
-  };
-
   const saveTemplate = async (taskBlueprint: TaskRule[]) => {
     if (!template) {
       return;
@@ -138,7 +118,7 @@ function TemplateTasks(): JSX.Element {
       return;
     }
 
-    const shiftNumber = parseShiftNumber();
+    const shiftNumber = parsePositiveInt(shift);
     if (shiftNumber === null) {
       toast.error("Укажите корректный номер смены");
       return;
@@ -176,116 +156,37 @@ function TemplateTasks(): JSX.Element {
     }
   };
 
-  const addCreateRule = () => {
-    setCreateRules((previous) => [...previous, { ...EMPTY_RULE }]);
-  };
-
-  const updateCreateRule = (index: number, nextRule: TaskRuleForm) => {
-    const nextRules = [...createRules];
-    nextRules[index] = nextRule;
-    setCreateRules(nextRules);
-  };
-
-  const removeCreateRule = (index: number) => {
-    if (createRules.length === 1) {
-      setCreateRules([{ ...EMPTY_RULE }]);
+  const saveDraft = async () => {
+    if (!draft) {
       return;
     }
 
-    setCreateRules((previous) =>
-      previous.filter((_, currentIndex) => currentIndex !== index),
-    );
-  };
-
-  const saveCreateRules = async () => {
-    const preparedRules = createRules.filter(
-      (rule) => rule.description.trim().length > 0,
-    );
-    if (!preparedRules.length) {
-      toast.error("Добавьте хотя бы одну задачу с описанием.");
+    const prepared = prepareDraftRules(draft.rules, draft.dayFrom, draft.dayTo);
+    if (!prepared.ok) {
+      toast.error(prepared.error);
       return;
     }
 
-    if (preparedRules.some((rule) => !rule.responsible_role)) {
-      toast.error("Выберите ответственного для каждой задачи.");
-      return;
-    }
-
-    const normalized = preparedRules.map((rule) => ({
-      ...rule,
-      day_from: createDayFrom,
-      day_to: createDayTo,
-    }));
-
-    try {
-      await saveRules([...rules, ...normalized]);
-      resetCreateForm();
-      toast.success("Задачи добавлены");
-    } catch {
-      toast.error("Не удалось сохранить задачи");
-    }
-  };
-
-  const startEditGroup = (group: GroupedRuleBlock) => {
-    setEditingGroupKey(group.key);
-    setEditingGroupRules(group.items.map((item) => ({ ...item.rule })));
-    setEditingGroupIndexes(group.items.map((item) => item.index));
-    setEditingGroupDayFrom(group.dayFrom);
-    setEditingGroupDayTo(group.dayTo);
-  };
-
-  const updateEditingGroupRule = (index: number, nextRule: TaskRuleForm) => {
-    const nextRules = [...editingGroupRules];
-    nextRules[index] = nextRule;
-    setEditingGroupRules(nextRules);
-  };
-
-  const addEditingGroupRule = () => {
-    setEditingGroupRules((previous) => [...previous, { ...EMPTY_RULE }]);
-  };
-
-  const removeEditingGroupRule = (index: number) => {
-    if (editingGroupRules.length === 1) {
-      setEditingGroupRules([{ ...EMPTY_RULE }]);
-      return;
-    }
-
-    setEditingGroupRules((previous) =>
-      previous.filter((_, currentIndex) => currentIndex !== index),
-    );
-  };
-
-  const saveEditGroup = async () => {
-    const prepared = editingGroupRules.filter(
-      (rule) => rule.description.trim().length > 0,
-    );
-    if (!prepared.length) {
-      toast.error("Добавьте хотя бы одну задачу с описанием.");
-      return;
-    }
-
-    if (prepared.some((rule) => !rule.responsible_role)) {
-      toast.error("Выберите ответственного для каждой задачи.");
-      return;
-    }
-
-    const normalized = prepared.map((rule) => ({
-      ...rule,
-      day_from: editingGroupDayFrom,
-      day_to: editingGroupDayTo,
-    }));
-
-    const nextRules = rules.filter(
-      (_, index) => !editingGroupIndexes.includes(index),
-    );
-    nextRules.push(...normalized);
+    const nextRules =
+      draft.mode === "create"
+        ? [...rules, ...prepared.rules]
+        : [
+            ...rules.filter((_, index) => !draft.indexes.includes(index)),
+            ...prepared.rules,
+          ];
 
     try {
       await saveRules(nextRules);
-      resetEditGroup();
-      toast.success("Изменения сохранены");
+      closeDraft();
+      toast.success(
+        draft.mode === "create" ? "Задачи добавлены" : "Изменения сохранены",
+      );
     } catch {
-      toast.error("Не удалось сохранить изменения");
+      toast.error(
+        draft.mode === "create"
+          ? "Не удалось сохранить задачи"
+          : "Не удалось сохранить изменения",
+      );
     }
   };
 
@@ -296,9 +197,7 @@ function TemplateTasks(): JSX.Element {
 
     try {
       await saveRules(nextRules);
-      if (editingGroupKey !== null) {
-        resetEditGroup();
-      }
+      closeDraft();
       toast.success("Группа задач удалена");
     } catch {
       toast.error("Не удалось удалить группу задач");
@@ -361,51 +260,36 @@ function TemplateTasks(): JSX.Element {
           void handleSaveMetadata(event);
         }}
         onShowCreate={() => {
-          resetEditGroup();
-          setIsCreateVisible(true);
+          closeDraft();
+          startCreate();
         }}
         onDelete={() => handleDelete(template.id)}
       />
 
       <TaskDayFormDialog
-        open={isCreateVisible || editingGroupKey !== null}
+        open={isDraftOpen}
         onOpenChange={(open) => {
           if (!open) {
-            resetCreateForm();
-            resetEditGroup();
+            closeDraft();
           }
         }}
-        isEdit={editingGroupKey !== null}
-        dayFrom={editingGroupKey !== null ? editingGroupDayFrom : createDayFrom}
-        dayTo={editingGroupKey !== null ? editingGroupDayTo : createDayTo}
-        rules={editingGroupKey !== null ? editingGroupRules : createRules}
+        isEdit={isEdit}
+        dayFrom={draft?.dayFrom ?? ""}
+        dayTo={draft?.dayTo ?? ""}
+        rules={draft?.rules ?? []}
         isSaving={isSaving}
-        onDayFromChange={
-          editingGroupKey !== null ? setEditingGroupDayFrom : setCreateDayFrom
-        }
-        onDayToChange={
-          editingGroupKey !== null ? setEditingGroupDayTo : setCreateDayTo
-        }
-        onAddRule={
-          editingGroupKey !== null ? addEditingGroupRule : addCreateRule
-        }
-        onUpdateRule={
-          editingGroupKey !== null ? updateEditingGroupRule : updateCreateRule
-        }
-        onRemoveRule={
-          editingGroupKey !== null ? removeEditingGroupRule : removeCreateRule
-        }
+        onDayFromChange={setDayFrom}
+        onDayToChange={setDayTo}
+        onAddRule={addRule}
+        onUpdateRule={updateRule}
+        onRemoveRule={removeRule}
         onSave={() => {
-          if (editingGroupKey !== null) {
-            void saveEditGroup();
-            return;
-          }
-          void saveCreateRules();
+          void saveDraft();
         }}
         onDelete={
-          editingGroupKey !== null
+          isEdit && draft
             ? () => {
-                void deleteGroup(editingGroupIndexes);
+                void deleteGroup(draft.indexes);
               }
             : undefined
         }
@@ -417,8 +301,8 @@ function TemplateTasks(): JSX.Element {
             key={`rule-group-${group.key}`}
             group={group}
             onStartEdit={() => {
-              resetCreateForm();
-              startEditGroup(group);
+              closeDraft();
+              startEdit(group);
             }}
           />
         ))}

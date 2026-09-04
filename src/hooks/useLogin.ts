@@ -1,17 +1,12 @@
-import Cookie from "js-cookie";
 import { useState } from "react";
+import Cookie from "js-cookie";
 import { useDispatch } from "react-redux";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/services/store/features/auth.ts";
 import { baseApi } from "@/services/store/baseApi.ts";
 import { ROUTES } from "@/constants/routes.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
-
-interface ApiErrorResponse {
-  data?: {
-    message?: string;
-  };
-}
+import { getApiErrorMessage } from "@/utils/apiError.ts";
 
 export const useLogin = () => {
   const navigate: NavigateFunction = useNavigate();
@@ -34,7 +29,7 @@ export const useLogin = () => {
       navigate(ROUTES.ROOT);
     } catch (error: unknown) {
       const message =
-        (error as ApiErrorResponse).data?.message ?? "Ошибка авторизации";
+        getApiErrorMessage(error) ?? "Ошибка авторизации";
       setErrorMessage(message);
     }
   };

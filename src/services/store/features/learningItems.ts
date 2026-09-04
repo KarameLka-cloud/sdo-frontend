@@ -31,10 +31,6 @@ export const learningItemsApi = baseApi.injectEndpoints({
             : ["LearningItems"],
       },
     ),
-    getLearningItemById: builder.query<LearningItemType, number>({
-      query: (id) => `${API_ENDPOINTS.LEARNING_ITEMS}${id}`,
-      providesTags: (_result, _error, id) => [{ type: "LearningItems", id }],
-    }),
     addLearningItem: builder.mutation<
       LearningItemType,
       Omit<LearningItemType, "id" | "department" | "position">
@@ -69,7 +65,6 @@ export const learningItemsApi = baseApi.injectEndpoints({
 
 export const {
   useGetLearningItemsQuery,
-  useGetLearningItemByIdQuery,
   useAddLearningItemMutation,
   useUpdateLearningItemMutation,
   useDeleteLearningItemMutation,

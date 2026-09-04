@@ -43,26 +43,3 @@ export function getEffectiveDayFields(
     ),
   };
 }
-
-export function isDayDirty(
-  day: EditablePlanDay,
-  initial: EditablePlanDay | undefined,
-  permissions: CommentPermissions,
-): boolean {
-  if (!initial) {
-    return true;
-  }
-
-  const next = getEffectiveDayFields(day, initial, permissions);
-  const prev = getEffectiveDayFields(initial, initial, permissions);
-
-  return (
-    next.date_from !== prev.date_from ||
-    next.date_to !== prev.date_to ||
-    next.completion !== prev.completion ||
-    next.employee_comment !== prev.employee_comment ||
-    next.intern_comment !== prev.intern_comment ||
-    next.mentor_comment !== prev.mentor_comment ||
-    next.department_head_comment !== prev.department_head_comment
-  );
-}

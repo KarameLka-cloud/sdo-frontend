@@ -1,7 +1,6 @@
-import { FormEvent, JSX, useEffect } from "react";
+import { FormEvent, JSX, useEffect, useState } from "react";
 import image_login_background from "@/assets/images/login_background.svg";
 import image_logo_mfc from "@/assets/images/logo_mfc.svg";
-import { useForm } from "@/hooks/useForm.ts";
 import { useLogin } from "@/hooks/useLogin.ts";
 import {
   Field,
@@ -17,10 +16,14 @@ import { toast } from "sonner";
 
 function Login(): JSX.Element {
   const { loginUser, errorMessage, isLoading } = useLogin();
-  const { formItems, handleChange } = useForm({
-    login: "",
-    password: "",
-  });
+  const [formItems, setFormItems] = useState({ login: "", password: "" });
+
+  const handleChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { name, value } = event.target;
+    setFormItems((previous) => ({ ...previous, [name]: value }));
+  };
 
   useEffect(() => {
     if (errorMessage) {
