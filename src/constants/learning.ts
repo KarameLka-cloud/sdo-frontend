@@ -42,7 +42,7 @@ export const LEARNING_DELETE_MESSAGES: Record<
   },
 };
 
-const LEARNING_TYPES_BY_CATEGORY: Record<LearningCategory, LearningType[]> = {
+export const LEARNING_TYPES_BY_CATEGORY: Record<LearningCategory, LearningType[]> = {
   education: ["event", "course", "webinar", "test"],
   edo: ["event", "course", "test"],
 };
@@ -97,3 +97,13 @@ export const buildAdminLearningPath = (
   category: LearningCategory,
   type: LearningType,
 ): string => `${ROUTES.ADMIN_LEARNING}?category=${category}&type=${type}`;
+
+export const learningNavChildren = (
+  category: LearningCategory,
+  buildPath: (category: LearningCategory, type: LearningType) => string,
+) =>
+  LEARNING_TYPES_BY_CATEGORY[category].map((type, index) => ({
+    id: index + 1,
+    name: LEARNING_TYPE_LABELS[type],
+    path: buildPath(category, type),
+  }));

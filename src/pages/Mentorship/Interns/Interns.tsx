@@ -7,10 +7,11 @@ import {
 import {
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
+  useGetSupervisorsQuery,
 } from "@/services/store/features/users.ts";
 import { useUser } from "@/hooks/useUser.ts";
 import { UserType } from "@/interfaces/api/UserType.ts";
-import { hasRole, USER_ROLES } from "@/constants/roles.ts";
+import { hasAnyRoleFromUser, hasRole, PLAN_EDIT_ROLES, USER_ROLES } from "@/constants/roles.ts";
 import ResourceListPage, {
   type ResourceColumn,
 } from "@/components/resource-list/ResourceListPage";
@@ -46,6 +47,7 @@ function Interns(): JSX.Element {
     isError,
   } = useGetAdaptationPlansQuery(undefined);
   const { data: mentorsData } = useGetMentorsQuery(undefined);
+  const { data: supervisorsData } = useGetSupervisorsQuery(undefined);
   const { data: departmentHeadsData } = useGetDepartmentHeadsQuery(undefined);
   const { role, role_name: roleName, id: currentUserId } = useUser();
   const [search, setSearch] = useState("");
@@ -56,25 +58,47 @@ function Interns(): JSX.Element {
   );
 
   const isAdmin = hasRole(role, roleName, USER_ROLES.ADMIN);
+  const isMentor = hasRole(role, roleName, USER_ROLES.MENTOR);
+  const isSupervisor = hasRole(role, roleName, USER_ROLES.SUPERVISOR);
+  const isDepartmentHead = hasRole(
+    role,
+    roleName,
+    USER_ROLES.DEPARTMENT_HEAD,
+  );
+  const canCreatePlan = hasAnyRoleFromUser(role, roleName, PLAN_EDIT_ROLES);
 
-  // Only a fallback: plans already embed mentor and head records.
-  const { mentorNames, headNames } = useMemo(
+  // Only a fallback: plans already embed mentor, supervisor and head records.
+  const { mentorNames, supervisorNames, headNames } = useMemo(
     () => ({
       mentorNames: buildNameLookup(mentorsData ?? []),
+      supervisorNames: buildNameLookup(supervisorsData ?? []),
       headNames: buildNameLookup(departmentHeadsData ?? []),
     }),
-    [mentorsData, departmentHeadsData],
+    [mentorsData, supervisorsData, departmentHeadsData],
   );
 
   const visiblePlans = useMemo(() => {
     const plans = plansData ?? [];
     if (isAdmin) return plans;
     if (!currentUserId) return [];
-    return plans.filter(
-      (plan) =>
-        plan.mentor === currentUserId || plan.department_head === currentUserId,
-    );
-  }, [plansData, isAdmin, currentUserId]);
+    if (isMentor) {
+      return plans.filter((plan) => plan.mentor === currentUserId);
+    }
+    if (isSupervisor) {
+      return plans.filter((plan) => plan.supervisor === currentUserId);
+    }
+    if (isDepartmentHead) {
+      return plans.filter((plan) => plan.department_head === currentUserId);
+    }
+    return [];
+  }, [
+    plansData,
+    isAdmin,
+    isMentor,
+    isSupervisor,
+    isDepartmentHead,
+    currentUserId,
+  ]);
 
   const getSearchText = useCallback(
     (plan: AdaptationPlanType) =>
@@ -84,6 +108,11 @@ function Interns(): JSX.Element {
         plan.template?.name,
         getPersonName(plan.mentor_user, plan.mentor, mentorNames),
         getPersonName(
+          plan.supervisor_user,
+          plan.supervisor ?? 0,
+          supervisorNames,
+        ),
+        getPersonName(
           plan.department_head_user,
           plan.department_head,
           headNames,
@@ -92,7 +121,7 @@ function Interns(): JSX.Element {
       ]
         .map((value) => String(value ?? ""))
         .join(" "),
-    [mentorNames, headNames],
+    [mentorNames, supervisorNames, headNames],
   );
 
   const filteredPlans = useFiltered(visiblePlans, search, getSearchText);
@@ -112,8 +141,20 @@ function Interns(): JSX.Element {
           getPersonName(plan.mentor_user, plan.mentor, mentorNames),
       },
       {
+        key: "supervisor",
+        label: "Руководитель отделения",
+        render: (plan) =>
+          plan.supervisor
+            ? getPersonName(
+                plan.supervisor_user,
+                plan.supervisor,
+                supervisorNames,
+              )
+            : "Не назначен",
+      },
+      {
         key: "department_head",
-        label: "Руководитель",
+        label: "Начальник отдела",
         render: (plan) =>
           getPersonName(
             plan.department_head_user,
@@ -122,7 +163,7 @@ function Interns(): JSX.Element {
           ),
       },
     ],
-    [mentorNames, headNames],
+    [mentorNames, supervisorNames, headNames],
   );
 
   return (
@@ -131,8 +172,8 @@ function Interns(): JSX.Element {
       searchPlaceholder="Имя, отдел, наставник, план..."
       search={search}
       onSearchChange={setSearch}
-      onCreate={() => setIsCreateOpen(true)}
-      createLabel="Создать план"
+      onCreate={canCreatePlan ? () => setIsCreateOpen(true) : undefined}
+      createLabel={canCreatePlan ? "Создать план" : undefined}
       isLoading={isLoading}
       isError={isError}
       hasData={Boolean(plansData)}
@@ -145,13 +186,16 @@ function Interns(): JSX.Element {
       renderActions={(plan) => (
         <ResourceTableRowActions
           editPath={buildEditPath(INTERNSHIP_ROUTES.edit, plan.id)}
-          onDelete={() => handleDelete(plan)}
+          onDelete={canCreatePlan ? () => handleDelete(plan) : undefined}
           isDeleting={isDeletingItem(plan.id)}
+          showDelete={canCreatePlan}
         />
       )}
       notFoundMessage={`Стажер «${search}» не найден`}
     >
-      <PlanCreateDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+      {canCreatePlan && (
+        <PlanCreateDialog open={isCreateOpen} onOpenChange={setIsCreateOpen} />
+      )}
     </ResourceListPage>
   );
 }

@@ -133,8 +133,8 @@ function UniversalCard({ className, item }: UniversalCardProps): JSX.Element {
     <div
       className={`group flex flex-col md:flex-row items-stretch rounded-xl bg-white border border-gray-200 shadow-sm ${className}`}
     >
-      <div className="p-4 w-2/3 flex flex-col justify-center gap-2">
-        <h3 className="font-semibold text-gray-900 text-base leading-tight">
+      <div className="p-4 w-2/3 flex flex-col justify-start gap-2">
+        <h3 className="font-semibold text-gray-900 text-lg leading-tight">
           {item.title}
         </h3>
         {hasTextValue(item.description) && (

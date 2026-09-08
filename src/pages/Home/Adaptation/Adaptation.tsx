@@ -1,6 +1,5 @@
 import { JSX } from "react";
 import { toast } from "sonner";
-import Development from "@/components/ui/custom/Development";
 import DataMessage, {
   DataStateCenter,
 } from "@/components/ui/custom/DataMessage";
@@ -16,14 +15,13 @@ import {
 import { FORM_STATUS_MESSAGES } from "@/constants/formStatus.ts";
 import convertDate from "@/utils/convertDate.ts";
 import type { TaskStatus } from "@/interfaces/api/AdaptationPlanType.ts";
-import { compareDayRanges } from "@/utils/formatDayRange.ts";
+import { hasAdaptationPlan, sortAdaptationDays } from "@/utils/adaptationPlan.ts";
+import { toastMutationError } from "@/utils/apiError.ts";
 
 function Adaptation(): JSX.Element {
   const [updateInternComment] = useUpdateMyAdaptationInternCommentMutation();
   const [updateTaskStatus] = useUpdateMyAdaptationTaskStatusMutation();
   const { data: plan, isLoading, isError } = useGetMyAdaptationPlanQuery(undefined);
-
-  const hasPlan = Boolean(plan?.id && plan.id > 0);
 
   const handleUpdateInternComment = async (
     dayId: number | undefined,
@@ -34,8 +32,8 @@ function Adaptation(): JSX.Element {
     try {
       await updateInternComment({ dayId, intern_comment: comment }).unwrap();
       toast.success("Комментарий сохранён");
-    } catch {
-      toast.error(FORM_STATUS_MESSAGES.saveError);
+    } catch (error) {
+      toastMutationError(error, FORM_STATUS_MESSAGES.saveError);
       throw new Error("Save failed");
     }
   };
@@ -50,8 +48,8 @@ function Adaptation(): JSX.Element {
     try {
       await updateTaskStatus({ dayId, taskId, status }).unwrap();
       toast.success(FORM_STATUS_MESSAGES.saveSuccess);
-    } catch {
-      toast.error(FORM_STATUS_MESSAGES.saveError);
+    } catch (error) {
+      toastMutationError(error, FORM_STATUS_MESSAGES.saveError);
       throw new Error("Save failed");
     }
   };
@@ -64,16 +62,17 @@ function Adaptation(): JSX.Element {
     );
   }
   if (isError) return <DataMessage type="error" centered />;
-  if (!hasPlan || !plan) return <Development />;
+  if (!hasAdaptationPlan(plan)) {
+    return (
+      <DataMessage
+        type="noData"
+        centered
+        message="План адаптации не назначен"
+      />
+    );
+  }
 
-  const adaptationDays = [...(plan.days ?? [])].sort((left, right) =>
-    compareDayRanges(
-      left.day_from ?? left.work_day,
-      left.day_to,
-      right.day_from ?? right.work_day,
-      right.day_to,
-    ),
-  );
+  const adaptationDays = sortAdaptationDays(plan.days ?? []);
   const planInfo = [
     { label: "Начало стажировки", value: convertDate(plan.start_date) },
     { label: "График", value: plan.work_schedule ?? "—" },
@@ -83,7 +82,11 @@ function Adaptation(): JSX.Element {
       value: plan.mentor_user?.name ?? `ID: ${plan.mentor}`,
     },
     {
-      label: "Руководитель отдела",
+      label: "Руководитель отделения",
+      value: plan.supervisor_user?.name ?? (plan.supervisor ? `ID: ${plan.supervisor}` : "—"),
+    },
+    {
+      label: "Начальник отдела",
       value:
         plan.department_head_user?.name ?? `ID: ${plan.department_head}`,
     },
@@ -118,7 +121,11 @@ function Adaptation(): JSX.Element {
           />
         ))
       ) : (
-        <Development />
+        <DataMessage
+          type="noData"
+          centered
+          message="В плане пока нет дней"
+        />
       )}
     </div>
   );

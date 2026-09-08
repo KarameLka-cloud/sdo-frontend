@@ -1,13 +1,11 @@
 import {
   AdaptationPlanTemplateTask,
 } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
+import type { ResponsibleRole } from "@/interfaces/api/AdaptationPlanType.ts";
+import { TEMPLATE_RESPONSIBLE_ROLES } from "@/constants/adaptation.ts";
 import { compareDayRanges, formatDayRange } from "@/utils/formatDayRange.ts";
 
-export type ResponsibleRole =
-  | "Руководитель отдела"
-  | "Наставник"
-  | "Сотрудник УПиПК";
-
+export type { ResponsibleRole };
 export type ResponsibleRoleForm = ResponsibleRole | "";
 
 export type TaskRule = AdaptationPlanTemplateTask & {
@@ -37,16 +35,16 @@ export const EMPTY_RULE: TaskRuleForm = {
   links: "",
 };
 
-export const RESPONSIBLE_ROLE_OPTIONS: ResponsibleRole[] = [
-  "Наставник",
-  "Сотрудник УПиПК",
-  "Руководитель отдела",
-];
+export const RESPONSIBLE_ROLE_OPTIONS = TEMPLATE_RESPONSIBLE_ROLES;
 
 export function toFormRule(rule: AdaptationPlanTemplateTask): TaskRuleForm {
   return {
     description: rule.description,
-    responsible_role: rule.responsible_role as ResponsibleRoleForm,
+    responsible_role: (TEMPLATE_RESPONSIBLE_ROLES as readonly string[]).includes(
+      rule.responsible_role,
+    )
+      ? rule.responsible_role
+      : "",
     day_from: rule.day_from ? String(rule.day_from) : "",
     day_to: rule.day_to ? String(rule.day_to) : "",
     links: (rule.links ?? []).join(", "),
@@ -68,6 +66,29 @@ export function toPayloadRule(rule: TaskRuleForm): TaskRule {
       .split(",")
       .map((link) => link.trim())
       .filter(Boolean),
+  };
+}
+
+export function prepareDraftRules(
+  rules: TaskRuleForm[],
+  dayFrom: string,
+  dayTo: string,
+): { ok: true; rules: TaskRuleForm[] } | { ok: false; error: string } {
+  const prepared = rules.filter((rule) => rule.description.trim().length > 0);
+  if (!prepared.length) {
+    return { ok: false, error: "Добавьте хотя бы одну задачу с описанием." };
+  }
+  if (prepared.some((rule) => !rule.responsible_role)) {
+    return { ok: false, error: "Выберите ответственного для каждой задачи." };
+  }
+
+  return {
+    ok: true,
+    rules: prepared.map((rule) => ({
+      ...rule,
+      day_from: dayFrom,
+      day_to: dayTo,
+    })),
   };
 }
 

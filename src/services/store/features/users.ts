@@ -36,6 +36,10 @@ export const usersApi = baseApi.injectEndpoints({
       query: () => API_ENDPOINTS.MENTORS,
       providesTags: listTags,
     }),
+    getSupervisors: builder.query<UserType[], void>({
+      query: () => API_ENDPOINTS.SUPERVISORS,
+      providesTags: listTags,
+    }),
     getDepartmentHeads: builder.query<UserType[], void>({
       query: () => API_ENDPOINTS.DEPARTMENT_HEADS,
       providesTags: listTags,
@@ -67,6 +71,7 @@ export const {
   useGetCurrentUserQuery,
   useGetUsersQuery,
   useGetMentorsQuery,
+  useGetSupervisorsQuery,
   useGetDepartmentHeadsQuery,
   useGetRolesQuery,
   useAssignRoleMutation,

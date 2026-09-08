@@ -1,16 +1,16 @@
 import { useState } from "react";
 import Cookie from "js-cookie";
-import { useDispatch } from "react-redux";
 import { NavigateFunction, useNavigate } from "react-router-dom";
 import { useLoginMutation } from "@/services/store/features/auth.ts";
 import { baseApi } from "@/services/store/baseApi.ts";
+import { useAppDispatch } from "@/services/store/store.ts";
 import { ROUTES } from "@/constants/routes.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
 import { getApiErrorMessage } from "@/utils/apiError.ts";
 
 export const useLogin = () => {
   const navigate: NavigateFunction = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
   const [errorMessage, setErrorMessage] = useState("");
 

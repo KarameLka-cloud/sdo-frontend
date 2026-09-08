@@ -43,3 +43,24 @@ export function getEffectiveDayFields(
     ),
   };
 }
+
+/** Manager day PATCH body. Intern comments are saved through a separate endpoint. */
+export function toDayUpdateBody(
+  planId: number,
+  day: EditablePlanDay,
+  initial: EditablePlanDay | undefined,
+  permissions: CommentPermissions,
+) {
+  const fields = getEffectiveDayFields(day, initial, permissions);
+
+  return {
+    planId,
+    dayId: day.id,
+    date_from: fields.date_from,
+    date_to: fields.date_to,
+    completion: fields.completion,
+    employee_comment: fields.employee_comment || null,
+    mentor_comment: fields.mentor_comment || null,
+    department_head_comment: fields.department_head_comment || null,
+  };
+}

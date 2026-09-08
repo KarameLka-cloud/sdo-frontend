@@ -141,6 +141,7 @@ function EmployeeDirectory(): JSX.Element {
         searchPlaceholder="Например: Менеджер + Иркутск 1"
         search={search}
         onSearchChange={setSearch}
+        searchCentered
       />
 
       {showHint && (

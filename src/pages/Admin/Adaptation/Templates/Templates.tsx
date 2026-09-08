@@ -20,6 +20,7 @@ import TemplateCreateDialog from "@/pages/Admin/Adaptation/Templates/TemplateCre
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { formatShifts } from "@/utils/formatShifts.ts";
+import { toastMutationError } from "@/utils/apiError.ts";
 import { TEMPLATE_DELETE_MESSAGES } from "@/constants/deleteMessages.ts";
 
 const COLUMNS: ResourceColumn<AdaptationPlanTemplateType>[] = [
@@ -64,9 +65,9 @@ function Templates(): JSX.Element {
         shifts: template.shifts,
         task_blueprint: template.task_blueprint ?? [],
       }).unwrap();
-      toast.success("Копия плана создана");
-    } catch {
-      toast.error("Не удалось создать копию плана");
+      toast.success("Копия шаблона создана");
+    } catch (error) {
+      toastMutationError(error, "Не удалось создать копию шаблона");
     } finally {
       setCopyingId(null);
     }
@@ -81,7 +82,7 @@ function Templates(): JSX.Element {
       search={search}
       onSearchChange={setSearch}
       onCreate={() => setIsCreateOpen(true)}
-      createLabel="Создать план"
+      createLabel="Создать шаблон"
       isLoading={isLoading}
       isError={isError}
       hasData={Boolean(data)}
@@ -100,7 +101,7 @@ function Templates(): JSX.Element {
           isCopying={copyingId === template.id}
         />
       )}
-      notFoundMessage={`План «${search}» не найден`}
+      notFoundMessage={`Шаблон «${search}» не найден`}
     >
       <TemplateCreateDialog
         open={isCreateOpen}

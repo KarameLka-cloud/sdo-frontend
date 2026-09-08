@@ -4,6 +4,7 @@ export const API_ENDPOINTS = {
   ME: "api/users/me",
   USERS: "api/users",
   MENTORS: "api/users/mentors",
+  SUPERVISORS: "api/users/supervisors",
   DEPARTMENT_HEADS: "api/users/department-heads",
   ROLES: "api/users/roles",
   ASSIGN_ROLE: "api/users/assign-role",

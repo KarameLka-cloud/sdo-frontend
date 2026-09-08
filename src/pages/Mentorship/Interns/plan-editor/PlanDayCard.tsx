@@ -1,12 +1,5 @@
 import { JSX } from "react";
-import { ChevronRight } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
-import { Button } from "@/components/ui/shadcn/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/shadcn/collapsible";
 import { Field, FieldLabel } from "@/components/ui/shadcn/field";
 import {
   Select,
@@ -16,6 +9,8 @@ import {
   SelectValue,
 } from "@/components/ui/shadcn/select";
 import PlanTaskRow from "@/components/adaptation/PlanTaskRow";
+import DayCommentsSection from "@/components/adaptation/DayCommentsSection";
+import CommentFieldWithSave from "@/components/adaptation/CommentFieldWithSave";
 import {
   COMPLETION_CHIP_CLASS,
   COMPLETION_VALUE_CLASS,
@@ -25,7 +20,7 @@ import DatePickerField from "@/components/ui/custom/DatePickerField";
 import ReadonlyFieldValue from "@/components/ui/custom/ReadonlyFieldValue";
 import { cn } from "@/lib/utils";
 import { formatDayRange, isDaySpan } from "@/utils/formatDayRange.ts";
-import CommentFieldWithSave from "@/pages/Mentorship/Interns/plan-editor/CommentFieldWithSave";
+import { COMPLETION_STATUS_OPTIONS, EMPTY_DAY_TASKS_MESSAGE } from "@/constants/adaptation.ts";
 import type {
   CommentFieldKey,
   CommentPermissions,
@@ -58,7 +53,7 @@ const COMMENT_FIELDS: Array<{
   },
   {
     key: "department_head_comment",
-    label: "Комментарий руководителя",
+    label: "Комментарий начальника отдела",
     canEdit: "canEditDepartmentHead",
     saveKey: "department_head_comment",
   },
@@ -68,6 +63,7 @@ interface PlanDayCardProps {
   day: EditablePlanDay;
   initialDay?: EditablePlanDay;
   commentPermissions: CommentPermissions;
+  canEditDays: boolean;
   savingCommentKey: string | null;
   savingTaskKey: string | null;
   isSavingDayFields: boolean;
@@ -86,6 +82,7 @@ function PlanDayCard({
   day,
   initialDay,
   commentPermissions,
+  canEditDays,
   savingCommentKey,
   savingTaskKey,
   isSavingDayFields,
@@ -117,6 +114,7 @@ function PlanDayCard({
               dateLabel={hasSpan ? "Дата начала" : "Дата"}
               date={day.date_from}
               onDateChange={(value) => onDayFieldChange({ date_from: value })}
+              disabled={!canEditDays || isSavingDayFields}
             />
             {hasSpan && (
               <DatePickerField
@@ -127,6 +125,7 @@ function PlanDayCard({
                 onDateChange={(value) =>
                   onDayFieldChange({ date_to: value || null })
                 }
+                disabled={!canEditDays || isSavingDayFields}
               />
             )}
           </div>
@@ -145,7 +144,7 @@ function PlanDayCard({
             </FieldLabel>
             <Select
               value={day.completion}
-              disabled={isSavingDayFields}
+              disabled={!canEditDays || isSavingDayFields}
               onValueChange={(value) =>
                 onDayFieldChange({
                   completion: value as EditablePlanDay["completion"],
@@ -163,9 +162,11 @@ function PlanDayCard({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="в процессе">В процессе</SelectItem>
-                <SelectItem value="выполнен">Выполнен</SelectItem>
-                <SelectItem value="есть замечания">Есть замечания</SelectItem>
+                {COMPLETION_STATUS_OPTIONS.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -183,7 +184,9 @@ function PlanDayCard({
                   status={task.status}
                   responsibleRole={task.responsible_role}
                   links={task.links}
-                  disabled={savingTaskKey === `${day.id}-${task.id}`}
+                  disabled={
+                    !canEditDays || savingTaskKey === `${day.id}-${task.id}`
+                  }
                   onStatusChange={(status) =>
                     onTaskStatusChange(taskIndex, status)
                   }
@@ -192,23 +195,12 @@ function PlanDayCard({
             ))
           ) : (
             <p className="m-0 text-sm text-muted-foreground">
-              На этот день задачи не назначены
+              {EMPTY_DAY_TASKS_MESSAGE}
             </p>
           )}
         </div>
 
-        <Collapsible className="group/collapsible mt-4">
-          <CollapsibleTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-9 w-full justify-between rounded-lg bg-muted/60 px-3 font-semibold text-foreground hover:bg-muted"
-            >
-              Комментарии
-              <ChevronRight className="size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="flex flex-col gap-4 pt-2">
+        <DayCommentsSection>
             {COMMENT_FIELDS.map((field) => {
               const saveKey = field.saveKey;
               if (commentPermissions[field.canEdit] && saveKey) {
@@ -232,8 +224,7 @@ function PlanDayCard({
                 </Field>
               );
             })}
-          </CollapsibleContent>
-        </Collapsible>
+        </DayCommentsSection>
       </CardContent>
     </Card>
   );

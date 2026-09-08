@@ -7,7 +7,7 @@ import {
   useRevokeRoleMutation,
   type RoleOption,
 } from "@/services/store/features/users.ts";
-import { hasRole, type UserRole } from "@/constants/roles.ts";
+import { displayRoleLabel, displayRoleName, hasRole, type UserRole } from "@/constants/roles.ts";
 import { Button } from "@/components/ui/shadcn/button";
 import { Field, FieldLabel } from "@/components/ui/shadcn/field";
 import {
@@ -27,6 +27,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/shadcn/dialog";
+import { toastMutationError } from "@/utils/apiError.ts";
 
 const NO_ROLE_VALUE = "__no_rights__";
 
@@ -80,8 +81,8 @@ function UserEditDialog({
       try {
         await revokeRole({ user_id: user.id, role: assignedRole }).unwrap();
         toast.success("Права отозваны");
-      } catch {
-        toast.error("Не удалось отозвать права");
+      } catch (error) {
+        toastMutationError(error, "Не удалось отозвать права");
       }
       return;
     }
@@ -91,8 +92,8 @@ function UserEditDialog({
     try {
       await assignRole({ user_id: user.id, role: selectedRole }).unwrap();
       toast.success("Роль успешно назначена");
-    } catch {
-      toast.error("Не удалось назначить роль");
+    } catch (error) {
+      toastMutationError(error, "Не удалось назначить роль");
     }
   };
 
@@ -146,7 +147,10 @@ function UserEditDialog({
                       <Select disabled>
                         <SelectTrigger id="user-role" className="w-full">
                           <SelectValue
-                            placeholder={user.role_name ?? "Загрузка..."}
+                            placeholder={
+                              displayRoleName(user.role, user.role_name) ??
+                              "Загрузка..."
+                            }
                           />
                         </SelectTrigger>
                       </Select>
@@ -166,7 +170,7 @@ function UserEditDialog({
                           </SelectItem>
                           {roles.map((role: { name: string; label: string }) => (
                             <SelectItem key={role.name} value={role.name}>
-                              {role.label}
+                              {displayRoleLabel(role.name)}
                             </SelectItem>
                           ))}
                         </SelectContent>

@@ -52,8 +52,8 @@ function TemplateMetadataCard({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Редактирование плана адаптации</CardTitle>
-        <CardDescription>Шаблон плана адаптации</CardDescription>
+        <CardTitle>Редактирование шаблона адаптации</CardTitle>
+        <CardDescription>Задачи и параметры шаблона</CardDescription>
       </CardHeader>
       <CardContent className="p-4">
         <form id="template-metadata-form" onSubmit={onSubmit}>
@@ -117,7 +117,7 @@ function TemplateMetadataCard({
           onClick={onDelete}
         >
           {isDeleting && <Spinner />}
-          Удалить план
+          Удалить шаблон
         </Button>
       </CardFooter>
     </Card>

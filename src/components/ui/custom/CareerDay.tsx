@@ -1,20 +1,14 @@
 import { JSX, useEffect, useState } from "react";
-import { ChevronRight } from "lucide-react";
 import type {
   AdaptationPlanDayType,
   TaskStatus,
 } from "@/interfaces/api/AdaptationPlanType.ts";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
-import { Button } from "@/components/ui/shadcn/button";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/shadcn/collapsible";
 import { Field, FieldLabel } from "@/components/ui/shadcn/field";
 import ReadonlyFieldValue from "@/components/ui/custom/ReadonlyFieldValue";
 import TaskItem from "@/components/ui/custom/TaskItem";
-import CommentFieldWithSave from "@/pages/Mentorship/Interns/plan-editor/CommentFieldWithSave";
+import CommentFieldWithSave from "@/components/adaptation/CommentFieldWithSave";
+import DayCommentsSection from "@/components/adaptation/DayCommentsSection";
 import {
   capitalizeFirst,
   COMPLETION_CHIP_CLASS,
@@ -24,10 +18,11 @@ import {
 import { cn } from "@/lib/utils";
 import convertDate from "@/utils/convertDate.ts";
 import { formatDayRange, isDaySpan } from "@/utils/formatDayRange.ts";
+import { EMPTY_DAY_TASKS_MESSAGE } from "@/constants/adaptation.ts";
 
 const READONLY_COMMENT_FIELDS = [
   { key: "mentor_comment", label: "Комментарий наставника" },
-  { key: "department_head_comment", label: "Комментарий руководителя" },
+  { key: "department_head_comment", label: "Комментарий начальника отдела" },
 ] as const;
 
 interface CareerDayProps {
@@ -150,23 +145,12 @@ function CareerDay({
             ))
           ) : (
             <p className="m-0 text-sm text-muted-foreground">
-              На этот день задачи не назначены
+              {EMPTY_DAY_TASKS_MESSAGE}
             </p>
           )}
         </div>
 
-        <Collapsible className="group/collapsible mt-4">
-          <CollapsibleTrigger asChild>
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-9 w-full justify-between rounded-lg bg-muted/60 px-3 font-semibold text-foreground hover:bg-muted"
-            >
-              Комментарии
-              <ChevronRight className="size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-            </Button>
-          </CollapsibleTrigger>
-          <CollapsibleContent className="flex flex-col gap-4 pt-2">
+        <DayCommentsSection>
             <Field>
               <FieldLabel>Комментарий УПиПК</FieldLabel>
               <ReadonlyFieldValue value={day.employee_comment ?? ""} />
@@ -187,8 +171,7 @@ function CareerDay({
                 <ReadonlyFieldValue value={day[field.key] ?? ""} />
               </Field>
             ))}
-          </CollapsibleContent>
-        </Collapsible>
+        </DayCommentsSection>
       </CardContent>
     </Card>
   );

@@ -7,6 +7,7 @@ import {
 import {
   useGetDepartmentHeadsQuery,
   useGetMentorsQuery,
+  useGetSupervisorsQuery,
   useGetUsersQuery,
 } from "@/services/store/features/users.ts";
 import { USER_ROLES } from "@/constants/roles.ts";
@@ -20,21 +21,16 @@ import {
   SelectValue,
 } from "@/components/ui/shadcn/select";
 import { Spinner } from "@/components/ui/shadcn/spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/shadcn/dialog";
-import Loader from "@/components/ui/custom/Loader";
+import { DialogFooter } from "@/components/ui/shadcn/dialog";
+import FormDialog from "@/components/ui/custom/FormDialog";
 import SearchableCombobox from "@/components/ui/custom/SearchableCombobox";
+import RoleUserCombobox from "@/components/ui/custom/RoleUserCombobox";
 import DatePickerField from "@/components/ui/custom/DatePickerField";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 import { resolveRoleUsers } from "@/utils/resolveRoleUsers.ts";
 import { firstShift, formatShifts } from "@/utils/formatShifts.ts";
 import { toUserOptions } from "@/utils/userSelectOptions.ts";
+import { toastMutationError } from "@/utils/apiError.ts";
 
 const sortTemplates = (
   a: AdaptationPlanTemplateType,
@@ -63,6 +59,9 @@ function PlanCreateDialog({
   const { data: templatesData, isLoading: isTemplatesLoading } =
     useGetAdaptationPlanTemplatesQuery(undefined, { skip: !open });
   const { data: mentorsData } = useGetMentorsQuery(undefined, { skip: !open });
+  const { data: supervisorsData } = useGetSupervisorsQuery(undefined, {
+    skip: !open,
+  });
   const { data: departmentHeadsData } = useGetDepartmentHeadsQuery(undefined, {
     skip: !open,
   });
@@ -72,11 +71,17 @@ function PlanCreateDialog({
   const [workSchedule, setWorkSchedule] = useState("");
   const [templateId, setTemplateId] = useState("");
   const [mentorId, setMentorId] = useState("");
+  const [supervisorId, setSupervisorId] = useState("");
   const [departmentHeadId, setDepartmentHeadId] = useState("");
 
   const users = usersData ?? [];
   const templates = templatesData ?? [];
   const mentors = resolveRoleUsers(mentorsData, users, USER_ROLES.MENTOR);
+  const supervisors = resolveRoleUsers(
+    supervisorsData,
+    users,
+    USER_ROLES.SUPERVISOR,
+  );
   const departmentHeads = resolveRoleUsers(
     departmentHeadsData,
     users,
@@ -99,6 +104,7 @@ function PlanCreateDialog({
       setWorkSchedule("");
       setTemplateId("");
       setMentorId("");
+      setSupervisorId("");
       setDepartmentHeadId("");
     }
   }, [open]);
@@ -122,8 +128,9 @@ function PlanCreateDialog({
       return toast.error("У выбранного шаблона не найдены смены");
     }
     if (!mentorId) return toast.error("Выберите наставника");
+    if (!supervisorId) return toast.error("Выберите руководителя отделения");
     if (!departmentHeadId) {
-      return toast.error("Выберите руководителя отдела");
+      return toast.error("Выберите начальника отдела");
     }
 
     try {
@@ -133,132 +140,113 @@ function PlanCreateDialog({
         adaptation_plan_template_id: Number(templateId),
         shift: selectedShift,
         mentor: Number(mentorId),
+        supervisor: Number(supervisorId),
         department_head: Number(departmentHeadId),
       }).unwrap();
       toast.success("План адаптации создан");
       onOpenChange(false);
-    } catch {
-      toast.error("Не удалось создать план адаптации");
+    } catch (error) {
+      toastMutationError(error, "Не удалось создать план адаптации");
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
-        <DialogHeader className="px-4 pt-4">
-          <DialogTitle>Создание плана адаптации</DialogTitle>
-          <DialogDescription className="sr-only">
-            Заполните данные стажера, шаблон и ответственных для нового плана
-          </DialogDescription>
-        </DialogHeader>
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader />
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="flex min-h-0 flex-1 flex-col"
-          >
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-              <Field>
-                <FieldLabel htmlFor="plan-user">Стажер</FieldLabel>
-                <SearchableCombobox
-                  id="plan-user"
-                  value={userId}
-                  onValueChange={setUserId}
-                  options={toUserOptions(users)}
-                  placeholder="Выберите пользователя"
-                  searchPlaceholder="Поиск стажера..."
-                  emptyMessage="Стажер не найден"
-                />
-              </Field>
-              <DatePickerField
-                dateId="plan-start-date"
-                dateLabel="Дата начала стажировки"
-                date={startDate}
-                onDateChange={setStartDate}
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Создание плана адаптации"
+      description="Заполните данные стажера, шаблон и ответственных для нового плана"
+      isLoading={isLoading}
+    >
+      <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <Field>
+              <FieldLabel htmlFor="plan-user">Стажер</FieldLabel>
+              <SearchableCombobox
+                id="plan-user"
+                value={userId}
+                onValueChange={setUserId}
+                options={toUserOptions(users)}
+                placeholder="Выберите пользователя"
+                searchPlaceholder="Поиск стажера..."
+                emptyMessage="Стажер не найден"
               />
-              <Field>
-                <FieldLabel htmlFor="plan-schedule">Режим работы</FieldLabel>
-                <Select
-                  value={workSchedule}
-                  onValueChange={(value) => {
-                    setWorkSchedule(value);
-                    setTemplateId("");
-                  }}
-                >
-                  <SelectTrigger id="plan-schedule" className="w-full">
-                    <SelectValue placeholder="Выберите режим работы" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[60]">
-                    {workSchedules.map((schedule) => (
-                      <SelectItem key={schedule} value={schedule}>
-                        {schedule}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="plan-template">
-                  Шаблон адаптации
-                </FieldLabel>
-                <Select
-                  value={templateId}
-                  onValueChange={setTemplateId}
-                  disabled={!workSchedule}
-                >
-                  <SelectTrigger id="plan-template" className="w-full">
-                    <SelectValue placeholder="Выберите шаблон" />
-                  </SelectTrigger>
-                  <SelectContent className="z-[60]">
-                    {filteredTemplates.map((template) => (
-                      <SelectItem key={template.id} value={String(template.id)}>
-                        {template.name} (смена:{" "}
-                        {formatShifts(template.shifts)})
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="plan-mentor">Наставник</FieldLabel>
-                <SearchableCombobox
-                  id="plan-mentor"
-                  value={mentorId}
-                  onValueChange={setMentorId}
-                  options={toUserOptions(mentors)}
-                  placeholder="Выберите наставника"
-                  searchPlaceholder="Поиск наставника..."
-                  emptyMessage="Наставник не найден"
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="plan-head">Руководитель отдела</FieldLabel>
-                <SearchableCombobox
-                  id="plan-head"
-                  value={departmentHeadId}
-                  onValueChange={setDepartmentHeadId}
-                  options={toUserOptions(departmentHeads)}
-                  placeholder="Выберите руководителя"
-                  searchPlaceholder="Поиск руководителя..."
-                  emptyMessage="Руководитель не найден"
-                />
-              </Field>
-            </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit" disabled={isCreating}>
-                {isCreating && <Spinner />}
-                Создать план
-              </Button>
-            </DialogFooter>
-          </form>
-        )}
-      </DialogContent>
-    </Dialog>
+            </Field>
+            <DatePickerField
+              dateId="plan-start-date"
+              dateLabel="Дата начала стажировки"
+              date={startDate}
+              onDateChange={setStartDate}
+            />
+            <Field>
+              <FieldLabel htmlFor="plan-schedule">Режим работы</FieldLabel>
+              <Select
+                value={workSchedule}
+                onValueChange={(value) => {
+                  setWorkSchedule(value);
+                  setTemplateId("");
+                }}
+              >
+                <SelectTrigger id="plan-schedule" className="w-full">
+                  <SelectValue placeholder="Выберите режим работы" />
+                </SelectTrigger>
+                <SelectContent className="z-[60]">
+                  {workSchedules.map((schedule) => (
+                    <SelectItem key={schedule} value={schedule}>
+                      {schedule}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <Field>
+              <FieldLabel htmlFor="plan-template">Шаблон адаптации</FieldLabel>
+              <Select
+                value={templateId}
+                onValueChange={setTemplateId}
+                disabled={!workSchedule}
+              >
+                <SelectTrigger id="plan-template" className="w-full">
+                  <SelectValue placeholder="Выберите шаблон" />
+                </SelectTrigger>
+                <SelectContent className="z-[60]">
+                  {filteredTemplates.map((template) => (
+                    <SelectItem key={template.id} value={String(template.id)}>
+                      {template.name} (смена: {formatShifts(template.shifts)})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </Field>
+            <RoleUserCombobox
+              field="mentor"
+              value={mentorId}
+              onValueChange={setMentorId}
+              users={mentors}
+            />
+            <RoleUserCombobox
+              field="supervisor"
+              value={supervisorId}
+              onValueChange={setSupervisorId}
+              users={supervisors}
+            />
+            <RoleUserCombobox
+              field="departmentHead"
+              value={departmentHeadId}
+              onValueChange={setDepartmentHeadId}
+              users={departmentHeads}
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button type="submit" disabled={isCreating}>
+            {isCreating && <Spinner />}
+            Создать план
+          </Button>
+        </DialogFooter>
+      </form>
+    </FormDialog>
   );
 }
 

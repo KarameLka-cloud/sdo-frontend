@@ -30,16 +30,17 @@ function CommentFieldWithSave({
         value={value}
         onChange={(event) => onChange(event.target.value)}
       />
-      <Button
-        type="button"
-        size="sm"
-        className="w-fit"
-        disabled={!hasChanges || isSaving}
-        onClick={onSave}
-      >
-        {isSaving && <Spinner />}
-        Сохранить
-      </Button>
+      <div>
+        <Button
+          type="button"
+          size="sm"
+          disabled={!hasChanges || isSaving}
+          onClick={onSave}
+        >
+          {isSaving && <Spinner />}
+          Сохранить
+        </Button>
+      </div>
     </Field>
   );
 }

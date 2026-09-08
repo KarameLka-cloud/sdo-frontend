@@ -12,16 +12,11 @@ import {
   SelectValue,
 } from "@/components/ui/shadcn/select";
 import { Spinner } from "@/components/ui/shadcn/spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/shadcn/dialog";
-import { WORK_SCHEDULE_OPTIONS } from "@/components/resource-list/resourceRoutes.ts";
-import { parsePositiveInt } from "@/utils/formValues.ts";
+import { DialogFooter } from "@/components/ui/shadcn/dialog";
+import FormDialog from "@/components/ui/custom/FormDialog";
+import { WORK_SCHEDULE_OPTIONS } from "@/constants/adaptation.ts";
+import { validateTemplateMeta } from "@/pages/Admin/Adaptation/Templates/templateMetaForm.ts";
+import { toastMutationError } from "@/utils/apiError.ts";
 
 function TemplateCreateDialog({
   open,
@@ -48,42 +43,34 @@ function TemplateCreateDialog({
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (!name.trim()) return toast.error("Укажите название шаблона");
-    if (!workSchedule) return toast.error("Выберите график работы");
-
-    const shiftNumber = parsePositiveInt(shift);
-    if (shiftNumber === null) {
-      return toast.error("Укажите корректный номер смены");
+    const meta = validateTemplateMeta(name, workSchedule, shift);
+    if (!meta.ok) {
+      return toast.error(meta.error);
     }
 
     try {
       await createTemplate({
-        name: name.trim(),
-        work_schedule: workSchedule,
-        shifts: [shiftNumber],
+        name: meta.name,
+        work_schedule: meta.workSchedule,
+        shifts: [meta.shift],
       }).unwrap();
       toast.success("Шаблон создан");
       onOpenChange(false);
-    } catch {
-      toast.error("Не удалось создать шаблон");
+    } catch (error) {
+      toastMutationError(error, "Не удалось создать шаблон");
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl">
-        <DialogHeader className="px-4 pt-4">
-          <DialogTitle>Создание плана адаптации</DialogTitle>
-          <DialogDescription className="sr-only">
-            Укажите название, график работы и смену нового плана адаптации
-          </DialogDescription>
-        </DialogHeader>
-        <form
-          onSubmit={handleSubmit}
-          className="flex min-h-0 flex-1 flex-col"
-        >
-          <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-            <div className="grid gap-4 sm:grid-cols-2">
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title="Создание шаблона адаптации"
+      description="Укажите название, график работы и смену нового шаблона адаптации"
+    >
+      <form onSubmit={handleSubmit} className="flex min-h-0 flex-1 flex-col">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+          <div className="grid gap-4 sm:grid-cols-2">
             <Field className="sm:col-span-2">
               <FieldLabel htmlFor="template-name">Название</FieldLabel>
               <Input
@@ -119,16 +106,15 @@ function TemplateCreateDialog({
               />
             </Field>
           </div>
-          </div>
-          <DialogFooter>
-            <Button type="submit" disabled={isCreating}>
-              {isCreating && <Spinner />}
-              Создать план
-            </Button>
-          </DialogFooter>
-        </form>
-      </DialogContent>
-    </Dialog>
+        </div>
+        <DialogFooter>
+          <Button type="submit" disabled={isCreating}>
+            {isCreating && <Spinner />}
+            Создать шаблон
+          </Button>
+        </DialogFooter>
+      </form>
+    </FormDialog>
   );
 }
 

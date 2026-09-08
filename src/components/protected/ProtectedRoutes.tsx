@@ -10,15 +10,7 @@ import {
   type UserRole,
 } from "@/constants/roles.ts";
 import { COOKIE_NAMES } from "@/constants/api.ts";
-
-function isUnauthorizedError(error: unknown): boolean {
-  return (
-    typeof error === "object" &&
-    error !== null &&
-    "status" in error &&
-    (error as { status: unknown }).status === 401
-  );
-}
+import { getApiErrorStatus } from "@/utils/apiError.ts";
 
 type GuardRouteType = "login" | "home";
 
@@ -36,7 +28,7 @@ const ProtectedRoute = ({
   const { hasToken, isLoading, error } = useUser();
 
   if (hasToken) {
-    if (error && isUnauthorizedError(error)) {
+    if (error && getApiErrorStatus(error) === 401) {
       Cookie.remove(COOKIE_NAMES.AUTH_TOKEN);
       if (route === "login") {
         return elementLogin;

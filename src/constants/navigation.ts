@@ -5,6 +5,7 @@ import firstWednesdayData from "@/utils/firstWednesday";
 import {
   buildAdminLearningPath,
   buildLearningPath,
+  learningNavChildren,
 } from "@/constants/learning.ts";
 
 interface NavigationItemChild {
@@ -39,35 +40,14 @@ export const HOME_NAV_LINKS: ReadonlyArray<NavigationItem> = [
     name: "Обучение",
     path: "",
     icon: Notebook,
-    children: [
-      {
-        id: 1,
-        name: "Мероприятия",
-        path: buildLearningPath("education", "event"),
-      },
-      {
-        id: 2,
-        name: "Эл. курсы",
-        path: buildLearningPath("education", "course"),
-      },
-      {
-        id: 3,
-        name: "Вебинары",
-        path: buildLearningPath("education", "webinar"),
-      },
-      { id: 4, name: "Тесты", path: buildLearningPath("education", "test") },
-    ],
+    children: learningNavChildren("education", buildLearningPath),
   },
   {
     id: 4,
     name: `ЕДО | ${firstWednesdayData}`,
     path: "",
     icon: Album,
-    children: [
-      { id: 1, name: "Мероприятия", path: buildLearningPath("edo", "event") },
-      { id: 2, name: "Эл. курсы", path: buildLearningPath("edo", "course") },
-      { id: 3, name: "Тесты", path: buildLearningPath("edo", "test") },
-    ],
+    children: learningNavChildren("edo", buildLearningPath),
   },
 ];
 
@@ -101,55 +81,18 @@ export const ADMIN_NAV_LINKS: ReadonlyArray<NavigationItem> = [
     name: "Обучение",
     path: "",
     icon: Notebook,
-    children: [
-      {
-        id: 1,
-        name: "Мероприятия",
-        path: buildAdminLearningPath("education", "event"),
-      },
-      {
-        id: 2,
-        name: "Электронные курсы",
-        path: buildAdminLearningPath("education", "course"),
-      },
-      {
-        id: 3,
-        name: "Вебинары",
-        path: buildAdminLearningPath("education", "webinar"),
-      },
-      {
-        id: 4,
-        name: "Тесты",
-        path: buildAdminLearningPath("education", "test"),
-      },
-    ],
+    children: learningNavChildren("education", buildAdminLearningPath),
   },
   {
     id: 3,
     name: "ЕДО",
     path: "",
     icon: Album,
-    children: [
-      {
-        id: 1,
-        name: "Мероприятия",
-        path: buildAdminLearningPath("edo", "event"),
-      },
-      {
-        id: 2,
-        name: "Электронные курсы",
-        path: buildAdminLearningPath("edo", "course"),
-      },
-      {
-        id: 3,
-        name: "Тесты",
-        path: buildAdminLearningPath("edo", "test"),
-      },
-    ],
+    children: learningNavChildren("edo", buildAdminLearningPath),
   },
   {
     id: 4,
-    name: "Адаптация",
+    name: "Шаблоны адаптации",
     path: ROUTES.ADMIN_ADAPTATION_TEMPLATES,
     icon: Brain,
   },

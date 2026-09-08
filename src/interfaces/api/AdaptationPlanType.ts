@@ -6,7 +6,7 @@ export type TaskStatus = "выполнено" | "не выполнено";
 
 /** Mirrors App\Enums\ResponsibleRole on the backend. */
 export type ResponsibleRole =
-  | "Руководитель отдела"
+  | "Начальник отдела"
   | "Наставник"
   | "Сотрудник УПиПК"
   | "Стажер";
@@ -51,6 +51,7 @@ export interface AdaptationPlanType {
   id: number;
   user_id: number;
   mentor: number;
+  supervisor?: number | null;
   department_head: number;
   start_date?: string;
   work_schedule?: string;
@@ -59,6 +60,7 @@ export interface AdaptationPlanType {
   user?: AdaptationPlanUserRef;
   template?: AdaptationPlanTemplateRef;
   mentor_user?: AdaptationPlanUserRef;
+  supervisor_user?: AdaptationPlanUserRef;
   department_head_user?: AdaptationPlanUserRef;
   days?: AdaptationPlanDayType[];
 }

@@ -16,15 +16,8 @@ import {
 } from "@/services/store/features/learningItems.ts";
 import { Button } from "@/components/ui/shadcn/button";
 import { Spinner } from "@/components/ui/shadcn/spinner";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/shadcn/dialog";
-import Loader from "@/components/ui/custom/Loader";
+import { DialogFooter } from "@/components/ui/shadcn/dialog";
+import FormDialog from "@/components/ui/custom/FormDialog";
 import {
   learningNeedsDepartments,
   learningNeedsPositions,
@@ -43,6 +36,7 @@ import {
   validateLearningItemForm,
   type LearningItemFormValues,
 } from "@/pages/Admin/Learning/learningForm.ts";
+import { toastMutationError } from "@/utils/apiError.ts";
 
 function LearningItemFormDialog({
   open,
@@ -116,8 +110,9 @@ function LearningItemFormDialog({
         toast.success(LEARNING_MESSAGES.create.success[type]);
       }
       onOpenChange(false);
-    } catch {
-      toast.error(
+    } catch (error) {
+      toastMutationError(
+        error,
         isEdit
           ? LEARNING_MESSAGES.update.error[type]
           : LEARNING_MESSAGES.create.error[type],
@@ -126,59 +121,49 @@ function LearningItemFormDialog({
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent
-        className="flex max-h-[90vh] flex-col gap-0 overflow-hidden p-0 sm:max-w-2xl"
+    <FormDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      title={isEdit ? LEARNING_EDIT_TITLES[type] : LEARNING_CREATE_TITLES[type]}
+      description={
+        isEdit
+          ? "Измените данные записи и сохраните"
+          : "Заполните данные новой записи"
+      }
+      isLoading={isLoading}
+    >
+      <form
+        onSubmit={handleSubmit}
+        className="flex min-h-0 flex-1 flex-col"
       >
-        <DialogHeader className="px-4 pt-4">
-          <DialogTitle>
-            {isEdit ? LEARNING_EDIT_TITLES[type] : LEARNING_CREATE_TITLES[type]}
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            {isEdit
-              ? "Измените данные записи и сохраните"
-              : "Заполните данные новой записи"}
-          </DialogDescription>
-        </DialogHeader>
-        {isLoading ? (
-          <div className="flex justify-center py-8">
-            <Loader />
-          </div>
-        ) : (
-          <form
-            onSubmit={handleSubmit}
-            className="flex min-h-0 flex-1 flex-col"
-          >
-            <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
-              <LearningItemFormFields
-                type={type}
-                values={values}
-                onChange={patchValues}
-                departments={departments ?? []}
-                positions={positions ?? []}
-              />
-            </div>
-            <DialogFooter className={isEdit ? "justify-between" : undefined}>
-              <Button type="submit" disabled={isBusy}>
-                {isSaving && <Spinner />}
-                {isEdit ? "Сохранить" : LEARNING_CREATE_SUBMIT_LABELS[type]}
-              </Button>
-              {isEdit && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  disabled={isBusy}
-                  onClick={() => handleDelete(item.id)}
-                >
-                  {isDeleting && <Spinner />}
-                  Удалить
-                </Button>
-              )}
-            </DialogFooter>
-          </form>
-        )}
-      </DialogContent>
-    </Dialog>
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
+          <LearningItemFormFields
+            type={type}
+            values={values}
+            onChange={patchValues}
+            departments={departments ?? []}
+            positions={positions ?? []}
+          />
+        </div>
+        <DialogFooter className={isEdit ? "justify-between" : undefined}>
+          <Button type="submit" disabled={isBusy}>
+            {isSaving && <Spinner />}
+            {isEdit ? "Сохранить" : LEARNING_CREATE_SUBMIT_LABELS[type]}
+          </Button>
+          {isEdit && (
+            <Button
+              type="button"
+              variant="destructive"
+              disabled={isBusy}
+              onClick={() => handleDelete(item.id)}
+            >
+              {isDeleting && <Spinner />}
+              Удалить
+            </Button>
+          )}
+        </DialogFooter>
+      </form>
+    </FormDialog>
   );
 }
 

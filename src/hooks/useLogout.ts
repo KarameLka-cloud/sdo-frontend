@@ -1,5 +1,5 @@
 import Cookie from "js-cookie";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/services/store/store.ts";
 import { useNavigate } from "react-router-dom";
 import { useLogoutMutation } from "@/services/store/features/auth.ts";
 import { baseApi } from "@/services/store/baseApi.ts";
@@ -8,7 +8,7 @@ import { COOKIE_NAMES } from "@/constants/api.ts";
 
 export const useLogout = () => {
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [logoutMutation] = useLogoutMutation();
 
   const logout = async () => {

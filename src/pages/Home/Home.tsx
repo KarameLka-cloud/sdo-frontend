@@ -5,6 +5,7 @@ import { useUser } from "@/hooks/useUser.ts";
 import { useGetMyAdaptationPlanQuery } from "@/services/store/features/adaptation.ts";
 import { Skeleton } from "@/components/ui/shadcn/skeleton";
 import type { AdaptationPlanType } from "@/interfaces/api/AdaptationPlanType.ts";
+import { hasAdaptationPlan } from "@/utils/adaptationPlan.ts";
 
 const RADIUS = 45;
 const CIRCUMFERENCE = 2 * Math.PI * RADIUS;
@@ -78,7 +79,7 @@ function Home(): JSX.Element {
 
   const adaptationPlan = plan ?? undefined;
   const progress = getAdaptationProgress(adaptationPlan);
-  const hasPlan = Boolean(adaptationPlan?.id && adaptationPlan.id > 0);
+  const hasPlan = hasAdaptationPlan(adaptationPlan);
 
   const nameParts = name.trim().split(/\s+/);
   const shortName = nameParts[1] || nameParts[0] || "Пользователь";

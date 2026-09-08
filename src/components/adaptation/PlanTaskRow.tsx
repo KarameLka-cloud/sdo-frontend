@@ -4,6 +4,7 @@ import type {
   ResponsibleRole,
   TaskStatus,
 } from "@/interfaces/api/AdaptationPlanType.ts";
+import { TASK_STATUS_OPTIONS } from "@/constants/adaptation.ts";
 
 const toExternalUrl = (link: string): string => {
   const trimmedLink = link.trim();
@@ -14,11 +15,6 @@ const toExternalUrl = (link: string): string => {
 
   return `https://${trimmedLink}`;
 };
-
-const STATUS_OPTIONS = [
-  { value: "не выполнено", label: "Не выполнено" },
-  { value: "выполнено", label: "Выполнено" },
-] as const;
 
 export interface PlanTaskRowProps {
   description: string;
@@ -71,7 +67,7 @@ function PlanTaskRow({
         role="group"
         aria-label="Статус задачи"
       >
-        {STATUS_OPTIONS.map((option) => {
+        {TASK_STATUS_OPTIONS.map((option) => {
           const isActive = status === option.value;
 
           return (

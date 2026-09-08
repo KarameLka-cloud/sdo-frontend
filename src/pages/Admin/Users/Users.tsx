@@ -2,7 +2,7 @@ import { JSX, useState } from "react";
 import { UserType } from "@/interfaces/api/UserType.ts";
 import { useFiltered } from "@/hooks/useFiltered.ts";
 import { useGetUsersQuery } from "@/services/store/features/users.ts";
-import { isUserInRole, USER_ROLES, type UserRole } from "@/constants/roles.ts";
+import { isUserInRole, ROLE_LABELS, USER_ROLES, displayRoleName, type UserRole } from "@/constants/roles.ts";
 import { Badge } from "@/components/ui/shadcn/badge";
 import { Field } from "@/components/ui/shadcn/field";
 import {
@@ -20,12 +20,13 @@ import UserEditDialog from "@/pages/Admin/Users/UserEditDialog";
 
 const TABS = {
   users: { label: "Все пользователи" },
-  admins: { label: "Администраторы", role: USER_ROLES.ADMIN },
+  admins: { label: ROLE_LABELS.ADMIN, role: USER_ROLES.ADMIN },
+  supervisors: { label: ROLE_LABELS.SUPERVISOR, role: USER_ROLES.SUPERVISOR },
   department_heads: {
-    label: "Руководители отделов",
+    label: ROLE_LABELS.DEPARTMENT_HEAD,
     role: USER_ROLES.DEPARTMENT_HEAD,
   },
-  mentors: { label: "Наставники", role: USER_ROLES.MENTOR },
+  mentors: { label: ROLE_LABELS.MENTOR, role: USER_ROLES.MENTOR },
 } as const satisfies Record<string, { label: string; role?: UserRole }>;
 
 type UsersTab = keyof typeof TABS;
@@ -50,7 +51,7 @@ const COLUMNS: ResourceColumn<UserType>[] = [
     label: "Роль",
     render: (user) => (
       <Badge variant={user.role_name ? "destructive" : "secondary"}>
-        {user.role_name ?? "Пользователь"}
+        {displayRoleName(user.role, user.role_name) ?? "Пользователь"}
       </Badge>
     ),
   },

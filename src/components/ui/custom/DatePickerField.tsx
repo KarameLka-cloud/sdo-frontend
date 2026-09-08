@@ -12,7 +12,6 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/shadcn/popover";
-import { cn } from "@/lib/utils";
 import { toDateInputValue } from "@/utils/formValues.ts";
 import convertDate from "@/utils/convertDate.ts";
 
@@ -36,8 +35,8 @@ function DatePickerField({
   onDateChange,
   datePlaceholder = "Выберите дату",
   compact = false,
-  fitContent = false,
   className,
+  disabled = false,
   showTime = false,
   timeId,
   timeLabel = "Время",
@@ -50,8 +49,8 @@ function DatePickerField({
   onDateChange: (value: string) => void;
   datePlaceholder?: string;
   compact?: boolean;
-  fitContent?: boolean;
   className?: string;
+  disabled?: boolean;
   showTime?: boolean;
   timeId?: string;
   timeLabel?: string;
@@ -62,18 +61,17 @@ function DatePickerField({
   const selectedDate = parseDateValue(date);
 
   const datePicker = (
-    <Popover modal open={open} onOpenChange={setOpen}>
+    <Popover modal open={open} onOpenChange={(next) => !disabled && setOpen(next)}>
       <PopoverTrigger asChild>
         <Button
           type="button"
           variant={compact ? "ghost" : "outline"}
           id={dateId}
+          disabled={disabled}
           className={
             compact
               ? "h-7 gap-1 px-1.5 font-medium hover:bg-background/70"
-              : fitContent
-                ? "w-fit justify-between font-normal"
-                : "w-full justify-between font-normal"
+              : "w-full justify-between font-normal"
           }
         >
           {selectedDate
@@ -119,26 +117,23 @@ function DatePickerField({
 
   return (
     <>
-      <Field
-        className={cn(fitContent ? "w-fit *:w-auto" : undefined, className)}
-      >
+      <Field className={className}>
         <FieldLabel htmlFor={dateId}>{dateLabel}</FieldLabel>
         {datePicker}
       </Field>
       {showTime && timeId && onTimeChange && (
-        <Field
-          className={cn(fitContent ? "w-fit *:w-auto" : undefined, className)}
-        >
+        <Field className={className}>
           <FieldLabel htmlFor={timeId}>{timeLabel}</FieldLabel>
           <Input
             type="time"
             id={timeId}
             step="60"
             value={time.slice(0, 5)}
+            disabled={disabled}
             onChange={(event) =>
               onTimeChange(event.target.value.slice(0, 5))
             }
-            className={`${TIME_INPUT_CLASS}${fitContent ? " w-auto field-sizing-content" : ""}`}
+            className={TIME_INPUT_CLASS}
           />
         </Field>
       )}

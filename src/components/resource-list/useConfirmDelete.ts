@@ -1,13 +1,8 @@
 import { useState } from "react";
 import { toast } from "sonner";
 import { useConfirm } from "@/hooks/useConfirm.ts";
+import { DeleteMessages } from "@/constants/deleteMessages.ts";
 import { getApiErrorMessage } from "@/utils/apiError.ts";
-
-interface DeleteMessages {
-  confirm: string;
-  success: string;
-  error: string;
-}
 
 type DeleteMutation = readonly [
   (id: number) => { unwrap: () => Promise<unknown> },

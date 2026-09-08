@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 
 interface DataMessageProps {
   type: "noData" | "error";
+  message?: string;
   className?: string;
   centered?: boolean;
 }
@@ -28,6 +29,7 @@ export function DataStateCenter({
 
 function DataMessage({
   type,
+  message,
   className,
   centered = false,
 }: DataMessageProps): JSX.Element {
@@ -40,7 +42,7 @@ function DataMessage({
     },
   };
 
-  const { message } = types[type];
+  const displayMessage = message ?? types[type].message;
 
   const messageEl = (
     <div
@@ -52,7 +54,7 @@ function DataMessage({
         className,
       )}
     >
-      {message}
+      {displayMessage}
     </div>
   );
 

@@ -1,6 +1,5 @@
 import { ReactNode } from "react";
 import { PlusIcon, SearchIcon, XIcon } from "lucide-react";
-import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/shadcn/button";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
 import { Field, FieldGroup } from "@/components/ui/shadcn/field";
@@ -16,10 +15,10 @@ interface ResourceListToolbarProps {
   searchPlaceholder: string;
   search: string;
   onSearchChange: (value: string) => void;
-  createTo?: string;
   onCreate?: () => void;
   createLabel?: string;
   leftSlot?: ReactNode;
+  searchCentered?: boolean;
 }
 
 function ResourceListToolbar({
@@ -27,10 +26,10 @@ function ResourceListToolbar({
   searchPlaceholder,
   search,
   onSearchChange,
-  createTo,
   onCreate,
   createLabel,
   leftSlot,
+  searchCentered = false,
 }: ResourceListToolbarProps) {
   const hasSearch = search.trim().length > 0;
 
@@ -40,21 +39,22 @@ function ResourceListToolbar({
         <PlusIcon />
         {createLabel}
       </Button>
-    ) : createLabel && createTo ? (
-      <Button variant="outline" size="sm" asChild>
-        <Link to={createTo}>
-          <PlusIcon />
-          {createLabel}
-        </Link>
-      </Button>
     ) : null;
 
   return (
     <div className="sticky mt-10">
       <Card>
         <CardContent>
-          <FieldGroup className="flex flex-row items-end justify-between gap-4">
-            <div className="shrink-0">{leftSlot ?? createButton}</div>
+          <FieldGroup
+            className={
+              searchCentered
+                ? "flex flex-row items-end justify-center gap-4"
+                : "flex flex-row items-end justify-between gap-4"
+            }
+          >
+            {!searchCentered && (
+              <div className="shrink-0">{leftSlot ?? createButton}</div>
+            )}
             <Field className="w-2/4">
               <InputGroup>
                 <InputGroupAddon>

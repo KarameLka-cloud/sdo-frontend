@@ -1,6 +1,8 @@
+import type { ResponsibleRole } from "@/interfaces/api/AdaptationPlanType.ts";
+
 export interface AdaptationPlanTemplateTask {
   description: string;
-  responsible_role: string;
+  responsible_role: ResponsibleRole;
   day_from?: number | null;
   day_to?: number | null;
   links?: string[];

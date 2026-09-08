@@ -9,19 +9,19 @@ import {
 import ResourceFormPage from "@/components/resource-list/ResourceFormPage";
 import {
   TEMPLATE_ROUTES,
-  WORK_SCHEDULE_OPTIONS,
   parseEntityId,
 } from "@/components/resource-list/resourceRoutes";
 import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import { usePopulateEditForm } from "@/components/resource-list/usePopulateEditForm";
 import { firstShift } from "@/utils/formatShifts.ts";
-import { parsePositiveInt } from "@/utils/formValues.ts";
+import { WORK_SCHEDULE_OPTIONS } from "@/constants/adaptation.ts";
+import { validateTemplateMeta } from "@/pages/Admin/Adaptation/Templates/templateMetaForm.ts";
+import { toastMutationError } from "@/utils/apiError.ts";
 import { AdaptationPlanTemplateType } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
 import TaskDayFormDialog from "./TaskDayFormDialog";
 import TaskRuleGroup from "./TaskRuleGroup";
 import TemplateMetadataCard from "./TemplateMetadataCard";
 import {
-  GroupedRuleBlock,
   TaskRule,
   TaskRuleForm,
   groupTaskRules,
@@ -108,27 +108,17 @@ function TemplateTasks(): JSX.Element {
       return;
     }
 
-    if (!name.trim()) {
-      toast.error("Укажите название шаблона");
-      return;
-    }
-
-    if (!workSchedule) {
-      toast.error("Выберите график работы");
-      return;
-    }
-
-    const shiftNumber = parsePositiveInt(shift);
-    if (shiftNumber === null) {
-      toast.error("Укажите корректный номер смены");
+    const meta = validateTemplateMeta(name, workSchedule, shift);
+    if (!meta.ok) {
+      toast.error(meta.error);
       return;
     }
 
     await updateTemplate({
       id: template.id,
-      name: name.trim(),
-      work_schedule: workSchedule,
-      shifts: [shiftNumber],
+      name: meta.name,
+      work_schedule: meta.workSchedule,
+      shifts: [meta.shift],
       task_blueprint: taskBlueprint,
     }).unwrap();
   };
@@ -151,8 +141,8 @@ function TemplateTasks(): JSX.Element {
     try {
       await saveTemplate(payloadRules);
       toast.success("Изменения сохранены");
-    } catch {
-      toast.error("Не удалось сохранить изменения");
+    } catch (error) {
+      toastMutationError(error, "Не удалось сохранить изменения");
     }
   };
 
@@ -181,8 +171,9 @@ function TemplateTasks(): JSX.Element {
       toast.success(
         draft.mode === "create" ? "Задачи добавлены" : "Изменения сохранены",
       );
-    } catch {
-      toast.error(
+    } catch (error) {
+      toastMutationError(
+        error,
         draft.mode === "create"
           ? "Не удалось сохранить задачи"
           : "Не удалось сохранить изменения",
@@ -199,8 +190,8 @@ function TemplateTasks(): JSX.Element {
       await saveRules(nextRules);
       closeDraft();
       toast.success("Группа задач удалена");
-    } catch {
-      toast.error("Не удалось удалить группу задач");
+    } catch (error) {
+      toastMutationError(error, "Не удалось удалить группу задач");
     }
   };
 
@@ -208,7 +199,7 @@ function TemplateTasks(): JSX.Element {
     return (
       <ResourceFormPage
         backTo={TEMPLATE_ROUTES.list}
-        backLabel="К списку планов адаптации"
+        backLabel="К списку шаблонов адаптации"
         isError
       >
         <></>
@@ -220,7 +211,7 @@ function TemplateTasks(): JSX.Element {
     return (
       <ResourceFormPage
         backTo={TEMPLATE_ROUTES.list}
-        backLabel="К списку планов адаптации"
+        backLabel="К списку шаблонов адаптации"
         isLoading
       >
         <></>
@@ -232,7 +223,7 @@ function TemplateTasks(): JSX.Element {
     return (
       <ResourceFormPage
         backTo={TEMPLATE_ROUTES.list}
-        backLabel="К списку планов адаптации"
+        backLabel="К списку шаблонов адаптации"
         isNoData={!isError}
         isError={isError}
       >
@@ -244,7 +235,7 @@ function TemplateTasks(): JSX.Element {
   return (
     <ResourceFormPage
       backTo={TEMPLATE_ROUTES.list}
-      backLabel="К списку планов адаптации"
+      backLabel="К списку шаблонов адаптации"
     >
       <TemplateMetadataCard
         name={name}

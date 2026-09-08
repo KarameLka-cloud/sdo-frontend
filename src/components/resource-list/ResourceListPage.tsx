@@ -24,7 +24,6 @@ interface ResourceListPageProps<T> {
   searchPlaceholder: string;
   search: string;
   onSearchChange: (value: string) => void;
-  createTo?: string;
   onCreate?: () => void;
   createLabel?: string;
   toolbarLeftSlot?: ReactNode;
@@ -55,7 +54,6 @@ function ResourceListPage<T>({
   searchPlaceholder,
   search,
   onSearchChange,
-  createTo,
   onCreate,
   createLabel,
   toolbarLeftSlot,
@@ -80,7 +78,6 @@ function ResourceListPage<T>({
         searchPlaceholder={searchPlaceholder}
         search={search}
         onSearchChange={onSearchChange}
-        createTo={createTo}
         onCreate={onCreate}
         createLabel={createLabel}
         leftSlot={toolbarLeftSlot}

@@ -1,3 +1,5 @@
+import { toast } from "sonner";
+
 /** Reads `message` from a typical RTK Query / Laravel error payload. */
 export function getApiErrorMessage(error: unknown): string | undefined {
   if (typeof error !== "object" || error === null || !("data" in error)) {
@@ -20,4 +22,8 @@ export function getApiErrorStatus(error: unknown): number | undefined {
 
   const status = (error as { status?: unknown }).status;
   return typeof status === "number" ? status : undefined;
+}
+
+export function toastMutationError(error: unknown, fallback: string): void {
+  toast.error(getApiErrorMessage(error) ?? fallback);
 }

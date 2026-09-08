@@ -19,16 +19,16 @@ export const learningItemsApi = baseApi.injectEndpoints({
           url: API_ENDPOINTS.LEARNING_ITEMS,
           params: { category, type },
         }),
-        providesTags: (result) =>
+        providesTags: (result, _error, { category, type }) =>
           result
             ? [
                 ...result.map(({ id }) => ({
                   type: "LearningItems" as const,
                   id,
                 })),
-                "LearningItems" as const,
+                { type: "LearningItems" as const, id: `${category}:${type}` },
               ]
-            : ["LearningItems"],
+            : [{ type: "LearningItems" as const, id: `${category}:${type}` }],
       },
     ),
     addLearningItem: builder.mutation<
@@ -40,7 +40,9 @@ export const learningItemsApi = baseApi.injectEndpoints({
         method: "POST",
         body: item,
       }),
-      invalidatesTags: ["LearningItems"],
+      invalidatesTags: (_result, _error, item) => [
+        { type: "LearningItems", id: `${item.category}:${item.type}` },
+      ],
     }),
     updateLearningItem: builder.mutation<
       LearningItemType,
@@ -51,14 +53,21 @@ export const learningItemsApi = baseApi.injectEndpoints({
         method: "PATCH",
         body: item,
       }),
-      invalidatesTags: ["LearningItems"],
+      invalidatesTags: (_result, _error, item) => [
+        { type: "LearningItems", id: item.id },
+        ...(item.category && item.type
+          ? [{ type: "LearningItems" as const, id: `${item.category}:${item.type}` }]
+          : []),
+      ],
     }),
     deleteLearningItem: builder.mutation<{ message: string }, number>({
       query: (id) => ({
         url: `${API_ENDPOINTS.LEARNING_ITEMS}${id}`,
         method: "DELETE",
       }),
-      invalidatesTags: ["LearningItems"],
+      invalidatesTags: (_result, _error, id) => [
+        { type: "LearningItems", id },
+      ],
     }),
   }),
 });

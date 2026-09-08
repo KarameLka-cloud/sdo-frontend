@@ -4,16 +4,18 @@ import type {
   AdaptationPlanDayType,
   AdaptationPlanTaskType,
   AdaptationPlanType,
+  CompletionStatus,
+  TaskStatus,
 } from "@/interfaces/api/AdaptationPlanType.ts";
 import type {
   AdaptationPlanTemplateTask,
   AdaptationPlanTemplateType,
 } from "@/interfaces/api/AdaptationPlanTemplateType.ts";
-import type { TaskStatus } from "@/interfaces/api/AdaptationPlanType.ts";
 
 export interface AdaptationPlanBody {
   user_id: number;
   mentor: number;
+  supervisor: number;
   department_head: number;
   adaptation_plan_template_id: number;
   shift: number;
@@ -25,9 +27,8 @@ export interface AdaptationPlanDayBody {
   dayId: number;
   date_from: string;
   date_to?: string | null;
-  completion: string;
+  completion: CompletionStatus;
   employee_comment?: string | null;
-  intern_comment?: string | null;
   mentor_comment?: string | null;
   department_head_comment?: string | null;
 }
@@ -40,6 +41,7 @@ export interface AdaptationPlanTemplateBody {
 }
 
 const PLAN_LIST_TAG = { type: "AdaptationPlans" as const, id: "LIST" };
+const TEMPLATE_LIST_TAG = { type: "AdaptationPlanTemplates" as const, id: "LIST" };
 
 /**
  * A mutation on one plan must refresh that plan and the roster, but it must
@@ -83,7 +85,7 @@ export const adaptationApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: [PLAN_LIST_TAG],
+      invalidatesTags: [PLAN_LIST_TAG, "MyAdaptationPlan"],
     }),
     updateAdaptationPlan: builder.mutation<
       AdaptationPlanType,
@@ -160,9 +162,9 @@ export const adaptationApi = baseApi.injectEndpoints({
                 type: "AdaptationPlanTemplates" as const,
                 id,
               })),
-              "AdaptationPlanTemplates" as const,
+              TEMPLATE_LIST_TAG,
             ]
-          : ["AdaptationPlanTemplates"],
+          : [TEMPLATE_LIST_TAG],
     }),
     getAdaptationPlanTemplateById: builder.query<
       AdaptationPlanTemplateType,
@@ -171,7 +173,6 @@ export const adaptationApi = baseApi.injectEndpoints({
       query: (id) => `${API_ENDPOINTS.ADAPTATION_PLAN_TEMPLATES}${id}`,
       providesTags: (_result, _error, id) => [
         { type: "AdaptationPlanTemplates", id },
-        "AdaptationPlanTemplates",
       ],
     }),
     createAdaptationPlanTemplate: builder.mutation<
@@ -183,7 +184,7 @@ export const adaptationApi = baseApi.injectEndpoints({
         method: "POST",
         body,
       }),
-      invalidatesTags: ["AdaptationPlanTemplates"],
+      invalidatesTags: [TEMPLATE_LIST_TAG],
     }),
     updateAdaptationPlanTemplate: builder.mutation<
       AdaptationPlanTemplateType,
@@ -194,9 +195,9 @@ export const adaptationApi = baseApi.injectEndpoints({
         method: "PUT",
         body,
       }),
-      // Templates drive plan generation, so plans may change too.
-      invalidatesTags: [
-        "AdaptationPlanTemplates",
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: "AdaptationPlanTemplates", id },
+        TEMPLATE_LIST_TAG,
         PLAN_LIST_TAG,
         "MyAdaptationPlan",
       ],
@@ -207,7 +208,10 @@ export const adaptationApi = baseApi.injectEndpoints({
           url: `${API_ENDPOINTS.ADAPTATION_PLAN_TEMPLATES}${id}`,
           method: "DELETE",
         }),
-        invalidatesTags: ["AdaptationPlanTemplates"],
+        invalidatesTags: (_result, _error, id) => [
+          { type: "AdaptationPlanTemplates", id },
+          TEMPLATE_LIST_TAG,
+        ],
       },
     ),
   }),
