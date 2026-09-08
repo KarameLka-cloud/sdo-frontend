@@ -1,10 +1,11 @@
 import { JSX } from "react";
-import { ChevronsUpDown, LogOut } from "lucide-react";
+import { ChevronsUpDown, GraduationCap, Headset, LogOut } from "lucide-react";
 import { SidebarFooter } from "@/components/ui/shadcn/sidebar";
 import { Avatar } from "@/components/ui/shadcn/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -102,6 +103,29 @@ function Footer(): JSX.Element {
                   />
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuGroup>
+                <DropdownMenuItem asChild>
+                  <a
+                    href="https://sdo.prod.corp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <GraduationCap />
+                    СДО
+                  </a>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <a
+                    href="http://otrs.corp"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Headset />
+                    Тех.поддержка
+                  </a>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={logout}>
                 <LogOut />
