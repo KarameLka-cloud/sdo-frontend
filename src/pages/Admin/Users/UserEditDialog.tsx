@@ -81,6 +81,7 @@ function UserEditDialog({
       try {
         await revokeRole({ user_id: user.id, role: assignedRole }).unwrap();
         toast.success("Права отозваны");
+        onOpenChange(false);
       } catch (error) {
         toastMutationError(error, "Не удалось отозвать права");
       }
@@ -92,6 +93,7 @@ function UserEditDialog({
     try {
       await assignRole({ user_id: user.id, role: selectedRole }).unwrap();
       toast.success("Роль успешно назначена");
+      onOpenChange(false);
     } catch (error) {
       toastMutationError(error, "Не удалось назначить роль");
     }

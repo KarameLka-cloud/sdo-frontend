@@ -175,7 +175,7 @@ function PlanCreateDialog({
             </Field>
             <DatePickerField
               dateId="plan-start-date"
-              dateLabel="Дата начала стажировки"
+              dateLabel="Дата начала адаптации"
               date={startDate}
               onDateChange={setStartDate}
             />

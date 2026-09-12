@@ -48,7 +48,7 @@ export const MENTOR_ACCESS_ROLES = [
 export const PLAN_EDIT_ROLES = [
   USER_ROLES.ADMIN,
   USER_ROLES.MENTOR,
-  USER_ROLES.SUPERVISOR,
+  USER_ROLES.DEPARTMENT_HEAD,
 ] as const;
 
 export const hasRole = (

@@ -23,9 +23,11 @@ import {
 } from "@/components/resource-list/resourceRoutes";
 import { useConfirmDelete } from "@/components/resource-list/useConfirmDelete";
 import PlanDayCard from "@/pages/Mentorship/Interns/plan-editor/PlanDayCard";
-import PlanMetaForm, {
+import PlanMetaForm from "@/pages/Mentorship/Interns/plan-editor/PlanMetaForm";
+import {
   resolvePlanMetaForm,
-} from "@/pages/Mentorship/Interns/plan-editor/PlanMetaForm";
+  type PlanMetaFormValues,
+} from "@/pages/Mentorship/Interns/plan-editor/planMetaFormUtils";
 import { toDayUpdateBody } from "@/pages/Mentorship/Interns/plan-editor/dayFormFields";
 import type {
   CommentFieldKey,
@@ -197,7 +199,7 @@ function PlanEditor(): JSX.Element {
       // Interns edit this on /adaptation; staff on this page never can.
       canEditIntern: false,
       canEditMentor: !isAdmin && !isDepartmentHead && isMentor,
-      canEditDepartmentHead: isAdmin,
+      canEditDepartmentHead: isDepartmentHead,
     };
   }, [role, roleName, isAdmin, isDepartmentHead]);
 
@@ -435,7 +437,9 @@ function PlanEditor(): JSX.Element {
         isDeleting={isDeleting}
         canEditMeta={canEditMeta}
         showDelete={canDeletePlan}
-        onFormChange={(next) => setForm((previous) => ({ ...previous, ...next }))}
+        onFormChange={(next: PlanMetaFormValues) =>
+          setForm((previous) => ({ ...previous, ...next }))
+        }
         onSubmit={handleSaveAll}
         onDelete={() => handleDelete(plan.id)}
       />

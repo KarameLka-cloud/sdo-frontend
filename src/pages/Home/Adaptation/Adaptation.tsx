@@ -1,4 +1,5 @@
 import { JSX } from "react";
+import { Archive, ChevronRight } from "lucide-react";
 import { toast } from "sonner";
 import DataMessage, {
   DataStateCenter,
@@ -6,6 +7,11 @@ import DataMessage, {
 import CareerDay from "@/components/ui/custom/CareerDay";
 import Loader from "@/components/ui/custom/Loader";
 import { Card, CardContent } from "@/components/ui/shadcn/card";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/shadcn/collapsible";
 import { DAY_META_CHIP_CLASS } from "@/components/adaptation/dayCardMeta";
 import {
   useGetMyAdaptationPlanQuery,
@@ -73,6 +79,16 @@ function Adaptation(): JSX.Element {
   }
 
   const adaptationDays = sortAdaptationDays(plan.days ?? []);
+  const archivedDays = adaptationDays.filter(
+    (day) => day.completion === "выполнен",
+  );
+  const currentDays = adaptationDays.filter(
+    (day) => day.completion !== "выполнен",
+  );
+  const isPlanCompleted =
+    adaptationDays.length > 0 &&
+    currentDays.length === 0 &&
+    archivedDays.length === adaptationDays.length;
   const planInfo = [
     { label: "Начало стажировки", value: convertDate(plan.start_date) },
     { label: "График", value: plan.work_schedule ?? "—" },
@@ -111,8 +127,33 @@ function Adaptation(): JSX.Element {
         </CardContent>
       </Card>
 
-      {adaptationDays.length > 0 ? (
-        adaptationDays.map((day) => (
+      {archivedDays.length > 0 && (
+        <Collapsible className="group/collapsible flex w-full flex-col gap-2">
+          <CollapsibleTrigger asChild>
+            <button
+              type="button"
+              className="flex w-fit items-center gap-2 rounded-md border bg-card px-4 py-3 text-left text-sm font-medium shadow-xs transition-colors hover:bg-muted"
+            >
+              <ChevronRight className="size-4 transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
+              <Archive className="size-4 text-muted-foreground" />
+              <span>Архив завершённых дней</span>
+            </button>
+          </CollapsibleTrigger>
+          <CollapsibleContent className="flex flex-col gap-4">
+            {archivedDays.map((day) => (
+              <CareerDay
+                key={day.id}
+                day={day}
+                onUpdateInternComment={handleUpdateInternComment}
+                onUpdateTaskStatus={handleUpdateTaskStatus}
+              />
+            ))}
+          </CollapsibleContent>
+        </Collapsible>
+      )}
+
+      {currentDays.length > 0 ? (
+        currentDays.map((day) => (
           <CareerDay
             key={day.id}
             day={day}
@@ -120,13 +161,14 @@ function Adaptation(): JSX.Element {
             onUpdateTaskStatus={handleUpdateTaskStatus}
           />
         ))
-      ) : (
+      ) : isPlanCompleted ? (
         <DataMessage
           type="noData"
           centered
-          message="В плане пока нет дней"
+          message="🏅 План адаптации завершен"
+          className="border-emerald-200 bg-emerald-50 text-emerald-700 shadow-sm"
         />
-      )}
+      ) : null}
     </div>
   );
 }
